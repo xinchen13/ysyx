@@ -135,4 +135,12 @@ Linux每个工具解决一个问题，做到极致，易于使用; 工具组合�
 进入 `ysyx` 目录，初始化子项目:
 
 ```sh
+(base) xinchen@sakura:~/ysyx$ git branch -m master
+(base) xinchen@sakura:~/ysyx$ bash init.sh nemu
+(base) xinchen@sakura:~/ysyx$ bash init.sh abstract-machine
+(base) xinchen@sakura:~/ysyx$ source ~/.bashrc
+(base) xinchen@sakura:~/ysyx$ echo $NEMU_HOME
+/home/xinchen/ysyx/nemu
+(base) xinchen@sakura:~/ysyx$ echo $AM_HOME
+/home/xinchen/ysyx/abstract-machine
 ```

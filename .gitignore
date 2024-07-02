@@ -12,4 +12,5 @@
 !README.md
 !.gitignore
 !init.sh
+!/abstract-machine/**
 /fceux-am
