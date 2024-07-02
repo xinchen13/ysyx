@@ -158,3 +158,21 @@ Switched to a new branch 'pa0'
 ```
 
 修改`ysyx/Makefile`中name(ID暂不修改); git status查看上次commit后修改过的文件; git diff查看上次commit后的修改内容; commit本次修改，并使用git log可以看到修改记录:
+
+```sh
+(base) xinchen@sakura:~/ysyx$ git add .
+(base) xinchen@sakura:~/ysyx$ git commit -m "modified my info"
+[pa0 6a6150c] modified my info
+ 2 files changed, 16 insertions(+), 2 deletions(-)
+(base) xinchen@sakura:~/ysyx$ git log
+commit 6a6150ca6b3d9e4d4c5d5c3d9c52f90c6ba7690d (HEAD -> pa0)
+Author: xinchen <xinchen.sakura@gmail.com>
+Date:   Tue Jul 2 14:13:37 2024 +0800
+
+    modified my info
+```
+
+## 编译运行NEMU
+进入`nemu/`目录并通过 `make menuconfig` 生成配置文件(根据报错, 先安装bison和flex)
+
+弹出窗口选择"Exit"和"Yes"来保存新配置，之后通过make命令进行编译; make clean可以清除旧的编译结果, make run可以运行nemu, make gdb可以进行调试. 运行nemu, 结果如下图所示，先忽略 assertion fail
