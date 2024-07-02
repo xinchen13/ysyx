@@ -75,3 +75,16 @@ cc     helloworld.c   -o helloworld
 (base) xinchen@sakura:~/ysyx/docs/02/helloworld$ ./helloworld 
 hello world
 ```
+
+## Write a Makefile to compile the "Hello World" program
+Write a Makefile to compile the "Hello World" program above. If you do not know what to do, refer to the GNU/Linux tutorial
+
+Makefile是一个用来处理较大的c/cpp项目中文件的编译依赖关系的工具. 利用之前编辑的 [helloworld.c](./makefile/helloworld.c) 文件，接着编写简单的 [Makefile](./makefile/Makefile). 定义的`CC`宏表明使用gcc编译器; 当make没有参数时默认执行第一条规则; 对于小型项目这样的Makefile够用, 但是对于有更多依赖的大型项目需要更复杂的规则. 编译项目, 查看结果:
+
+```sh
+(base) xinchen@sakura:~/ysyx/docs/02/makefile$ make
+gcc    -c -o helloworld.o helloworld.c
+gcc -o helloworld helloworld.o
+(base) xinchen@sakura:~/ysyx/docs/02/makefile$ ./helloworld 
+hello world
+```
