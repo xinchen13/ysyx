@@ -187,9 +187,32 @@ Date:   Tue Jul 2 14:13:37 2024 +0800
 提交pa0, 并切换到master分支, merge pa0后push到远端, 进行预学习其他内容
 
 ```sh
-(base) xinchen@ysyx:~/ysyx-workbench$ git commit --allow-empty -am "finish pa0"
-(base) xinchen@ysyx:~/ysyx-workbench$ git checkout master
-(base) xinchen@ysyx:~/ysyx-workbench$ git merge pa0
-(base) xinchen@ysyx:~/ysyx-workbench$ git push xinchen
+(base) xinchen@sakura:~/ysyx$ git commit --allow-empty -am "finish pa0"
+[pa0 4f6ce62] finish pa0
+ 1 file changed, 10 insertions(+)
+(base) xinchen@sakura:~/ysyx$ git checkout master
+Switched to branch 'master'
+Your branch is ahead of 'origin/master' by 11 commits.
+  (use "git push" to publish your local commits)
+(base) xinchen@sakura:~/ysyx$ git merge pa0
+Updating 87b568c..4f6ce62
+Fast-forward
+ Makefile                                     |   2 +-
+ docs/02/README.md                            |  51 ++++++++++++++++++++++++++++++++++++++++++++++++++-
+ figs/Screenshot from 2024-07-02 14-19-32.png | Bin 0 -> 131534 bytes
+ 3 files changed, 51 insertions(+), 2 deletions(-)
+ create mode 100644 figs/Screenshot from 2024-07-02 14-19-32.png
+(base) xinchen@sakura:~/ysyx$ git push xinchen --all
+Enumerating objects: 30, done.
+Counting objects: 100% (30/30), done.
+Delta compression using up to 16 threads
+Compressing objects: 100% (24/24), done.
+Writing objects: 100% (24/24), 121.46 KiB | 389.00 KiB/s, done.
+Total 24 (delta 11), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (11/11), completed with 3 local objects.
+To github.com:xinchen13/ysyx.git
+   87b568c..4f6ce62  master -> master
+ * [new branch]      pa0 -> pa0
+ * [new branch]      tracer-ysyx -> tracer-ysyx
 ```
 
