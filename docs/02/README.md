@@ -63,3 +63,15 @@ sudo apt-get install tmux
 ```
 
 通过deb包安装VSCode和Chrome; 官网安装Miniconda3; 安装中文语言包与输入法(ibus-pinyin); 安装clash
+
+## Write a "Hello World" program under GNU/Linux
+Write a "Hello World" program, compile it, then run it under GNU/Linux. If you do not know what to do, refer to the GNU/Linux tutorial above
+
+首先编辑 [helloworld.c](./helloworld/helloworld.c) 源文件, 保存后编译得到可执行文件`helloworld`, 运行可执行文件`helloworld`查看输出:
+
+```sh
+(base) xinchen@sakura:~/ysyx/docs/02/helloworld$ make helloworld
+cc     helloworld.c   -o helloworld
+(base) xinchen@sakura:~/ysyx/docs/02/helloworld$ ./helloworld 
+hello world
+```
