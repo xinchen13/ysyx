@@ -132,7 +132,7 @@ Linux每个工具解决一个问题，做到极致，易于使用; 工具组合�
 
 添加私人仓库到remote作备份, 远端名为xinchen
 
-进入 `ysyx` 目录，初始化子项目:
+进入 `ysyx` 目录，初始化子模块, 并修改 `.gitignore`:
 
 ```sh
 (base) xinchen@sakura:~/ysyx$ git branch -m master
@@ -173,7 +173,7 @@ Date:   Tue Jul 2 14:13:37 2024 +0800
 ```
 
 ## 编译运行NEMU
-进入`nemu/`目录并通过 `make menuconfig` 生成配置文件(根据报错, 先安装bison和flex)
+进入`$NEMU_HOME/`目录并通过 `make menuconfig` 生成配置文件(根据报错, 先安装bison和flex)
 
 弹出窗口选择"Exit"和"Yes"来保存新配置，之后通过make命令进行编译; make clean可以清除旧的编译结果, make run可以运行nemu, make gdb可以进行调试. 运行nemu, 结果如下图所示，先忽略 assertion fail
 
