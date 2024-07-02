@@ -1,0 +1,52 @@
+(base) xinchen@sakura:~/ysyx/docs/02/gdb$ gdb ./test.out 
+GNU gdb (Ubuntu 12.1-0ubuntu1~22.04.2) 12.1
+Copyright (C) 2022 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<https://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from ./test.out...
+(gdb) r
+Starting program: /home/xinchen/ysyx/docs/02/gdb/test.out 
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Program received signal SIGFPE, Arithmetic exception.
+0x000055555555513b in actual_calc (a=13, b=0) at test.c:3
+3         c=a/b;
+(gdb) bt
+#0  0x000055555555513b in actual_calc (a=13, b=0) at test.c:3
+#1  0x0000555555555171 in calc () at test.c:12
+#2  0x000055555555518a in main () at test.c:17
+(gdb) f 2
+#2  0x000055555555518a in main () at test.c:17
+17        calc();
+(gdb) l
+12        actual_calc(a, b);
+13        return 0;
+14      }
+15
+16      int main(){
+17        calc();
+18        return 0;
+19      }
+(gdb) p a
+No symbol "a" in current context.
+(gdb) f 1
+#1  0x0000555555555171 in calc () at test.c:12
+12        actual_calc(a, b);
+(gdb) p a
+$1 = 13
+(gdb) p b
+$2 = 0
+(gdb) p a/b
+Division by zero

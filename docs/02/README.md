@@ -88,3 +88,12 @@ gcc -o helloworld helloworld.o
 (base) xinchen@sakura:~/ysyx/docs/02/makefile$ ./helloworld 
 hello world
 ```
+
+## Learn to use GDB
+Read the GDB tutorial above and use GDB following the tutorial. In PA1, you will be required to implement a simplified version of GDB. If you have not used GDB, you may have no idea to finish PA1:
+
+以 [test.c](./gdb/test.c) 为例. 通过 `gcc -ggdb test.c -o test.out` 编译, `-ggdb` 选项为编译得到的二进制文件添加了 gdb 调试参数
+
+运行报错: `Floating point exception (core dumped)`
+
+gdb 调试记录见 [gdb.log](./gdb/gdb.log)
