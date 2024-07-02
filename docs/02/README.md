@@ -144,3 +144,17 @@ Linux每个工具解决一个问题，做到极致，易于使用; 工具组合�
 (base) xinchen@sakura:~/ysyx$ echo $AM_HOME
 /home/xinchen/ysyx/abstract-machine
 ```
+
+查看分支，并创建PA0分支:
+
+```sh
+(base) xinchen@sakura:~/ysyx$ git branch
+* master
+(base) xinchen@sakura:~/ysyx$ git checkout -b pa0
+Switched to a new branch 'pa0'
+(base) xinchen@sakura:~/ysyx$ git branch
+  master
+* pa0
+```
+
+修改`ysyx/Makefile`中name(ID暂不修改); git status查看上次commit后修改过的文件; git diff查看上次commit后的修改内容; commit本次修改，并使用git log可以看到修改记录:
