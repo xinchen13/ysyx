@@ -183,3 +183,13 @@ Date:   Tue Jul 2 14:13:37 2024 +0800
 
 通过`git commit --allow-empty`来允许没有变化的commit
 
+## 提交pa0
+提交pa0, 并切换到master分支, merge pa0后push到远端, 进行预学习其他内容
+
+```sh
+(base) xinchen@ysyx:~/ysyx-workbench$ git commit --allow-empty -am "finish pa0"
+(base) xinchen@ysyx:~/ysyx-workbench$ git checkout master
+(base) xinchen@ysyx:~/ysyx-workbench$ git merge pa0
+(base) xinchen@ysyx:~/ysyx-workbench$ git push xinchen
+```
+
