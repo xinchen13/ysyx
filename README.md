@@ -2,7 +2,7 @@
 『一生一芯』的项目工程与学习记录等
 - [lecture notes](https://ysyx.oscc.cc/docs/)
 - [learning record](https://docs.qq.com/sheet/DZXVEQ0thWGZOaU9t?tab=j1z835)
-- [notes](https://docs.qq.com/doc/DZXZIZUZ1VmtNckR2)
+- [notes](./docs/notes.md)
 
 ## 『一生一芯』预学习
 预学习阶段主要工作是搭建环境，熟悉工具使用以及复习编程、数电等基础
