@@ -2,7 +2,7 @@
 *
 !*/
 !/docs/**
-!/fig/*
+!/figs/*
 !/nemu/**
 !/nexus-am/*
 !/nanos-lite/*
