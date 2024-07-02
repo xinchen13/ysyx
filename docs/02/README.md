@@ -97,3 +97,42 @@ Read the GDB tutorial above and use GDB following the tutorial. In PA1, you will
 运行报错: `Floating point exception (core dumped)`
 
 gdb 调试记录见 [gdb.log](./gdb/gdb.log)
+
+## Why Linux
+Linux每个工具解决一个问题，做到极致，易于使用; 工具组合解决复杂问题
+
+## 在github上添加ssh key
+在github上添加一个ssh key, 具体操作STFW (略)
+
+## 获取『一生一芯』框架代码，完成PA0
+通过`git clone -b master git@github.com:OSCPU/ysyx-workbench.git ysyx`获取代码到本地 ysyx 文件夹
+
+进行git的配置, 查看全局设置:
+
+```sh
+(base) xinchen@sakura:~/ysyx$ git config --global user.name "xinchen" # your student ID and name
+(base) xinchen@sakura:~/ysyx$ git config --global user.email "xinchen.sakura@gmail.com"   # your email
+(base) xinchen@sakura:~/ysyx$ git config --global core.editor vim                 # your favorite editor
+(base) xinchen@sakura:~/ysyx$ git config --global color.ui true
+(base) xinchen@sakura:~/ysyx$ cat ~/.gitconfig
+[user]
+        name = xinchen
+        email = xinchen.sakura@gmail.com
+[core]
+        editor = vim
+[color]
+        ui = true
+[http]
+        proxy = socks5://127.0.0.1:7890
+        proxy = http://127.0.0.1:7890
+[https]
+        proxy = socks5://127.0.0.1:7890
+        proxy = https://127.0.0.1:7890
+```
+
+添加私人仓库到remote作备份, 远端名为xinchen
+
+进入 `ysyx` 目录，初始化子项目:
+
+```sh
+```
