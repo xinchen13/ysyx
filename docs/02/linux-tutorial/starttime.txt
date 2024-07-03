@@ -1,0 +1,21 @@
+Jul 02 09:30:22 sakura systemd[1157]: Startup finished in 990ms.
+Jul 02 09:30:28 sakura systemd[1]: Startup finished in 9.901s (kernel) + 10.590s (userspace) = 20.491s.
+Jul 02 09:57:35 sakura systemd[2248]: Startup finished in 9.394s.
+Jul 01 17:02:32 sakura systemd[1226]: Startup finished in 674ms.
+Jul 01 17:02:37 sakura systemd[1]: Startup finished in 10.281s (kernel) + 9.011s (userspace) = 19.292s.
+Jul 01 17:02:42 sakura systemd[1653]: Startup finished in 517ms.
+Jul 01 16:49:25 sakura systemd[1199]: Startup finished in 654ms.
+Jul 01 16:49:28 sakura systemd[1]: Startup finished in 4.292s (kernel) + 6.428s (userspace) = 10.721s.
+Jul 01 16:49:33 sakura systemd[1598]: Startup finished in 474ms.
+Jul 01 16:40:59 sakura systemd[1156]: Startup finished in 594ms.
+Jul 01 16:41:02 sakura systemd[1]: Startup finished in 4.266s (kernel) + 5.855s (userspace) = 10.121s.
+Jul 01 16:41:14 sakura systemd[1591]: Startup finished in 438ms.
+Jul 01 16:39:25 sakura systemd[1168]: Startup finished in 789ms.
+Jul 01 16:39:28 sakura systemd[1]: Startup finished in 3.834s (kernel) + 5.627s (userspace) = 9.462s.
+Jul 01 16:39:36 sakura systemd[1604]: Startup finished in 368ms.
+Jul 01 15:50:07 sakura systemd[1192]: Startup finished in 3.862s.
+Jul 01 15:50:10 sakura systemd[1]: Startup finished in 9.355s (kernel) + 9.517s (userspace) = 18.872s.
+Jul 01 15:50:53 sakura systemd[1744]: Startup finished in 7.753s.
+Jul 01 15:47:50 sakura systemd[1051]: Startup finished in 3.481s.
+Jul 01 15:48:17 sakura systemd[1]: Startup finished in 4.037s (kernel) + 38.251s (userspace) = 42.289s.
+Jul 01 15:48:24 sakura systemd[1813]: Startup finished in 26.059s.
