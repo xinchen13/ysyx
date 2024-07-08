@@ -147,8 +147,66 @@ include ../Makefile
 
 ！框架代码已经在 `npc/Makefile` 中提供了一条默认的 sim 规则, 它已经包含用于 git 追踪的命令 `$(call git_commit, "sim RTL")`, 在编写 Makefile 的时候注意不要修改这一命令, 否则会影响开发跟踪的功能, 而这是记录『一生一芯"』成果原创性的重要依据. 因此在编写 Makefile 并运行之后, 也需要确认 git 是否已经正确追踪了仿真的记录
 
-使用编写的 Makefile，运行 `make sim`，可以看到输出
+使用编写的 Makefile, 运行 `make sim`, 可以看到输出, 并且有 git 记录
 
 ## 接入 NVBoard: 运行 NVBoard 示例
 NVBoard (NJU Virtual Board) 是可以在 RTL 仿真环境中使用的虚拟 FPGA 板卡，利用如下命令获取:
 
+```sh
+(base) xinchen@sakura:~/ysyx$ bash init.sh nvboard
+...
+(base) xinchen@sakura:~/ysyx$ source ~/.bashrc
+(base) xinchen@sakura:~/ysyx$ echo $NVBOARD_HOME
+/home/xinchen/ysyx/nvboard
+```
+
+通过 `sudo apt-get install libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev` 安装SDL2, SDL2-image 和 SDL2-ttf
+
+运行 NVBoard 的示例: 在 `$NVBOARD_HOME/example/` 目录下通过 `make run` 命令即可运行
+
+## 在 NVBoard 上实现双控开关
+阅读 NVBoard 项目的说明, 然后仿照该示例下的 C++ 文件和 Makefile, 修改 C++ 文件, 为双控开关的输入输出分配引脚, 并修改 `npc/Makefile` 使其接入NVBoard
+
+根据 NVBoard 提供的示例工程，按照其文件结构组织项目，并参考其 Makefile: 在 `vsrc` 目录下添加双控开关 Verilog 模块 [top.v](./switch_nvboard/vsrc/top.v); 在 `csrc` 目录下编写 c++ wrapper [sim_main.cpp](./switch_nvboard/csrc/sim_main.cpp), 主要参考 nvboard 的示例，删去时钟与复位，并在循环中添加 `dut.eval()`; 管脚约束 [top.nxdc](./switch_nvboard/constr/top.nxdc) 将输入信号绑定到 switch，输出绑定到 led; 最后 [Makefile](./switch_nvboard/Makefile) 直接使用 example 中提供的文件(真香)，运行仿真 `make run`, LD0 输出 SW0 与 SW1 的异或逻辑
+
+## 将流水灯接入 NVBoard
+编写流水灯模块, 然后接入 NVBoard 并分配引脚. 如果实现正确, 将看到灯从右端往左端依次亮起并熄灭
+
+首先创建流水灯 Verilog 模块 [light.v](./light_nvboard/vsrc/light.v); 之后修改 c++ 仿真文件 [sim_main.cpp](./light_nvboard/csrc/sim_main.cpp), 照着 example 修改好顶层文件和 Verilator 编译出的变量名就可以了; 管脚文件 [light.nxdc](./light_nvboard/constr/light.nxdc) 以及 [Makefile](./light_nvboard/Makefile) 作相应微调，运行仿真 `make run`, 结果就是灯从右端往左端依次亮起并熄灭，产生流水灯的效果
+
+## 理解 RTL 仿真的行为(2)
+阅读 Verilator 编译出的 C++ 代码, 然后结合 Verilog 代码, 尝试理解仿真器是如何对时序逻辑电路进行仿真的
+
+很自然地，时序逻辑仿真重要的一步是时钟跳变的判断，在代码中搜索 `clk`:
+
+```sh
+(base) xinchen@sakura:~/ysyx/docs/04/light_nvboard$ grep "clk" ./build/obj_dir/*.{cpp,h}
+./build/obj_dir/Vlight___024root__DepSet_ha3c55810__0.cpp:    vlSelf->__VactTriggered.at(0U) = ((IData)(vlSelf->clk) 
+./build/obj_dir/Vlight___024root__DepSet_ha3c55810__0.cpp:                                      & (~ (IData)(vlSelf->__Vtrigrprev__TOP__clk)));
+./build/obj_dir/Vlight___024root__DepSet_ha3c55810__0.cpp:    vlSelf->__Vtrigrprev__TOP__clk = vlSelf->clk;
+./build/obj_dir/Vlight___024root__DepSet_hbb020019__0.cpp:    if (VL_UNLIKELY((vlSelf->clk & 0xfeU))) {
+./build/obj_dir/Vlight___024root__DepSet_hbb020019__0.cpp:        Verilated::overWidthError("clk");}
+./build/obj_dir/Vlight___024root__DepSet_hbb020019__0__Slow.cpp:    vlSelf->__Vtrigrprev__TOP__clk = vlSelf->clk;
+./build/obj_dir/Vlight___024root__DepSet_hbb020019__0__Slow.cpp:        VL_DBG_MSGF("         'act' region trigger index 0 is active: @(posedge clk)\n");
+./build/obj_dir/Vlight___024root__DepSet_hbb020019__0__Slow.cpp:        VL_DBG_MSGF("         'nba' region trigger index 0 is active: @(posedge clk)\n");
+./build/obj_dir/Vlight___024root__DepSet_hbb020019__0__Slow.cpp:    vlSelf->clk = 0;
+./build/obj_dir/Vlight___024root__DepSet_hbb020019__0__Slow.cpp:    vlSelf->__Vtrigrprev__TOP__clk = 0;
+./build/obj_dir/Vlight.cpp:    , clk{vlSymsp->TOP.clk}
+./build/obj_dir/Vlight___024root.h:    VL_IN8(clk,0,0);
+./build/obj_dir/Vlight___024root.h:    CData/*0:0*/ __Vtrigrprev__TOP__clk;
+./build/obj_dir/Vlight.h:    VL_IN8(&clk,0,0);
+```
+
+观察前几行输出发现程序在判断时钟的上升沿, 当产生 posedge clk 时变量 `vlSelf->__VactTriggered` 会变为1, 于是继续搜索 `vlSelf->__VactTriggered`:
+
+```sh
+(base) xinchen@sakura:~/ysyx/docs/04/light_nvboard$ grep "vlSelf->__VactTriggered" ./build/obj_dir/*.{cpp,h}
+./build/obj_dir/Vlight___024root__DepSet_ha3c55810__0.cpp:    vlSelf->__VactTriggered.at(0U) = ((IData)(vlSelf->clk) 
+./build/obj_dir/Vlight___024root__DepSet_hbb020019__0.cpp:            if (vlSelf->__VactTriggered.any()) {
+./build/obj_dir/Vlight___024root__DepSet_hbb020019__0.cpp:                __VpreTriggered.andNot(vlSelf->__VactTriggered, vlSelf->__VnbaTriggered);
+./build/obj_dir/Vlight___024root__DepSet_hbb020019__0.cpp:                vlSelf->__VnbaTriggered.set(vlSelf->__VactTriggered);
+./build/obj_dir/Vlight___024root__DepSet_hbb020019__0__Slow.cpp:    if ((1U & (~ (IData)(vlSelf->__VactTriggered.any())))) {
+./build/obj_dir/Vlight___024root__DepSet_hbb020019__0__Slow.cpp:    if (vlSelf->__VactTriggered.at(0U)) {
+```
+
+查找代码, 主要是 `Vlight___024root___eval()` 实现了状态更新
