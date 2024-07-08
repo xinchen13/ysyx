@@ -87,3 +87,64 @@ a = 0, b = 1, f = 1
 a = 0, b = 1, f = 1
 a = 1, b = 0, f = 1
 ```
+
+## 理解 RTL 仿真的行为
+阅读 Verilator 编译出的 C++ 代码, 然后结合 Verilog 代码, 尝试理解仿真器进行仿真的时候都发生了什么
+
+由于是异或逻辑，于是在生成的 `cpp` 文件中查找是否有逻辑异或
+
+```sh
+(base) xinchen@sakura:~/ysyx/docs/04/switch$ grep "\^" ./obj_dir/*.{cpp,h}
+./obj_dir/Vtop___024root__DepSet_heccd7ead__0.cpp:    vlSelf->f = ((IData)(vlSelf->a) ^ (IData)(vlSelf->b));
+```
+
+发现了 Verilog 模块的逻辑实现，结合之前对 Verilator 的认识，可以猜测仿真模型定义了 Verilog 模块中的端口，将 Verilog 封装为C++ 的类与函数，提供调用 API, 最终被 wrapper 文件调用，执行编译得到的可执行文件查看结果
+
+## 生成波形并查看
+Verilator 手册中已经介绍了波形生成的方法, 你需要阅读手册找到相关内容, 然后按照手册中的步骤生成波形文件, 并通过 `GTKWave` 来查看波形 (波形文件占用较多磁盘，不要长时间生成)
+
+先安装 `GTKWave`
+
+```sh
+$ sudo apt-get install gtkwave
+$ which gtkwave 
+/usr/bin/gtkwave
+```
+
+Verilog 文件 [top.v](./switch_wave/top.v)不需要修改，根据 Verilator 文档修改仿真文件 [sim_main.cpp](./switch_wave/sim_main.cpp)，调用 `Verilated::traceEverOn(true)`，之后使用 `$dumpfile` 和 `$dumpvars` 来输出波形到 `wave.vcd`，由于设置了仿真时间，因此会自动结束. 通过 `verilator --cc --exe --build --trace -j 0 -Wall sim_main.cpp top.v` 编译，在编译时加入 `--trace` 选项，由于设置了仿真时间为 5, 因此输出5行后自动结束，生成波形文件 `wave.vcd`. 之后运行仿真:
+
+```sh
+(base) xinchen@xinchen-vm-ubuntu2204:~/ysyx/docs/04/switch_wave$ ./obj_dir/Vtop 
+a = 1, b = 0, f = 1
+a = 1, b = 1, f = 0
+a = 1, b = 1, f = 0
+a = 0, b = 0, f = 0
+a = 1, b = 1, f = 0
+```
+
+用 Gtkwave 查看波形: `gtkwave ./obj_dir/wave.vcd`
+
+## 编写Makefile: 一键仿真
+为 `npc/Makefile` 编写规则 sim, 实现一键仿真
+
+先实现最基本的功能，之后写 npc 的时候再完善:
+
+```Makefile
+all:
+	@echo "Write this Makefile by your self."
+
+sim:
+	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
+	@echo "Write this Makefile by your self."
+	verilator --cc --exe --build -j 0 -Wall ./csrc/*.cpp ./vsrc/*.v --trace
+	./obj_dir/Vexample
+
+clean:
+	rm -rf ./obj_dir
+	
+include ../Makefile
+```
+
+！框架代码已经在 `npc/Makefile` 中提供了一条默认的 sim 规则, 它已经包含用于 git 追踪的命令 `$(call git_commit, "sim RTL")`, 在编写 Makefile 的时候注意不要修改这一命令, 否则会影响开发跟踪的功能, 而这是记录『一生一芯"』成果原创性的重要依据. 因此在编写 Makefile 并运行之后, 也需要确认 git 是否已经正确追踪了仿真的记录
+
+使用编写的 Makefile，运行 `make sim`，可以看到输出
