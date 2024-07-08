@@ -130,9 +130,7 @@ Linux每个工具解决一个问题，做到极致，易于使用; 工具组合�
         proxy = https://127.0.0.1:7890
 ```
 
-添加私人仓库到remote作备份, 远端名为xinchen
-
-进入 `ysyx` 目录，初始化子项目:
+进入 `ysyx` 目录，初始化子模块, 并修改 `.gitignore`:
 
 ```sh
 (base) xinchen@sakura:~/ysyx$ git branch -m master
@@ -144,6 +142,8 @@ Linux每个工具解决一个问题，做到极致，易于使用; 工具组合�
 (base) xinchen@sakura:~/ysyx$ echo $AM_HOME
 /home/xinchen/ysyx/abstract-machine
 ```
+
+添加私人仓库到 remote 作备份, 远端名为 xinchen: `git remote add xinchen git@github.com:xinchen13/ysyx.git` 
 
 查看分支，并创建PA0分支:
 
@@ -157,7 +157,7 @@ Switched to a new branch 'pa0'
 * pa0
 ```
 
-修改`ysyx/Makefile`中name(ID暂不修改); git status查看上次commit后修改过的文件; git diff查看上次commit后的修改内容; commit本次修改，并使用git log可以看到修改记录:
+修改 `ysyx/Makefile` 中 name(ID暂不修改); commit 本次修改，并使用 `git log` 可以看到修改记录:
 
 ```sh
 (base) xinchen@sakura:~/ysyx$ git add .
@@ -173,6 +173,56 @@ Date:   Tue Jul 2 14:13:37 2024 +0800
 ```
 
 ## 编译运行NEMU
-进入`nemu/`目录并通过 `make menuconfig` 生成配置文件(根据报错, 先安装bison和flex)
+进入 `$NEMU_HOME/` 并通过 `make menuconfig` 生成配置文件(根据报错, 先安装 bison 和 flex)
 
-弹出窗口选择"Exit"和"Yes"来保存新配置，之后通过make命令进行编译; make clean可以清除旧的编译结果, make run可以运行nemu, make gdb可以进行调试. 运行nemu, 结果如下图所示，先忽略 assertion fail
+弹出窗口选择 "Exit" 和 "Yes" 来保存新配置，之后通过 `make` 命令进行编译; `make clean` 可以清除旧的编译结果, `make run` 可以运行 nemu, `make gdb` 可以进行调试. 运行 nemu, 结果如下图所示，先忽略 assertion fail: 
+
+
+<img src="../../figs/Screenshot from 2024-07-02 14-19-32.png" width="580" />
+
+通过`git log tracer-ysyx`查看ysyx代码跟踪日志
+
+通过`git commit --allow-empty`来允许没有变化的commit
+
+## 提交pa0
+提交 pa0, 并切换到 master 分支, merge pa0 后 push 到远端, 进行预学习其他内容
+
+```sh
+(base) xinchen@sakura:~/ysyx$ git commit --allow-empty -am "finish pa0"
+[pa0 4f6ce62] finish pa0
+ 1 file changed, 10 insertions(+)
+(base) xinchen@sakura:~/ysyx$ git checkout master
+Switched to branch 'master'
+Your branch is ahead of 'origin/master' by 11 commits.
+  (use "git push" to publish your local commits)
+(base) xinchen@sakura:~/ysyx$ git merge pa0
+Updating 87b568c..4f6ce62
+Fast-forward
+ Makefile                                     |   2 +-
+ docs/02/README.md                            |  51 ++++++++++++++++++++++++++++++++++++++++++++++++++-
+ figs/Screenshot from 2024-07-02 14-19-32.png | Bin 0 -> 131534 bytes
+ 3 files changed, 51 insertions(+), 2 deletions(-)
+ create mode 100644 figs/Screenshot from 2024-07-02 14-19-32.png
+(base) xinchen@sakura:~/ysyx$ git push xinchen --all
+Enumerating objects: 30, done.
+Counting objects: 100% (30/30), done.
+Delta compression using up to 16 threads
+Compressing objects: 100% (24/24), done.
+Writing objects: 100% (24/24), 121.46 KiB | 389.00 KiB/s, done.
+Total 24 (delta 11), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (11/11), completed with 3 local objects.
+To github.com:xinchen13/ysyx.git
+   87b568c..4f6ce62  master -> master
+ * [new branch]      pa0 -> pa0
+ * [new branch]      tracer-ysyx -> tracer-ysyx
+```
+
+## 学习 Linux 基本使用
+学习 MIT 的 Linux 工具使用系列课程『The Missing Semester of Your CS』了解如何使用 Linux 中的工具来方便地完成各种任务
+
+- [课程概览与 shell](./linux-tutorial/the-shell.md)
+- [shell 工具和脚本](./linux-tutorial/shell-tools.md)
+- [编辑器 (vim)](./linux-tutorial/vim.md) 
+- [数据整理](./linux-tutorial/data-wrangling.md)
+- [命令行环境](./linux-tutorial/command-line-env.md)
+- [版本控制 (Git)](./linux-tutorial/git.md)

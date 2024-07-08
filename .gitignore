@@ -13,4 +13,4 @@
 !.gitignore
 !init.sh
 !/abstract-machine/**
-/fceux-am
+!/fceux-am/**

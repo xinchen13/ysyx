@@ -1,0 +1,54 @@
+(base) xinchen@sakura:~/ysyx/docs/03/04$ valgrind --track-origins=yes ./ex4 
+==41545== Memcheck, a memory error detector
+==41545== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==41545== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==41545== Command: ./ex4
+==41545== 
+I am -16778584 years old.
+==41545== Conditional jump or move depends on uninitialised value(s)
+==41545==    at 0x48E0AD6: __vfprintf_internal (vfprintf-internal.c:1516)
+==41545==    by 0x48CA79E: printf (printf.c:33)
+==41545==    by 0x109188: main (ex4.c:11)
+==41545==  Uninitialised value was created by a stack allocation
+==41545==    at 0x109149: main (ex4.c:6)
+==41545== 
+==41545== Use of uninitialised value of size 8
+==41545==    at 0x48C42EB: _itoa_word (_itoa.c:177)
+==41545==    by 0x48DFABD: __vfprintf_internal (vfprintf-internal.c:1516)
+==41545==    by 0x48CA79E: printf (printf.c:33)
+==41545==    by 0x109188: main (ex4.c:11)
+==41545==  Uninitialised value was created by a stack allocation
+==41545==    at 0x109149: main (ex4.c:6)
+==41545== 
+==41545== Conditional jump or move depends on uninitialised value(s)
+==41545==    at 0x48C42FC: _itoa_word (_itoa.c:177)
+==41545==    by 0x48DFABD: __vfprintf_internal (vfprintf-internal.c:1516)
+==41545==    by 0x48CA79E: printf (printf.c:33)
+==41545==    by 0x109188: main (ex4.c:11)
+==41545==  Uninitialised value was created by a stack allocation
+==41545==    at 0x109149: main (ex4.c:6)
+==41545== 
+==41545== Conditional jump or move depends on uninitialised value(s)
+==41545==    at 0x48E05C3: __vfprintf_internal (vfprintf-internal.c:1516)
+==41545==    by 0x48CA79E: printf (printf.c:33)
+==41545==    by 0x109188: main (ex4.c:11)
+==41545==  Uninitialised value was created by a stack allocation
+==41545==    at 0x109149: main (ex4.c:6)
+==41545== 
+==41545== Conditional jump or move depends on uninitialised value(s)
+==41545==    at 0x48DFC05: __vfprintf_internal (vfprintf-internal.c:1516)
+==41545==    by 0x48CA79E: printf (printf.c:33)
+==41545==    by 0x109188: main (ex4.c:11)
+==41545==  Uninitialised value was created by a stack allocation
+==41545==    at 0x109149: main (ex4.c:6)
+==41545== 
+I am 0 inches tall.
+==41545== 
+==41545== HEAP SUMMARY:
+==41545==     in use at exit: 0 bytes in 0 blocks
+==41545==   total heap usage: 1 allocs, 1 frees, 1,024 bytes allocated
+==41545== 
+==41545== All heap blocks were freed -- no leaks are possible
+==41545== 
+==41545== For lists of detected and suppressed errors, rerun with: -s
+==41545== ERROR SUMMARY: 5 errors from 5 contexts (suppressed: 0 from 0)
