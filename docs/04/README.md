@@ -148,3 +148,7 @@ include ../Makefile
 ！框架代码已经在 `npc/Makefile` 中提供了一条默认的 sim 规则, 它已经包含用于 git 追踪的命令 `$(call git_commit, "sim RTL")`, 在编写 Makefile 的时候注意不要修改这一命令, 否则会影响开发跟踪的功能, 而这是记录『一生一芯"』成果原创性的重要依据. 因此在编写 Makefile 并运行之后, 也需要确认 git 是否已经正确追踪了仿真的记录
 
 使用编写的 Makefile，运行 `make sim`，可以看到输出
+
+## 接入 NVBoard: 运行 NVBoard 示例
+NVBoard (NJU Virtual Board) 是可以在 RTL 仿真环境中使用的虚拟 FPGA 板卡，利用如下命令获取:
+
