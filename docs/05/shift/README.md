@@ -17,8 +17,8 @@ Q <= {Q[7],Q[7:1]}; //算术右移
 
 实现一个8位的周期为255的伪随机序列，以按钮为时钟信号，并请将8位二进制数以十六进制显示在数码管上, 利用 `rst_n` 与 `SW7-0` 来设置初值 `8'h01` 
 
-- 线性反馈移位寄存器 [lfsr](./vsrc/lfsr.v)
-- 数码管16进制显示模块 [segment_hex](./vsrc/segment_hex.v)
+- 线性反馈移位寄存器 [lfsr.v](./vsrc/lfsr.v)
+- 数码管16进制显示模块 [segment_hex.v](./vsrc/segment_hex.v)
 - 顶层模块 [top.v](./vsrc/top.v): 把 lfsr 移位后的序列高四位和低四位分别输入给数码管译码器，输出 16 进制结果
 - 约束 [top.nxdc](./constr/top.nxdc)
 - [Makefile](./Makefile)
