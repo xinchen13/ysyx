@@ -27,7 +27,7 @@ module top (
                 else next_state = READ;
             end
             DONE: begin
-                if (ready) next_state = DONE;
+                if (ready) next_state = READ;
                 else next_state = IDLE;
             end
             default: next_state = IDLE;
@@ -49,7 +49,7 @@ module top (
 
     // control logic
     wire display_en;
-    assign display_en = (state == READ && (scan_code != 8'hF0)) ? 1'b1 : 1'b0;
+    assign display_en = ((state == READ) && (scan_code != 8'hF0)) ? 1'b1 : 1'b0;
     wire count_en;
     assign count_en = (state == DONE) ? 1'b1 : 1'b0;
     wire ready;

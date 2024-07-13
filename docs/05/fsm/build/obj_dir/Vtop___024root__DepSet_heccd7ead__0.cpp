@@ -179,7 +179,7 @@ VL_INLINE_OPT void Vtop___024root___nba_sequent__TOP__0(Vtop___024root* vlSelf) 
                                              ? 2U : 1U)
                                          : ((2U == (IData)(vlSelf->top__DOT__state))
                                              ? ((IData)(vlSelf->top__DOT__ready)
-                                                 ? 2U
+                                                 ? 1U
                                                  : 0U)
                                              : 0U)));
     top__DOT__display_en = ((1U == (IData)(vlSelf->top__DOT__state)) 
