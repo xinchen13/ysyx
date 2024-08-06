@@ -1,4 +1,5 @@
 #!/bin/bash
+source tenv
 
 if [ $# -eq 0 ]; then
   echo "offer commit message!"
