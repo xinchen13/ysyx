@@ -11,5 +11,6 @@
 !*.v
 !*.cpp
 !NVBoard.jpg
+!example/**
 !usr/**
 build/
