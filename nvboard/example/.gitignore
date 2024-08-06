@@ -1,6 +1,4 @@
-<<<<<<< HEAD
 build/
-=======
 !resource/*.hex
 !constr/*.nxdc
->>>>>>> 2c323f97e9e0baba1a135564a091f3f63da2bd86
+
