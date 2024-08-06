@@ -16,4 +16,4 @@
 !init.sh
 !/abstract-machine/**
 !/fceux-am/**
-/nvboard
+!/nvboard/**
