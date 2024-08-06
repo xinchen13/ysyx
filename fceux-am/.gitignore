@@ -15,5 +15,5 @@ _*
 build/
 nes/gen/
 !nes/rom/
-!nes/rom/README.md
+!nes/rom/*
 !.gitignore
