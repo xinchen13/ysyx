@@ -1,0 +1,231 @@
+
+19. Printing statistics.
+
+=== ps2_keyboard ===
+
+   Number of wires:                623
+   Number of wire bits:            630
+   Number of public wires:          95
+   Number of public wire bits:     102
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                536
+     AND2_X1                        10
+     AND2_X2                         1
+     AND2_X4                         3
+     AND3_X1                         4
+     AND4_X1                         1
+     AOI211_X2                       2
+     AOI211_X4                       3
+     AOI21_X1                        3
+     AOI221_X4                       3
+     BUF_X1                        195
+     DFF_X1                         89
+     INV_X1                         17
+     INV_X2                          1
+     MUX2_X1                       130
+     NAND2_X1                       15
+     NAND2_X4                        2
+     NAND3_X1                        6
+     NAND3_X4                        1
+     NOR2_X1                        12
+     NOR2_X4                         8
+     NOR3_X1                         5
+     OAI211_X2                       1
+     OAI21_X1                        1
+     OR2_X1                          4
+     XNOR2_X1                       11
+     XNOR2_X2                        4
+     XOR2_X1                         3
+     XOR2_X2                         1
+
+   Chip area for module '\ps2_keyboard': 966.910000
+
+=== rom ===
+
+   Number of wires:                 52
+   Number of wire bits:             66
+   Number of public wires:           2
+   Number of public wire bits:      16
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                 58
+     AND2_X1                         6
+     AND2_X2                         2
+     AND2_X4                         2
+     AND3_X1                         2
+     AND3_X2                         3
+     AND3_X4                         2
+     AND4_X1                         2
+     AND4_X2                         1
+     AOI21_X1                        1
+     BUF_X1                         16
+     INV_X1                          3
+     INV_X16                         1
+     INV_X32                         2
+     LOGIC0_X1                       1
+     NOR2_X2                         3
+     NOR2_X4                         4
+     NOR3_X1                         1
+     NOR3_X4                         1
+     OAI211_X2                       1
+     OAI21_X1                        1
+     OR2_X2                          1
+     OR3_X1                          1
+     OR4_X4                          1
+
+   Chip area for module '\rom': 98.154000
+
+=== segment_hex ===
+
+   Number of wires:                 46
+   Number of wire bits:             56
+   Number of public wires:           3
+   Number of public wire bits:      13
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                 51
+     AND2_X1                         2
+     AND2_X2                         1
+     AND2_X4                         1
+     AOI21_X1                        2
+     AOI22_X1                        2
+     BUF_X1                         13
+     INV_X1                          2
+     INV_X16                         1
+     INV_X2                          1
+     INV_X32                         1
+     INV_X4                          1
+     LOGIC1_X1                       1
+     NAND2_X1                        4
+     NAND3_X1                        6
+     NAND4_X1                        4
+     NOR2_X2                         3
+     NOR2_X4                         2
+     NOR3_X1                         1
+     OAI21_X1                        2
+     OR3_X4                          1
+
+   Chip area for module '\segment_hex': 67.830000
+
+=== top ===
+
+   Number of wires:                189
+   Number of wire bits:            234
+   Number of public wires:          46
+   Number of public wire bits:      91
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                153
+     AND2_X1                        16
+     AND2_X2                         2
+     AND2_X4                         3
+     AND3_X2                         2
+     AOI211_X2                       1
+     AOI211_X4                       1
+     AOI21_X1                        6
+     AOI21_X2                        1
+     BUF_X1                         58
+     DFF_X1                         19
+     INV_X1                          2
+     INV_X32                         1
+     INV_X4                          1
+     LOGIC0_X1                       1
+     LOGIC1_X1                       1
+     MUX2_X1                         8
+     NAND2_X1                        1
+     NAND2_X4                        1
+     NAND3_X1                        1
+     NAND4_X1                        2
+     NOR2_X4                         1
+     NOR3_X1                         3
+     NOR3_X4                         1
+     NOR4_X1                         2
+     NOR4_X4                         1
+     OAI21_X1                        2
+     OAI22_X1                        1
+     OR2_X1                          2
+     OR2_X2                          2
+     OR3_X2                          1
+     XNOR2_X1                        1
+     ps2_keyboard                    1
+     rom                             1
+     segment_hex                     6
+
+   Area for cell type \segment_hex is unknown!
+   Area for cell type \ps2_keyboard is unknown!
+   Area for cell type \rom is unknown!
+
+   Chip area for module '\top': 238.070000
+
+=== design hierarchy ===
+
+   top                               1
+     ps2_keyboard                    1
+     rom                             1
+     segment_hex                     6
+
+   Number of wires:               1140
+   Number of wire bits:           1266
+   Number of public wires:         161
+   Number of public wire bits:     287
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:               1045
+     AND2_X1                        44
+     AND2_X2                        11
+     AND2_X4                        14
+     AND3_X1                         6
+     AND3_X2                         5
+     AND3_X4                         2
+     AND4_X1                         3
+     AND4_X2                         1
+     AOI211_X2                       3
+     AOI211_X4                       4
+     AOI21_X1                       22
+     AOI21_X2                        1
+     AOI221_X4                       3
+     AOI22_X1                       12
+     BUF_X1                        347
+     DFF_X1                        108
+     INV_X1                         34
+     INV_X16                         7
+     INV_X2                          7
+     INV_X32                         9
+     INV_X4                          7
+     LOGIC0_X1                       2
+     LOGIC1_X1                       7
+     MUX2_X1                       138
+     NAND2_X1                       40
+     NAND2_X4                        3
+     NAND3_X1                       43
+     NAND3_X4                        1
+     NAND4_X1                       26
+     NOR2_X1                        12
+     NOR2_X2                        21
+     NOR2_X4                        25
+     NOR3_X1                        15
+     NOR3_X4                         2
+     NOR4_X1                         2
+     NOR4_X4                         1
+     OAI211_X2                       2
+     OAI21_X1                       16
+     OAI22_X1                        1
+     OR2_X1                          6
+     OR2_X2                          3
+     OR3_X1                          1
+     OR3_X2                          1
+     OR3_X4                          6
+     OR4_X4                          1
+     XNOR2_X1                       12
+     XNOR2_X2                        4
+     XOR2_X1                         3
+     XOR2_X2                         1
+
+   Chip area for top module '\top': 1710.114000
+

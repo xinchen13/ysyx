@@ -1,0 +1,134 @@
+[Data config set] lib = /home/xinchen/yosys-sta/scripts/../nangate45/lib/merged.lib
+[Data config set] sdc = fsm_yosys_sta/gcd.sdc
+[Data config set] tech lef = /home/xinchen/yosys-sta/scripts/../nangate45/lef/NangateOpenCellLibrary.tech.lef
+Read LEF file : /home/xinchen/yosys-sta/scripts/../nangate45/lef/NangateOpenCellLibrary.tech.lef
+[Data config set] lef = /home/xinchen/yosys-sta/scripts/../nangate45/lef/NangateOpenCellLibrary.macro.mod.lef
+Read LEF file : /home/xinchen/yosys-sta/scripts/../nangate45/lef/NangateOpenCellLibrary.macro.mod.lef
+[Data config set] verilog = /home/xinchen/yosys-sta/result/top-100MHz/top.netlist.syn.v
+Read Verilog file success : /home/xinchen/yosys-sta/result/top-100MHz/top.netlist.syn.v
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I20240713 10:24:17.655822  8158 VerilogParserRustC.cc:41] load verilog file /home/xinchen/yosys-sta/result/top-100MHz/top.netlist.syn.v
+r str /home/xinchen/yosys-sta/result/top-100MHz/top.netlist.syn.v
+flatten module top  start
+flatten module segment_hex inst u_ascii_h
+flatten module segment_hex inst u_ascii_l
+flatten module segment_hex inst u_count_h
+flatten module segment_hex inst u_count_l
+flatten module ps2_keyboard inst u_ps2_keyboard
+flatten module rom inst u_rom
+flatten module segment_hex inst u_scan_code_h
+flatten module segment_hex inst u_scan_code_l
+flatten module top end
+Processed 1000 pins...
+Processed 1000 nets...
+Processed 1000 components...
+I20240713 10:24:17.723620  8158 Sta.cc:298] load lib start
+I20240713 10:24:17.732311  8209 LibParserRustC.cc:1269] load liberty file /home/xinchen/yosys-sta/scripts/../nangate45/lib/merged.lib
+rust read lib file /home/xinchen/yosys-sta/scripts/../nangate45/lib/merged.lib
+I20240713 10:24:19.029392  8209 LibParserRustC.cc:1278] load liberty file /home/xinchen/yosys-sta/scripts/../nangate45/lib/merged.lib success.
+I20240713 10:24:19.030472  8158 Sta.cc:317] load lib end
+I20240713 10:24:19.054307  8223 LibParserRustC.cc:1289] link liberty file /home/xinchen/yosys-sta/scripts/../nangate45/lib/merged.lib start.
+I20240713 10:24:19.653599  8223 LibParserRustC.cc:1295] link liberty file /home/xinchen/yosys-sta/scripts/../nangate45/lib/merged.lib success.
+I20240713 10:24:19.655215  8158 TimingIDBAdapter.cc:738] core area width -0um height -0um
+I20240713 10:24:19.828814  8158 Sta.cc:172] read sdc fsm_yosys_sta/gcd.sdc start 
+I20240713 10:24:19.831288  8158 CmdCreateClock.cc:116] create clock core_clock for pin/port: clk
+I20240713 10:24:19.831393  8158 Sta.cc:185] read sdc end
+I20240713 10:24:19.831434  8158 StaBuildGraph.cc:310] build graph start
+I20240713 10:24:19.968595  8158 StaBuildGraph.cc:327] build graph end
+I20240713 10:24:19.979408  8158 Sta.cc:2287] update timing start
+I20240713 10:24:19.981817  8158 StaApplySdc.cc:694] apply sdc start
+I20240713 10:24:19.981972  8158 StaApplySdc.cc:725] apply sdc end
+I20240713 10:24:19.983109  8158 StaClockPropagation.cc:320] ideal clock propagation start
+I20240713 10:24:19.983502  8158 StaClockPropagation.cc:203] clock propagate end to vertex _269_:CK
+I20240713 10:24:19.985404  8158 StaClockPropagation.cc:416] ideal clock propagation end
+I20240713 10:24:19.985606  8158 StaCheck.cc:129] found loop fwd start
+I20240713 10:24:19.987022  8158 StaCheck.cc:148] found loop fwd end
+I20240713 10:24:19.987069  8158 StaCheck.cc:150] found loop bwd start
+I20240713 10:24:19.988334  8158 StaCheck.cc:172] found loop bwd end
+I20240713 10:24:19.988390  8158 StaSlewPropagation.cc:266] slew propagation start
+E20240713 10:24:20.000509  8281 Lib.cc:174] Warning: val outside table ranges:  val = 0; min_val = 0.00117378; max_val = 0.198535
+E20240713 10:24:20.000653  8281 Lib.cc:174] Warning: val outside table ranges:  val = 0; min_val = 0.00117378; max_val = 0.198535
+E20240713 10:24:20.000720  8281 Lib.cc:174] Warning: val outside table ranges:  val = 0; min_val = 0.00117378; max_val = 0.198535
+E20240713 10:24:20.000819  8281 Lib.cc:174] Warning: val outside table ranges:  val = 0; min_val = 0.00117378; max_val = 0.198535
+E20240713 10:24:20.000859  8281 Lib.cc:174] Warning: val outside table ranges:  val = 0; min_val = 0.00117378; max_val = 0.198535
+E20240713 10:24:20.000885  8281 Lib.cc:174] Warning: val outside table ranges:  val = 0; min_val = 0.00117378; max_val = 0.198535
+E20240713 10:24:20.000912  8281 Lib.cc:174] Warning: val outside table ranges:  val = 0; min_val = 0.00117378; max_val = 0.198535
+E20240713 10:24:20.000939  8281 Lib.cc:174] Warning: val outside table ranges:  val = 0; min_val = 0.00117378; max_val = 0.198535
+E20240713 10:24:20.001129  8281 Lib.cc:174] Warning: val outside table ranges:  val = 0; min_val = 0.00117378; max_val = 0.198535
+E20240713 10:24:20.001163  8281 Lib.cc:174] Warning: val outside table ranges:  val = 0; min_val = 0.00117378; max_val = 0.198535
+I20240713 10:24:20.036610  8158 StaSlewPropagation.cc:305] slew propagation end
+I20240713 10:24:20.036713  8158 StaDelayPropagation.cc:268] delay propagation start
+I20240713 10:24:20.072636  8158 StaDelayPropagation.cc:309] delay propagation end
+I20240713 10:24:20.072855  8158 StaClockPropagation.cc:322] propagated(kNormal) clock propagation start
+I20240713 10:24:20.072901  8158 StaClockPropagation.cc:418] propagated(kNormal) clock propagation end
+I20240713 10:24:20.072918  8158 StaApplySdc.cc:694] apply sdc start
+I20240713 10:24:20.072933  8158 StaApplySdc.cc:725] apply sdc end
+I20240713 10:24:20.072950  8158 StaClockPropagation.cc:324] propagated(kGenerated) clock propagation start
+I20240713 10:24:20.072962  8158 StaClockPropagation.cc:420] propagated(kGenerated) clock propagation end
+I20240713 10:24:20.072974  8158 StaApplySdc.cc:694] apply sdc start
+I20240713 10:24:20.072986  8158 StaApplySdc.cc:725] apply sdc end
+I20240713 10:24:20.075412  8158 StaBuildPropTag.cc:325] build propagation tag start
+I20240713 10:24:20.075523  8158 StaDataPropagation.cc:589] data fwd propagation start
+I20240713 10:24:20.082010  8385 StaDataPropagation.cc:529] Thread 128725553059392 date fwd propagate found start vertex._271_:CK
+I20240713 10:24:20.082010  8384 StaDataPropagation.cc:529] Thread 128725544666688 date fwd propagate found start vertex._283_:CK
+I20240713 10:24:20.082134  8387 StaDataPropagation.cc:529] Thread 128725569844800 date fwd propagate found start vertex._287_:CK
+I20240713 10:24:20.082124  8389 StaDataPropagation.cc:529] Thread 128725913945664 date fwd propagate found start vertex._282_:CK
+I20240713 10:24:20.082372  8387 StaDataPropagation.cc:529] Thread 128725569844800 date fwd propagate found start vertex._286_:CK
+I20240713 10:24:20.082401  8385 StaDataPropagation.cc:529] Thread 128725553059392 date fwd propagate found start vertex.u_ps2_keyboard/_1023_:CK
+I20240713 10:24:20.082563  8384 StaDataPropagation.cc:529] Thread 128725544666688 date fwd propagate found start vertex._281_:CK
+I20240713 10:24:20.082590  8385 StaDataPropagation.cc:529] Thread 128725553059392 date fwd propagate found start vertex.u_ps2_keyboard/_1007_:CK
+I20240713 10:24:20.082612  8387 StaDataPropagation.cc:529] Thread 128725569844800 date fwd propagate found start vertex._285_:CK
+I20240713 10:24:20.082746  8385 StaDataPropagation.cc:529] Thread 128725553059392 date fwd propagate found start vertex.u_ps2_keyboard/_0983_:CK
+I20240713 10:24:20.113583  8158 StaDataPropagation.cc:632] data fwd propagation end
+I20240713 10:24:20.113701  8158 StaDataPropagation.cc:589] data fwd propagation start
+I20240713 10:24:20.134159  8158 StaDataPropagation.cc:632] data fwd propagation end
+I20240713 10:24:20.134280  8158 StaAnalyze.cc:539] analyze timing path start
+E20240713 10:24:20.134320  8158 StaAnalyze.cc:324] The output port ascii_seg[0] is not constrained
+E20240713 10:24:20.134341  8158 StaAnalyze.cc:324] The output port ascii_seg[0] is not constrained
+E20240713 10:24:20.134354  8158 StaAnalyze.cc:324] The output port ascii_seg[1] is not constrained
+E20240713 10:24:20.134366  8158 StaAnalyze.cc:324] The output port ascii_seg[1] is not constrained
+E20240713 10:24:20.134378  8158 StaAnalyze.cc:324] The output port ascii_seg[2] is not constrained
+E20240713 10:24:20.134390  8158 StaAnalyze.cc:324] The output port ascii_seg[2] is not constrained
+E20240713 10:24:20.134403  8158 StaAnalyze.cc:324] The output port ascii_seg[3] is not constrained
+E20240713 10:24:20.134414  8158 StaAnalyze.cc:324] The output port ascii_seg[3] is not constrained
+E20240713 10:24:20.134426  8158 StaAnalyze.cc:324] The output port ascii_seg[4] is not constrained
+E20240713 10:24:20.134438  8158 StaAnalyze.cc:324] The output port ascii_seg[4] is not constrained
+I20240713 10:24:20.144328  8158 StaAnalyze.cc:577] analyze timing path end
+I20240713 10:24:20.144443  8158 StaApplySdc.cc:694] apply sdc start
+I20240713 10:24:20.144482  8158 StaApplySdc.cc:725] apply sdc end
+I20240713 10:24:20.144497  8158 StaDataPropagation.cc:635] data bwd propagation start
+I20240713 10:24:20.150729  8485 StaDataPropagation.cc:171] Thread 128725553059392 data bwd propagate found end vertex._276_:D
+I20240713 10:24:20.150743  8484 StaDataPropagation.cc:171] Thread 128725544666688 data bwd propagate found end vertex._269_:D
+I20240713 10:24:20.150934  8490 StaDataPropagation.cc:171] Thread 128725905552960 data bwd propagate found end vertex._274_:D
+I20240713 10:24:20.151055  8484 StaDataPropagation.cc:171] Thread 128725544666688 data bwd propagate found end vertex._271_:D
+I20240713 10:24:20.150856  8486 StaDataPropagation.cc:171] Thread 128725561452096 data bwd propagate found end vertex._272_:D
+I20240713 10:24:20.151108  8491 StaDataPropagation.cc:171] Thread 128725897160256 data bwd propagate found end vertex._278_:D
+I20240713 10:24:20.150954  8485 StaDataPropagation.cc:171] Thread 128725553059392 data bwd propagate found end vertex._277_:D
+I20240713 10:24:20.150887  8488 StaDataPropagation.cc:171] Thread 128725922338368 data bwd propagate found end vertex._273_:D
+I20240713 10:24:20.151129  8490 StaDataPropagation.cc:171] Thread 128725905552960 data bwd propagate found end vertex._275_:D
+I20240713 10:24:20.150846  8489 StaDataPropagation.cc:171] Thread 128725913945664 data bwd propagate found end vertex._270_:D
+I20240713 10:24:20.226400  8158 StaDataPropagation.cc:670] data bwd propagation end
+I20240713 10:24:20.226505  8158 Sta.cc:2316] update timing end
+[1;31m
+  _____       _ _     _____        _         
+ |_   _|     (_) |   |  __ \      | |        
+   | |  _ __  _| |_  | |  | | __ _| |_ __ _  
+   | | | '_ \| | __| | |  | |/ _` | __/ _` | 
+  _| |_| | | | | |_  | |__| | (_| | || (_| | 
+ |_____|_| |_|_|\__| |_____/ \__,_|\__\__,_| 
+                                             
+[0m
+[1;35m
+  ______ _        ______                      _    
+ |  ____(_)      |  ____|                    | |   
+ | |__   ___  __ | |__ __ _ _ __   ___  _   _| |_  
+ |  __| | \ \/ / |  __/ _` | '_ \ / _ \| | | | __| 
+ | |    | |>  <  | | | (_| | | | | (_) | |_| | |_  
+ |_|    |_/_/\_\ |_|  \__,_|_| |_|\___/ \__,_|\__| 
+                                                   
+[0m
+I20240713 10:24:20.228767  8158 FixFanout.cpp:55] [Result: ] Find 0 Net with fanout violation.
+I20240713 10:24:20.228859  8158 FixFanout.cpp:56] [Result: ] Insert 0 Buffers.
+iNO fixfanout run successfully.
+I20240713 10:24:20.229157  8158 verilog_write.cpp:55] start write verilog file /home/xinchen/yosys-sta/result/top-100MHz/top.netlist.fixed.v
+I20240713 10:24:20.247102  8158 verilog_write.cpp:73] finish write verilog file /home/xinchen/yosys-sta/result/top-100MHz/top.netlist.fixed.v

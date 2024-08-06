@@ -1,0 +1,52 @@
+
+18. Executing CHECK pass (checking for obvious problems).
+checking module ps2_keyboard..
+Warning: Wire ps2_keyboard.\scan_code [7] is used but has no driver.
+Warning: Wire ps2_keyboard.\scan_code [6] is used but has no driver.
+Warning: Wire ps2_keyboard.\scan_code [5] is used but has no driver.
+Warning: Wire ps2_keyboard.\scan_code [4] is used but has no driver.
+Warning: Wire ps2_keyboard.\scan_code [3] is used but has no driver.
+Warning: Wire ps2_keyboard.\scan_code [2] is used but has no driver.
+Warning: Wire ps2_keyboard.\scan_code [1] is used but has no driver.
+Warning: Wire ps2_keyboard.\scan_code [0] is used but has no driver.
+Warning: Wire ps2_keyboard.\ready is used but has no driver.
+Warning: Wire ps2_keyboard.\overflow is used but has no driver.
+checking module rom..
+Warning: Wire rom.\ascii_code [7] is used but has no driver.
+Warning: Wire rom.\ascii_code [6] is used but has no driver.
+Warning: Wire rom.\ascii_code [5] is used but has no driver.
+Warning: Wire rom.\ascii_code [4] is used but has no driver.
+Warning: Wire rom.\ascii_code [3] is used but has no driver.
+Warning: Wire rom.\ascii_code [2] is used but has no driver.
+Warning: Wire rom.\ascii_code [1] is used but has no driver.
+Warning: Wire rom.\ascii_code [0] is used but has no driver.
+checking module segment_hex..
+Warning: Wire segment_hex.\seg_display [7] is used but has no driver.
+Warning: Wire segment_hex.\seg_display [6] is used but has no driver.
+Warning: Wire segment_hex.\seg_display [5] is used but has no driver.
+Warning: Wire segment_hex.\seg_display [4] is used but has no driver.
+Warning: Wire segment_hex.\seg_display [3] is used but has no driver.
+Warning: Wire segment_hex.\seg_display [2] is used but has no driver.
+Warning: Wire segment_hex.\seg_display [1] is used but has no driver.
+Warning: Wire segment_hex.\seg_display [0] is used but has no driver.
+checking module top..
+Warning: Wire top.\scan_code_buf[7] is used but has no driver.
+Warning: Wire top.\scan_code_buf[6] is used but has no driver.
+Warning: Wire top.\scan_code_buf[5] is used but has no driver.
+Warning: Wire top.\scan_code_buf[4] is used but has no driver.
+Warning: Wire top.\scan_code_buf[3] is used but has no driver.
+Warning: Wire top.\scan_code_buf[2] is used but has no driver.
+Warning: Wire top.\scan_code_buf[1] is used but has no driver.
+Warning: Wire top.\scan_code_buf[0] is used but has no driver.
+Warning: Wire top.$auto$hilomap.cc:47:hilomap_worker$3485 is used but has no driver.
+Warning: Wire top.\count[3] is used but has no driver.
+Warning: Wire top.\count[2] is used but has no driver.
+Warning: Wire top.\count[1] is used but has no driver.
+Warning: Wire top.\count[0] is used but has no driver.
+Warning: Wire top.$auto$hilomap.cc:39:hilomap_worker$3483 is used but has no driver.
+Warning: Wire top.\count[7] is used but has no driver.
+Warning: Wire top.\count[6] is used but has no driver.
+Warning: Wire top.\count[5] is used but has no driver.
+Warning: Wire top.\count[4] is used but has no driver.
+Warning: Wire top.\display_en is used but has no driver.
+found and reported 45 problems.

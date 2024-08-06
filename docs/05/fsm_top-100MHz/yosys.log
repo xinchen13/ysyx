@@ -1,0 +1,2560 @@
+
+ /----------------------------------------------------------------------------\
+ |                                                                            |
+ |  yosys -- Yosys Open SYnthesis Suite                                       |
+ |                                                                            |
+ |  Copyright (C) 2012 - 2019  Clifford Wolf <clifford@clifford.at>           |
+ |                                                                            |
+ |  Permission to use, copy, modify, and/or distribute this software for any  |
+ |  purpose with or without fee is hereby granted, provided that the above    |
+ |  copyright notice and this permission notice appear in all copies.         |
+ |                                                                            |
+ |  THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES  |
+ |  WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF          |
+ |  MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR   |
+ |  ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES    |
+ |  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN     |
+ |  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF   |
+ |  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.            |
+ |                                                                            |
+ \----------------------------------------------------------------------------/
+
+ Yosys 0.9 (git sha1 1979e0b)
+
+
+-- Executing script file `-' --
+[TCL: yosys -import] Command name collision: found pre-existing command `cd' -> skip.
+[TCL: yosys -import] Command name collision: found pre-existing command `eval' -> skip.
+[TCL: yosys -import] Command name collision: found pre-existing command `read' -> skip.
+[TCL: yosys -import] Command name collision: found pre-existing command `trace' -> skip.
+
+1. Executing Verilog-2005 frontend: ./fsm_yosys_sta/top.v
+Parsing SystemVerilog input from `./fsm_yosys_sta/top.v' to AST representation.
+Generating RTLIL representation for module `\top'.
+Successfully finished Verilog frontend.
+
+2. Executing Verilog-2005 frontend: ./fsm_yosys_sta/rom.v
+Parsing SystemVerilog input from `./fsm_yosys_sta/rom.v' to AST representation.
+Generating RTLIL representation for module `\rom'.
+Successfully finished Verilog frontend.
+
+3. Executing Verilog-2005 frontend: ./fsm_yosys_sta/ps2_keyboard.v
+Parsing SystemVerilog input from `./fsm_yosys_sta/ps2_keyboard.v' to AST representation.
+Generating RTLIL representation for module `\ps2_keyboard'.
+./fsm_yosys_sta/ps2_keyboard.v:50: Warning: System task `$display' outside initial block is unsupported.
+Successfully finished Verilog frontend.
+
+4. Executing Verilog-2005 frontend: ./fsm_yosys_sta/segment_hex.v
+Parsing SystemVerilog input from `./fsm_yosys_sta/segment_hex.v' to AST representation.
+Generating RTLIL representation for module `\segment_hex'.
+Successfully finished Verilog frontend.
+
+5. Executing Verilog-2005 frontend: /home/xinchen/yosys-sta/scripts/../nangate45/verilog/blackbox.v
+Parsing Verilog input from `/home/xinchen/yosys-sta/scripts/../nangate45/verilog/blackbox.v' to AST representation.
+Successfully finished Verilog frontend.
+
+6. Executing Verilog-2005 frontend: /home/xinchen/yosys-sta/scripts/../nangate45/verilog/cells_clkgate.v
+Parsing Verilog input from `/home/xinchen/yosys-sta/scripts/../nangate45/verilog/cells_clkgate.v' to AST representation.
+Generating RTLIL representation for module `\OPENROAD_CLKGATE'.
+Successfully finished Verilog frontend.
+
+7. Executing SYNTH pass.
+
+7.1. Executing HIERARCHY pass (managing design hierarchy).
+
+7.1.1. Analyzing design hierarchy..
+Top module:  \top
+Used module:     \segment_hex
+Used module:     \rom
+Used module:     \ps2_keyboard
+
+7.1.2. Analyzing design hierarchy..
+Top module:  \top
+Used module:     \segment_hex
+Used module:     \rom
+Used module:     \ps2_keyboard
+Removing unused module `\OPENROAD_CLKGATE'.
+Removed 1 unused modules.
+
+7.2. Executing PROC pass (convert processes to netlists).
+
+7.2.1. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Cleaned up 0 empty switches.
+
+7.2.2. Executing PROC_RMDEAD pass (remove dead branches from decision trees).
+Removed 2 dead cases from process $proc$./fsm_yosys_sta/segment_hex.v:24$42 in module segment_hex.
+Marked 2 switch rules as full_case in process $proc$./fsm_yosys_sta/segment_hex.v:24$42 in module segment_hex.
+Marked 2 switch rules as full_case in process $proc$./fsm_yosys_sta/ps2_keyboard.v:27$22 in module ps2_keyboard.
+Marked 1 switch rules as full_case in process $proc$./fsm_yosys_sta/rom.v:5$16 in module rom.
+Marked 1 switch rules as full_case in process $proc$./fsm_yosys_sta/top.v:62$13 in module top.
+Marked 1 switch rules as full_case in process $proc$./fsm_yosys_sta/top.v:39$4 in module top.
+Marked 4 switch rules as full_case in process $proc$./fsm_yosys_sta/top.v:19$1 in module top.
+Removed a total of 2 dead cases.
+
+7.2.3. Executing PROC_INIT pass (extract init attributes).
+
+7.2.4. Executing PROC_ARST pass (detect async resets in processes).
+
+7.2.5. Executing PROC_MUX pass (convert decision trees to multiplexers).
+Creating decoders for process `\segment_hex.$proc$./fsm_yosys_sta/segment_hex.v:24$42'.
+     1/3: $2\seg_display[7:0]
+     2/3: $1\seg_display[7:0]
+     3/3: $0\seg_display[7:0]
+Creating decoders for process `\ps2_keyboard.$proc$./fsm_yosys_sta/ps2_keyboard.v:27$22'.
+     1/18: $0\buffer[9:0] [9]
+     2/18: $0\buffer[9:0] [8]
+     3/18: $0\buffer[9:0] [7]
+     4/18: $0\buffer[9:0] [6]
+     5/18: $0\buffer[9:0] [5]
+     6/18: $0\buffer[9:0] [4]
+     7/18: $0\buffer[9:0] [3]
+     8/18: $0\buffer[9:0] [2]
+     9/18: $0\buffer[9:0] [1]
+    10/18: $0\buffer[9:0] [0]
+    11/18: $0$memwr$\fifo$./fsm_yosys_sta/ps2_keyboard.v:51$17_DATA[7:0]$25
+    12/18: $0$memwr$\fifo$./fsm_yosys_sta/ps2_keyboard.v:51$17_ADDR[2:0]$24
+    13/18: $0$memwr$\fifo$./fsm_yosys_sta/ps2_keyboard.v:51$17_EN[7:0]$23
+    14/18: $0\w_ptr[2:0]
+    15/18: $0\r_ptr[2:0]
+    16/18: $0\count[3:0]
+    17/18: $0\ready[0:0]
+    18/18: $0\overflow[0:0]
+Creating decoders for process `\ps2_keyboard.$proc$./fsm_yosys_sta/ps2_keyboard.v:19$18'.
+     1/1: $0\ps2_clk_sync[2:0]
+Creating decoders for process `\rom.$proc$./fsm_yosys_sta/rom.v:5$16'.
+     1/2: $1\ascii_code[7:0]
+     2/2: $0\ascii_code[7:0]
+Creating decoders for process `\top.$proc$./fsm_yosys_sta/top.v:62$13'.
+     1/1: $0\count[7:0]
+Creating decoders for process `\top.$proc$./fsm_yosys_sta/top.v:39$4'.
+     1/2: $0\scan_code_buf[7:0]
+     2/2: $0\state[1:0]
+Creating decoders for process `\top.$proc$./fsm_yosys_sta/top.v:19$1'.
+     1/5: $4\next_state[1:0]
+     2/5: $3\next_state[1:0]
+     3/5: $2\next_state[1:0]
+     4/5: $1\next_state[1:0]
+     5/5: $0\next_state[1:0]
+
+7.2.6. Executing PROC_DLATCH pass (convert process syncs to latches).
+No latch inferred for signal `\segment_hex.\seg_display' from process `\segment_hex.$proc$./fsm_yosys_sta/segment_hex.v:24$42'.
+No latch inferred for signal `\rom.\ascii_code' from process `\rom.$proc$./fsm_yosys_sta/rom.v:5$16'.
+No latch inferred for signal `\top.\next_state' from process `\top.$proc$./fsm_yosys_sta/top.v:19$1'.
+
+7.2.7. Executing PROC_DFF pass (convert process syncs to FFs).
+Creating register for signal `\ps2_keyboard.\overflow' using process `\ps2_keyboard.$proc$./fsm_yosys_sta/ps2_keyboard.v:27$22'.
+  created $dff cell `$procdff$343' with positive edge clock.
+Creating register for signal `\ps2_keyboard.\ready' using process `\ps2_keyboard.$proc$./fsm_yosys_sta/ps2_keyboard.v:27$22'.
+  created $dff cell `$procdff$344' with positive edge clock.
+Creating register for signal `\ps2_keyboard.\count' using process `\ps2_keyboard.$proc$./fsm_yosys_sta/ps2_keyboard.v:27$22'.
+  created $dff cell `$procdff$345' with positive edge clock.
+Creating register for signal `\ps2_keyboard.\r_ptr' using process `\ps2_keyboard.$proc$./fsm_yosys_sta/ps2_keyboard.v:27$22'.
+  created $dff cell `$procdff$346' with positive edge clock.
+Creating register for signal `\ps2_keyboard.\w_ptr' using process `\ps2_keyboard.$proc$./fsm_yosys_sta/ps2_keyboard.v:27$22'.
+  created $dff cell `$procdff$347' with positive edge clock.
+Creating register for signal `\ps2_keyboard.$memwr$\fifo$./fsm_yosys_sta/ps2_keyboard.v:51$17_EN' using process `\ps2_keyboard.$proc$./fsm_yosys_sta/ps2_keyboard.v:27$22'.
+  created $dff cell `$procdff$348' with positive edge clock.
+Creating register for signal `\ps2_keyboard.\buffer' using process `\ps2_keyboard.$proc$./fsm_yosys_sta/ps2_keyboard.v:27$22'.
+  created $dff cell `$procdff$349' with positive edge clock.
+Creating register for signal `\ps2_keyboard.$memwr$\fifo$./fsm_yosys_sta/ps2_keyboard.v:51$17_ADDR' using process `\ps2_keyboard.$proc$./fsm_yosys_sta/ps2_keyboard.v:27$22'.
+  created $dff cell `$procdff$350' with positive edge clock.
+Creating register for signal `\ps2_keyboard.$memwr$\fifo$./fsm_yosys_sta/ps2_keyboard.v:51$17_DATA' using process `\ps2_keyboard.$proc$./fsm_yosys_sta/ps2_keyboard.v:27$22'.
+  created $dff cell `$procdff$351' with positive edge clock.
+Creating register for signal `\ps2_keyboard.\ps2_clk_sync' using process `\ps2_keyboard.$proc$./fsm_yosys_sta/ps2_keyboard.v:19$18'.
+  created $dff cell `$procdff$352' with positive edge clock.
+Creating register for signal `\top.\count' using process `\top.$proc$./fsm_yosys_sta/top.v:62$13'.
+  created $dff cell `$procdff$353' with positive edge clock.
+Creating register for signal `\top.\state' using process `\top.$proc$./fsm_yosys_sta/top.v:39$4'.
+  created $dff cell `$procdff$354' with positive edge clock.
+Creating register for signal `\top.\scan_code_buf' using process `\top.$proc$./fsm_yosys_sta/top.v:39$4'.
+  created $dff cell `$procdff$355' with positive edge clock.
+
+7.2.8. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Found and cleaned up 2 empty switches in `\segment_hex.$proc$./fsm_yosys_sta/segment_hex.v:24$42'.
+Removing empty process `segment_hex.$proc$./fsm_yosys_sta/segment_hex.v:24$42'.
+Found and cleaned up 8 empty switches in `\ps2_keyboard.$proc$./fsm_yosys_sta/ps2_keyboard.v:27$22'.
+Removing empty process `ps2_keyboard.$proc$./fsm_yosys_sta/ps2_keyboard.v:27$22'.
+Removing empty process `ps2_keyboard.$proc$./fsm_yosys_sta/ps2_keyboard.v:19$18'.
+Found and cleaned up 1 empty switch in `\rom.$proc$./fsm_yosys_sta/rom.v:5$16'.
+Removing empty process `rom.$proc$./fsm_yosys_sta/rom.v:5$16'.
+Found and cleaned up 2 empty switches in `\top.$proc$./fsm_yosys_sta/top.v:62$13'.
+Removing empty process `top.$proc$./fsm_yosys_sta/top.v:62$13'.
+Found and cleaned up 1 empty switch in `\top.$proc$./fsm_yosys_sta/top.v:39$4'.
+Removing empty process `top.$proc$./fsm_yosys_sta/top.v:39$4'.
+Found and cleaned up 4 empty switches in `\top.$proc$./fsm_yosys_sta/top.v:19$1'.
+Removing empty process `top.$proc$./fsm_yosys_sta/top.v:19$1'.
+Cleaned up 18 empty switches.
+
+7.3. Executing OPT_EXPR pass (perform const folding).
+Optimizing module segment_hex.
+<suppressed ~1 debug messages>
+Optimizing module ps2_keyboard.
+<suppressed ~24 debug messages>
+Optimizing module rom.
+Optimizing module top.
+<suppressed ~5 debug messages>
+
+7.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \segment_hex..
+Finding unused cells or wires in module \ps2_keyboard..
+Finding unused cells or wires in module \rom..
+Finding unused cells or wires in module \top..
+Removed 4 unused cells and 115 unused wires.
+<suppressed ~8 debug messages>
+
+7.5. Executing CHECK pass (checking for obvious problems).
+checking module ps2_keyboard..
+checking module rom..
+checking module segment_hex..
+checking module top..
+found and reported 0 problems.
+
+7.6. Executing OPT pass (performing simple optimizations).
+
+7.6.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module ps2_keyboard.
+Optimizing module rom.
+Optimizing module segment_hex.
+Optimizing module top.
+
+7.6.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\ps2_keyboard'.
+<suppressed ~3 debug messages>
+Finding identical cells in module `\rom'.
+Finding identical cells in module `\segment_hex'.
+Finding identical cells in module `\top'.
+<suppressed ~15 debug messages>
+Removed a total of 6 cells.
+
+7.6.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \ps2_keyboard..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+      Replacing known input bits on port A of cell $procmux$270: \ready -> 1'0
+      Replacing known input bits on port B of cell $procmux$268: \ready -> 1'1
+      Replacing known input bits on port A of cell $procmux$266: \ready -> 1'1
+  Analyzing evaluation results.
+Running muxtree optimizer on module \rom..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \segment_hex..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+    dead port 2/2 on $mux $procmux$61.
+Running muxtree optimizer on module \top..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+    dead port 2/2 on $mux $procmux$321.
+    dead port 2/2 on $mux $procmux$328.
+    dead port 2/2 on $mux $procmux$336.
+Removed 4 multiplexer ports.
+<suppressed ~26 debug messages>
+
+7.6.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \ps2_keyboard.
+    Consolidated identical input bits for $mux cell $procmux$232:
+      Old ports: A=8'00000000, B=8'11111111, Y=$procmux$232_Y
+      New ports: A=1'0, B=1'1, Y=$procmux$232_Y [0]
+      New connections: $procmux$232_Y [7:1] = { $procmux$232_Y [0] $procmux$232_Y [0] $procmux$232_Y [0] $procmux$232_Y [0] $procmux$232_Y [0] $procmux$232_Y [0] $procmux$232_Y [0] }
+  Optimizing cells in module \ps2_keyboard.
+    Consolidated identical input bits for $mux cell $procmux$234:
+      Old ports: A=8'00000000, B=$procmux$232_Y, Y=$procmux$234_Y
+      New ports: A=1'0, B=$procmux$232_Y [0], Y=$procmux$234_Y [0]
+      New connections: $procmux$234_Y [7:1] = { $procmux$234_Y [0] $procmux$234_Y [0] $procmux$234_Y [0] $procmux$234_Y [0] $procmux$234_Y [0] $procmux$234_Y [0] $procmux$234_Y [0] }
+  Optimizing cells in module \ps2_keyboard.
+    Consolidated identical input bits for $mux cell $procmux$236:
+      Old ports: A=8'00000000, B=$procmux$234_Y, Y=$procmux$236_Y
+      New ports: A=1'0, B=$procmux$234_Y [0], Y=$procmux$236_Y [0]
+      New connections: $procmux$236_Y [7:1] = { $procmux$236_Y [0] $procmux$236_Y [0] $procmux$236_Y [0] $procmux$236_Y [0] $procmux$236_Y [0] $procmux$236_Y [0] $procmux$236_Y [0] }
+  Optimizing cells in module \ps2_keyboard.
+    Consolidated identical input bits for $mux cell $procmux$239:
+      Old ports: A=8'00000000, B=$procmux$236_Y, Y=$0$memwr$\fifo$./fsm_yosys_sta/ps2_keyboard.v:51$17_EN[7:0]$23
+      New ports: A=1'0, B=$procmux$236_Y [0], Y=$0$memwr$\fifo$./fsm_yosys_sta/ps2_keyboard.v:51$17_EN[7:0]$23 [0]
+      New connections: $0$memwr$\fifo$./fsm_yosys_sta/ps2_keyboard.v:51$17_EN[7:0]$23 [7:1] = { $0$memwr$\fifo$./fsm_yosys_sta/ps2_keyboard.v:51$17_EN[7:0]$23 [0] $0$memwr$\fifo$./fsm_yosys_sta/ps2_keyboard.v:51$17_EN[7:0]$23 [0] $0$memwr$\fifo$./fsm_yosys_sta/ps2_keyboard.v:51$17_EN[7:0]$23 [0] $0$memwr$\fifo$./fsm_yosys_sta/ps2_keyboard.v:51$17_EN[7:0]$23 [0] $0$memwr$\fifo$./fsm_yosys_sta/ps2_keyboard.v:51$17_EN[7:0]$23 [0] $0$memwr$\fifo$./fsm_yosys_sta/ps2_keyboard.v:51$17_EN[7:0]$23 [0] $0$memwr$\fifo$./fsm_yosys_sta/ps2_keyboard.v:51$17_EN[7:0]$23 [0] }
+  Optimizing cells in module \ps2_keyboard.
+  Optimizing cells in module \rom.
+  Optimizing cells in module \segment_hex.
+  Optimizing cells in module \top.
+Performed a total of 4 changes.
+
+7.6.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\ps2_keyboard'.
+Finding identical cells in module `\rom'.
+Finding identical cells in module `\segment_hex'.
+Finding identical cells in module `\top'.
+Removed a total of 0 cells.
+
+7.6.6. Executing OPT_RMDFF pass (remove dff with constant values).
+
+7.6.7. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \ps2_keyboard..
+Finding unused cells or wires in module \rom..
+Finding unused cells or wires in module \segment_hex..
+Finding unused cells or wires in module \top..
+Removed 0 unused cells and 10 unused wires.
+<suppressed ~3 debug messages>
+
+7.6.8. Executing OPT_EXPR pass (perform const folding).
+Optimizing module ps2_keyboard.
+Optimizing module rom.
+Optimizing module segment_hex.
+Optimizing module top.
+
+7.6.9. Rerunning OPT passes. (Maybe there is more to do..)
+
+7.6.10. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \ps2_keyboard..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \rom..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \segment_hex..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \top..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~26 debug messages>
+
+7.6.11. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \ps2_keyboard.
+  Optimizing cells in module \rom.
+  Optimizing cells in module \segment_hex.
+  Optimizing cells in module \top.
+Performed a total of 0 changes.
+
+7.6.12. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\ps2_keyboard'.
+Finding identical cells in module `\rom'.
+Finding identical cells in module `\segment_hex'.
+Finding identical cells in module `\top'.
+Removed a total of 0 cells.
+
+7.6.13. Executing OPT_RMDFF pass (remove dff with constant values).
+
+7.6.14. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \ps2_keyboard..
+Finding unused cells or wires in module \rom..
+Finding unused cells or wires in module \segment_hex..
+Finding unused cells or wires in module \top..
+
+7.6.15. Executing OPT_EXPR pass (perform const folding).
+Optimizing module ps2_keyboard.
+Optimizing module rom.
+Optimizing module segment_hex.
+Optimizing module top.
+
+7.6.16. Finished OPT passes. (There is nothing left to do.)
+
+7.7. Executing WREDUCE pass (reducing word size of cells).
+Removed top 2 bits (of 3) from port B of cell ps2_keyboard.$add$./fsm_yosys_sta/ps2_keyboard.v:38$28 ($add).
+Removed top 2 bits (of 3) from port B of cell ps2_keyboard.$add$./fsm_yosys_sta/ps2_keyboard.v:52$36 ($add).
+Removed top 2 bits (of 3) from port B of cell ps2_keyboard.$add$./fsm_yosys_sta/ps2_keyboard.v:60$40 ($add).
+Removed top 1 bits (of 4) from port B of cell ps2_keyboard.$procmux$90_CMP0 ($eq).
+Removed top 1 bits (of 4) from port B of cell ps2_keyboard.$procmux$103_CMP0 ($eq).
+Removed top 1 bits (of 4) from port B of cell ps2_keyboard.$procmux$117_CMP0 ($eq).
+Removed top 1 bits (of 4) from port B of cell ps2_keyboard.$procmux$132_CMP0 ($eq).
+Removed top 2 bits (of 4) from port B of cell ps2_keyboard.$procmux$148_CMP0 ($eq).
+Removed top 2 bits (of 4) from port B of cell ps2_keyboard.$procmux$165_CMP0 ($eq).
+Removed top 3 bits (of 4) from port B of cell ps2_keyboard.$procmux$183_CMP0 ($eq).
+Removed cell ps2_keyboard.$procmux$216 ($mux).
+Removed cell ps2_keyboard.$procmux$212 ($mux).
+Removed cell ps2_keyboard.$procmux$214 ($mux).
+Removed cell ps2_keyboard.$procmux$219 ($mux).
+Removed cell ps2_keyboard.$procmux$226 ($mux).
+Removed cell ps2_keyboard.$procmux$222 ($mux).
+Removed cell ps2_keyboard.$procmux$224 ($mux).
+Removed cell ps2_keyboard.$procmux$229 ($mux).
+Removed top 7 bits (of 8) from FF cell ps2_keyboard.$procdff$348 ($dff).
+Removed top 1 bits (of 8) from port B of cell rom.$procmux$294_CMP0 ($eq).
+Removed top 1 bits (of 8) from mux cell rom.$procmux$293 ($pmux).
+Removed top 2 bits (of 8) from port B of cell rom.$procmux$295_CMP0 ($eq).
+Removed top 2 bits (of 8) from port B of cell rom.$procmux$296_CMP0 ($eq).
+Removed top 2 bits (of 8) from port B of cell rom.$procmux$297_CMP0 ($eq).
+Removed top 2 bits (of 8) from port B of cell rom.$procmux$298_CMP0 ($eq).
+Removed top 2 bits (of 8) from port B of cell rom.$procmux$299_CMP0 ($eq).
+Removed top 2 bits (of 8) from port B of cell rom.$procmux$300_CMP0 ($eq).
+Removed top 3 bits (of 8) from port B of cell rom.$procmux$301_CMP0 ($eq).
+Removed top 3 bits (of 8) from port B of cell rom.$procmux$302_CMP0 ($eq).
+Removed top 1 bits (of 8) from port B of cell rom.$procmux$303_CMP0 ($eq).
+Removed top 3 bits (of 8) from port B of cell rom.$procmux$304_CMP0 ($eq).
+Removed top 3 bits (of 8) from port B of cell rom.$procmux$305_CMP0 ($eq).
+Removed top 1 bits (of 4) from port B of cell segment_hex.$procmux$53_CMP0 ($eq).
+Removed top 1 bits (of 4) from port B of cell segment_hex.$procmux$54_CMP0 ($eq).
+Removed top 1 bits (of 4) from port B of cell segment_hex.$procmux$55_CMP0 ($eq).
+Removed top 1 bits (of 4) from port B of cell segment_hex.$procmux$56_CMP0 ($eq).
+Removed top 2 bits (of 4) from port B of cell segment_hex.$procmux$57_CMP0 ($eq).
+Removed top 2 bits (of 4) from port B of cell segment_hex.$procmux$58_CMP0 ($eq).
+Removed top 3 bits (of 4) from port B of cell segment_hex.$procmux$59_CMP0 ($eq).
+Removed top 1 bits (of 2) from port B of cell top.$eq$./fsm_yosys_sta/top.v:52$7 ($eq).
+Removed top 1 bits (of 2) from mux cell top.$procmux$334 ($mux).
+Removed top 1 bits (of 2) from wire top.$2\next_state[1:0].
+
+7.8. Executing PEEPOPT pass (run peephole optimizers).
+
+7.9. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \ps2_keyboard..
+Finding unused cells or wires in module \rom..
+Finding unused cells or wires in module \segment_hex..
+Finding unused cells or wires in module \top..
+Removed 0 unused cells and 9 unused wires.
+<suppressed ~2 debug messages>
+
+7.10. Executing TECHMAP pass (map to technology primitives).
+
+7.10.1. Executing Verilog-2005 frontend: /usr/bin/../share/yosys/cmp2lut.v
+Parsing Verilog input from `/usr/bin/../share/yosys/cmp2lut.v' to AST representation.
+Generating RTLIL representation for module `\_90_lut_cmp_'.
+Successfully finished Verilog frontend.
+
+7.10.2. Continuing TECHMAP pass.
+No more expansions possible.
+<suppressed ~528 debug messages>
+
+7.11. Executing ALUMACC pass (create $alu and $macc cells).
+Extracting $alu and $macc cells in module ps2_keyboard:
+  creating $macc model for $add$./fsm_yosys_sta/ps2_keyboard.v:38$28 ($add).
+  creating $macc model for $add$./fsm_yosys_sta/ps2_keyboard.v:39$29 ($add).
+  creating $macc model for $add$./fsm_yosys_sta/ps2_keyboard.v:52$36 ($add).
+  creating $macc model for $add$./fsm_yosys_sta/ps2_keyboard.v:60$40 ($add).
+  creating $alu model for $macc $add$./fsm_yosys_sta/ps2_keyboard.v:60$40.
+  creating $alu model for $macc $add$./fsm_yosys_sta/ps2_keyboard.v:52$36.
+  creating $alu model for $macc $add$./fsm_yosys_sta/ps2_keyboard.v:39$29.
+  creating $alu model for $macc $add$./fsm_yosys_sta/ps2_keyboard.v:38$28.
+  creating $alu cell for $add$./fsm_yosys_sta/ps2_keyboard.v:38$28: $auto$alumacc.cc:474:replace_alu$357
+  creating $alu cell for $add$./fsm_yosys_sta/ps2_keyboard.v:39$29: $auto$alumacc.cc:474:replace_alu$360
+  creating $alu cell for $add$./fsm_yosys_sta/ps2_keyboard.v:52$36: $auto$alumacc.cc:474:replace_alu$363
+  creating $alu cell for $add$./fsm_yosys_sta/ps2_keyboard.v:60$40: $auto$alumacc.cc:474:replace_alu$366
+  created 4 $alu and 0 $macc cells.
+Extracting $alu and $macc cells in module rom:
+  created 0 $alu and 0 $macc cells.
+Extracting $alu and $macc cells in module segment_hex:
+  created 0 $alu and 0 $macc cells.
+Extracting $alu and $macc cells in module top:
+  creating $macc model for $add$./fsm_yosys_sta/top.v:64$15 ($add).
+  creating $alu model for $macc $add$./fsm_yosys_sta/top.v:64$15.
+  creating $alu cell for $add$./fsm_yosys_sta/top.v:64$15: $auto$alumacc.cc:474:replace_alu$369
+  created 1 $alu and 0 $macc cells.
+
+7.12. Executing SHARE pass (SAT-based resource sharing).
+
+7.13. Executing OPT pass (performing simple optimizations).
+
+7.13.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module ps2_keyboard.
+Optimizing module rom.
+Optimizing module segment_hex.
+Optimizing module top.
+
+7.13.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\ps2_keyboard'.
+<suppressed ~5 debug messages>
+Finding identical cells in module `\rom'.
+Finding identical cells in module `\segment_hex'.
+Finding identical cells in module `\top'.
+Removed a total of 1 cells.
+
+7.13.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \ps2_keyboard..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \rom..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \segment_hex..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \top..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~24 debug messages>
+
+7.13.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \ps2_keyboard.
+  Optimizing cells in module \rom.
+  Optimizing cells in module \segment_hex.
+  Optimizing cells in module \top.
+Performed a total of 0 changes.
+
+7.13.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\ps2_keyboard'.
+Finding identical cells in module `\rom'.
+Finding identical cells in module `\segment_hex'.
+Finding identical cells in module `\top'.
+Removed a total of 0 cells.
+
+7.13.6. Executing OPT_RMDFF pass (remove dff with constant values).
+
+7.13.7. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \ps2_keyboard..
+Finding unused cells or wires in module \rom..
+Finding unused cells or wires in module \segment_hex..
+Finding unused cells or wires in module \top..
+Removed 0 unused cells and 3 unused wires.
+<suppressed ~1 debug messages>
+
+7.13.8. Executing OPT_EXPR pass (perform const folding).
+Optimizing module ps2_keyboard.
+Optimizing module rom.
+Optimizing module segment_hex.
+Optimizing module top.
+
+7.13.9. Finished OPT passes. (There is nothing left to do.)
+
+7.14. Executing FSM pass (extract and optimize FSM).
+
+7.14.1. Executing FSM_DETECT pass (finding FSMs in design).
+Found FSM state register top.state.
+
+7.14.2. Executing FSM_EXTRACT pass (extracting FSM from design).
+Extracting FSM `\state' from module `\top'.
+  found $dff cell for state register: $procdff$354
+  root of input selection tree: $0\state[1:0]
+  found reset state: 2'00 (guessed from mux tree)
+  found ctrl input: \rst_n
+  found state code: 2'00
+  found ctrl input: $eq$./fsm_yosys_sta/top.v:54$11_Y
+  found ctrl input: $eq$./fsm_yosys_sta/top.v:52$7_Y
+  found ctrl input: $procmux$337_CMP
+  found ctrl input: \ready
+  found state code: 2'10
+  found ctrl input: $logic_and$./fsm_yosys_sta/top.v:26$3_Y
+  found state code: 2'01
+  found ctrl output: $eq$./fsm_yosys_sta/top.v:52$7_Y
+  found ctrl output: $eq$./fsm_yosys_sta/top.v:54$11_Y
+  found ctrl output: $procmux$337_CMP
+  ctrl inputs: { $logic_and$./fsm_yosys_sta/top.v:26$3_Y \ready \rst_n }
+  ctrl outputs: { $procmux$337_CMP $eq$./fsm_yosys_sta/top.v:54$11_Y $0\state[1:0] $eq$./fsm_yosys_sta/top.v:52$7_Y }
+  transition:       2'00 3'--0 ->       2'00 5'10000
+  transition:       2'00 3'-01 ->       2'00 5'10000
+  transition:       2'00 3'-11 ->       2'01 5'10010
+  transition:       2'10 3'--0 ->       2'00 5'01000
+  transition:       2'10 3'-01 ->       2'00 5'01000
+  transition:       2'10 3'-11 ->       2'10 5'01100
+  transition:       2'01 3'--0 ->       2'00 5'00001
+  transition:       2'01 3'0-1 ->       2'01 5'00011
+  transition:       2'01 3'1-1 ->       2'10 5'00101
+
+7.14.3. Executing FSM_OPT pass (simple optimizations of FSMs).
+Optimizing FSM `$fsm$\state$372' from module `\top'.
+
+7.14.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \ps2_keyboard..
+Finding unused cells or wires in module \rom..
+Finding unused cells or wires in module \segment_hex..
+Finding unused cells or wires in module \top..
+Removed 9 unused cells and 9 unused wires.
+<suppressed ~11 debug messages>
+
+7.14.5. Executing FSM_OPT pass (simple optimizations of FSMs).
+Optimizing FSM `$fsm$\state$372' from module `\top'.
+  Removing unused output signal $0\state[1:0] [0].
+  Removing unused output signal $0\state[1:0] [1].
+  Removing unused output signal $procmux$337_CMP.
+
+7.14.6. Executing FSM_RECODE pass (re-assigning FSM state encoding).
+Recoding FSM `$fsm$\state$372' from module `\top' using `auto' encoding:
+  mapping auto encoding to `one-hot` for this FSM.
+  00 -> --1
+  10 -> -1-
+  01 -> 1--
+
+7.14.7. Executing FSM_INFO pass (dumping all available information on FSM cells).
+
+FSM `$fsm$\state$372' from module `\top':
+-------------------------------------
+
+  Information on FSM $fsm$\state$372 (\state):
+
+  Number of input signals:    3
+  Number of output signals:   2
+  Number of state bits:       3
+
+  Input signals:
+    0: \rst_n
+    1: \ready
+    2: $logic_and$./fsm_yosys_sta/top.v:26$3_Y
+
+  Output signals:
+    0: $eq$./fsm_yosys_sta/top.v:52$7_Y
+    1: $eq$./fsm_yosys_sta/top.v:54$11_Y
+
+  State encoding:
+    0:      3'--1  <RESET STATE>
+    1:      3'-1-
+    2:      3'1--
+
+  Transition Table (state_in, ctrl_in, state_out, ctrl_out):
+      0:     0 3'--0   ->     0 2'00
+      1:     0 3'-01   ->     0 2'00
+      2:     0 3'-11   ->     2 2'00
+      3:     1 3'--0   ->     0 2'10
+      4:     1 3'-01   ->     0 2'10
+      5:     1 3'-11   ->     1 2'10
+      6:     2 3'--0   ->     0 2'01
+      7:     2 3'1-1   ->     1 2'01
+      8:     2 3'0-1   ->     2 2'01
+
+-------------------------------------
+
+7.14.8. Executing FSM_MAP pass (mapping FSMs to basic logic).
+Mapping FSM `$fsm$\state$372' from module `\top'.
+
+7.15. Executing OPT pass (performing simple optimizations).
+
+7.15.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module ps2_keyboard.
+Optimizing module rom.
+Optimizing module segment_hex.
+Optimizing module top.
+<suppressed ~1 debug messages>
+
+7.15.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\ps2_keyboard'.
+Finding identical cells in module `\rom'.
+Finding identical cells in module `\segment_hex'.
+Finding identical cells in module `\top'.
+<suppressed ~3 debug messages>
+Removed a total of 1 cells.
+
+7.15.3. Executing OPT_RMDFF pass (remove dff with constant values).
+
+7.15.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \ps2_keyboard..
+Finding unused cells or wires in module \rom..
+Finding unused cells or wires in module \segment_hex..
+Finding unused cells or wires in module \top..
+Removed 0 unused cells and 7 unused wires.
+<suppressed ~1 debug messages>
+
+7.15.5. Finished fast OPT passes.
+
+7.16. Executing MEMORY pass.
+
+7.16.1. Executing MEMORY_DFF pass (merging $dff cells to $memrd and $memwr).
+Checking cell `$memwr$\fifo$./fsm_yosys_sta/ps2_keyboard.v:51$41' in module `\ps2_keyboard': merged $dff to cell.
+Checking cell `$memrd$\fifo$./fsm_yosys_sta/ps2_keyboard.v:25$21' in module `\ps2_keyboard': merged address $dff to cell.
+
+7.16.2. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \ps2_keyboard..
+Finding unused cells or wires in module \rom..
+Finding unused cells or wires in module \segment_hex..
+Finding unused cells or wires in module \top..
+Removed 3 unused cells and 3 unused wires.
+<suppressed ~4 debug messages>
+
+7.16.3. Executing MEMORY_SHARE pass (consolidating $memrd/$memwr cells).
+
+7.16.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \ps2_keyboard..
+Finding unused cells or wires in module \rom..
+Finding unused cells or wires in module \segment_hex..
+Finding unused cells or wires in module \top..
+
+7.16.5. Executing MEMORY_COLLECT pass (generating $mem cells).
+Collecting $memrd, $memwr and $meminit for memory `\fifo' in module `\ps2_keyboard':
+  $memwr$\fifo$./fsm_yosys_sta/ps2_keyboard.v:51$41 ($memwr)
+  $memrd$\fifo$./fsm_yosys_sta/ps2_keyboard.v:25$21 ($memrd)
+
+7.17. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \ps2_keyboard..
+Finding unused cells or wires in module \rom..
+Finding unused cells or wires in module \segment_hex..
+Finding unused cells or wires in module \top..
+
+7.18. Executing OPT pass (performing simple optimizations).
+
+7.18.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module ps2_keyboard.
+<suppressed ~10 debug messages>
+Optimizing module rom.
+<suppressed ~1 debug messages>
+Optimizing module segment_hex.
+<suppressed ~1 debug messages>
+Optimizing module top.
+<suppressed ~2 debug messages>
+
+7.18.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\ps2_keyboard'.
+Finding identical cells in module `\rom'.
+Finding identical cells in module `\segment_hex'.
+Finding identical cells in module `\top'.
+Removed a total of 0 cells.
+
+7.18.3. Executing OPT_RMDFF pass (remove dff with constant values).
+
+7.18.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \ps2_keyboard..
+Finding unused cells or wires in module \rom..
+Finding unused cells or wires in module \segment_hex..
+Finding unused cells or wires in module \top..
+Removed 2 unused cells and 4 unused wires.
+<suppressed ~6 debug messages>
+
+7.18.5. Finished fast OPT passes.
+
+7.19. Executing MEMORY_MAP pass (converting $mem cells to logic and flip-flops).
+Mapping memory cell \fifo in module \ps2_keyboard:
+  created 8 $dff cells and 0 static cells of width 8.
+  read interface: 1 $dff and 7 $mux cells.
+  write interface: 8 write mux blocks.
+
+7.20. Executing OPT pass (performing simple optimizations).
+
+7.20.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module ps2_keyboard.
+<suppressed ~6 debug messages>
+Optimizing module rom.
+Optimizing module segment_hex.
+Optimizing module top.
+
+7.20.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\ps2_keyboard'.
+<suppressed ~3 debug messages>
+Finding identical cells in module `\rom'.
+Finding identical cells in module `\segment_hex'.
+Finding identical cells in module `\top'.
+Removed a total of 1 cells.
+
+7.20.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \ps2_keyboard..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \rom..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \segment_hex..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \top..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~28 debug messages>
+
+7.20.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \ps2_keyboard.
+  Optimizing cells in module \rom.
+  Optimizing cells in module \segment_hex.
+    Consolidated identical input bits for $pmux cell $procmux$44:
+      Old ports: A=8'00000011, B=120'100111110010010100001101100110010100100101000001000111110000000100001001000100011100000101100011100001010110000101110001, Y=$2\seg_display[7:0]
+      New ports: A=7'0000001, B=105'100111100100100000110100110001001000100000000111100000000000100000100011000000110001100001001100000111000, Y=$2\seg_display[7:0] [7:1]
+      New connections: $2\seg_display[7:0] [0] = 1'1
+  Optimizing cells in module \segment_hex.
+    Consolidated identical input bits for $mux cell $procmux$64:
+      Old ports: A=8'11111111, B=$2\seg_display[7:0], Y=\seg_display
+      New ports: A=7'1111111, B=$2\seg_display[7:0] [7:1], Y=\seg_display [7:1]
+      New connections: \seg_display [0] = 1'1
+  Optimizing cells in module \segment_hex.
+  Optimizing cells in module \top.
+    New input vector for $reduce_or cell $auto$fsm_map.cc:144:implement_pattern_cache$407: { $auto$fsm_map.cc:118:implement_pattern_cache$401 $auto$fsm_map.cc:118:implement_pattern_cache$405 }
+    New input vector for $reduce_or cell $auto$fsm_map.cc:105:implement_pattern_cache$386: { \state [0] \state [1] }
+  Optimizing cells in module \top.
+Performed a total of 4 changes.
+
+7.20.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\ps2_keyboard'.
+Finding identical cells in module `\rom'.
+Finding identical cells in module `\segment_hex'.
+Finding identical cells in module `\top'.
+Removed a total of 0 cells.
+
+7.20.6. Executing OPT_RMDFF pass (remove dff with constant values).
+
+7.20.7. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \ps2_keyboard..
+Finding unused cells or wires in module \rom..
+Finding unused cells or wires in module \segment_hex..
+Finding unused cells or wires in module \top..
+Removed 0 unused cells and 20 unused wires.
+<suppressed ~1 debug messages>
+
+7.20.8. Executing OPT_EXPR pass (perform const folding).
+Optimizing module ps2_keyboard.
+Optimizing module rom.
+Optimizing module segment_hex.
+Optimizing module top.
+
+7.20.9. Rerunning OPT passes. (Maybe there is more to do..)
+
+7.20.10. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \ps2_keyboard..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \rom..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \segment_hex..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \top..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~28 debug messages>
+
+7.20.11. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \ps2_keyboard.
+  Optimizing cells in module \rom.
+  Optimizing cells in module \segment_hex.
+  Optimizing cells in module \top.
+Performed a total of 0 changes.
+
+7.20.12. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\ps2_keyboard'.
+Finding identical cells in module `\rom'.
+Finding identical cells in module `\segment_hex'.
+Finding identical cells in module `\top'.
+Removed a total of 0 cells.
+
+7.20.13. Executing OPT_RMDFF pass (remove dff with constant values).
+
+7.20.14. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \ps2_keyboard..
+Finding unused cells or wires in module \rom..
+Finding unused cells or wires in module \segment_hex..
+Finding unused cells or wires in module \top..
+
+7.20.15. Executing OPT_EXPR pass (perform const folding).
+Optimizing module ps2_keyboard.
+Optimizing module rom.
+Optimizing module segment_hex.
+Optimizing module top.
+
+7.20.16. Finished OPT passes. (There is nothing left to do.)
+
+7.21. Executing TECHMAP pass (map to technology primitives).
+
+7.21.1. Executing Verilog-2005 frontend: <techmap.v>
+Parsing Verilog input from `<techmap.v>' to AST representation.
+Generating RTLIL representation for module `\_90_simplemap_bool_ops'.
+Generating RTLIL representation for module `\_90_simplemap_reduce_ops'.
+Generating RTLIL representation for module `\_90_simplemap_logic_ops'.
+Generating RTLIL representation for module `\_90_simplemap_compare_ops'.
+Generating RTLIL representation for module `\_90_simplemap_various'.
+Generating RTLIL representation for module `\_90_simplemap_registers'.
+Generating RTLIL representation for module `\_90_shift_ops_shr_shl_sshl_sshr'.
+Generating RTLIL representation for module `\_90_shift_shiftx'.
+Generating RTLIL representation for module `\_90_fa'.
+Generating RTLIL representation for module `\_90_lcu'.
+Generating RTLIL representation for module `\_90_alu'.
+Generating RTLIL representation for module `\_90_macc'.
+Generating RTLIL representation for module `\_90_alumacc'.
+Generating RTLIL representation for module `\$__div_mod_u'.
+Generating RTLIL representation for module `\$__div_mod'.
+Generating RTLIL representation for module `\_90_div'.
+Generating RTLIL representation for module `\_90_mod'.
+Generating RTLIL representation for module `\_90_pow'.
+Generating RTLIL representation for module `\_90_pmux'.
+Generating RTLIL representation for module `\_90_lut'.
+Successfully finished Verilog frontend.
+
+7.21.2. Continuing TECHMAP pass.
+Using extmapper simplemap for cells of type $and.
+Using extmapper simplemap for cells of type $eq.
+Using extmapper simplemap for cells of type $logic_and.
+Using extmapper simplemap for cells of type $reduce_or.
+Using extmapper simplemap for cells of type $mux.
+Using extmapper simplemap for cells of type $ne.
+Using extmapper simplemap for cells of type $dff.
+Using template $paramod\_90_alu\A_SIGNED=0\B_SIGNED=0\A_WIDTH=1\B_WIDTH=8\Y_WIDTH=8 for cells of type $alu.
+Using extmapper simplemap for cells of type $not.
+Using extmapper simplemap for cells of type $xor.
+Using template $paramod\_90_lcu\WIDTH=8 for cells of type $lcu.
+Using extmapper simplemap for cells of type $pos.
+Using extmapper simplemap for cells of type $or.
+Using template $paramod\_90_pmux\WIDTH=7\S_WIDTH=15 for cells of type $pmux.
+Using extmapper simplemap for cells of type $reduce_xor.
+Using extmapper simplemap for cells of type $logic_not.
+Using template $paramod\_90_alu\A_SIGNED=0\B_SIGNED=0\A_WIDTH=1\B_WIDTH=4\Y_WIDTH=4 for cells of type $alu.
+Using template $paramod\_90_alu\A_SIGNED=0\B_SIGNED=0\A_WIDTH=1\B_WIDTH=3\Y_WIDTH=3 for cells of type $alu.
+Using template $paramod\_90_lcu\WIDTH=4 for cells of type $lcu.
+Using template $paramod\_90_lcu\WIDTH=3 for cells of type $lcu.
+Using template $paramod\_90_pmux\WIDTH=7\S_WIDTH=11 for cells of type $pmux.
+No more expansions possible.
+<suppressed ~689 debug messages>
+
+7.22. Executing OPT pass (performing simple optimizations).
+
+7.22.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module ps2_keyboard.
+<suppressed ~101 debug messages>
+Optimizing module rom.
+<suppressed ~174 debug messages>
+Optimizing module segment_hex.
+<suppressed ~205 debug messages>
+Optimizing module top.
+<suppressed ~52 debug messages>
+
+7.22.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\ps2_keyboard'.
+<suppressed ~96 debug messages>
+Finding identical cells in module `\rom'.
+<suppressed ~282 debug messages>
+Finding identical cells in module `\segment_hex'.
+<suppressed ~168 debug messages>
+Finding identical cells in module `\top'.
+<suppressed ~42 debug messages>
+Removed a total of 196 cells.
+
+7.22.3. Executing OPT_RMDFF pass (remove dff with constant values).
+
+7.22.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \ps2_keyboard..
+Finding unused cells or wires in module \rom..
+Finding unused cells or wires in module \segment_hex..
+Finding unused cells or wires in module \top..
+Removed 33 unused cells and 379 unused wires.
+<suppressed ~37 debug messages>
+
+7.22.5. Finished fast OPT passes.
+
+7.23. Executing ABC pass (technology mapping using ABC).
+
+7.23.1. Extracting gate netlist of module `\ps2_keyboard' to `<abc-temp-dir>/input.blif'..
+Extracted 290 gates and 383 wires to a netlist network with 91 inputs and 94 outputs.
+
+7.23.1.1. Executing ABC.
+Running ABC command: berkeley-abc -s -f <abc-temp-dir>/abc.script 2>&1
+ABC: ABC command line: "source <abc-temp-dir>/abc.script".
+ABC: 
+ABC: + read_blif <abc-temp-dir>/input.blif 
+ABC: + read_library <abc-temp-dir>/stdcells.genlib 
+ABC: Entered genlib library with 17 gates from file "<abc-temp-dir>/stdcells.genlib".
+ABC: + strash 
+ABC: + dretime 
+ABC: + retime 
+ABC: + map 
+ABC: + write_blif <abc-temp-dir>/output.blif 
+
+7.23.1.2. Re-integrating ABC results.
+ABC RESULTS:               AND cells:        3
+ABC RESULTS:            ANDNOT cells:       29
+ABC RESULTS:              AOI3 cells:        1
+ABC RESULTS:               MUX cells:      182
+ABC RESULTS:              NAND cells:        3
+ABC RESULTS:               NOR cells:        1
+ABC RESULTS:               NOT cells:       14
+ABC RESULTS:              OAI3 cells:        1
+ABC RESULTS:                OR cells:       23
+ABC RESULTS:             ORNOT cells:        9
+ABC RESULTS:              XNOR cells:        5
+ABC RESULTS:               XOR cells:       16
+ABC RESULTS:        internal signals:      198
+ABC RESULTS:           input signals:       91
+ABC RESULTS:          output signals:       94
+Removing temp directory.
+
+7.23.2. Extracting gate netlist of module `\rom' to `<abc-temp-dir>/input.blif'..
+Extracted 72 gates and 82 wires to a netlist network with 8 inputs and 7 outputs.
+
+7.23.2.1. Executing ABC.
+Running ABC command: berkeley-abc -s -f <abc-temp-dir>/abc.script 2>&1
+ABC: ABC command line: "source <abc-temp-dir>/abc.script".
+ABC: 
+ABC: + read_blif <abc-temp-dir>/input.blif 
+ABC: + read_library <abc-temp-dir>/stdcells.genlib 
+ABC: Entered genlib library with 17 gates from file "<abc-temp-dir>/stdcells.genlib".
+ABC: + strash 
+ABC: + dretime 
+ABC: + retime 
+ABC: + map 
+ABC: + write_blif <abc-temp-dir>/output.blif 
+
+7.23.2.2. Re-integrating ABC results.
+ABC RESULTS:               AND cells:        2
+ABC RESULTS:            ANDNOT cells:       13
+ABC RESULTS:              AOI3 cells:        3
+ABC RESULTS:              AOI4 cells:        3
+ABC RESULTS:              NAND cells:        1
+ABC RESULTS:               NOR cells:        5
+ABC RESULTS:              OAI3 cells:        5
+ABC RESULTS:              OAI4 cells:        1
+ABC RESULTS:                OR cells:        8
+ABC RESULTS:             ORNOT cells:       10
+ABC RESULTS:        internal signals:       67
+ABC RESULTS:           input signals:        8
+ABC RESULTS:          output signals:        7
+Removing temp directory.
+
+7.23.3. Extracting gate netlist of module `\segment_hex' to `<abc-temp-dir>/input.blif'..
+Extracted 90 gates and 97 wires to a netlist network with 5 inputs and 7 outputs.
+
+7.23.3.1. Executing ABC.
+Running ABC command: berkeley-abc -s -f <abc-temp-dir>/abc.script 2>&1
+ABC: ABC command line: "source <abc-temp-dir>/abc.script".
+ABC: 
+ABC: + read_blif <abc-temp-dir>/input.blif 
+ABC: + read_library <abc-temp-dir>/stdcells.genlib 
+ABC: Entered genlib library with 17 gates from file "<abc-temp-dir>/stdcells.genlib".
+ABC: + strash 
+ABC: + dretime 
+ABC: + retime 
+ABC: + map 
+ABC: + write_blif <abc-temp-dir>/output.blif 
+
+7.23.3.2. Re-integrating ABC results.
+ABC RESULTS:            ANDNOT cells:        9
+ABC RESULTS:              AOI3 cells:        9
+ABC RESULTS:              NAND cells:        2
+ABC RESULTS:               NOR cells:        8
+ABC RESULTS:               NOT cells:        2
+ABC RESULTS:              OAI3 cells:        7
+ABC RESULTS:                OR cells:       17
+ABC RESULTS:             ORNOT cells:        7
+ABC RESULTS:        internal signals:       85
+ABC RESULTS:           input signals:        5
+ABC RESULTS:          output signals:        7
+Removing temp directory.
+
+7.23.4. Extracting gate netlist of module `\top' to `<abc-temp-dir>/input.blif'..
+Extracted 83 gates and 114 wires to a netlist network with 29 inputs and 20 outputs.
+
+7.23.4.1. Executing ABC.
+Running ABC command: berkeley-abc -s -f <abc-temp-dir>/abc.script 2>&1
+ABC: ABC command line: "source <abc-temp-dir>/abc.script".
+ABC: 
+ABC: + read_blif <abc-temp-dir>/input.blif 
+ABC: + read_library <abc-temp-dir>/stdcells.genlib 
+ABC: Entered genlib library with 17 gates from file "<abc-temp-dir>/stdcells.genlib".
+ABC: + strash 
+ABC: + dretime 
+ABC: + retime 
+ABC: + map 
+ABC: + write_blif <abc-temp-dir>/output.blif 
+
+7.23.4.2. Re-integrating ABC results.
+ABC RESULTS:            ANDNOT cells:       21
+ABC RESULTS:               MUX cells:       15
+ABC RESULTS:              NAND cells:        7
+ABC RESULTS:               NOR cells:        1
+ABC RESULTS:               NOT cells:       11
+ABC RESULTS:              OAI3 cells:        1
+ABC RESULTS:              OAI4 cells:        2
+ABC RESULTS:                OR cells:        8
+ABC RESULTS:              XNOR cells:        2
+ABC RESULTS:               XOR cells:        6
+ABC RESULTS:        internal signals:       65
+ABC RESULTS:           input signals:       29
+ABC RESULTS:          output signals:       20
+Removing temp directory.
+
+7.24. Executing OPT pass (performing simple optimizations).
+
+7.24.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module ps2_keyboard.
+<suppressed ~47 debug messages>
+Optimizing module rom.
+Optimizing module segment_hex.
+Optimizing module top.
+<suppressed ~7 debug messages>
+
+7.24.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\ps2_keyboard'.
+Finding identical cells in module `\rom'.
+Finding identical cells in module `\segment_hex'.
+Finding identical cells in module `\top'.
+Removed a total of 0 cells.
+
+7.24.3. Executing OPT_RMDFF pass (remove dff with constant values).
+
+7.24.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \ps2_keyboard..
+Finding unused cells or wires in module \rom..
+Finding unused cells or wires in module \segment_hex..
+Finding unused cells or wires in module \top..
+Removed 1 unused cells and 439 unused wires.
+<suppressed ~6 debug messages>
+
+7.24.5. Finished fast OPT passes.
+
+7.25. Executing HIERARCHY pass (managing design hierarchy).
+
+7.25.1. Analyzing design hierarchy..
+Top module:  \top
+Used module:     \segment_hex
+Used module:     \ps2_keyboard
+Used module:     \rom
+
+7.25.2. Analyzing design hierarchy..
+Top module:  \top
+Used module:     \segment_hex
+Used module:     \ps2_keyboard
+Used module:     \rom
+Removed 0 unused modules.
+
+7.26. Printing statistics.
+
+=== ps2_keyboard ===
+
+   Number of wires:                283
+   Number of wire bits:            380
+   Number of public wires:          21
+   Number of public wire bits:     102
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                375
+     $_ANDNOT_                      29
+     $_AND_                          3
+     $_AOI3_                         1
+     $_DFF_P_                       89
+     $_MUX_                        182
+     $_NAND_                         3
+     $_NOR_                          1
+     $_NOT_                         13
+     $_OAI3_                         1
+     $_ORNOT_                        9
+     $_OR_                          23
+     $_XNOR_                         5
+     $_XOR_                         16
+
+=== rom ===
+
+   Number of wires:                 46
+   Number of wire bits:             60
+   Number of public wires:           2
+   Number of public wire bits:      16
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                 51
+     $_ANDNOT_                      13
+     $_AND_                          2
+     $_AOI3_                         3
+     $_AOI4_                         3
+     $_NAND_                         1
+     $_NOR_                          5
+     $_OAI3_                         5
+     $_OAI4_                         1
+     $_ORNOT_                       10
+     $_OR_                           8
+
+=== segment_hex ===
+
+   Number of wires:                 57
+   Number of wire bits:             67
+   Number of public wires:           3
+   Number of public wire bits:      13
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                 61
+     $_ANDNOT_                       9
+     $_AOI3_                         9
+     $_NAND_                         2
+     $_NOR_                          8
+     $_NOT_                          2
+     $_OAI3_                         7
+     $_ORNOT_                        7
+     $_OR_                          17
+
+=== top ===
+
+   Number of wires:                 75
+   Number of wire bits:            164
+   Number of public wires:          16
+   Number of public wire bits:      91
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                101
+     $_ANDNOT_                      21
+     $_DFF_P_                       19
+     $_MUX_                         15
+     $_NAND_                         7
+     $_NOR_                          1
+     $_NOT_                         11
+     $_OAI3_                         1
+     $_OAI4_                         2
+     $_OR_                           8
+     $_XNOR_                         2
+     $_XOR_                          6
+     ps2_keyboard                    1
+     rom                             1
+     segment_hex                     6
+
+=== design hierarchy ===
+
+   top                               1
+     ps2_keyboard                    1
+     rom                             1
+     segment_hex                     6
+
+   Number of wires:                746
+   Number of wire bits:           1006
+   Number of public wires:          57
+   Number of public wire bits:     287
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                885
+     $_ANDNOT_                     117
+     $_AND_                          5
+     $_AOI3_                        58
+     $_AOI4_                         3
+     $_DFF_P_                      108
+     $_MUX_                        197
+     $_NAND_                        23
+     $_NOR_                         55
+     $_NOT_                         36
+     $_OAI3_                        49
+     $_OAI4_                         3
+     $_ORNOT_                       61
+     $_OR_                         141
+     $_XNOR_                         7
+     $_XOR_                         22
+
+7.27. Executing CHECK pass (checking for obvious problems).
+checking module ps2_keyboard..
+checking module rom..
+checking module segment_hex..
+checking module top..
+found and reported 0 problems.
+
+8. Executing OPT pass (performing simple optimizations).
+
+8.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module ps2_keyboard.
+Optimizing module rom.
+Optimizing module segment_hex.
+Optimizing module top.
+
+8.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\ps2_keyboard'.
+Finding identical cells in module `\rom'.
+Finding identical cells in module `\segment_hex'.
+Finding identical cells in module `\top'.
+Removed a total of 0 cells.
+
+8.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \ps2_keyboard..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \rom..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \segment_hex..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \top..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Removed 0 multiplexer ports.
+
+8.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \ps2_keyboard.
+  Optimizing cells in module \rom.
+  Optimizing cells in module \segment_hex.
+  Optimizing cells in module \top.
+Performed a total of 0 changes.
+
+8.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\ps2_keyboard'.
+Finding identical cells in module `\rom'.
+Finding identical cells in module `\segment_hex'.
+Finding identical cells in module `\top'.
+Removed a total of 0 cells.
+
+8.6. Executing OPT_RMDFF pass (remove dff with constant values).
+
+8.7. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \ps2_keyboard..
+Finding unused cells or wires in module \rom..
+Finding unused cells or wires in module \segment_hex..
+Finding unused cells or wires in module \top..
+
+8.8. Executing OPT_EXPR pass (perform const folding).
+Optimizing module ps2_keyboard.
+Optimizing module rom.
+Optimizing module segment_hex.
+Optimizing module top.
+
+8.9. Finished OPT passes. (There is nothing left to do.)
+
+9. Executing TECHMAP pass (map to technology primitives).
+
+9.1. Executing Verilog-2005 frontend: /home/xinchen/yosys-sta/scripts/../nangate45/verilog/cells_latch.v
+Parsing Verilog input from `/home/xinchen/yosys-sta/scripts/../nangate45/verilog/cells_latch.v' to AST representation.
+Generating RTLIL representation for module `\$_DLATCH_P_'.
+Generating RTLIL representation for module `\$_DLATCH_N_'.
+Successfully finished Verilog frontend.
+
+9.2. Continuing TECHMAP pass.
+No more expansions possible.
+
+10. Executing DFFLIBMAP pass (mapping DFF cells to sequential cells from liberty file).
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X2' - skipping.
+  cell DFF_X1 (noninv, pins=4, area=4.52) is a direct match for cell type $_DFF_P_.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X2' - skipping.
+  cell DFFR_X1 (noninv, pins=5, area=5.32) is a direct match for cell type $_DFF_PN0_.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X2' - skipping.
+  cell DFFS_X1 (noninv, pins=5, area=5.32) is a direct match for cell type $_DFF_PN1_.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X2' - skipping.
+  cell DFFRS_X1 (noninv, pins=6, area=6.38) is a direct match for cell type $_DFFSR_PNN_.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X2' - skipping.
+  create mapping for $_DFF_PP0_ from mapping for $_DFF_PN0_.
+  create mapping for $_DFF_PP1_ from mapping for $_DFF_PN1_.
+  create mapping for $_DFFSR_PPN_ from mapping for $_DFFSR_PNN_.
+  create mapping for $_DFFSR_PNP_ from mapping for $_DFFSR_PNN_.
+  create mapping for $_DFFSR_PPP_ from mapping for $_DFFSR_PNP_.
+  create mapping for $_DFF_N_ from mapping for $_DFF_P_.
+  create mapping for $_DFF_NN0_ from mapping for $_DFF_PN0_.
+  create mapping for $_DFF_NP0_ from mapping for $_DFF_NN0_.
+  create mapping for $_DFF_NN1_ from mapping for $_DFF_NN0_.
+  create mapping for $_DFF_NP1_ from mapping for $_DFF_NN1_.
+  create mapping for $_DFFSR_NNN_ from mapping for $_DFFSR_PNN_.
+  create mapping for $_DFFSR_NPN_ from mapping for $_DFFSR_NNN_.
+  create mapping for $_DFFSR_NNP_ from mapping for $_DFFSR_NNN_.
+  create mapping for $_DFFSR_NPP_ from mapping for $_DFFSR_NNP_.
+  final dff cell mappings:
+    DFF_X1 _DFF_N_ (.CK(~C), .D( D), .Q( Q), .QN(~Q));
+    DFF_X1 _DFF_P_ (.CK( C), .D( D), .Q( Q), .QN(~Q));
+    DFFR_X1 _DFF_NN0_ (.CK(~C), .D( D), .Q( Q), .QN(~Q), .RN( R));
+    DFFR_X1 _DFF_NN1_ (.CK(~C), .D(~D), .Q(~Q), .QN( Q), .RN( R));
+    DFFR_X1 _DFF_NP0_ (.CK(~C), .D( D), .Q( Q), .QN(~Q), .RN(~R));
+    DFFR_X1 _DFF_NP1_ (.CK(~C), .D(~D), .Q(~Q), .QN( Q), .RN(~R));
+    DFFR_X1 _DFF_PN0_ (.CK( C), .D( D), .Q( Q), .QN(~Q), .RN( R));
+    DFFS_X1 _DFF_PN1_ (.CK( C), .D( D), .Q( Q), .QN(~Q), .SN( R));
+    DFFR_X1 _DFF_PP0_ (.CK( C), .D( D), .Q( Q), .QN(~Q), .RN(~R));
+    DFFS_X1 _DFF_PP1_ (.CK( C), .D( D), .Q( Q), .QN(~Q), .SN(~R));
+    DFFRS_X1 _DFFSR_NNN_ (.CK(~C), .D( D), .Q( Q), .QN(~Q), .RN( R), .SN( S));
+    DFFRS_X1 _DFFSR_NNP_ (.CK(~C), .D( D), .Q( Q), .QN(~Q), .RN(~R), .SN( S));
+    DFFRS_X1 _DFFSR_NPN_ (.CK(~C), .D( D), .Q( Q), .QN(~Q), .RN( R), .SN(~S));
+    DFFRS_X1 _DFFSR_NPP_ (.CK(~C), .D( D), .Q( Q), .QN(~Q), .RN(~R), .SN(~S));
+    DFFRS_X1 _DFFSR_PNN_ (.CK( C), .D( D), .Q( Q), .QN(~Q), .RN( R), .SN( S));
+    DFFRS_X1 _DFFSR_PNP_ (.CK( C), .D( D), .Q( Q), .QN(~Q), .RN(~R), .SN( S));
+    DFFRS_X1 _DFFSR_PPN_ (.CK( C), .D( D), .Q( Q), .QN(~Q), .RN( R), .SN(~S));
+    DFFRS_X1 _DFFSR_PPP_ (.CK( C), .D( D), .Q( Q), .QN(~Q), .RN(~R), .SN(~S));
+Mapping DFF cells in module `\ps2_keyboard':
+  mapped 89 $_DFF_P_ cells to \DFF_X1 cells.
+Mapping DFF cells in module `\rom':
+Mapping DFF cells in module `\segment_hex':
+Mapping DFF cells in module `\top':
+  mapped 19 $_DFF_P_ cells to \DFF_X1 cells.
+
+11. Executing OPT pass (performing simple optimizations).
+
+11.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module ps2_keyboard.
+Optimizing module rom.
+Optimizing module segment_hex.
+Optimizing module top.
+
+11.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\ps2_keyboard'.
+Finding identical cells in module `\rom'.
+Finding identical cells in module `\segment_hex'.
+Finding identical cells in module `\top'.
+Removed a total of 0 cells.
+
+11.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \ps2_keyboard..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \rom..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \segment_hex..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \top..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Removed 0 multiplexer ports.
+
+11.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \ps2_keyboard.
+  Optimizing cells in module \rom.
+  Optimizing cells in module \segment_hex.
+  Optimizing cells in module \top.
+Performed a total of 0 changes.
+
+11.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\ps2_keyboard'.
+Finding identical cells in module `\rom'.
+Finding identical cells in module `\segment_hex'.
+Finding identical cells in module `\top'.
+Removed a total of 0 cells.
+
+11.6. Executing OPT_RMDFF pass (remove dff with constant values).
+
+11.7. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \ps2_keyboard..
+Finding unused cells or wires in module \rom..
+Finding unused cells or wires in module \segment_hex..
+Finding unused cells or wires in module \top..
+Removed 20 unused cells and 40 unused wires.
+<suppressed ~22 debug messages>
+
+11.8. Executing OPT_EXPR pass (perform const folding).
+Optimizing module ps2_keyboard.
+Optimizing module rom.
+Optimizing module segment_hex.
+Optimizing module top.
+
+11.9. Rerunning OPT passes. (Maybe there is more to do..)
+
+11.10. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \ps2_keyboard..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \rom..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \segment_hex..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \top..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Removed 0 multiplexer ports.
+
+11.11. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \ps2_keyboard.
+  Optimizing cells in module \rom.
+  Optimizing cells in module \segment_hex.
+  Optimizing cells in module \top.
+Performed a total of 0 changes.
+
+11.12. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\ps2_keyboard'.
+Finding identical cells in module `\rom'.
+Finding identical cells in module `\segment_hex'.
+Finding identical cells in module `\top'.
+Removed a total of 0 cells.
+
+11.13. Executing OPT_RMDFF pass (remove dff with constant values).
+
+11.14. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \ps2_keyboard..
+Finding unused cells or wires in module \rom..
+Finding unused cells or wires in module \segment_hex..
+Finding unused cells or wires in module \top..
+
+11.15. Executing OPT_EXPR pass (perform const folding).
+Optimizing module ps2_keyboard.
+Optimizing module rom.
+Optimizing module segment_hex.
+Optimizing module top.
+
+11.16. Finished OPT passes. (There is nothing left to do.)
+
+12. Executing ABC pass (technology mapping using ABC).
+
+12.1. Extracting gate netlist of module `\ps2_keyboard' to `/tmp/yosys-abc-12ws2Q/input.blif'..
+Extracted 276 gates and 377 wires to a netlist network with 101 inputs and 94 outputs.
+
+12.1.1. Executing ABC.
+Running ABC command: berkeley-abc -s -f /tmp/yosys-abc-12ws2Q/abc.script 2>&1
+ABC: ABC command line: "source /tmp/yosys-abc-12ws2Q/abc.script".
+ABC: 
+ABC: + read_blif /tmp/yosys-abc-12ws2Q/input.blif 
+ABC: + read_lib -w /home/xinchen/yosys-sta/scripts/../nangate45/lib/merged.lib 
+ABC: Parsing finished successfully.  Parsing time =     0.12 sec
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_1024x32" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_2048x39" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_256x34" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_256x95" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_256x96" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_32x64" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_512x64" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_64x15" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_64x21" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_64x32" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_64x7" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_64x96" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "ANTENNA_X1" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATETST_X1" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATETST_X2" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATETST_X4" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATETST_X8" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATE_X1" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATE_X2" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATE_X4" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATE_X8" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFRS_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFRS_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFR_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFR_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFS_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFS_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFF_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFF_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DLH_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DLH_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DLL_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DLL_X2".
+ABC: Scl_LibertyReadGenlib() skipped cell "FILLCELL_X2" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped cell "FILLCELL_X4" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped cell "FILLCELL_X8" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped cell "FILLCELL_X32" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped cell "LOGIC0_X1" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped cell "LOGIC1_X1" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFFRS_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFFRS_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFFR_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFFR_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFFS_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFFS_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFF_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFF_X2".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TBUF_X1".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TBUF_X2".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TBUF_X4".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TBUF_X8".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TBUF_X16".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TINV_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "TLAT_X1".
+ABC: Library "nangate45_merged" from "/home/xinchen/yosys-sta/scripts/../nangate45/lib/merged.lib" has 88 cells (47 skipped: 21 seq; 6 tri-state; 20 no func; 7 dont_use).  Time =     0.20 sec
+ABC: Memory =    8.88 MB. Time =     0.20 sec
+ABC: Warning: Detected 2 multi-output gates (for example, "FA_X1").
+ABC: + strash 
+ABC: + ifraig 
+ABC: + retime -D -D 10000.0 -M 6 
+ABC: + strash 
+ABC: + dch -f 
+ABC: + map -p -M 1 -D 10000.0 -f 
+ABC: + topo 
+ABC: + dnsize 
+ABC: + buffer -p 
+ABC: + upsize 
+ABC: + 
+ABC: + write_blif /tmp/yosys-abc-12ws2Q/output.blif 
+
+12.1.2. Re-integrating ABC results.
+ABC RESULTS:           AND2_X1 cells:       10
+ABC RESULTS:           AND2_X2 cells:        1
+ABC RESULTS:           AND2_X4 cells:        3
+ABC RESULTS:           AND3_X1 cells:        4
+ABC RESULTS:           AND4_X1 cells:        1
+ABC RESULTS:         AOI211_X2 cells:        2
+ABC RESULTS:         AOI211_X4 cells:        3
+ABC RESULTS:          AOI21_X1 cells:        3
+ABC RESULTS:         AOI221_X4 cells:        3
+ABC RESULTS:            INV_X1 cells:       17
+ABC RESULTS:            INV_X2 cells:        1
+ABC RESULTS:           MUX2_X1 cells:      130
+ABC RESULTS:          NAND2_X1 cells:       15
+ABC RESULTS:          NAND2_X4 cells:        2
+ABC RESULTS:          NAND3_X1 cells:        6
+ABC RESULTS:          NAND3_X4 cells:        1
+ABC RESULTS:           NOR2_X1 cells:       12
+ABC RESULTS:           NOR2_X4 cells:        8
+ABC RESULTS:           NOR3_X1 cells:        5
+ABC RESULTS:         OAI211_X2 cells:        1
+ABC RESULTS:          OAI21_X1 cells:        1
+ABC RESULTS:            OR2_X1 cells:        4
+ABC RESULTS:          XNOR2_X1 cells:       11
+ABC RESULTS:          XNOR2_X2 cells:        4
+ABC RESULTS:           XOR2_X1 cells:        3
+ABC RESULTS:           XOR2_X2 cells:        1
+ABC RESULTS:        internal signals:      182
+ABC RESULTS:           input signals:      101
+ABC RESULTS:          output signals:       94
+Removing temp directory.
+
+12.2. Extracting gate netlist of module `\rom' to `/tmp/yosys-abc-NkWj8A/input.blif'..
+Extracted 51 gates and 59 wires to a netlist network with 8 inputs and 7 outputs.
+
+12.2.1. Executing ABC.
+Running ABC command: berkeley-abc -s -f /tmp/yosys-abc-NkWj8A/abc.script 2>&1
+ABC: ABC command line: "source /tmp/yosys-abc-NkWj8A/abc.script".
+ABC: 
+ABC: + read_blif /tmp/yosys-abc-NkWj8A/input.blif 
+ABC: + read_lib -w /home/xinchen/yosys-sta/scripts/../nangate45/lib/merged.lib 
+ABC: Parsing finished successfully.  Parsing time =     0.12 sec
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_1024x32" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_2048x39" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_256x34" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_256x95" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_256x96" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_32x64" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_512x64" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_64x15" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_64x21" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_64x32" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_64x7" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_64x96" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "ANTENNA_X1" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATETST_X1" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATETST_X2" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATETST_X4" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATETST_X8" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATE_X1" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATE_X2" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATE_X4" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATE_X8" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFRS_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFRS_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFR_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFR_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFS_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFS_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFF_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFF_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DLH_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DLH_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DLL_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DLL_X2".
+ABC: Scl_LibertyReadGenlib() skipped cell "FILLCELL_X2" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped cell "FILLCELL_X4" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped cell "FILLCELL_X8" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped cell "FILLCELL_X32" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped cell "LOGIC0_X1" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped cell "LOGIC1_X1" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFFRS_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFFRS_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFFR_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFFR_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFFS_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFFS_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFF_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFF_X2".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TBUF_X1".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TBUF_X2".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TBUF_X4".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TBUF_X8".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TBUF_X16".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TINV_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "TLAT_X1".
+ABC: Library "nangate45_merged" from "/home/xinchen/yosys-sta/scripts/../nangate45/lib/merged.lib" has 88 cells (47 skipped: 21 seq; 6 tri-state; 20 no func; 7 dont_use).  Time =     0.17 sec
+ABC: Memory =    8.88 MB. Time =     0.17 sec
+ABC: Warning: Detected 2 multi-output gates (for example, "FA_X1").
+ABC: + strash 
+ABC: + ifraig 
+ABC: + retime -D -D 10000.0 -M 6 
+ABC: + strash 
+ABC: + dch -f 
+ABC: + map -p -M 1 -D 10000.0 -f 
+ABC: + topo 
+ABC: + dnsize 
+ABC: + buffer -p 
+ABC: + upsize 
+ABC: + 
+ABC: + write_blif /tmp/yosys-abc-NkWj8A/output.blif 
+
+12.2.2. Re-integrating ABC results.
+ABC RESULTS:           AND2_X1 cells:        6
+ABC RESULTS:           AND2_X2 cells:        2
+ABC RESULTS:           AND2_X4 cells:        2
+ABC RESULTS:           AND3_X1 cells:        2
+ABC RESULTS:           AND3_X2 cells:        3
+ABC RESULTS:           AND3_X4 cells:        2
+ABC RESULTS:           AND4_X1 cells:        2
+ABC RESULTS:           AND4_X2 cells:        1
+ABC RESULTS:          AOI21_X1 cells:        1
+ABC RESULTS:            INV_X1 cells:        3
+ABC RESULTS:           INV_X16 cells:        1
+ABC RESULTS:           INV_X32 cells:        2
+ABC RESULTS:           NOR2_X2 cells:        3
+ABC RESULTS:           NOR2_X4 cells:        4
+ABC RESULTS:           NOR3_X1 cells:        1
+ABC RESULTS:           NOR3_X4 cells:        1
+ABC RESULTS:         OAI211_X2 cells:        1
+ABC RESULTS:          OAI21_X1 cells:        1
+ABC RESULTS:            OR2_X2 cells:        1
+ABC RESULTS:            OR3_X1 cells:        1
+ABC RESULTS:            OR4_X4 cells:        1
+ABC RESULTS:        internal signals:       44
+ABC RESULTS:           input signals:        8
+ABC RESULTS:          output signals:        7
+Removing temp directory.
+
+12.3. Extracting gate netlist of module `\segment_hex' to `/tmp/yosys-abc-xCYUbL/input.blif'..
+Extracted 61 gates and 66 wires to a netlist network with 5 inputs and 7 outputs.
+
+12.3.1. Executing ABC.
+Running ABC command: berkeley-abc -s -f /tmp/yosys-abc-xCYUbL/abc.script 2>&1
+ABC: ABC command line: "source /tmp/yosys-abc-xCYUbL/abc.script".
+ABC: 
+ABC: + read_blif /tmp/yosys-abc-xCYUbL/input.blif 
+ABC: + read_lib -w /home/xinchen/yosys-sta/scripts/../nangate45/lib/merged.lib 
+ABC: Parsing finished successfully.  Parsing time =     0.13 sec
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_1024x32" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_2048x39" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_256x34" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_256x95" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_256x96" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_32x64" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_512x64" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_64x15" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_64x21" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_64x32" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_64x7" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_64x96" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "ANTENNA_X1" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATETST_X1" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATETST_X2" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATETST_X4" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATETST_X8" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATE_X1" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATE_X2" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATE_X4" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATE_X8" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFRS_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFRS_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFR_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFR_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFS_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFS_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFF_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFF_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DLH_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DLH_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DLL_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DLL_X2".
+ABC: Scl_LibertyReadGenlib() skipped cell "FILLCELL_X2" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped cell "FILLCELL_X4" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped cell "FILLCELL_X8" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped cell "FILLCELL_X32" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped cell "LOGIC0_X1" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped cell "LOGIC1_X1" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFFRS_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFFRS_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFFR_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFFR_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFFS_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFFS_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFF_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFF_X2".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TBUF_X1".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TBUF_X2".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TBUF_X4".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TBUF_X8".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TBUF_X16".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TINV_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "TLAT_X1".
+ABC: Library "nangate45_merged" from "/home/xinchen/yosys-sta/scripts/../nangate45/lib/merged.lib" has 88 cells (47 skipped: 21 seq; 6 tri-state; 20 no func; 7 dont_use).  Time =     0.19 sec
+ABC: Memory =    8.88 MB. Time =     0.19 sec
+ABC: Warning: Detected 2 multi-output gates (for example, "FA_X1").
+ABC: + strash 
+ABC: + ifraig 
+ABC: + retime -D -D 10000.0 -M 6 
+ABC: + strash 
+ABC: + dch -f 
+ABC: + map -p -M 1 -D 10000.0 -f 
+ABC: + topo 
+ABC: + dnsize 
+ABC: + buffer -p 
+ABC: + upsize 
+ABC: + 
+ABC: + write_blif /tmp/yosys-abc-xCYUbL/output.blif 
+
+12.3.2. Re-integrating ABC results.
+ABC RESULTS:           AND2_X1 cells:        2
+ABC RESULTS:           AND2_X2 cells:        1
+ABC RESULTS:           AND2_X4 cells:        1
+ABC RESULTS:          AOI21_X1 cells:        2
+ABC RESULTS:          AOI22_X1 cells:        2
+ABC RESULTS:            INV_X1 cells:        2
+ABC RESULTS:           INV_X16 cells:        1
+ABC RESULTS:            INV_X2 cells:        1
+ABC RESULTS:           INV_X32 cells:        1
+ABC RESULTS:            INV_X4 cells:        1
+ABC RESULTS:          NAND2_X1 cells:        4
+ABC RESULTS:          NAND3_X1 cells:        6
+ABC RESULTS:          NAND4_X1 cells:        4
+ABC RESULTS:           NOR2_X2 cells:        3
+ABC RESULTS:           NOR2_X4 cells:        2
+ABC RESULTS:           NOR3_X1 cells:        1
+ABC RESULTS:          OAI21_X1 cells:        2
+ABC RESULTS:            OR3_X4 cells:        1
+ABC RESULTS:        internal signals:       54
+ABC RESULTS:           input signals:        5
+ABC RESULTS:          output signals:        7
+Removing temp directory.
+
+12.4. Extracting gate netlist of module `\top' to `/tmp/yosys-abc-3HxZzz/input.blif'..
+Extracted 64 gates and 101 wires to a netlist network with 37 inputs and 20 outputs.
+
+12.4.1. Executing ABC.
+Running ABC command: berkeley-abc -s -f /tmp/yosys-abc-3HxZzz/abc.script 2>&1
+ABC: ABC command line: "source /tmp/yosys-abc-3HxZzz/abc.script".
+ABC: 
+ABC: + read_blif /tmp/yosys-abc-3HxZzz/input.blif 
+ABC: + read_lib -w /home/xinchen/yosys-sta/scripts/../nangate45/lib/merged.lib 
+ABC: Parsing finished successfully.  Parsing time =     0.14 sec
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_1024x32" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_2048x39" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_256x34" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_256x95" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_256x96" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_32x64" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_512x64" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_64x15" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_64x21" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_64x32" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_64x7" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_64x96" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "ANTENNA_X1" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATETST_X1" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATETST_X2" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATETST_X4" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATETST_X8" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATE_X1" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATE_X2" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATE_X4" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATE_X8" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFRS_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFRS_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFR_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFR_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFS_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFS_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFF_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFF_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DLH_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DLH_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DLL_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DLL_X2".
+ABC: Scl_LibertyReadGenlib() skipped cell "FILLCELL_X2" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped cell "FILLCELL_X4" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped cell "FILLCELL_X8" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped cell "FILLCELL_X32" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped cell "LOGIC0_X1" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped cell "LOGIC1_X1" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFFRS_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFFRS_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFFR_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFFR_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFFS_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFFS_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFF_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFF_X2".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TBUF_X1".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TBUF_X2".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TBUF_X4".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TBUF_X8".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TBUF_X16".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TINV_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "TLAT_X1".
+ABC: Library "nangate45_merged" from "/home/xinchen/yosys-sta/scripts/../nangate45/lib/merged.lib" has 88 cells (47 skipped: 21 seq; 6 tri-state; 20 no func; 7 dont_use).  Time =     0.19 sec
+ABC: Memory =    8.88 MB. Time =     0.19 sec
+ABC: Warning: Detected 2 multi-output gates (for example, "FA_X1").
+ABC: + strash 
+ABC: + ifraig 
+ABC: + retime -D -D 10000.0 -M 6 
+ABC: + strash 
+ABC: + dch -f 
+ABC: + map -p -M 1 -D 10000.0 -f 
+ABC: + topo 
+ABC: + dnsize 
+ABC: + buffer -p 
+ABC: + upsize 
+ABC: + 
+ABC: + write_blif /tmp/yosys-abc-3HxZzz/output.blif 
+
+12.4.2. Re-integrating ABC results.
+ABC RESULTS:           AND2_X1 cells:       16
+ABC RESULTS:           AND2_X2 cells:        2
+ABC RESULTS:           AND2_X4 cells:        3
+ABC RESULTS:           AND3_X2 cells:        2
+ABC RESULTS:         AOI211_X2 cells:        1
+ABC RESULTS:         AOI211_X4 cells:        1
+ABC RESULTS:          AOI21_X1 cells:        6
+ABC RESULTS:          AOI21_X2 cells:        1
+ABC RESULTS:            INV_X1 cells:        2
+ABC RESULTS:           INV_X32 cells:        1
+ABC RESULTS:            INV_X4 cells:        1
+ABC RESULTS:           MUX2_X1 cells:        8
+ABC RESULTS:          NAND2_X1 cells:        1
+ABC RESULTS:          NAND2_X4 cells:        1
+ABC RESULTS:          NAND3_X1 cells:        1
+ABC RESULTS:          NAND4_X1 cells:        2
+ABC RESULTS:           NOR2_X4 cells:        1
+ABC RESULTS:           NOR3_X1 cells:        3
+ABC RESULTS:           NOR3_X4 cells:        1
+ABC RESULTS:           NOR4_X1 cells:        2
+ABC RESULTS:           NOR4_X4 cells:        1
+ABC RESULTS:          OAI21_X1 cells:        2
+ABC RESULTS:          OAI22_X1 cells:        1
+ABC RESULTS:            OR2_X1 cells:        2
+ABC RESULTS:            OR2_X2 cells:        2
+ABC RESULTS:            OR3_X2 cells:        1
+ABC RESULTS:          XNOR2_X1 cells:        1
+ABC RESULTS:        internal signals:       44
+ABC RESULTS:           input signals:       37
+ABC RESULTS:          output signals:       20
+Removing temp directory.
+
+13. Executing HILOMAP pass (mapping to constant drivers).
+
+14. Executing SETUNDEF pass (replace undef values with defined constants).
+
+15. Executing SPLITNETS pass (splitting up multi-bit signals).
+
+16. Executing INSBUF pass (insert buffer cells for connected wires).
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3487: \fifo[0][0] -> $abc$3079$fifo[0][0]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3488: \fifo[1][0] -> $abc$3079$fifo[1][0]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3489: \r_ptr[0] -> $abc$3079$r_ptr[0]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3490: \fifo[2][0] -> $abc$3079$fifo[2][0]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3491: \fifo[3][0] -> $abc$3079$fifo[3][0]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3492: \r_ptr[1] -> $abc$3079$r_ptr[1]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3493: \fifo[4][0] -> $abc$3079$fifo[4][0]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3494: \fifo[5][0] -> $abc$3079$fifo[5][0]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3495: \fifo[6][0] -> $abc$3079$fifo[6][0]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3496: \fifo[7][0] -> $abc$3079$fifo[7][0]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3497: \r_ptr[2] -> $abc$3079$r_ptr[2]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3498: $abc$3079$scan_code[0] -> \scan_code [0]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3499: \fifo[0][1] -> $abc$3079$fifo[0][1]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3500: \fifo[1][1] -> $abc$3079$fifo[1][1]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3501: \fifo[2][1] -> $abc$3079$fifo[2][1]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3502: \fifo[3][1] -> $abc$3079$fifo[3][1]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3503: \fifo[4][1] -> $abc$3079$fifo[4][1]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3504: \fifo[5][1] -> $abc$3079$fifo[5][1]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3505: \fifo[6][1] -> $abc$3079$fifo[6][1]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3506: \fifo[7][1] -> $abc$3079$fifo[7][1]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3507: $abc$3079$scan_code[1] -> \scan_code [1]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3508: \fifo[0][2] -> $abc$3079$fifo[0][2]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3509: \fifo[1][2] -> $abc$3079$fifo[1][2]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3510: \fifo[2][2] -> $abc$3079$fifo[2][2]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3511: \fifo[3][2] -> $abc$3079$fifo[3][2]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3512: \fifo[4][2] -> $abc$3079$fifo[4][2]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3513: \fifo[5][2] -> $abc$3079$fifo[5][2]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3514: \fifo[6][2] -> $abc$3079$fifo[6][2]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3515: \fifo[7][2] -> $abc$3079$fifo[7][2]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3516: $abc$3079$scan_code[2] -> \scan_code [2]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3517: \fifo[0][3] -> $abc$3079$fifo[0][3]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3518: \fifo[1][3] -> $abc$3079$fifo[1][3]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3519: \fifo[2][3] -> $abc$3079$fifo[2][3]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3520: \fifo[3][3] -> $abc$3079$fifo[3][3]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3521: \fifo[4][3] -> $abc$3079$fifo[4][3]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3522: \fifo[5][3] -> $abc$3079$fifo[5][3]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3523: \fifo[6][3] -> $abc$3079$fifo[6][3]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3524: \fifo[7][3] -> $abc$3079$fifo[7][3]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3525: $abc$3079$scan_code[3] -> \scan_code [3]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3526: \fifo[0][4] -> $abc$3079$fifo[0][4]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3527: \fifo[1][4] -> $abc$3079$fifo[1][4]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3528: \fifo[2][4] -> $abc$3079$fifo[2][4]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3529: \fifo[3][4] -> $abc$3079$fifo[3][4]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3530: \fifo[4][4] -> $abc$3079$fifo[4][4]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3531: \fifo[5][4] -> $abc$3079$fifo[5][4]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3532: \fifo[6][4] -> $abc$3079$fifo[6][4]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3533: \fifo[7][4] -> $abc$3079$fifo[7][4]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3534: $abc$3079$scan_code[4] -> \scan_code [4]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3535: \fifo[0][5] -> $abc$3079$fifo[0][5]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3536: \fifo[1][5] -> $abc$3079$fifo[1][5]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3537: \fifo[2][5] -> $abc$3079$fifo[2][5]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3538: \fifo[3][5] -> $abc$3079$fifo[3][5]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3539: \fifo[4][5] -> $abc$3079$fifo[4][5]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3540: \fifo[5][5] -> $abc$3079$fifo[5][5]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3541: \fifo[6][5] -> $abc$3079$fifo[6][5]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3542: \fifo[7][5] -> $abc$3079$fifo[7][5]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3543: $abc$3079$scan_code[5] -> \scan_code [5]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3544: \fifo[0][6] -> $abc$3079$fifo[0][6]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3545: \fifo[1][6] -> $abc$3079$fifo[1][6]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3546: \fifo[2][6] -> $abc$3079$fifo[2][6]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3547: \fifo[3][6] -> $abc$3079$fifo[3][6]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3548: \fifo[4][6] -> $abc$3079$fifo[4][6]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3549: \fifo[5][6] -> $abc$3079$fifo[5][6]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3550: \fifo[6][6] -> $abc$3079$fifo[6][6]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3551: \fifo[7][6] -> $abc$3079$fifo[7][6]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3552: $abc$3079$scan_code[6] -> \scan_code [6]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3553: \fifo[0][7] -> $abc$3079$fifo[0][7]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3554: \fifo[1][7] -> $abc$3079$fifo[1][7]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3555: \fifo[2][7] -> $abc$3079$fifo[2][7]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3556: \fifo[3][7] -> $abc$3079$fifo[3][7]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3557: \fifo[4][7] -> $abc$3079$fifo[4][7]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3558: \fifo[5][7] -> $abc$3079$fifo[5][7]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3559: \fifo[6][7] -> $abc$3079$fifo[6][7]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3560: \fifo[7][7] -> $abc$3079$fifo[7][7]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3561: $abc$3079$scan_code[7] -> \scan_code [7]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3562: \rst_n -> $abc$3079$rst_n
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3563: \ps2_clk_sync[1] -> $abc$3079$ps2_clk_sync[1]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3564: \ps2_clk_sync[2] -> $abc$3079$ps2_clk_sync[2]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3565: \count[2] -> $abc$3079$count[2]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3566: \count[3] -> $abc$3079$count[3]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3567: \count[0] -> $abc$3079$count[0]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3568: \count[1] -> $abc$3079$count[1]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3569: \ps2_data -> $abc$3079$ps2_data
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3570: \buffer[9] -> $abc$3079$buffer[9]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3571: $abc$3079$0\buffer[9:0][9] -> $0\buffer[9:0][9]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3572: \buffer[8] -> $abc$3079$buffer[8]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3573: $abc$3079$0\buffer[9:0][8] -> $0\buffer[9:0][8]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3574: \buffer[7] -> $abc$3079$buffer[7]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3575: $abc$3079$0\buffer[9:0][7] -> $0\buffer[9:0][7]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3576: \buffer[6] -> $abc$3079$buffer[6]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3577: $abc$3079$0\buffer[9:0][6] -> $0\buffer[9:0][6]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3578: \buffer[5] -> $abc$3079$buffer[5]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3579: $abc$3079$0\buffer[9:0][5] -> $0\buffer[9:0][5]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3580: \buffer[4] -> $abc$3079$buffer[4]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3581: $abc$3079$0\buffer[9:0][4] -> $0\buffer[9:0][4]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3582: \w_ptr[2] -> $abc$3079$w_ptr[2]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3583: \w_ptr[1] -> $abc$3079$w_ptr[1]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3584: \w_ptr[0] -> $abc$3079$w_ptr[0]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3585: \buffer[0] -> $abc$3079$buffer[0]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3586: \buffer[2] -> $abc$3079$buffer[2]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3587: \buffer[1] -> $abc$3079$buffer[1]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3588: \buffer[3] -> $abc$3079$buffer[3]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3589: $abc$3079$abc$2474$memory\fifo$wrmux[7][0][0]$y$515[0] -> $abc$2474$memory\fifo$wrmux[7][0][0]$y$515[0]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3590: $abc$3079$abc$2474$memory\fifo$wrmux[7][0][0]$y$515[1] -> $abc$2474$memory\fifo$wrmux[7][0][0]$y$515[1]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3591: $abc$3079$abc$2474$memory\fifo$wrmux[7][0][0]$y$515[2] -> $abc$2474$memory\fifo$wrmux[7][0][0]$y$515[2]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3592: $abc$3079$abc$2474$memory\fifo$wrmux[7][0][0]$y$515[3] -> $abc$2474$memory\fifo$wrmux[7][0][0]$y$515[3]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3593: $abc$3079$abc$2474$memory\fifo$wrmux[7][0][0]$y$515[4] -> $abc$2474$memory\fifo$wrmux[7][0][0]$y$515[4]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3594: $abc$3079$abc$2474$memory\fifo$wrmux[7][0][0]$y$515[5] -> $abc$2474$memory\fifo$wrmux[7][0][0]$y$515[5]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3595: $abc$3079$abc$2474$memory\fifo$wrmux[7][0][0]$y$515[6] -> $abc$2474$memory\fifo$wrmux[7][0][0]$y$515[6]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3596: $abc$3079$abc$2474$memory\fifo$wrmux[7][0][0]$y$515[7] -> $abc$2474$memory\fifo$wrmux[7][0][0]$y$515[7]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3597: $abc$3079$0\buffer[9:0][3] -> $0\buffer[9:0][3]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3598: $abc$3079$abc$2474$memory\fifo$wrmux[6][0][0]$y$509[0] -> $abc$2474$memory\fifo$wrmux[6][0][0]$y$509[0]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3599: $abc$3079$abc$2474$memory\fifo$wrmux[6][0][0]$y$509[1] -> $abc$2474$memory\fifo$wrmux[6][0][0]$y$509[1]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3600: $abc$3079$abc$2474$memory\fifo$wrmux[6][0][0]$y$509[2] -> $abc$2474$memory\fifo$wrmux[6][0][0]$y$509[2]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3601: $abc$3079$abc$2474$memory\fifo$wrmux[6][0][0]$y$509[3] -> $abc$2474$memory\fifo$wrmux[6][0][0]$y$509[3]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3602: $abc$3079$abc$2474$memory\fifo$wrmux[6][0][0]$y$509[4] -> $abc$2474$memory\fifo$wrmux[6][0][0]$y$509[4]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3603: $abc$3079$abc$2474$memory\fifo$wrmux[6][0][0]$y$509[5] -> $abc$2474$memory\fifo$wrmux[6][0][0]$y$509[5]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3604: $abc$3079$abc$2474$memory\fifo$wrmux[6][0][0]$y$509[6] -> $abc$2474$memory\fifo$wrmux[6][0][0]$y$509[6]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3605: $abc$3079$abc$2474$memory\fifo$wrmux[6][0][0]$y$509[7] -> $abc$2474$memory\fifo$wrmux[6][0][0]$y$509[7]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3606: $abc$3079$0\buffer[9:0][2] -> $0\buffer[9:0][2]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3607: $abc$3079$0\buffer[9:0][1] -> $0\buffer[9:0][1]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3608: $abc$2474$new_n334_ -> $abc$3079$abc$2474$new_n334_
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3609: $abc$3079$abc$2474$memory\fifo$wrmux[5][0][0]$y$501[0] -> $abc$2474$memory\fifo$wrmux[5][0][0]$y$501[0]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3610: $abc$3079$abc$2474$memory\fifo$wrmux[5][0][0]$y$501[1] -> $abc$2474$memory\fifo$wrmux[5][0][0]$y$501[1]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3611: $abc$3079$abc$2474$memory\fifo$wrmux[5][0][0]$y$501[2] -> $abc$2474$memory\fifo$wrmux[5][0][0]$y$501[2]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3612: $abc$3079$abc$2474$memory\fifo$wrmux[5][0][0]$y$501[3] -> $abc$2474$memory\fifo$wrmux[5][0][0]$y$501[3]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3613: $abc$3079$abc$2474$memory\fifo$wrmux[5][0][0]$y$501[4] -> $abc$2474$memory\fifo$wrmux[5][0][0]$y$501[4]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3614: $abc$3079$abc$2474$memory\fifo$wrmux[5][0][0]$y$501[5] -> $abc$2474$memory\fifo$wrmux[5][0][0]$y$501[5]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3615: $abc$3079$abc$2474$memory\fifo$wrmux[5][0][0]$y$501[6] -> $abc$2474$memory\fifo$wrmux[5][0][0]$y$501[6]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3616: $abc$3079$abc$2474$memory\fifo$wrmux[5][0][0]$y$501[7] -> $abc$2474$memory\fifo$wrmux[5][0][0]$y$501[7]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3617: $abc$3079$0\buffer[9:0][0] -> $0\buffer[9:0][0]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3618: $abc$3079$abc$2474$memory\fifo$wrmux[4][0][0]$y$495[0] -> $abc$2474$memory\fifo$wrmux[4][0][0]$y$495[0]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3619: $abc$3079$abc$2474$memory\fifo$wrmux[4][0][0]$y$495[1] -> $abc$2474$memory\fifo$wrmux[4][0][0]$y$495[1]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3620: $abc$3079$abc$2474$memory\fifo$wrmux[4][0][0]$y$495[2] -> $abc$2474$memory\fifo$wrmux[4][0][0]$y$495[2]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3621: $abc$3079$abc$2474$memory\fifo$wrmux[4][0][0]$y$495[3] -> $abc$2474$memory\fifo$wrmux[4][0][0]$y$495[3]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3622: $abc$3079$abc$2474$memory\fifo$wrmux[4][0][0]$y$495[4] -> $abc$2474$memory\fifo$wrmux[4][0][0]$y$495[4]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3623: $abc$3079$abc$2474$memory\fifo$wrmux[4][0][0]$y$495[5] -> $abc$2474$memory\fifo$wrmux[4][0][0]$y$495[5]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3624: $abc$3079$abc$2474$memory\fifo$wrmux[4][0][0]$y$495[6] -> $abc$2474$memory\fifo$wrmux[4][0][0]$y$495[6]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3625: $abc$3079$abc$2474$memory\fifo$wrmux[4][0][0]$y$495[7] -> $abc$2474$memory\fifo$wrmux[4][0][0]$y$495[7]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3626: $abc$3079$abc$2474$memory\fifo$wrmux[3][0][0]$y$485[0] -> $abc$2474$memory\fifo$wrmux[3][0][0]$y$485[0]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3627: $abc$3079$abc$2474$memory\fifo$wrmux[3][0][0]$y$485[1] -> $abc$2474$memory\fifo$wrmux[3][0][0]$y$485[1]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3628: $abc$3079$abc$2474$memory\fifo$wrmux[3][0][0]$y$485[2] -> $abc$2474$memory\fifo$wrmux[3][0][0]$y$485[2]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3629: $abc$3079$abc$2474$memory\fifo$wrmux[3][0][0]$y$485[3] -> $abc$2474$memory\fifo$wrmux[3][0][0]$y$485[3]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3630: $abc$3079$abc$2474$memory\fifo$wrmux[3][0][0]$y$485[4] -> $abc$2474$memory\fifo$wrmux[3][0][0]$y$485[4]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3631: $abc$3079$abc$2474$memory\fifo$wrmux[3][0][0]$y$485[5] -> $abc$2474$memory\fifo$wrmux[3][0][0]$y$485[5]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3632: $abc$3079$abc$2474$memory\fifo$wrmux[3][0][0]$y$485[6] -> $abc$2474$memory\fifo$wrmux[3][0][0]$y$485[6]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3633: $abc$3079$abc$2474$memory\fifo$wrmux[3][0][0]$y$485[7] -> $abc$2474$memory\fifo$wrmux[3][0][0]$y$485[7]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3634: $abc$3079$0\w_ptr[2:0][0] -> $0\w_ptr[2:0][0]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3635: $abc$2474$new_n377_ -> $abc$3079$abc$2474$new_n377_
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3636: $abc$3079$0\w_ptr[2:0][1] -> $0\w_ptr[2:0][1]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3637: $abc$2474$new_n383_ -> $abc$3079$abc$2474$new_n383_
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3638: $abc$3079$0\w_ptr[2:0][2] -> $0\w_ptr[2:0][2]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3639: \nextdata_n -> $abc$3079$nextdata_n
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3640: $abc$2474$new_n390_ -> $abc$3079$abc$2474$new_n390_
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3641: \ready -> $abc$3079$ready
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3642: $abc$3079$0\r_ptr[2:0][0] -> $0\r_ptr[2:0][0]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3643: $abc$2474$new_n187_ -> $abc$3079$abc$2474$new_n187_
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3644: $abc$3079$0\r_ptr[2:0][1] -> $0\r_ptr[2:0][1]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3645: $abc$2474$new_n186_ -> $abc$3079$abc$2474$new_n186_
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3646: $abc$3079$0\r_ptr[2:0][2] -> $0\r_ptr[2:0][2]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3647: $abc$3079$abc$2474$memory\fifo$wrmux[2][0][0]$y$479[0] -> $abc$2474$memory\fifo$wrmux[2][0][0]$y$479[0]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3648: $abc$3079$abc$2474$memory\fifo$wrmux[2][0][0]$y$479[1] -> $abc$2474$memory\fifo$wrmux[2][0][0]$y$479[1]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3649: $abc$3079$abc$2474$memory\fifo$wrmux[2][0][0]$y$479[2] -> $abc$2474$memory\fifo$wrmux[2][0][0]$y$479[2]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3650: $abc$3079$abc$2474$memory\fifo$wrmux[2][0][0]$y$479[3] -> $abc$2474$memory\fifo$wrmux[2][0][0]$y$479[3]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3651: $abc$3079$abc$2474$memory\fifo$wrmux[2][0][0]$y$479[4] -> $abc$2474$memory\fifo$wrmux[2][0][0]$y$479[4]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3652: $abc$3079$abc$2474$memory\fifo$wrmux[2][0][0]$y$479[5] -> $abc$2474$memory\fifo$wrmux[2][0][0]$y$479[5]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3653: $abc$3079$abc$2474$memory\fifo$wrmux[2][0][0]$y$479[6] -> $abc$2474$memory\fifo$wrmux[2][0][0]$y$479[6]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3654: $abc$3079$abc$2474$memory\fifo$wrmux[2][0][0]$y$479[7] -> $abc$2474$memory\fifo$wrmux[2][0][0]$y$479[7]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3655: $abc$3079$0\count[3:0][0] -> $0\count[3:0][0]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3656: $abc$2474$new_n417_ -> $abc$3079$abc$2474$new_n417_
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3657: $abc$3079$0\count[3:0][1] -> $0\count[3:0][1]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3658: $abc$2474$new_n422_ -> $abc$3079$abc$2474$new_n422_
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3659: $abc$3079$0\count[3:0][2] -> $0\count[3:0][2]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3660: $abc$2474$new_n427_ -> $abc$3079$abc$2474$new_n427_
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3661: $abc$3079$0\count[3:0][3] -> $0\count[3:0][3]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3662: $abc$3079$abc$2474$memory\fifo$wrmux[1][0][0]$y$469[0] -> $abc$2474$memory\fifo$wrmux[1][0][0]$y$469[0]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3663: $abc$3079$abc$2474$memory\fifo$wrmux[1][0][0]$y$469[1] -> $abc$2474$memory\fifo$wrmux[1][0][0]$y$469[1]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3664: $abc$3079$abc$2474$memory\fifo$wrmux[1][0][0]$y$469[2] -> $abc$2474$memory\fifo$wrmux[1][0][0]$y$469[2]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3665: $abc$3079$abc$2474$memory\fifo$wrmux[1][0][0]$y$469[3] -> $abc$2474$memory\fifo$wrmux[1][0][0]$y$469[3]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3666: $abc$3079$abc$2474$memory\fifo$wrmux[1][0][0]$y$469[4] -> $abc$2474$memory\fifo$wrmux[1][0][0]$y$469[4]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3667: $abc$3079$abc$2474$memory\fifo$wrmux[1][0][0]$y$469[5] -> $abc$2474$memory\fifo$wrmux[1][0][0]$y$469[5]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3668: $abc$3079$abc$2474$memory\fifo$wrmux[1][0][0]$y$469[6] -> $abc$2474$memory\fifo$wrmux[1][0][0]$y$469[6]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3669: $abc$3079$abc$2474$memory\fifo$wrmux[1][0][0]$y$469[7] -> $abc$2474$memory\fifo$wrmux[1][0][0]$y$469[7]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3670: $abc$3079$abc$2474$memory\fifo$wrmux[0][0][0]$y$461[0] -> $abc$2474$memory\fifo$wrmux[0][0][0]$y$461[0]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3671: $abc$3079$abc$2474$memory\fifo$wrmux[0][0][0]$y$461[1] -> $abc$2474$memory\fifo$wrmux[0][0][0]$y$461[1]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3672: $abc$3079$abc$2474$memory\fifo$wrmux[0][0][0]$y$461[2] -> $abc$2474$memory\fifo$wrmux[0][0][0]$y$461[2]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3673: $abc$3079$abc$2474$memory\fifo$wrmux[0][0][0]$y$461[3] -> $abc$2474$memory\fifo$wrmux[0][0][0]$y$461[3]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3674: $abc$3079$abc$2474$memory\fifo$wrmux[0][0][0]$y$461[4] -> $abc$2474$memory\fifo$wrmux[0][0][0]$y$461[4]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3675: $abc$3079$abc$2474$memory\fifo$wrmux[0][0][0]$y$461[5] -> $abc$2474$memory\fifo$wrmux[0][0][0]$y$461[5]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3676: $abc$3079$abc$2474$memory\fifo$wrmux[0][0][0]$y$461[6] -> $abc$2474$memory\fifo$wrmux[0][0][0]$y$461[6]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3677: $abc$3079$abc$2474$memory\fifo$wrmux[0][0][0]$y$461[7] -> $abc$2474$memory\fifo$wrmux[0][0][0]$y$461[7]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3678: $abc$3079$0\ready[0:0] -> $0\ready[0:0]
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3679: \overflow -> $abc$3079$overflow
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3680: $abc$2474$new_n464_ -> $abc$3079$abc$2474$new_n464_
+Added ps2_keyboard.$auto$insbuf.cc:79:execute$3681: $abc$3079$0\overflow[0:0] -> $0\overflow[0:0]
+Added rom.$auto$insbuf.cc:79:execute$3682: $auto$hilomap.cc:47:hilomap_worker$3479 -> \ascii_code [7]
+Added rom.$auto$insbuf.cc:79:execute$3683: \scan_code [1] -> $abc$3332$scan_code[1]
+Added rom.$auto$insbuf.cc:79:execute$3684: \scan_code [0] -> $abc$3332$scan_code[0]
+Added rom.$auto$insbuf.cc:79:execute$3685: \scan_code [3] -> $abc$3332$scan_code[3]
+Added rom.$auto$insbuf.cc:79:execute$3686: \scan_code [2] -> $abc$3332$scan_code[2]
+Added rom.$auto$insbuf.cc:79:execute$3687: \scan_code [5] -> $abc$3332$scan_code[5]
+Added rom.$auto$insbuf.cc:79:execute$3688: \scan_code [4] -> $abc$3332$scan_code[4]
+Added rom.$auto$insbuf.cc:79:execute$3689: \scan_code [7] -> $abc$3332$scan_code[7]
+Added rom.$auto$insbuf.cc:79:execute$3690: \scan_code [6] -> $abc$3332$scan_code[6]
+Added rom.$auto$insbuf.cc:79:execute$3691: $abc$3332$ascii_code[0] -> \ascii_code [0]
+Added rom.$auto$insbuf.cc:79:execute$3692: $abc$3332$ascii_code[1] -> \ascii_code [1]
+Added rom.$auto$insbuf.cc:79:execute$3693: $abc$3332$ascii_code[2] -> \ascii_code [2]
+Added rom.$auto$insbuf.cc:79:execute$3694: $abc$3332$ascii_code[3] -> \ascii_code [3]
+Added rom.$auto$insbuf.cc:79:execute$3695: $abc$3332$ascii_code[4] -> \ascii_code [4]
+Added rom.$auto$insbuf.cc:79:execute$3696: $abc$3332$ascii_code[5] -> \ascii_code [5]
+Added rom.$auto$insbuf.cc:79:execute$3697: $abc$3332$ascii_code[6] -> \ascii_code [6]
+Added segment_hex.$auto$insbuf.cc:79:execute$3698: $auto$hilomap.cc:39:hilomap_worker$3481 -> \seg_display [0]
+Added segment_hex.$auto$insbuf.cc:79:execute$3699: \bcd [3] -> $abc$3374$bcd[3]
+Added segment_hex.$auto$insbuf.cc:79:execute$3700: \bcd [2] -> $abc$3374$bcd[2]
+Added segment_hex.$auto$insbuf.cc:79:execute$3701: \bcd [1] -> $abc$3374$bcd[1]
+Added segment_hex.$auto$insbuf.cc:79:execute$3702: \bcd [0] -> $abc$3374$bcd[0]
+Added segment_hex.$auto$insbuf.cc:79:execute$3703: \en -> $abc$3374$en
+Added segment_hex.$auto$insbuf.cc:79:execute$3704: $abc$3374$seg_display[1] -> \seg_display [1]
+Added segment_hex.$auto$insbuf.cc:79:execute$3705: $abc$3374$seg_display[2] -> \seg_display [2]
+Added segment_hex.$auto$insbuf.cc:79:execute$3706: $abc$3374$seg_display[3] -> \seg_display [3]
+Added segment_hex.$auto$insbuf.cc:79:execute$3707: $abc$3374$seg_display[4] -> \seg_display [4]
+Added segment_hex.$auto$insbuf.cc:79:execute$3708: $abc$3374$seg_display[5] -> \seg_display [5]
+Added segment_hex.$auto$insbuf.cc:79:execute$3709: $abc$3374$seg_display[6] -> \seg_display [6]
+Added segment_hex.$auto$insbuf.cc:79:execute$3710: $abc$3374$seg_display[7] -> \seg_display [7]
+Added top.$auto$insbuf.cc:79:execute$3711: \count_en -> \state[1]
+Added top.$auto$insbuf.cc:79:execute$3712: \rst_n -> $abc$3412$rst_n
+Added top.$auto$insbuf.cc:79:execute$3713: \ready -> $abc$3412$ready
+Added top.$auto$insbuf.cc:79:execute$3714: \scan_code[1] -> $abc$3412$scan_code[1]
+Added top.$auto$insbuf.cc:79:execute$3715: \scan_code[0] -> $abc$3412$scan_code[0]
+Added top.$auto$insbuf.cc:79:execute$3716: \scan_code[3] -> $abc$3412$scan_code[3]
+Added top.$auto$insbuf.cc:79:execute$3717: \scan_code[2] -> $abc$3412$scan_code[2]
+Added top.$auto$insbuf.cc:79:execute$3718: \scan_code[5] -> $abc$3412$scan_code[5]
+Added top.$auto$insbuf.cc:79:execute$3719: \scan_code[4] -> $abc$3412$scan_code[4]
+Added top.$auto$insbuf.cc:79:execute$3720: \scan_code[7] -> $abc$3412$scan_code[7]
+Added top.$auto$insbuf.cc:79:execute$3721: \scan_code[6] -> $abc$3412$scan_code[6]
+Added top.$auto$insbuf.cc:79:execute$3722: $abc$2876$new_n51_ -> $abc$3412$abc$2876$new_n51_
+Added top.$auto$insbuf.cc:79:execute$3723: $abc$2876$new_n50_ -> $abc$3412$abc$2876$new_n50_
+Added top.$auto$insbuf.cc:79:execute$3724: $abc$3412$abc$2876$auto$fsm_map.cc:170:map_fsm$377[1] -> $abc$2876$auto$fsm_map.cc:170:map_fsm$377[1]
+Added top.$auto$insbuf.cc:79:execute$3725: $abc$2876$new_n63_ -> $abc$3412$abc$2876$new_n63_
+Added top.$auto$insbuf.cc:79:execute$3726: $abc$3412$abc$2876$auto$fsm_map.cc:170:map_fsm$377[2] -> $abc$2876$auto$fsm_map.cc:170:map_fsm$377[2]
+Added top.$auto$insbuf.cc:79:execute$3727: \state[0] -> $abc$3412$state[0]
+Added top.$auto$insbuf.cc:79:execute$3728: \count_en -> $abc$3412$count_en
+Added top.$auto$insbuf.cc:79:execute$3729: $abc$3412$abc$2876$auto$fsm_map.cc:170:map_fsm$377[0] -> $abc$2876$auto$fsm_map.cc:170:map_fsm$377[0]
+Added top.$auto$insbuf.cc:79:execute$3730: $abc$3412$display_en -> \display_en
+Added top.$auto$insbuf.cc:79:execute$3731: \scan_code_buf[0] -> $abc$3412$scan_code_buf[0]
+Added top.$auto$insbuf.cc:79:execute$3732: $abc$3412$0\scan_code_buf[7:0][0] -> $0\scan_code_buf[7:0][0]
+Added top.$auto$insbuf.cc:79:execute$3733: \scan_code_buf[1] -> $abc$3412$scan_code_buf[1]
+Added top.$auto$insbuf.cc:79:execute$3734: $abc$3412$0\scan_code_buf[7:0][1] -> $0\scan_code_buf[7:0][1]
+Added top.$auto$insbuf.cc:79:execute$3735: \scan_code_buf[2] -> $abc$3412$scan_code_buf[2]
+Added top.$auto$insbuf.cc:79:execute$3736: $abc$3412$0\scan_code_buf[7:0][2] -> $0\scan_code_buf[7:0][2]
+Added top.$auto$insbuf.cc:79:execute$3737: \scan_code_buf[3] -> $abc$3412$scan_code_buf[3]
+Added top.$auto$insbuf.cc:79:execute$3738: $abc$3412$0\scan_code_buf[7:0][3] -> $0\scan_code_buf[7:0][3]
+Added top.$auto$insbuf.cc:79:execute$3739: \scan_code_buf[4] -> $abc$3412$scan_code_buf[4]
+Added top.$auto$insbuf.cc:79:execute$3740: $abc$3412$0\scan_code_buf[7:0][4] -> $0\scan_code_buf[7:0][4]
+Added top.$auto$insbuf.cc:79:execute$3741: \scan_code_buf[5] -> $abc$3412$scan_code_buf[5]
+Added top.$auto$insbuf.cc:79:execute$3742: $abc$3412$0\scan_code_buf[7:0][5] -> $0\scan_code_buf[7:0][5]
+Added top.$auto$insbuf.cc:79:execute$3743: \scan_code_buf[6] -> $abc$3412$scan_code_buf[6]
+Added top.$auto$insbuf.cc:79:execute$3744: $abc$3412$0\scan_code_buf[7:0][6] -> $0\scan_code_buf[7:0][6]
+Added top.$auto$insbuf.cc:79:execute$3745: \scan_code_buf[7] -> $abc$3412$scan_code_buf[7]
+Added top.$auto$insbuf.cc:79:execute$3746: $abc$3412$0\scan_code_buf[7:0][7] -> $0\scan_code_buf[7:0][7]
+Added top.$auto$insbuf.cc:79:execute$3747: \count[0] -> $abc$3412$count[0]
+Added top.$auto$insbuf.cc:79:execute$3748: $abc$3412$0\count[7:0][0] -> $0\count[7:0][0]
+Added top.$auto$insbuf.cc:79:execute$3749: \count[1] -> $abc$3412$count[1]
+Added top.$auto$insbuf.cc:79:execute$3750: $abc$2876$new_n88_ -> $abc$3412$abc$2876$new_n88_
+Added top.$auto$insbuf.cc:79:execute$3751: $abc$3412$0\count[7:0][1] -> $0\count[7:0][1]
+Added top.$auto$insbuf.cc:79:execute$3752: \count[2] -> $abc$3412$count[2]
+Added top.$auto$insbuf.cc:79:execute$3753: $abc$2876$new_n92_ -> $abc$3412$abc$2876$new_n92_
+Added top.$auto$insbuf.cc:79:execute$3754: $abc$3412$0\count[7:0][2] -> $0\count[7:0][2]
+Added top.$auto$insbuf.cc:79:execute$3755: $abc$2876$new_n97_ -> $abc$3412$abc$2876$new_n97_
+Added top.$auto$insbuf.cc:79:execute$3756: $abc$3412$0\count[7:0][3] -> $0\count[7:0][3]
+Added top.$auto$insbuf.cc:79:execute$3757: \count[3] -> $abc$3412$count[3]
+Added top.$auto$insbuf.cc:79:execute$3758: \count[4] -> $abc$3412$count[4]
+Added top.$auto$insbuf.cc:79:execute$3759: $abc$2876$new_n102_ -> $abc$3412$abc$2876$new_n102_
+Added top.$auto$insbuf.cc:79:execute$3760: $abc$3412$0\count[7:0][4] -> $0\count[7:0][4]
+Added top.$auto$insbuf.cc:79:execute$3761: $abc$2876$new_n108_ -> $abc$3412$abc$2876$new_n108_
+Added top.$auto$insbuf.cc:79:execute$3762: $abc$3412$0\count[7:0][5] -> $0\count[7:0][5]
+Added top.$auto$insbuf.cc:79:execute$3763: \count[5] -> $abc$3412$count[5]
+Added top.$auto$insbuf.cc:79:execute$3764: \count[6] -> $abc$3412$count[6]
+Added top.$auto$insbuf.cc:79:execute$3765: $abc$2876$new_n113_ -> $abc$3412$abc$2876$new_n113_
+Added top.$auto$insbuf.cc:79:execute$3766: $abc$3412$0\count[7:0][6] -> $0\count[7:0][6]
+Added top.$auto$insbuf.cc:79:execute$3767: $abc$2876$new_n119_ -> $abc$3412$abc$2876$new_n119_
+Added top.$auto$insbuf.cc:79:execute$3768: $abc$3412$0\count[7:0][7] -> $0\count[7:0][7]
+
+17. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \ps2_keyboard..
+Finding unused cells or wires in module \rom..
+Finding unused cells or wires in module \segment_hex..
+Finding unused cells or wires in module \top..
+Removed 0 unused cells and 324 unused wires.
+<suppressed ~4 debug messages>
+
+18. Executing CHECK pass (checking for obvious problems).
+checking module ps2_keyboard..
+Warning: Wire ps2_keyboard.\scan_code [7] is used but has no driver.
+Warning: Wire ps2_keyboard.\scan_code [6] is used but has no driver.
+Warning: Wire ps2_keyboard.\scan_code [5] is used but has no driver.
+Warning: Wire ps2_keyboard.\scan_code [4] is used but has no driver.
+Warning: Wire ps2_keyboard.\scan_code [3] is used but has no driver.
+Warning: Wire ps2_keyboard.\scan_code [2] is used but has no driver.
+Warning: Wire ps2_keyboard.\scan_code [1] is used but has no driver.
+Warning: Wire ps2_keyboard.\scan_code [0] is used but has no driver.
+Warning: Wire ps2_keyboard.\ready is used but has no driver.
+Warning: Wire ps2_keyboard.\overflow is used but has no driver.
+checking module rom..
+Warning: Wire rom.\ascii_code [7] is used but has no driver.
+Warning: Wire rom.\ascii_code [6] is used but has no driver.
+Warning: Wire rom.\ascii_code [5] is used but has no driver.
+Warning: Wire rom.\ascii_code [4] is used but has no driver.
+Warning: Wire rom.\ascii_code [3] is used but has no driver.
+Warning: Wire rom.\ascii_code [2] is used but has no driver.
+Warning: Wire rom.\ascii_code [1] is used but has no driver.
+Warning: Wire rom.\ascii_code [0] is used but has no driver.
+checking module segment_hex..
+Warning: Wire segment_hex.\seg_display [7] is used but has no driver.
+Warning: Wire segment_hex.\seg_display [6] is used but has no driver.
+Warning: Wire segment_hex.\seg_display [5] is used but has no driver.
+Warning: Wire segment_hex.\seg_display [4] is used but has no driver.
+Warning: Wire segment_hex.\seg_display [3] is used but has no driver.
+Warning: Wire segment_hex.\seg_display [2] is used but has no driver.
+Warning: Wire segment_hex.\seg_display [1] is used but has no driver.
+Warning: Wire segment_hex.\seg_display [0] is used but has no driver.
+checking module top..
+Warning: Wire top.\scan_code_buf[7] is used but has no driver.
+Warning: Wire top.\scan_code_buf[6] is used but has no driver.
+Warning: Wire top.\scan_code_buf[5] is used but has no driver.
+Warning: Wire top.\scan_code_buf[4] is used but has no driver.
+Warning: Wire top.\scan_code_buf[3] is used but has no driver.
+Warning: Wire top.\scan_code_buf[2] is used but has no driver.
+Warning: Wire top.\scan_code_buf[1] is used but has no driver.
+Warning: Wire top.\scan_code_buf[0] is used but has no driver.
+Warning: Wire top.$auto$hilomap.cc:47:hilomap_worker$3485 is used but has no driver.
+Warning: Wire top.\count[3] is used but has no driver.
+Warning: Wire top.\count[2] is used but has no driver.
+Warning: Wire top.\count[1] is used but has no driver.
+Warning: Wire top.\count[0] is used but has no driver.
+Warning: Wire top.$auto$hilomap.cc:39:hilomap_worker$3483 is used but has no driver.
+Warning: Wire top.\count[7] is used but has no driver.
+Warning: Wire top.\count[6] is used but has no driver.
+Warning: Wire top.\count[5] is used but has no driver.
+Warning: Wire top.\count[4] is used but has no driver.
+Warning: Wire top.\display_en is used but has no driver.
+found and reported 45 problems.
+
+19. Printing statistics.
+
+=== ps2_keyboard ===
+
+   Number of wires:                623
+   Number of wire bits:            630
+   Number of public wires:          95
+   Number of public wire bits:     102
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                536
+     AND2_X1                        10
+     AND2_X2                         1
+     AND2_X4                         3
+     AND3_X1                         4
+     AND4_X1                         1
+     AOI211_X2                       2
+     AOI211_X4                       3
+     AOI21_X1                        3
+     AOI221_X4                       3
+     BUF_X1                        195
+     DFF_X1                         89
+     INV_X1                         17
+     INV_X2                          1
+     MUX2_X1                       130
+     NAND2_X1                       15
+     NAND2_X4                        2
+     NAND3_X1                        6
+     NAND3_X4                        1
+     NOR2_X1                        12
+     NOR2_X4                         8
+     NOR3_X1                         5
+     OAI211_X2                       1
+     OAI21_X1                        1
+     OR2_X1                          4
+     XNOR2_X1                       11
+     XNOR2_X2                        4
+     XOR2_X1                         3
+     XOR2_X2                         1
+
+   Chip area for module '\ps2_keyboard': 966.910000
+
+=== rom ===
+
+   Number of wires:                 52
+   Number of wire bits:             66
+   Number of public wires:           2
+   Number of public wire bits:      16
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                 58
+     AND2_X1                         6
+     AND2_X2                         2
+     AND2_X4                         2
+     AND3_X1                         2
+     AND3_X2                         3
+     AND3_X4                         2
+     AND4_X1                         2
+     AND4_X2                         1
+     AOI21_X1                        1
+     BUF_X1                         16
+     INV_X1                          3
+     INV_X16                         1
+     INV_X32                         2
+     LOGIC0_X1                       1
+     NOR2_X2                         3
+     NOR2_X4                         4
+     NOR3_X1                         1
+     NOR3_X4                         1
+     OAI211_X2                       1
+     OAI21_X1                        1
+     OR2_X2                          1
+     OR3_X1                          1
+     OR4_X4                          1
+
+   Chip area for module '\rom': 98.154000
+
+=== segment_hex ===
+
+   Number of wires:                 46
+   Number of wire bits:             56
+   Number of public wires:           3
+   Number of public wire bits:      13
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                 51
+     AND2_X1                         2
+     AND2_X2                         1
+     AND2_X4                         1
+     AOI21_X1                        2
+     AOI22_X1                        2
+     BUF_X1                         13
+     INV_X1                          2
+     INV_X16                         1
+     INV_X2                          1
+     INV_X32                         1
+     INV_X4                          1
+     LOGIC1_X1                       1
+     NAND2_X1                        4
+     NAND3_X1                        6
+     NAND4_X1                        4
+     NOR2_X2                         3
+     NOR2_X4                         2
+     NOR3_X1                         1
+     OAI21_X1                        2
+     OR3_X4                          1
+
+   Chip area for module '\segment_hex': 67.830000
+
+=== top ===
+
+   Number of wires:                189
+   Number of wire bits:            234
+   Number of public wires:          46
+   Number of public wire bits:      91
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                153
+     AND2_X1                        16
+     AND2_X2                         2
+     AND2_X4                         3
+     AND3_X2                         2
+     AOI211_X2                       1
+     AOI211_X4                       1
+     AOI21_X1                        6
+     AOI21_X2                        1
+     BUF_X1                         58
+     DFF_X1                         19
+     INV_X1                          2
+     INV_X32                         1
+     INV_X4                          1
+     LOGIC0_X1                       1
+     LOGIC1_X1                       1
+     MUX2_X1                         8
+     NAND2_X1                        1
+     NAND2_X4                        1
+     NAND3_X1                        1
+     NAND4_X1                        2
+     NOR2_X4                         1
+     NOR3_X1                         3
+     NOR3_X4                         1
+     NOR4_X1                         2
+     NOR4_X4                         1
+     OAI21_X1                        2
+     OAI22_X1                        1
+     OR2_X1                          2
+     OR2_X2                          2
+     OR3_X2                          1
+     XNOR2_X1                        1
+     ps2_keyboard                    1
+     rom                             1
+     segment_hex                     6
+
+   Area for cell type \segment_hex is unknown!
+   Area for cell type \ps2_keyboard is unknown!
+   Area for cell type \rom is unknown!
+
+   Chip area for module '\top': 238.070000
+
+=== design hierarchy ===
+
+   top                               1
+     ps2_keyboard                    1
+     rom                             1
+     segment_hex                     6
+
+   Number of wires:               1140
+   Number of wire bits:           1266
+   Number of public wires:         161
+   Number of public wire bits:     287
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:               1045
+     AND2_X1                        44
+     AND2_X2                        11
+     AND2_X4                        14
+     AND3_X1                         6
+     AND3_X2                         5
+     AND3_X4                         2
+     AND4_X1                         3
+     AND4_X2                         1
+     AOI211_X2                       3
+     AOI211_X4                       4
+     AOI21_X1                       22
+     AOI21_X2                        1
+     AOI221_X4                       3
+     AOI22_X1                       12
+     BUF_X1                        347
+     DFF_X1                        108
+     INV_X1                         34
+     INV_X16                         7
+     INV_X2                          7
+     INV_X32                         9
+     INV_X4                          7
+     LOGIC0_X1                       2
+     LOGIC1_X1                       7
+     MUX2_X1                       138
+     NAND2_X1                       40
+     NAND2_X4                        3
+     NAND3_X1                       43
+     NAND3_X4                        1
+     NAND4_X1                       26
+     NOR2_X1                        12
+     NOR2_X2                        21
+     NOR2_X4                        25
+     NOR3_X1                        15
+     NOR3_X4                         2
+     NOR4_X1                         2
+     NOR4_X4                         1
+     OAI211_X2                       2
+     OAI21_X1                       16
+     OAI22_X1                        1
+     OR2_X1                          6
+     OR2_X2                          3
+     OR3_X1                          1
+     OR3_X2                          1
+     OR3_X4                          6
+     OR4_X4                          1
+     XNOR2_X1                       12
+     XNOR2_X2                        4
+     XOR2_X1                         3
+     XOR2_X2                         1
+
+   Chip area for top module '\top': 1710.114000
+
+20. Executing Verilog backend.
+Dumping module `\ps2_keyboard'.
+Dumping module `\rom'.
+Dumping module `\segment_hex'.
+Dumping module `\top'.
+
+Warnings: 54 unique messages, 118 total
+End of script. Logfile hash: ea83d5edd3
+CPU: user 1.35s system 0.75s, MEM: 44.01 MB total, 31.50 MB resident
+Yosys 0.9 (git sha1 1979e0b)
+Time spent: 15% 21x opt_expr (0 sec), 14% 22x opt_clean (0 sec), ...

@@ -1,0 +1,22 @@
+
+17. Executing CHECK pass (checking for obvious problems).
+checking module lfsr..
+Warning: Wire lfsr.\dout [7] is used but has no driver.
+Warning: Wire lfsr.\dout [6] is used but has no driver.
+Warning: Wire lfsr.\dout [5] is used but has no driver.
+Warning: Wire lfsr.\dout [4] is used but has no driver.
+Warning: Wire lfsr.\dout [3] is used but has no driver.
+Warning: Wire lfsr.\dout [2] is used but has no driver.
+Warning: Wire lfsr.\dout [1] is used but has no driver.
+Warning: Wire lfsr.\dout [0] is used but has no driver.
+checking module segment_hex..
+Warning: Wire segment_hex.\seg_display [7] is used but has no driver.
+Warning: Wire segment_hex.\seg_display [6] is used but has no driver.
+Warning: Wire segment_hex.\seg_display [5] is used but has no driver.
+Warning: Wire segment_hex.\seg_display [4] is used but has no driver.
+Warning: Wire segment_hex.\seg_display [3] is used but has no driver.
+Warning: Wire segment_hex.\seg_display [2] is used but has no driver.
+Warning: Wire segment_hex.\seg_display [1] is used but has no driver.
+Warning: Wire segment_hex.\seg_display [0] is used but has no driver.
+checking module top..
+found and reported 16 problems.
