@@ -1,7 +1,7 @@
 #!/bin/bash
-export PRJ_DIR=$(pwd)
+export YSYX_HOME=$(pwd)
 
-export NEMU_HOME=$(pwd)/nemu
-export AM_HOME=$(pwd)/abstract-machine
-export NPC_HOME=$(pwd)/npc
-export NVBOARD_HOME=$(pwd)/nvboard
+export NEMU_HOME=$YSYX_HOME/nemu
+export AM_HOME=$YSYX_HOME/abstract-machine
+export NPC_HOME=$YSYX_HOME/npc
+export NVBOARD_HOME=$YSYX_HOME/nvboard
