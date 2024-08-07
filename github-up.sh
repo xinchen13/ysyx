@@ -1,15 +1,8 @@
 #!/bin/bash
 source tenv
 
-if [ $# -eq 0 ]; then
-  echo "offer commit message!"
-  exit 1
-fi
+for branch in `git branch -a | grep remotes | grep -v HEAD | grep -v master `; do
+    git branch --track ${branch#remotes/xinchen/} $branch
+done
 
-commit_message="$1"
-
-git add .
-
-git commit -m "$commit_message"
-
-git push xinchen --all
+git pull --all
