@@ -18,4 +18,4 @@
 !/abstract-machine/**
 !/fceux-am/**
 !/nvboard/**
-/am-kernels
+!/am-kernels/**
