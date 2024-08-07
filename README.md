@@ -4,7 +4,8 @@
 - [learning record](https://docs.qq.com/sheet/DZXVEQ0thWGZOaU9t?tab=j1z835)
 - [notes](./docs/notes.md)
 
-## clone this repository
+## Tips
+clone this repository & update all the branches & checkout master:
 ```sh
 git clone -o xinchen git@github.com:xinchen13/ysyx.git
 ./github-up.sh
