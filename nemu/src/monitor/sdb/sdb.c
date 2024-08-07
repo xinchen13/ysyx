@@ -53,6 +53,16 @@ static int cmd_q(char *args) {
     return -1;
 }
 
+static int cmd_si(char *args) {
+    int step_counter = 1;
+    char *step_arg = strtok(NULL, " ");
+    if (step_arg != NULL) {
+        sscanf(step_arg, "%d", &step_counter);
+    }
+    cpu_exec(step_counter);
+    return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -65,6 +75,7 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
 
   /* TODO: Add more commands */
+  { "si", "Single step execution: [si N]", cmd_si },
 
 };
 
