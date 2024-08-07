@@ -1,6 +1,8 @@
 #!/bin/bash
 source tenv
 
+current_branch=$(git symbolic-ref --short HEAD)
+
 for remote_branch in `git branch -a | grep remotes | grep -v HEAD`; do
     local_branch=${remote_branch#remotes/xinchen/}
     if [ -z "$(git branch --list $local_branch)" ]; then
@@ -12,4 +14,4 @@ for remote_branch in `git branch -a | grep remotes | grep -v HEAD`; do
     git pull xinchen $local_branch
 done
 
-git checkout master
+git checkout "$current_branch"
