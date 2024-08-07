@@ -2,9 +2,10 @@
 source tenv
 
 current_branch=$(git symbolic-ref --short HEAD)
+git fetch --all
 
-for remote_branch in `git branch -a | grep remotes | grep -v HEAD`; do
-    local_branch=${remote_branch#remotes/xinchen/}
+for remote_branch in `git branch -r | grep xinchen | grep -v HEAD`; do
+    local_branch=${remote_branch#xinchen/}
     if [ -z "$(git branch --list $local_branch)" ]; then
         git branch --track $local_branch $remote_branch
     else
