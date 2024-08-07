@@ -117,3 +117,11 @@ Build Options
 
 ### 优美地退出
 修复运行NEMU之后直接键入`q`退出产生的报错: 利用gdb来对NEMU进行调试，运行`make gdb`
+
+发现`engine_start()`函数结束后返回`nemu/src/utils/state.c`中的`is_exit_status_bad()`. 根据其要求，发现返回值为`-1`. 查看代码，是利用nemu_state来判定返回值. 其中判断语句为:
+
+```c
+int good = (nemu_state.state == NEMU_END && nemu_state.halt_ret == 0) || (nemu_state.state == NEMU_QUIT);
+```
+
+因此，只需要将按下`q`时的`nemu_state.state`设置为`NEMU_QUIT`即可，这样就可正常退出程序. 由于NEMU中`c`和`q`分别对应`nemu/src/monitor/sdb/sdb.c`中的`cmd_c()`与`cmd_q()`函数，发现`cmd_c()`函数调用了`cpu_exec()`, 此函数中对`nemu_state`作出了修改. 同理，我们可以直接在`cmd_q()`中添加`nemu_state.state = NEMU_QUIT`, 重新编译运行，测试无误

@@ -13,6 +13,7 @@ source tenv
 #### clone this repository & update all the branches & checkout master
 ```sh
 git clone -o xinchen git@github.com:xinchen13/ysyx.git
+cd ysyx
 ./github-up.sh
 ```
 
