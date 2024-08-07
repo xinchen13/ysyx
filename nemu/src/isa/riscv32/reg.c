@@ -24,7 +24,11 @@ const char *regs[] = {
 };
 
 void isa_reg_display() {
-    printf("123456");
+    int gpr_count = MUXDEF(CONFIG_RVE, 16, 32);
+    printf("pc = " FMT_WORD "\n", cpu.pc);
+    for (int i = 0; i < gpr_count; i++) {
+        printf("%s = " FMT_WORD "\n",regs[i], cpu.gpr[i]);
+    }
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {
