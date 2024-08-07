@@ -9,7 +9,7 @@ for remote_branch in `git branch -a | grep remotes | grep -v HEAD`; do
         echo "Local branch $local_branch is already tracking a remote branch. Skipping."
     fi
     git checkout $local_branch
-    git pull $local_branch
+    git pull xinchen $local_branch
 done
 
 git checkout master
