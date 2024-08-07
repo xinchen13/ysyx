@@ -1,1 +1,4 @@
 build/
+!resource/*.hex
+!constr/*.nxdc
+
