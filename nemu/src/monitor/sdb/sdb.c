@@ -65,6 +65,18 @@ static int cmd_si(char *args) {
     return 0;
 }
 
+static int cmd_info(char *args) {
+    char *info_arg = strtok(NULL, " ");
+    if (info_arg != NULL) {
+        if (strcmp(info_arg, "r") == 0) {
+            isa_reg_display();
+            return 0;
+        }
+    }
+    printf("Please offer a valid info type: \"r\" or \"w\"\n");
+    return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -78,6 +90,7 @@ static struct {
 
   /* TODO: Add more commands */
   { "si", "Single step execution: [si N]", cmd_si },
+  { "info", "Print program status: [info r / info w]", cmd_info },
 
 };
 
