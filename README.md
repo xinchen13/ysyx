@@ -4,6 +4,12 @@
 - [learning record](https://docs.qq.com/sheet/DZXVEQ0thWGZOaU9t?tab=j1z835)
 - [notes](./docs/notes.md)
 
+## clone this repository
+```sh
+git clone -o xinchen git@github.com:xinchen13/ysyx.git
+./github-up.sh
+```
+
 ## 『一生一芯』预学习
 预学习阶段主要工作是搭建环境，熟悉工具使用以及复习编程、数电等基础
 
