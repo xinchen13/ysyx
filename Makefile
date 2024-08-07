@@ -5,6 +5,7 @@ STUNAME = xinchen
 
 TRACER = tracer-ysyx
 GITFLAGS = -q --author='$(TRACER) <tracer@ysyx.org>' --no-verify --allow-empty
+OTHER_MSG = echo $(STUID) $(STUNAME) && uname -a && uptime
 
 YSYX_HOME = $(NEMU_HOME)/..
 WORK_BRANCH = $(shell git rev-parse --abbrev-ref HEAD)
