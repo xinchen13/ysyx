@@ -5,11 +5,22 @@
 - [notes](./docs/notes.md)
 
 ## Tips
-clone this repository & update all the branches & checkout master:
+#### set environment variables
+```sh
+source tenv
+```
+
+#### clone this repository & update all the branches & checkout master
 ```sh
 git clone -o xinchen git@github.com:xinchen13/ysyx.git
 ./github-up.sh
 ```
+
+#### synchronize all the modifications to GitHub
+```sh
+./github-commit.sh "commit_message"
+```
+
 
 ## 『一生一芯』预学习
 预学习阶段主要工作是搭建环境，熟悉工具使用以及复习编程、数电等基础
