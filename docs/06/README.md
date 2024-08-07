@@ -104,3 +104,16 @@ make: *** [/home/xinchen/ysyx/nemu/scripts/native.mk:38: run] Aborted (core dump
 在`cmd_c()`函数中, 调用`cpu_exec()`的时候传入了参数`-1`:
 
 `-1`保存在存储器中的二进制位全为1,但注意到`cpu_exec()`接收参数的数据类型为`uint64_t`，也就是说传入的数据被C语言解释为最大的正数, 即执行最多数量的指令
+
+### 为NEMU编译时添加GDB调试信息
+在menuconfig中打开对应选项, 清除编译结果并重新编译
+
+```sh
+Build Options
+  [*] Enable debug information
+```
+
+开启调试选项后查看 `nemu/include/auto.conf` 生成的宏，发现有`CONFIG_CC_DEBUG=y`, 在Makefile中有语句`CFLAGS_BUILD += $(if $(CONFIG_CC_DEBUG),-Og -ggdb3,)`即编译时加入了调试选项
+
+### 优美地退出
+修复运行NEMU之后直接键入`q`退出产生的报错: 利用gdb来对NEMU进行调试，运行`make gdb`
