@@ -77,3 +77,30 @@ GPT-3.5-Turbo:
 ```
 (0, x, x) -> (1, 0, x) -> (2, 0, 0) -> (3, 0, 1) -> (4, 1, 1) -> (2, 1, 1) -> (3, 1, 2) -> (4, 3, 2) -> (2, 3, 2) -> (3, 3, 3) -> (4, 6, 3) -> ... -> (4, 1+2+...+98, 98) -> (2, 1+2+...+98, 98) -> (3, 1+2+...+98, 99) -> (4, 1+2+...+98+99, 99) -> (2, 1+2+...+98+99, 99) -> (3, 1+2+...+98+99, 100) -> (4, 1+2+...+98+99+100, 100) -> (5, 1+2+...+98+99+100, 100) -> ...
 ```
+
+## RTFSC: NEMU
+在NEMU中模拟的计算机称为"客户(guest)计算机", 在NEMU中运行的程序称为"客户程序"
+
+NEMU主要由4个模块构成: monitor, CPU, memory, 设备
+
+在`nemu/`目录下编译并运行nemu: `make run`,之后出现报错信息:
+
+```sh
+Welcome to riscv32-NEMU!
+For help, type "help"
+[src/monitor/monitor.c:35 welcome] Exercise: Please remove me in the source code and compile NEMU again.
+riscv32-nemu-interpreter: src/monitor/monitor.c:36: welcome: Assertion `0' failed.
+make: *** [/home/xinchen/ysyx/nemu/scripts/native.mk:38: run] Aborted (core dumped)
+```
+
+进入`src/monitor/monitor.c`, 将错误提示显示的welcome函数中如下语句注释，重新编译运行错误信息消失
+
+```c
+  // Log("Exercise: Please remove me in the source code and compile NEMU again.");
+  // assert(0);
+```
+
+### 究竟要执行多久
+在`cmd_c()`函数中, 调用`cpu_exec()`的时候传入了参数`-1`:
+
+`-1`保存在存储器中的二进制位全为1,但注意到`cpu_exec()`接收参数的数据类型为`uint64_t`，也就是说传入的数据被C语言解释为最大的正数, 即执行最多数量的指令
