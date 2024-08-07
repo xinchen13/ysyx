@@ -1,6 +1,7 @@
 *.*
 *
 !github-up.sh
+!github-commit.sh
 !tenv
 !*/
 !/docs/**
