@@ -7,3 +7,8 @@
 ## 阅读PA讲义中的FAQ
 - `PA` 是 `Programming Assignment`
 - PA 通过 C 语言开发一款模拟器以及上层的软件(裸机运行时环境, 简易操作系统等)，更关注抽象层次的认识和理解
+
+## 准备工作
+进入『一生一芯』工作目录，开 pa1 新分支 `git checkout -b pa1`
+
+初始化 am-kernels: `bash init.sh am-kernels`
