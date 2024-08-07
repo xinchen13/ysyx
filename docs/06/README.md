@@ -104,3 +104,24 @@ make: *** [/home/xinchen/ysyx/nemu/scripts/native.mk:38: run] Aborted (core dump
 在`cmd_c()`函数中, 调用`cpu_exec()`的时候传入了参数`-1`:
 
 `-1`保存在存储器中的二进制位全为1,但注意到`cpu_exec()`接收参数的数据类型为`uint64_t`，也就是说传入的数据被C语言解释为最大的正数, 即执行最多数量的指令
+
+### 为NEMU编译时添加GDB调试信息
+在menuconfig中打开对应选项, 清除编译结果并重新编译
+
+```sh
+Build Options
+  [*] Enable debug information
+```
+
+开启调试选项后查看 `nemu/include/auto.conf` 生成的宏，发现有`CONFIG_CC_DEBUG=y`, 在Makefile中有语句`CFLAGS_BUILD += $(if $(CONFIG_CC_DEBUG),-Og -ggdb3,)`即编译时加入了调试选项
+
+### 优美地退出
+修复运行NEMU之后直接键入`q`退出产生的报错: 利用gdb来对NEMU进行调试，运行`make gdb`
+
+发现`engine_start()`函数结束后返回`nemu/src/utils/state.c`中的`is_exit_status_bad()`. 根据其要求，发现返回值为`-1`. 查看代码，是利用nemu_state来判定返回值. 其中判断语句为:
+
+```c
+int good = (nemu_state.state == NEMU_END && nemu_state.halt_ret == 0) || (nemu_state.state == NEMU_QUIT);
+```
+
+因此，只需要将按下`q`时的`nemu_state.state`设置为`NEMU_QUIT`即可，这样就可正常退出程序. 由于NEMU中`c`和`q`分别对应`nemu/src/monitor/sdb/sdb.c`中的`cmd_c()`与`cmd_q()`函数，发现`cmd_c()`函数调用了`cpu_exec()`, 此函数中对`nemu_state`作出了修改. 同理，我们可以直接在`cmd_q()`中添加`nemu_state.state = NEMU_QUIT`, 重新编译运行，测试无误
