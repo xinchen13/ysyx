@@ -2,6 +2,7 @@
 source tenv
 
 current_branch=$(git symbolic-ref --short HEAD)
+git fetch --all
 
 for remote_branch in `git branch -r | grep xinchen | grep -v HEAD`; do
     local_branch=${remote_branch#xinchen/}
