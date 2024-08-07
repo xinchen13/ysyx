@@ -54,7 +54,9 @@ static int cmd_q(char *args) {
 }
 
 static int cmd_si(char *args) {
+    // default step count = 1
     int step_counter = 1;
+    // step count string
     char *step_arg = strtok(NULL, " ");
     if (step_arg != NULL) {
         sscanf(step_arg, "%d", &step_counter);

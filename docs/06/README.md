@@ -131,5 +131,5 @@ int good = (nemu_state.state == NEMU_END && nemu_state.halt_ret == 0) || (nemu_s
 框架代码中已经给出了模拟CPU执行方式的函数, 即在`nemu/src/cpu/cpu-exec.c`中的`cpu_exec(uint64_t n)`, 基于此，单步执行要求执行N条指令后暂停执行，换句话说就是从命令行读取到N ，就将`cpu_exec()`函数执行N次
 
 - 首先在`cmd_table`中添加`si`命令，然后编写`cmd_si(char *args)`函数完成功能. 从命令行读取命令并获得参数，`cmd_help()`函数中给出了例子，直接按其的框架修改. 
-- 利用`strtok()`函数获取参数, 每次提取一个词条
+- 利用`strtok()`函数获取参数, 每次提取一个词条: 第一次 call `strtok()` 时需要制定 str, 之后调用 str 指定为 null 
 - `sscanf`通常被用来解析并转换字符串，其格式定义灵活多变，可以实现很强大的字符串解析功能: 在这里从字符串读入格式化内容，并解析为`int`类型数字(参数缺省时缺省时默认为1), 给`cpu_exec()`传入
