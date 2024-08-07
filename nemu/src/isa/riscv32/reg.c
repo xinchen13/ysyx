@@ -24,9 +24,12 @@ const char *regs[] = {
 };
 
 void isa_reg_display() {
+    // rv32e: 16 * gprs
+    // rv32/rv64: 32 * gprs
     int gpr_count = MUXDEF(CONFIG_RVE, 16, 32);
-    printf(" pc = " FMT_WORD "\n", cpu.pc);
+    printf(" pc = " FMT_WORD "\n", cpu.pc); // display the value of pc
     for (int i = 0; i < gpr_count; i++) {
+        // display the value of gpr
         printf("%3s = " FMT_WORD "\n",regs[i], cpu.gpr[i]);
     }
 }
