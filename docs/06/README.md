@@ -99,3 +99,8 @@ make: *** [/home/xinchen/ysyx/nemu/scripts/native.mk:38: run] Aborted (core dump
   // Log("Exercise: Please remove me in the source code and compile NEMU again.");
   // assert(0);
 ```
+
+### 究竟要执行多久
+在`cmd_c()`函数中, 调用`cpu_exec()`的时候传入了参数`-1`:
+
+`-1`保存在存储器中的二进制位全为1,但注意到`cpu_exec()`接收参数的数据类型为`uint64_t`，也就是说传入的数据被C语言解释为最大的正数, 即执行最多数量的指令
