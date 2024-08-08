@@ -43,6 +43,8 @@ static struct rule {
   {"-",         '-'},           // minus
   {"\\*",       '*'},           // mul
   {"\\/",       '/'},           // div
+  {"\\(",       '('},           // left bracket
+  {"\\)",       ')'},           // right bracket
   {"==",        TK_EQ},         // equal
 };
 
@@ -91,8 +93,9 @@ static bool make_token(char *e) {
 
         // debug: print the rule matched to check the regex
         IFDEF(CONFIG_EXPR_DEBUG_INFO,
-        Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
-            i, rules[i].regex, position, substr_len, substr_len, substr_start);)
+            Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
+            i, rules[i].regex, position, substr_len, substr_len, substr_start);
+        )
 
         position += substr_len;
 
@@ -126,6 +129,14 @@ static bool make_token(char *e) {
                 tokens[nr_token].type = '/';
                 nr_token++;
                 break;
+            case '(':
+                tokens[nr_token].type = '(';
+                nr_token++;
+                break;
+            case ')':
+                tokens[nr_token].type = ')';
+                nr_token++;
+                break;
             default: TODO();
         }
 
@@ -141,7 +152,7 @@ static bool make_token(char *e) {
 
     // debug: prinf the tokens to check the function of make_token()
     IFDEF(CONFIG_EXPR_DEBUG_INFO,
-        for(int y = 0; y < nr_token; y++){
+        for (int y = 0; y < nr_token; y++) {
             Log("tokens[%d].type = %d, tokens[%d].str = %s",y,tokens[y].type,y,tokens[y].str);
         }
     )
