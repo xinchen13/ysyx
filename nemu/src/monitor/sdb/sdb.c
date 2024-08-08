@@ -81,7 +81,7 @@ static int cmd_info(char *args) {
 static int cmd_x(char *args) {
     int scan_len = 1;                   // default scan len: 4 bytes
     vaddr_t base_addr = 0x80000000;     // default scan addr: 0x80000000
-    vaddr_t addr = 0x80000000;
+    vaddr_t addr;
     // parse args, get scan_len & scan_addr
     char *scan_len_str = strtok(NULL, " ");
     char *base_addr_str = strtok(NULL, " ");
@@ -95,6 +95,18 @@ static int cmd_x(char *args) {
     }
     else {
         printf("ERROR: [Usage] scan the memory: [x N expr]\n");
+    }
+    return 0;
+}
+
+static int cmd_p(char *args) {
+    bool success = true;
+    word_t result = expr(args, &success);
+    if (success) {
+        printf("%s = %d = " FMT_WORD "\n", args, result, result);
+    }
+    else {
+        printf("ERROR: [Usage] Expression evaluation: [p EXPR]\n");
     }
     return 0;
 }
@@ -114,6 +126,7 @@ static struct {
   { "si", "Single step execution: [si N]", cmd_si },
   { "info", "Print program status: [info r / info w]", cmd_info },
   { "x", "Scan the memory: [x N expr]", cmd_x },
+  { "p", "Expression evaluation: [p EXPR]", cmd_p },
 
 };
 

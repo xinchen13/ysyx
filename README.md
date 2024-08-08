@@ -10,7 +10,7 @@
 source tenv
 ```
 
-#### clone this repository & update all the branches & checkout master
+#### clone this repository & update all the branches
 ```sh
 git clone -o xinchen git@github.com:xinchen13/ysyx.git
 cd ysyx
