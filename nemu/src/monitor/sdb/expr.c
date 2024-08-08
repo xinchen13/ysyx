@@ -89,8 +89,10 @@ static bool make_token(char *e) {
         char *substr_start = e + position;
         int substr_len = pmatch.rm_eo;
 
+        // debug: print the rule matched to check the regex
+        IFDEF(CONFIG_EXPR_DEBUG_INFO,
         Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
-            i, rules[i].regex, position, substr_len, substr_len, substr_start);
+            i, rules[i].regex, position, substr_len, substr_len, substr_start);)
 
         position += substr_len;
 
@@ -136,6 +138,13 @@ static bool make_token(char *e) {
       return false;
     }
   }
+
+    // debug: prinf the tokens to check the function of make_token()
+    IFDEF(CONFIG_EXPR_DEBUG_INFO,
+        for(int y = 0; y < nr_token; y++){
+            Log("tokens[%d].type = %d, tokens[%d].str = %s\n",y,tokens[y].type,y,tokens[y].str);
+        }
+    )
 
   return true;
 }
