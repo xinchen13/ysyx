@@ -203,7 +203,7 @@ void sdb_mainloop() {
   }
 }
 
-// run this debug: $ make run > tools/gen-expr/build/result
+// run this debug: $ make run > tools/gen-expr/result
 void sdb_debug_expr() {
     FILE *fp;
     char *line = NULL;
