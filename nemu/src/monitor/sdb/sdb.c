@@ -94,7 +94,7 @@ static int cmd_x(char *args) {
         }
     }
     else {
-        printf("Scan the memory: [x N expr]");
+        printf("ERROR: [Usage] scan the memory: [x N expr]\n");
     }
     return 0;
 }
