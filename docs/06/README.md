@@ -140,3 +140,5 @@ int good = (nemu_state.state == NEMU_END && nemu_state.halt_ret == 0) || (nemu_s
 - 首先在`cmd_table`中添加`info`命令, 并设置参数`r`. 之后就在`cmd_info(char *args)`函数中利用`strcmp()`进行参数判断与调用`isa_reg_display()`
 - 在`isa_reg_display()`中通过`printf()`格式控制输出`pc`和通用寄存器的值 采用api提供的`FMT_WORD`来输出
 - 由于ISA为`rv32e`时只有16个寄存器, `riscv32/64`有32个, 因此通用寄存器数量在使用时参考 `nemu/src/isa/$ISA/include/isa-def.h` 中的定义
+
+### 扫描内存
