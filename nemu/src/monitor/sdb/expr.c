@@ -261,6 +261,36 @@ word_t eval(int p, int q, bool *success){
     else if (p == q) {
         sscanf(tokens[p].str, "%d", &result);
     }
+    else {
+        bool valid_parentheses = check_parentheses(p, q, success);
+        if (valid_parentheses && *success) {
+            // the expression is surrounded by a matched pair of parentheses
+            return eval(p+1, q-1, success);
+        }
+        else if (!valid_parentheses && *success) {
+            // find main operator  
+            int mp_position = get_main_operator(p, q, success);
+            // divide and conquer
+            switch (tokens[mp_position].type) {
+                case '+': 
+                    return eval(p, mp_position - 1, success) + eval(mp_position + 1, q, success);
+                case '-': 
+                    return eval(p, mp_position - 1, success) - eval(mp_position + 1, q, success);
+                case '*':
+                    return eval(p, mp_position - 1, success) * eval(mp_position + 1, q, success);
+                case '/':
+                    if (eval(mp_position + 1, q, success) == 0) {
+                        *success = false;
+                        printf("div by 0 !!!!\n");
+                        return 0;
+                    }
+                    return eval(p, mp_position - 1, success) / eval(mp_position + 1, q, success);
+        // unknow type: failed
+        default: 
+          return 0;
+            }
+        }
+    }
     return result;
 }
 
