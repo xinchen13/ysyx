@@ -16,12 +16,13 @@
 #include <cpu/cpu.h>
 
 void sdb_mainloop();
+void sdb_debug_expr();
 
 void engine_start() {
 #ifdef CONFIG_TARGET_AM
   cpu_exec(-1);
 #else
-  /* Receive commands from user. */
-  sdb_mainloop();
+    /* Receive commands from user. */
+     MUXDEF(CONFIG_EXPR_DIFFTEST, sdb_debug_expr(), sdb_mainloop());
 #endif
 }

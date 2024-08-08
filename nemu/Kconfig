@@ -130,6 +130,10 @@ config EXPR_DEBUG_INFO
     bool "Enable debug information of expr"
     default y
 
+config EXPR_DIFFTEST
+    bool "Enable difftest of expr (gen-expr & nemu)"
+    default y
+
 config TRACE
   bool "Enable tracer"
   default y

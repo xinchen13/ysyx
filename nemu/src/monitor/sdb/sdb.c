@@ -203,6 +203,56 @@ void sdb_mainloop() {
   }
 }
 
+// run this debug: $ make run > tools/gen-expr/build/result
+void sdb_debug_expr() {
+    FILE *fp;
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t read;
+    char *result_str = NULL;
+    word_t result_ref = 0;
+    char *args = NULL;
+
+    // open the file 
+    fp = fopen("./tools/gen-expr/input", "r");
+    if (fp == NULL)
+        exit(EXIT_FAILURE);
+
+    while ((read = getline(&line, &len, fp)) != -1) {
+        // printf("retrieved line of length %zu:\n", read);
+        // printf("%s", line);
+
+        // get the standard result to compare with
+        result_str = strtok(line, " ");
+        sscanf(result_str, "%u", &result_ref);
+        // get the expression
+        args = strtok(NULL, "\n");
+        Log("expr: %s", args);
+        // expression evaluation
+        bool success = true;
+        word_t result = expr(args, &success);
+        // output the result
+        if (success) {
+            if (result_ref == result) {
+                Log(" = %u(ref result) = %u(my nemu result), ", result_ref, result);
+                Log("PASS!\n");
+            }
+            else {
+                Log(" = %u(ref result) != %u(my nemu result), ", result_ref, result);
+                exit(EXIT_FAILURE);
+            }
+        }
+        else {
+            Log("Invalid expression!\n");
+        }
+    }
+    // close the file 
+    fclose(fp);
+    if (line)
+        free(line);
+    exit(EXIT_SUCCESS);
+}
+
 void init_sdb() {
   /* Compile the regular expressions. */
   init_regex();
