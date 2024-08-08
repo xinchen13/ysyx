@@ -99,6 +99,19 @@ static int cmd_x(char *args) {
     return 0;
 }
 
+static int cmd_p(char *args) {
+    bool success = true;    // default: true
+    // call expr() in monitor/sdb/expr.c
+    word_t result = expr(args, &success);
+    if (success) {
+        printf("%s = %d = " FMT_WORD "\n", args, result, result);
+    }
+    else {
+        printf("ERROR: [Usage] Expression evaluation: [p EXPR]\n");
+    }
+    return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -114,6 +127,7 @@ static struct {
   { "si", "Single step execution: [si N]", cmd_si },
   { "info", "Print program status: [info r / info w]", cmd_info },
   { "x", "Scan the memory: [x N expr]", cmd_x },
+  { "p", "Expression evaluation: [p EXPR]", cmd_p },
 
 };
 

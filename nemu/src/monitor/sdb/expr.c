@@ -20,10 +20,14 @@
  */
 #include <regex.h>
 
+#define TOKEN_STR_LEN_MAX 32
+#define TOKENS_COUNT_MAX 32
+
 enum {
   TK_NOTYPE = 256, TK_EQ,
 
   /* TODO: Add more token types */
+  TK_DEC,
 
 };
 
@@ -36,9 +40,15 @@ static struct rule {
    * Pay attention to the precedence level of different rules.
    */
 
-  {" +", TK_NOTYPE},    // spaces
-  {"\\+", '+'},         // plus
-  {"==", TK_EQ},        // equal
+  {" +",        TK_NOTYPE},     // spaces
+  {"[0-9]+",    TK_DEC},        // decimal numbers
+  {"\\+",       '+'},           // plus
+  {"-",         '-'},           // minus
+  {"\\*",       '*'},           // mul
+  {"\\/",       '/'},           // div
+  {"\\(",       '('},           // left bracket
+  {"\\)",       ')'},           // right bracket
+  {"==",        TK_EQ},         // equal
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -64,10 +74,10 @@ void init_regex() {
 
 typedef struct token {
   int type;
-  char str[32];
+  char str[TOKEN_STR_LEN_MAX];
 } Token;
 
-static Token tokens[32] __attribute__((used)) = {};
+static Token tokens[TOKENS_COUNT_MAX] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
 static bool make_token(char *e) {
@@ -84,8 +94,11 @@ static bool make_token(char *e) {
         char *substr_start = e + position;
         int substr_len = pmatch.rm_eo;
 
-        Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
+        // debug: print the rule matched to check the regex
+        IFDEF(CONFIG_EXPR_DEBUG_INFO,
+            Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
             i, rules[i].regex, position, substr_len, substr_len, substr_start);
+        )
 
         position += substr_len;
 
@@ -95,7 +108,39 @@ static bool make_token(char *e) {
          */
 
         switch (rules[i].token_type) {
-          default: TODO();
+            case TK_NOTYPE:
+                break;  // ignore space
+            case TK_DEC: 
+                tokens[nr_token].type = TK_DEC;
+                memcpy(tokens[nr_token].str, substr_start, substr_len);
+                tokens[nr_token].str[substr_len] = '\0';
+                nr_token++;
+                break;
+            case '+':
+                tokens[nr_token].type = '+';
+                nr_token++;
+                break;
+            case '-':
+                tokens[nr_token].type = '-';
+                nr_token++;
+                break;
+            case '*':
+                tokens[nr_token].type = '*';
+                nr_token++;
+                break;
+            case '/':
+                tokens[nr_token].type = '/';
+                nr_token++;
+                break;
+            case '(':
+                tokens[nr_token].type = '(';
+                nr_token++;
+                break;
+            case ')':
+                tokens[nr_token].type = ')';
+                nr_token++;
+                break;
+            default: TODO();
         }
 
         break;
@@ -107,6 +152,13 @@ static bool make_token(char *e) {
       return false;
     }
   }
+
+    // debug: prinf the tokens to check the function of make_token()
+    IFDEF(CONFIG_EXPR_DEBUG_INFO,
+        for (int y = 0; y < nr_token; y++) {
+            Log("tokens[%d].type = %d, tokens[%d].str = %s",y,tokens[y].type,y,tokens[y].str);
+        }
+    )
 
   return true;
 }
