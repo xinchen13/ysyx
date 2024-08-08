@@ -20,6 +20,9 @@
  */
 #include <regex.h>
 
+#define TOKEN_STR_LEN_MAX 32
+#define TOKENS_COUNT_MAX 32
+
 enum {
   TK_NOTYPE = 256, TK_EQ,
 
@@ -71,10 +74,10 @@ void init_regex() {
 
 typedef struct token {
   int type;
-  char str[32];
+  char str[TOKEN_STR_LEN_MAX];
 } Token;
 
-static Token tokens[32] __attribute__((used)) = {};
+static Token tokens[TOKENS_COUNT_MAX] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
 static bool make_token(char *e) {
@@ -160,15 +163,115 @@ static bool make_token(char *e) {
   return true;
 }
 
+int priority(int op) {
+    switch (op) { 
+        case '+':
+        case '-':
+            return 10; 
+        case '*':
+        case '/':
+            return 15;
+        default:
+            return -1;
+    }
+}
+
+// 1. confirm whether the expression is surrounded by a matched pair of parentheses
+// 2. whether the expression is valid 
+bool check_parentheses(int p, int q, bool *success) {
+    bool valid_parentheses = true;    // default: true
+    int flag = 0;
+    // traversal the expression
+    for (int index = p; index <= q; index++) {
+        if (index == p) {
+            if (tokens[index].type == '(') {
+                flag++;
+            }
+            else if (tokens[index].type == ')') {
+                flag--;
+                valid_parentheses = false;
+            }
+            else {
+                valid_parentheses = false;
+            }
+        }
+        else if (index == q) {
+            if (tokens[index].type == '(') {
+                flag++;
+                valid_parentheses = false;
+            }
+            else if (tokens[index].type == ')') {
+                flag--;
+            }
+            else {
+                valid_parentheses = false;
+            }
+        }
+        else {
+            if (tokens[index].type == '(') {
+                flag++;
+            }
+            else if (tokens[index].type == ')') {
+                flag--;
+            }
+        }
+
+        if (index != q && flag == 0) {
+            valid_parentheses = false;
+        }
+        else if (index == q && flag != 0) {
+            *success = false;
+        }
+        else if (flag < 0) {
+            *success = false;
+        }
+    }
+    return valid_parentheses;
+}
+
+// get the main operator 
+int get_main_operator(int p, int q, bool *success) {
+    int mp_position = -1;
+    int level = 0;
+    for (int i = p; i <= q; i++) {
+        if (tokens[i].type == '(') {
+            level++;
+        }
+        else if (tokens[i].type == ')') {
+            level--;
+        }
+        else if (level == 0 && priority(tokens[i].type) > 0 ) {
+            if (mp_position == -1 || (priority(tokens[mp_position].type) >= priority(tokens[i].type))) {
+            mp_position = i;
+            }
+        }
+    }
+    if (mp_position == -1) {
+        *success = false;
+        return 0;
+    }
+    return mp_position;
+}
+
+word_t eval(int p, int q, bool *success){
+    word_t result = 0;  // default: 0
+    if (p > q) {
+        *success = false;   // bad expression
+    }
+    else if (p == q) {
+        sscanf(tokens[p].str, "%d", &result);
+    }
+    return result;
+}
 
 word_t expr(char *e, bool *success) {
-  if (!make_token(e)) {
-    *success = false;
-    return 0;
-  }
+    if (!make_token(e)) {
+        *success = false;
+        return 0;
+    }
 
-  /* TODO: Insert codes to evaluate the expression. */
-  TODO();
-
-  return 0;
+    /* TODO: Insert codes to evaluate the expression. */
+    //   TODO();
+    word_t result = eval(0, nr_token-1, success);
+    return result;
 }

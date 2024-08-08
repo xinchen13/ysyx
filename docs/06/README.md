@@ -161,3 +161,9 @@ int good = (nemu_state.state == NEMU_END && nemu_state.halt_ret == 0) || (nemu_s
 其中`type`成员用于记录token的类型. 大部分token只要记录类型就可以了, 例如`+`, `-`, `*`, `/`, 但这对于有些token类型是不够的: 如果我们只记录了一个十进制整数token的类型, 在进行求值的时候我们还是不知道这个十进制整数是多少. 这时我们应该将token相应的子串也记录下来, `str`成员就是用来做这件事情的. 由于`str`成员的长度是有限的, 在存储对应的`str`字段时进行长度判断，防止缓冲区溢出. `tokens`数组用于按顺序存放已经被识别出的token信息, `nr_token`指示已经被识别出的token数目
 
 如果尝试了所有的规则都无法在当前位置识别出token, 识别将会失败, 框架代码会输出当前token的位置(当表达式过长导致在终端里输出需要换行时, `^`可能无法指示正确的位置, 此时通过输出的`position`值来定位token的位置). 这通常是待求值表达式并不合法造成的,`make_token()`函数将返回`false`, 表示词法分析失败
+
+**接下来在`expr.c`文件中`rules[]`完善算术表达式规则(添加了十进制数字、`+`,`-`,`*`,`/`,`(`,`)`运算符和空格); 并为`make_token()`函数添加对应的操作，通过switch语句把识别到的token保存到`tokens[]`数组中，至此就完成了算术表达式的词法分析**
+
+**在`expr.c`中添加了宏`TOKEN_STR_LEN_MAX`以及`TOKENS_COUNT_MAX`来控制记录的token字符串最大长度与表达式最大长度** 
+
+**在`$NEMU_HOME/Kconfig`添加了调试宏`CONFIG_EXPR_DEBUG_INFO`来控制词法分析中间过程的结果输出, 可以通过`make menuconfig`开关**
