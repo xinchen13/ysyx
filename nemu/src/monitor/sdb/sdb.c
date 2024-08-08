@@ -114,7 +114,6 @@ static int cmd_p(char *args) {
     else {
         printf("ERROR: [Usage] Expression evaluation: [p EXPR]\n");
     }
-
     return 0;
 }
 
