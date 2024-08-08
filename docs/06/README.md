@@ -228,7 +228,7 @@ P.S.:每次生成新的表达式需要对buf进行清零操作，具体为`buf[0
 - 在`nemu/src/monitor/sdb/sdb.c`中编写了`sdb_debug_expr()`函数，直接调用`expr()`函数验证input文件中的表达式，并将结果写入log
 - 在`Kconfig`中添加宏`EXPR_DIFFTEST`作为开关来设置debug模式,在`nemu/src/engine/interpreter/init.c`中通过`MUXDEF`宏来根据`EXPR_DIFFTEST`的值选择执行`sdb_mainloop()`还是`sdb_debug_expr()`
 - 若比较结果通过则输出`PASS`,否则中断程序(`assert(0)`)
-- 运行测试: `make run > tools/gen-expr/build/result`
+- 运行测试: `make run > tools/gen-expr/result`
 
 ### 功能扩展
 之前已经实现了算术表达式的求值, 但这些表达式都是由常数组成的, 它们的值不会发生变化. 这样的表达式在监视点中没有任何意义, 为了发挥监视点的功能, 首先需要扩展表达式求值的功能: 主要包括增加对十六进制数, 寄存器, ==, !=, &&和指针解引用的支持
