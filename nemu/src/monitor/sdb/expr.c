@@ -100,23 +100,30 @@ static bool make_token(char *e) {
          */
 
         switch (rules[i].token_type) {
+            case TK_NOTYPE:
+                break;  // ignore space
             case TK_DEC: 
                 tokens[nr_token].type = TK_DEC;
                 memcpy(tokens[nr_token].str, substr_start, substr_len);
                 tokens[nr_token].str[substr_len] = '\0';
                 nr_token++;
+                break;
             case '+':
                 tokens[nr_token].type = '+';
                 nr_token++;
+                break;
             case '-':
                 tokens[nr_token].type = '-';
                 nr_token++;
+                break;
             case '*':
                 tokens[nr_token].type = '*';
                 nr_token++;
+                break;
             case '/':
                 tokens[nr_token].type = '/';
                 nr_token++;
+                break;
             default: TODO();
         }
 
