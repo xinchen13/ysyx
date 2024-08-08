@@ -163,15 +163,145 @@ static bool make_token(char *e) {
   return true;
 }
 
+int priority(int op) {
+    switch (op) { 
+        case '+':
+        case '-':
+            return 10; 
+        case '*':
+        case '/':
+            return 15;
+        default:
+            return -1;
+    }
+}
+
+// 1. confirm whether the expression is surrounded by a matched pair of parentheses
+// 2. whether the expression is valid 
+bool check_parentheses(int p, int q, bool *success) {
+    bool valid_parentheses = true;    // default: true
+    int flag = 0;
+    // traversal the expression
+    for (int index = p; index <= q; index++) {
+        if (index == p) {
+            if (tokens[index].type == '(') {
+                flag++;
+            }
+            else if (tokens[index].type == ')') {
+                flag--;
+                valid_parentheses = false;
+            }
+            else {
+                valid_parentheses = false;
+            }
+        }
+        else if (index == q) {
+            if (tokens[index].type == '(') {
+                flag++;
+                valid_parentheses = false;
+            }
+            else if (tokens[index].type == ')') {
+                flag--;
+            }
+            else {
+                valid_parentheses = false;
+            }
+        }
+        else {
+            if (tokens[index].type == '(') {
+                flag++;
+            }
+            else if (tokens[index].type == ')') {
+                flag--;
+            }
+        }
+
+        if (index != q && flag == 0) {
+            valid_parentheses = false;
+        }
+        else if (index == q && flag != 0) {
+            *success = false;
+        }
+        else if (flag < 0) {
+            *success = false;
+        }
+    }
+    return valid_parentheses;
+}
+
+// get the main operator 
+int get_main_operator(int p, int q, bool *success) {
+    int mp_position = -1;
+    int level = 0;
+    for (int i = p; i <= q; i++) {
+        if (tokens[i].type == '(') {
+            level++;
+        }
+        else if (tokens[i].type == ')') {
+            level--;
+        }
+        else if (level == 0 && priority(tokens[i].type) > 0 ) {
+            if (mp_position == -1 || (priority(tokens[mp_position].type) >= priority(tokens[i].type))) {
+            mp_position = i;
+            }
+        }
+    }
+    if (mp_position == -1) {
+        *success = false;
+        return 0;
+    }
+    return mp_position;
+}
+
+word_t eval(int p, int q, bool *success){
+    word_t result = 0;  // default: 0
+    if (p > q) {
+        *success = false;   // bad expression
+    }
+    else if (p == q) {
+        sscanf(tokens[p].str, "%d", &result);
+    }
+    else {
+        bool valid_parentheses = check_parentheses(p, q, success);
+        if (valid_parentheses && *success) {
+            // the expression is surrounded by a matched pair of parentheses
+            return eval(p+1, q-1, success);
+        }
+        else if (!valid_parentheses && *success) {
+            // find main operator  
+            int mp_position = get_main_operator(p, q, success);
+            // divide and conquer
+            switch (tokens[mp_position].type) {
+                case '+': 
+                    return eval(p, mp_position - 1, success) + eval(mp_position + 1, q, success);
+                case '-': 
+                    return eval(p, mp_position - 1, success) - eval(mp_position + 1, q, success);
+                case '*':
+                    return eval(p, mp_position - 1, success) * eval(mp_position + 1, q, success);
+                case '/':
+                    if (eval(mp_position + 1, q, success) == 0) {
+                        *success = false;
+                        printf("div by 0 !!!!\n");
+                        return 0;
+                    }
+                    return eval(p, mp_position - 1, success) / eval(mp_position + 1, q, success);
+        // unknow type: failed
+        default: 
+          return 0;
+            }
+        }
+    }
+    return result;
+}
 
 word_t expr(char *e, bool *success) {
-  if (!make_token(e)) {
-    *success = false;
-    return 0;
-  }
+    if (!make_token(e)) {
+        *success = false;
+        return 0;
+    }
 
-  /* TODO: Insert codes to evaluate the expression. */
-  TODO();
-
-  return 0;
+    /* TODO: Insert codes to evaluate the expression. */
+    //   TODO();
+    word_t result = eval(0, nr_token-1, success);
+    return result;
 }
