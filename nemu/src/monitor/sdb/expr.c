@@ -14,6 +14,7 @@
 ***************************************************************************************/
 
 #include <isa.h>
+#include <memory/vaddr.h>
 
 /* We use the POSIX regex functions to process regular expressions.
  * Type 'man regex' for more information about POSIX regex functions.
@@ -27,7 +28,8 @@ enum {
   TK_NOTYPE = 256, TK_EQ,
 
   /* TODO: Add more token types */
-  TK_DEC, TK_NEG,
+  TK_DEC, TK_NEG, TK_HEX, TK_REG,
+  TK_NE, TK_AND, TK_DEREF,
 
 };
 
@@ -40,15 +42,20 @@ static struct rule {
    * Pay attention to the precedence level of different rules.
    */
 
-  {" +",        TK_NOTYPE},     // spaces
-  {"[0-9]+",    TK_DEC},        // decimal numbers
-  {"\\+",       '+'},           // plus
-  {"-",         '-'},           // minus
-  {"\\*",       '*'},           // mul
-  {"\\/",       '/'},           // div
-  {"\\(",       '('},           // left bracket
-  {"\\)",       ')'},           // right bracket
-  {"==",        TK_EQ},         // equal
+  {" +",                TK_NOTYPE},     // spaces
+  {"0x[0-9A-Fa-f]+",    TK_HEX},        // heximal numbers
+  {"[0-9]+",            TK_DEC},        // decimal numbers
+  {"\\$[\\$0-9a-z]+",   TK_REG},        // regs
+  {"\\+",               '+'},           // plus
+  {"-",                 '-'},           // minus or negative
+  {"\\*",               '*'},           // mul or deref
+  {"\\/",               '/'},           // div
+  {"\\(",               '('},           // left bracket
+  {"\\)",               ')'},           // right bracket
+  {"==",                TK_EQ},         // equal
+  {"!=",                TK_NE},         // not equal
+  {"&&",                TK_AND},        // and
+
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -110,6 +117,12 @@ static bool make_token(char *e) {
         switch (rules[i].token_type) {
             case TK_NOTYPE:
                 break;  // ignore space
+            case TK_HEX:
+                tokens[nr_token].type = TK_HEX;
+                memcpy(tokens[nr_token].str, substr_start, substr_len);
+                tokens[nr_token].str[substr_len] = '\0';
+                nr_token++;
+                break;
             case TK_DEC: 
                 tokens[nr_token].type = TK_DEC;
                 memcpy(tokens[nr_token].str, substr_start, substr_len);
@@ -127,7 +140,8 @@ static bool make_token(char *e) {
                 if (nr_token == 0 || tokens[nr_token-1].type == '(' || 
                 tokens[nr_token-1].type  == '+' || tokens[nr_token-1].type  == '-' || 
                 tokens[nr_token-1].type  == '*' || tokens[nr_token-1].type  == '/' ||
-                tokens[nr_token-1].type  == TK_NEG) {
+                tokens[nr_token-1].type  == TK_NEG || tokens[nr_token-1].type  == TK_NE ||
+                tokens[nr_token-1].type  == TK_EQ || tokens[nr_token-1].type  == TK_AND) {
                     tokens[nr_token].type = TK_NEG;
                     nr_token++;
                     break;
@@ -139,9 +153,22 @@ static bool make_token(char *e) {
                     break;
                 }
             case '*':
-                tokens[nr_token].type = '*';
-                nr_token++;
-                break;
+                // deref
+                if (nr_token == 0 || tokens[nr_token-1].type == '(' || 
+                tokens[nr_token-1].type  == '+' || tokens[nr_token-1].type  == '-' || 
+                tokens[nr_token-1].type  == '*' || tokens[nr_token-1].type  == '/' ||
+                tokens[nr_token-1].type  == TK_NEG || tokens[nr_token-1].type  == TK_NE ||
+                tokens[nr_token-1].type  == TK_EQ || tokens[nr_token-1].type  == TK_AND) {
+                    tokens[nr_token].type = TK_DEREF;
+                    nr_token++;
+                    break;
+                }
+                // mul
+                else {
+                    tokens[nr_token].type = '*';
+                    nr_token++;
+                    break;
+                }
             case '/':
                 tokens[nr_token].type = '/';
                 nr_token++;
@@ -152,6 +179,25 @@ static bool make_token(char *e) {
                 break;
             case ')':
                 tokens[nr_token].type = ')';
+                nr_token++;
+                break;
+            case TK_EQ:
+                tokens[nr_token].type = TK_EQ;
+                nr_token++;
+                break;
+            case TK_NE:
+                tokens[nr_token].type = TK_NE;
+                nr_token++;
+                break;
+            case TK_AND:
+                tokens[nr_token].type = TK_AND;
+                nr_token++;
+                break;
+            case TK_REG:
+                tokens[nr_token].type = TK_REG;
+                // drop '$'
+                memcpy(tokens[nr_token].str, substr_start+1, substr_len-1);
+                tokens[nr_token].str[substr_len-1] = '\0';
                 nr_token++;
                 break;
             default: TODO();
@@ -179,6 +225,11 @@ static bool make_token(char *e) {
 
 int priority(int op) {
     switch (op) { 
+        case TK_AND:
+            return 6;
+        case TK_EQ:
+        case TK_NE:
+            return 8;
         case '+':
         case '-':
             return 10; 
@@ -186,6 +237,7 @@ int priority(int op) {
         case '/':
             return 15;
         case TK_NEG:
+        case TK_DEREF:
             return 30;
         default:
             return -1;
@@ -258,7 +310,8 @@ int get_main_operator(int p, int q, bool *success) {
         }
         else if (level == 0 && priority(tokens[i].type) > 0 ) {
             if ((mp_position == -1) || 
-            ((priority(tokens[mp_position].type) >= priority(tokens[i].type)) && (tokens[i].type != TK_NEG))) {
+            ((priority(tokens[mp_position].type) >= priority(tokens[i].type)) && 
+            (tokens[i].type != TK_NEG)  && (tokens[i].type != TK_DEREF))) {
                 mp_position = i;
             }
         }
@@ -276,7 +329,24 @@ word_t eval(int p, int q, bool *success){
         *success = false;   // bad expression
     }
     else if (p == q) {
-        sscanf(tokens[p].str, "%d", &result);
+        // single token. return the value
+        switch (tokens[p].type) {
+            // dec
+            case TK_DEC:
+                sscanf(tokens[p].str, "%u", &result);
+                break;
+            // hex
+            case TK_HEX:
+                sscanf(tokens[p].str, "%x", &result);
+            break;
+            // reg
+            case TK_REG:
+                result = isa_reg_str2val(tokens[p].str, success);
+                break;
+            // default: failed
+            default:
+                *success = false;
+        }
     }
     else {
         bool valid_parentheses = check_parentheses(p, q, success);
@@ -304,6 +374,14 @@ word_t eval(int p, int q, bool *success){
                     return eval(p, mp_position - 1, success) / eval(mp_position + 1, q, success);
                 case TK_NEG:
                     return 0 - eval(mp_position + 1, q, success);
+                case TK_EQ:
+                    return eval(p, mp_position - 1, success) == eval(mp_position + 1, q, success);
+                case TK_NE:
+                    return eval(p, mp_position - 1, success) != eval(mp_position + 1, q, success);
+                case TK_AND:
+                    return eval(p, mp_position - 1, success) && eval(mp_position + 1, q, success);
+                case TK_DEREF:
+                    return vaddr_read(eval(mp_position + 1, q, success), 4);
                 // unknow type: failed
                 default: 
                     return 0;
