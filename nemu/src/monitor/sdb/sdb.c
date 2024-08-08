@@ -18,6 +18,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
+#include <memory/vaddr.h>
 
 static int is_batch_mode = false;
 
@@ -77,6 +78,27 @@ static int cmd_info(char *args) {
     return 0;
 }
 
+static int cmd_x(char *args) {
+    int scan_len = 1;                   // default scan len: 4 bytes
+    vaddr_t base_addr = 0x80000000;     // default scan addr: 0x80000000
+    vaddr_t addr = 0x80000000;
+    // parse args, get scan_len & scan_addr
+    char *scan_len_str = strtok(NULL, " ");
+    char *base_addr_str = strtok(NULL, " ");
+    if ((scan_len_str != NULL) && (base_addr_str != NULL)) {
+        sscanf(scan_len_str, "%d", &scan_len);
+        sscanf(base_addr_str, "%x", &base_addr);
+        for (int i = 0; i < scan_len; i++) {
+            addr = base_addr + i * 4;
+            printf("mem[" FMT_WORD "] = " FMT_WORD "\n", addr, vaddr_read(addr, 4));
+        }
+    }
+    else {
+        printf("Scan the memory: [x N expr]");
+    }
+    return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -91,6 +113,7 @@ static struct {
   /* TODO: Add more commands */
   { "si", "Single step execution: [si N]", cmd_si },
   { "info", "Print program status: [info r / info w]", cmd_info },
+  { "x", "Scan the memory: [x N expr]", cmd_x },
 
 };
 
