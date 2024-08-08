@@ -142,7 +142,7 @@ static bool make_token(char *e) {
     // debug: prinf the tokens to check the function of make_token()
     IFDEF(CONFIG_EXPR_DEBUG_INFO,
         for(int y = 0; y < nr_token; y++){
-            Log("tokens[%d].type = %d, tokens[%d].str = %s\n",y,tokens[y].type,y,tokens[y].str);
+            Log("tokens[%d].type = %d, tokens[%d].str = %s",y,tokens[y].type,y,tokens[y].str);
         }
     )
 
