@@ -27,7 +27,7 @@ enum {
   TK_NOTYPE = 256, TK_EQ,
 
   /* TODO: Add more token types */
-  TK_DEC,
+  TK_DEC, TK_NEG,
 
 };
 
@@ -121,9 +121,23 @@ static bool make_token(char *e) {
                 nr_token++;
                 break;
             case '-':
-                tokens[nr_token].type = '-';
-                nr_token++;
-                break;
+                // negative
+                // 1. the first sign of the expression
+                // 2. after +, -, *, /, TK_NEG, (
+                if (nr_token == 0 || tokens[nr_token-1].type == '(' || 
+                tokens[nr_token-1].type  == '+' || tokens[nr_token-1].type  == '-' || 
+                tokens[nr_token-1].type  == '*' || tokens[nr_token-1].type  == '/' ||
+                tokens[nr_token-1].type  == TK_NEG) {
+                    tokens[nr_token].type = TK_NEG;
+                    nr_token++;
+                    break;
+                }
+                // minus
+                else {
+                    tokens[nr_token].type = '-';
+                    nr_token++;
+                    break;
+                }
             case '*':
                 tokens[nr_token].type = '*';
                 nr_token++;
@@ -171,6 +185,8 @@ int priority(int op) {
         case '*':
         case '/':
             return 15;
+        case TK_NEG:
+            return 30;
         default:
             return -1;
     }
@@ -241,8 +257,9 @@ int get_main_operator(int p, int q, bool *success) {
             level--;
         }
         else if (level == 0 && priority(tokens[i].type) > 0 ) {
-            if (mp_position == -1 || (priority(tokens[mp_position].type) >= priority(tokens[i].type))) {
-            mp_position = i;
+            if ((mp_position == -1) || 
+            ((priority(tokens[mp_position].type) >= priority(tokens[i].type)) && (tokens[i].type != TK_NEG))) {
+                mp_position = i;
             }
         }
     }
@@ -285,9 +302,11 @@ word_t eval(int p, int q, bool *success){
                         return 0;
                     }
                     return eval(p, mp_position - 1, success) / eval(mp_position + 1, q, success);
-        // unknow type: failed
-        default: 
-          return 0;
+                case TK_NEG:
+                    return 0 - eval(mp_position + 1, q, success);
+                // unknow type: failed
+                default: 
+                    return 0;
             }
         }
     }
