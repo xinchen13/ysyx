@@ -21,7 +21,7 @@
 #include <regex.h>
 
 #define TOKEN_STR_LEN_MAX 32
-#define TOKENS_COUNT_MAX 32
+#define TOKENS_COUNT_MAX 1024
 
 enum {
   TK_NOTYPE = 256, TK_EQ,
