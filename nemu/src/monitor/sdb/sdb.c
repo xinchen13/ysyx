@@ -100,7 +100,8 @@ static int cmd_x(char *args) {
 }
 
 static int cmd_p(char *args) {
-    bool success = true;
+    bool success = true;    // default: true
+    // call expr() in monitor/sdb/expr.c
     word_t result = expr(args, &success);
     if (success) {
         printf("%s = %d = " FMT_WORD "\n", args, result, result);
