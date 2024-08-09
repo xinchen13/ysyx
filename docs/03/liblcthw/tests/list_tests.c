@@ -7,6 +7,24 @@ char *test1 = "test1 data";
 char *test2 = "test2 data";
 char *test3 = "test3 data";
 
+static List *list_1;
+static List *list_2;
+
+char *test_join() {
+    list_1 = List_create();
+    list_2 = List_create();
+    List_push(list_1, test1);
+    List_push(list_2, test2);
+    List_join(list_1, list_2);
+    mu_assert(List_count(list_1) == 2, "Wrong count on push.");
+    mu_assert(List_last(list_1) == test2, "Wrong last value");
+    mu_assert(List_first(list_1) == test1, "Wrong first value.");
+    List_destroy(list_1);
+    List_destroy(list_2);
+
+    return NULL;
+}
+
 
 char *test_create()
 {
@@ -106,6 +124,7 @@ char *all_tests() {
     mu_run_test(test_remove);
     mu_run_test(test_shift);
     mu_run_test(test_destroy);
+    mu_run_test(test_join);
 
     return NULL;
 }

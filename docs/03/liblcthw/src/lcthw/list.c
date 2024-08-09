@@ -29,8 +29,16 @@ void List_clear(List *list)
 
 void List_clear_destroy(List *list)
 {
-    List_clear(list);
-    List_destroy(list);
+    // List_clear(list);
+    // List_destroy(list);
+    LIST_FOREACH(list, first, next, cur) {
+        free(cur->value);
+        if(cur->prev) {
+            free(cur->prev);
+        }
+    }
+    free(list->last);
+    free(list);
 }
 
 
@@ -121,4 +129,12 @@ void *List_remove(List *list, ListNode *node)
 
 error:
     return result;
+}
+
+void List_join(List *list_dest, List *list_src)
+{
+    LIST_FOREACH(list_src, first, next, cur) {
+        List_push(list_dest, cur->value);
+    }
+    return;
 }
