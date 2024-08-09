@@ -105,7 +105,7 @@ static bool make_token(char *e) {
         IFDEF(CONFIG_EXPR_DEBUG_INFO,
             Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
             i, rules[i].regex, position, substr_len, substr_len, substr_start);
-        )
+        );
 
         position += substr_len;
 
@@ -218,7 +218,7 @@ static bool make_token(char *e) {
         for (int y = 0; y < nr_token; y++) {
             Log("tokens[%d].type = %d, tokens[%d].str = %s",y,tokens[y].type,y,tokens[y].str);
         }
-    )
+    );
 
   return true;
 }
