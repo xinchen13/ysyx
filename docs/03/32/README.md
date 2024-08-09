@@ -14,7 +14,7 @@
 - 优点: 插入和删除元素的操作快
 - 缺点: 遍历它涉及到处理沿途每个单个的指针，搜索、多数排序以及迭代元素慢
 
-首先编写头文件[list.h](./liblcthw/src/lcthw/list.h): `ListNode`是链表节点, `List`是链表
+首先编写头文件[list.h](../liblcthw/src/lcthw/list.h): `ListNode`是链表节点, `List`是链表
 
 每个`ListNode`都有三个成员:
 - 值，它是无类型的指针，存储我们想在链表中放置的东西
@@ -24,4 +24,11 @@
 
 `LIST_FOREACH`宏来生成迭代代码
 
-基于此，就可以在[list.c](./liblcthw/src/lcthw/list.c)中实现, 并在[list_tests.c](./liblcthw/tests/list_tests.c)中添加测试代码, 测试通过:
+基于此，就可以在[list.c](../liblcthw/src/lcthw/list.c)中实现, 并在[list_tests.c](../liblcthw/tests/list_tests.c)中添加测试代码, 测试通过:
+
+
+## 改进代码
+- 可以使用`LIST_FOREACH`并在循环中调用`free`来使`List_clear_destroy`更高效
+- 可以为一些先决条件添加断言，使其部结构`NULL`值作为`List *list`的参数
+- 可以添加不变了，来检查列表的内容始终正确，例如`count`永远不会`< 0`，如果`count > 0`，`first`不为`NULL`
+- 可以向头文件添加文档，在每个结构、函数和宏之前添加描述其作用的注释
