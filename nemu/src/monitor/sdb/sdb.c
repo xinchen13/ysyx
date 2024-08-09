@@ -82,15 +82,21 @@ static int cmd_x(char *args) {
     int scan_len = 1;                   // default scan len: 4 bytes
     vaddr_t base_addr = 0x80000000;     // default scan addr: 0x80000000
     vaddr_t addr;
+    bool eval_success;
     // parse args, get scan_len & scan_addr
     char *scan_len_str = strtok(NULL, " ");
-    char *base_addr_str = strtok(NULL, " ");
-    if ((scan_len_str != NULL) && (base_addr_str != NULL)) {
+    char *base_addr_expr = strtok(NULL, " ");
+    if ((scan_len_str != NULL) && (base_addr_expr != NULL)) {
         sscanf(scan_len_str, "%d", &scan_len);
-        sscanf(base_addr_str, "%x", &base_addr);
-        for (int i = 0; i < scan_len; i++) {
-            addr = base_addr + i * 4;
-            printf("mem[" FMT_WORD "] = " FMT_WORD "\n", addr, vaddr_read(addr, 4));
+        base_addr = expr(base_addr_expr, &eval_success);
+        if (eval_success) {
+            for (int i = 0; i < scan_len; i++) {
+                addr = base_addr + i * 4;
+                printf("mem[" FMT_WORD "] = " FMT_WORD "\n", addr, vaddr_read(addr, 4));
+            }
+        }
+        else {
+            printf("expr ERROR: wrong expression\n");
         }
     }
     else {
