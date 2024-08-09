@@ -8,3 +8,20 @@
 - 为算法编写的实现文件`.c`
 - 用于测试它们确保有效的单元测试
 - 从头文件自动生成的文档
+
+## 双向链表
+单向链表通过指向下一个或上一个元素的节点来工作. “双向”链表持有全部这两个指针，而“单向”链表只持有下一个元素的指针
+- 优点: 插入和删除元素的操作快
+- 缺点: 遍历它涉及到处理沿途每个单个的指针，搜索、多数排序以及迭代元素慢
+
+首先编写头文件[list.h](./liblcthw/src/lcthw/list.h): `ListNode`是链表节点, `List`是链表
+
+每个`ListNode`都有三个成员:
+- 值，它是无类型的指针，存储我们想在链表中放置的东西
+- `ListNode *next`指针，它指向另一个储存下一个元素的`ListNode`
+- `ListNode *prev`指针，它指向另一个储存上一个元素的`ListNode`
+`List`结构只是这些`ListNode`结构的容器，它们互联链接组成链型. 它跟踪链表的`count`，`first`和`last`元素
+
+`LIST_FOREACH`宏来生成迭代代码
+
+基于此，就可以在[list.c](./liblcthw/src/lcthw/list.c)中实现, 并在[list_tests.c](./liblcthw/tests/list_tests.c)中添加测试代码, 测试通过:
