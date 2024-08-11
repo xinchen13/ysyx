@@ -11,3 +11,45 @@
 
 ## YEMU
 以YEMU来理解计算机的指令执行: [YEMU:一个简单的CPU模拟器](./yemu.md)
+
+## 整理一条指令在NEMU中的执行过程
+- 使用 gdb 运行 nemu, 按 `s` 进入指令执行相关函数与宏的执行
+- 此以指令`00 00 02 97 auipc   t0, 0`为例，根据GDB的调试过程, 可以看到在取指阶段，`s->isa.inst.val = inst_fetch(&s->snpc, 4);`将指令读取到s结构体成员中
+- 之后在`decode_exec(Decode *s)`函数中，初始化了rd, src1, src2, imm，并维护了下一条动态指令
+- 之后`INSTPAT()`识别到`auipc`指令，根据指令设置了rs1, rs2与rd, 之后把U型立即数记录到操作数imm，执行`R(rd) = s->pc + imm`就完成了指令执行
+- 最后更新cpu.pc就完成了pc的更新，这就是`auipc`指令的执行过程
+
+## 运行第一个客户程序
+克隆一个新的子项目am-kernels(在PA1干过了); 准备交叉编译环境riscv32(64): `apt-get install g++-riscv64-linux-gnu binutils-riscv64-linux-gnu`
+
+在`am-kernels/tests/cpu-tests/`目录下准备了一些简单的测试用例. 在该目录下执行`make ARCH=$ISA-nemu ALL=xxx run`, 其中xxx为测试用例的名称(不包含`.c`后缀). 上述`make run`的命令最终会启动nemu, 并运行相应的客户程序. 如果需要使用GDB来调试nemu运行客户程序的情况, 可以执行以下命令`make ARCH=$ISA-nemu ALL=xxx gdb`
+
+报告错误: `/usr/riscv64-linux-gnu/include/gnu/stubs.h:8:11: fatal error: gnu/stubs-ilp32.h: No such file or directory`
+
+需要使用sudo权限修改以下文件:
+
+```
+--- /usr/riscv64-linux-gnu/include/gnu/stubs.h
++++ /usr/riscv64-linux-gnu/include/gnu/stubs.h
+@@ -5,5 +5,5 @@
+ #include <bits/wordsize.h>
+
+ #if __WORDSIZE == 32 && defined __riscv_float_abi_soft
+-# include <gnu/stubs-ilp32.h>
++//# include <gnu/stubs-ilp32.h>
+ #endif
+```
+
+之后运行，进入nemu后运行客户程序，报错，这是因为还没有实现0x00000413的指令, 因此,需要在nemu中添加指令
+
+实现了 `addi`, `jal`, `jalr`, `sw` 后能够正确运行 dummy 程序
+
+#### 为什么执行了未实现指令会出现上述报错信息
+RTFSC, 理解执行未实现指令的时候, nemu具体会怎么做:
+
+NEMU会解析到inv指令，继而调用INV宏进行处理，INV宏定义在`nemu/include/cpu/cpu.h`，调用了`invalid_inst(thispc)`函数进行处理，而这一函数又定义在`nemu/src/engine/interpreter/hostcall.c`中，给出了报错信息
+
+## 实现指令
+在`inst.c`中实现不同类型指令的译码和执行，并使用cpu-tests测试: 一般原则是"实现尽可能少的指令来进行下一次的测试". 框架代码已经实现了部分指令, 但可能未编写相应的模式匹配规则. 由于`string`和`hello-str`还需要实现klib相关内容才能运行, 目前可以先使用其它测试用例进行测试
+
+运行`make ARCH=riscv32-nemu run`, 结果如下:
