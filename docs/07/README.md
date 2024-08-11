@@ -39,3 +39,10 @@
 +//# include <gnu/stubs-ilp32.h>
  #endif
 ```
+
+之后运行，进入nemu后运行客户程序，报错，这是因为还没有实现0x00000413的指令, 因此,需要在nemu中添加指令
+
+#### 为什么执行了未实现指令会出现上述报错信息
+RTFSC, 理解执行未实现指令的时候, nemu具体会怎么做:
+
+NEMU会解析到inv指令，继而调用INV宏进行处理，INV宏定义在`nemu/include/cpu/cpu.h`，调用了`invalid_inst(thispc)`函数进行处理，而这一函数又定义在`nemu/src/engine/interpreter/hostcall.c`中，给出了报错信息
