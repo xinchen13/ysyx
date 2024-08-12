@@ -54,4 +54,4 @@ NEMU会解析到inv指令，继而调用INV宏进行处理，INV宏定义在`nem
 
 运行`make ARCH=riscv32-nemu run`, 结果如下:
 
-<img src="../../fig/Screenshot from 2024-08-12 11-04-43.png" width="500" />
+<img src="../../figs/Screenshot from 2024-08-12 11-04-43.png" width="500" />
