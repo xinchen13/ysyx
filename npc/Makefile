@@ -43,3 +43,5 @@ wave: $(BIN)
 
 clean:
 	rm -rf $(NPC_BUILD_DIR)
+
+include ../Makefile
