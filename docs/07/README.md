@@ -53,3 +53,5 @@ NEMU会解析到inv指令，继而调用INV宏进行处理，INV宏定义在`nem
 在`inst.c`中实现不同类型指令的译码和执行，并使用cpu-tests测试: 一般原则是"实现尽可能少的指令来进行下一次的测试". 框架代码已经实现了部分指令, 但可能未编写相应的模式匹配规则. 由于`string`和`hello-str`还需要实现klib相关内容才能运行, 目前可以先使用其它测试用例进行测试
 
 运行`make ARCH=riscv32-nemu run`, 结果如下:
+
+<img src="../../fig/Screenshot from 2024-08-12 11-04-43.png" width="500" />
