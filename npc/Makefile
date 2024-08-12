@@ -7,7 +7,7 @@ BIN = $(NPC_BUILD_DIR)/$(TOPNAME)
 # project source
 VSRCS = $(shell find $(abspath ./vsrc) -name "*.v" -or -name "*.sv")
 CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cc" -or -name "*.cpp")
-NPC_INC_PATH ?=
+NPC_INC_PATH ?= ./vsrc/inc
 
 # rules for verilator
 VERILATOR = verilator

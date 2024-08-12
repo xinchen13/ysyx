@@ -8,6 +8,7 @@
 !*.h
 !*.sv
 !*.vh
+!*.svh
 !*.cc
 !*.cpp
 !.gitignore
