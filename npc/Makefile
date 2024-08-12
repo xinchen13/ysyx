@@ -1,10 +1,12 @@
 TOPNAME = xcore
+
+# dump dir/files
 NPC_BUILD_DIR = ./build
 $(shell mkdir -p $(NPC_BUILD_DIR))
 OBJ_DIR = $(NPC_BUILD_DIR)/obj_dir
 BIN = $(NPC_BUILD_DIR)/$(TOPNAME)
 
-# project source
+# project source: csrc, vsrc, include
 VSRCS = $(shell find $(abspath ./vsrc) -name "*.v" -or -name "*.sv")
 CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cc" -or -name "*.cpp")
 NPC_INC_PATH ?= ./vsrc/inc
@@ -12,11 +14,9 @@ INCFLAGS = $(addprefix +incdir+, $(NPC_INC_PATH))
 
 # rules for verilator
 VERILATOR = verilator
-# may increase the risk of reset bugs in trade for performance
-VERILATOR_CFLAGS += -MMD --build -cc  \
+VERILATOR_CFLAGS += -MMD --build -cc --trace \
 	-O3 --x-assign fast --x-initial fast --noassert	\
 	$(INCFLAGS)
-
 CXXFLAGS += -DTOP_NAME="\"V$(TOPNAME)\""
 
 $(BIN): $(VSRCS) $(CSRCS)
