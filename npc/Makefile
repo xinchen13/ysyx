@@ -32,7 +32,7 @@ NPC_EXEC := $(BIN)
 all:
 	$(BIN)
 
-sim:
+sim: $(BIN)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	$(NPC_EXEC)
 
