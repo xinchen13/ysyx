@@ -7,15 +7,17 @@ BIN = $(NPC_BUILD_DIR)/$(TOPNAME)
 # project source
 VSRCS = $(shell find $(abspath ./vsrc) -name "*.v" -or -name "*.sv")
 CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cc" -or -name "*.cpp")
-NPC_INC_PATH ?=
+NPC_INC_PATH ?= ./vsrc/inc
+INCFLAGS = $(addprefix +incdir+, $(NPC_INC_PATH))
 
 # rules for verilator
 VERILATOR = verilator
 # may increase the risk of reset bugs in trade for performance
 VERILATOR_CFLAGS += -MMD --build -cc  \
-	-O3 --x-assign fast --x-initial fast --noassert	
-INCFLAGS = $(addprefix -I, $(NPC_INC_PATH))
-CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
+	-O3 --x-assign fast --x-initial fast --noassert	\
+	$(INCFLAGS)
+
+CXXFLAGS += -DTOP_NAME="\"V$(TOPNAME)\""
 
 $(BIN): $(VSRCS) $(CSRCS)
 	@rm -rf $(OBJ_DIR)
@@ -27,7 +29,6 @@ $(BIN): $(VSRCS) $(CSRCS)
 NPC_EXEC := $(BIN)
 
 .PHONY: all sim wave clean
-
 
 all:
 	$(BIN)
@@ -44,5 +45,5 @@ wave: $(BIN)
 
 clean:
 	rm -rf $(NPC_BUILD_DIR)
-	
+
 include ../Makefile
