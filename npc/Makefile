@@ -39,7 +39,7 @@ sim: $(BIN)
 wave: $(BIN)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	$(NPC_EXEC)
-	@gtkwave $(BUILD_DIR)/wave.vcd
+	@gtkwave $(NPC_BUILD_DIR)/wave.vcd
 
 
 clean:
