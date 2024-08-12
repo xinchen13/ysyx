@@ -63,7 +63,7 @@ int main(int argc, char** argv) {
     top->rst_n = 1;
 
     // set scope
-    const svScope scope = svGetScopeFromName("TOP.top");
+    const svScope scope = svGetScopeFromName("TOP.xcore");
     assert(scope); // Check for nullptr if scope not found
     svSetScope(scope);
     
