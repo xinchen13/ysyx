@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
     Verilated::traceEverOn(true);
     VerilatedVcdC* tfp = new VerilatedVcdC;
     top->trace(tfp, 99);
-    tfp->open("build/obj_dir/wave.vcd");
+    tfp->open("build/wave.vcd");
 
     initialize_memory(); // memory init
     top->clk = 1;
