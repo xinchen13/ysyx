@@ -30,12 +30,10 @@ NPC_EXEC := $(BIN)
 
 
 all:
-	# @echo "Write this Makefile by your self."
 	$(BIN)
 
-sim: $(BIN)
+sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	# @echo "Write this Makefile by your self."
 	$(NPC_EXEC)
 
 wave: $(BIN)
