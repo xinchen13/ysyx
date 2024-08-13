@@ -3,6 +3,12 @@
 static elfStFunc nemu_elfstfunc;
 
 void init_ftrace_stfunc(const char *elf_file) {
+    // elf_file == NULL
+    if (elf_file == NULL) {
+        printf("no valid elf_file, please check\n");
+        return;
+    }
+
     // init
     for (int i = 0; i < ELF_ST_FUNC_NUM; i++) {
         for (int j = 0; j < ELF_ST_NAME_LEN; j++) {
