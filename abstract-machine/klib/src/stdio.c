@@ -26,13 +26,13 @@ int sprintf(char *out, const char *fmt, ...) {
         if (*fmt == '%') {
             fmt++;  // skip '%'
             switch (*fmt) {
-                case 'c':
+                case 'c':   // char
                     char arg_char = va_arg(ap, int);
                     *p = arg_char;
                     p++;
                     count++;
                     break;
-                case 's':
+                case 's':   // string
                     char *arg = va_arg(ap, char*);
                     while (*arg) {
                         *p = *arg++;
@@ -40,7 +40,7 @@ int sprintf(char *out, const char *fmt, ...) {
                         count++;
                     }
                     break;
-                case 'd':
+                case 'd':   // decimal
                     int num = va_arg(ap, int);       
                     if (num < 0) {
                         *p = '-';
