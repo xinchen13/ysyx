@@ -25,7 +25,7 @@ AM(Abstract machine): 一个向程序提供运行时环境的库, 包含一组�
 ```
 
 ### 操作系统也有自己的运行时环境. AM和操作系统提供的运行时环境有什么不同呢? 为什么会有这些不同
-AM提供的是程序运行必不可少的API，是OS提供的接口的子集
+AM提供的是程序运行必不可少的API，以及一些常用库函数, 和OS提供的接口有交集
 
 ## 阅读 Makefile, 通过批处理模式运行
 阅读`abstract-machine`项目的Makefile
@@ -36,3 +36,14 @@ AM提供的是程序运行必不可少的API，是OS提供的接口的子集
 - 阅读Makefile，主要关注`make run`所对应的部分，查看传入参数, 注意到在`nemu/scripts/native.mk`中`ARGS`变量对应传给`main()`的参数. 在`Kconfig`文件中添加开关选项`BATCH_MODE`来控制开启与关闭; 在`nemu/scripts/native.mk`中通过`override ARGS += -b`来增加参数
 - `make menuconfig`开启批处理模式后回到`am-kernels`目录，输入`make ARCH=riscv32-nemu run`即按批处理模式进行测试; 同时，直接在nemu目录下`make run`也是默认打开批处理模式
 - 考虑到不在 `$AM_HOME/scripts/platform/nemu.mk` 中修改 `NEMUFLAGS` 是因为一方面直接运行nemu(运行内置客户程序)不能实现批处理模式，另一方面需要配置时需要修改源文件; 现在的实现方式把批处理模式作为nemu的功能统一管理了
+
+## 实现字符串处理函数
+实现`abstract-machine/klib/src/string.c`中列出的字符串处理函数, 让`cpu-tests`中的测试用例`string`可以成功运行
+
+- 通过`man 3 <str-function-name>`查看手册, `strcpy`, `strncpy`, `memset`, `memcpy`不允许dst和src的内存重叠(overlap), 但是 `memmove`需要支持overlap
+- 对于`memmove`的实现，通过在函数内的tmp临时变量作为缓冲，设置的大小为256(也就是说n > 256会产生未定义行为)
+- 一些函数的实现参考了手册中的example
+
+## 实现sprintf
+为了运行测试用例`hello-str`, 还需要实现`abstract-machine/klib/src/stdio.c`中的库函数`sprintf()`. 和其它库函数相比, `sprintf()`比较特殊, 因为它的参数数目是可变的. 为了获得数目可变的参数, 可以使用C库`stdarg.h`中提供的宏, 具体用法查阅`man stdarg`. 目前只需要实现`%s`和`%d`就能通过`hello-str`的测试了, 其它功能(包括位宽, 精度等)可以在将来需要的时候再自行实现
+
