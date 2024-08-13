@@ -126,6 +126,10 @@ endmenu
 
 menu "Testing and Debugging"
 
+config BATCH_MODE
+    bool "Enable nemu run in batch mode"
+    default n
+
 config WATCHPOINT
     bool "Enable watchpoint in sdb"
     default n
