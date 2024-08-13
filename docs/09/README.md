@@ -63,3 +63,6 @@ itrace (instruction trace), 它可以记录客户程序执行的每一条指令.
 - 指令环形缓冲区的初始化放在`$NEMU_HOME/src/monitor/monitor.c`中的`init_monitor()`函数中进行, 当没有配置itrace时不进行初始化节约时间开销
 - 在cpu执行过程中(即运行`cpu_exec()`), `trace_and_difftest()`函数通过`CONFIG_ITRACE`宏配置开关iringbuf的读写; 通过把128位的`s->logbuf`写入iringbuf来维护指令执行历史; 当遇到`nemu_state.state = NEMU_ABORT`时，输出缓冲区
 - 把`inst.c`中的指令注释后运行nemu，验证实现正确性
+
+## 内存访问的踪迹 - mtrace
+实现mtrace只需要在`paddr_read()`和`paddr_write()`中进行记录即可. 可以自行定义mtrace输出的格式. 和最后只输出一次的iringbuf不同, 程序一般会执行很多访存指令, 这意味着开启mtrace将会产生大量的输出, 因此最好可以在不需要的时候关闭mtrace
