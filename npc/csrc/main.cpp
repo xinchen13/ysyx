@@ -8,8 +8,7 @@
 #include "Vxcore__Dpi.h"
 #include "svdpi.h"
 
-
-#define MEMORY_SIZE 1024
+#define MEMORY_SIZE 256
 #define BASE_ADDRESS 0x80000000
 
 uint32_t memory[MEMORY_SIZE];

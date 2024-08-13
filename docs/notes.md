@@ -15,3 +15,4 @@
 - v与sv文件中 module 名
 - 文件名(.v与.sv文件)
 - $NPC_HOME/Makefile 中的 TOPNAME 等
+- verilator 仿真 c++ 文件
