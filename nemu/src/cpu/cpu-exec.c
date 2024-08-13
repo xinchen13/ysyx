@@ -42,6 +42,15 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
         IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); 
     }
     IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
+
+    // iringbuf
+    #ifdef CONFIG_ITRACE
+        write_iringbuf(_this->logbuf);  // write log to iringbuf
+        if (nemu_state.state == NEMU_ABORT) {
+        print_iringbuf();
+        }
+    #endif
+
     // enable check watchpoints
     IFDEF(CONFIG_WATCHPOINT,
         if (check_watchpoint() == 1 && nemu_state.state != NEMU_END) {
