@@ -85,6 +85,13 @@ ftrace是带有程序语义的trace, 用来追踪程序执行过程中的函数�
 - elf文件的解析参考`man 5 elf`与gpt
 - 在编译时需要为nemu传入一个ELF文件: 在`$AM_HOME/scripts/platform/nemu.mk`中添加`NEMUFLAGS += -e $(IMAGE).elf`, 作为传入nemu的文件
 - nemu实现解析elf文件, 通过在`parse_args()`中添加`-e`选项来指定elf文件; 在`init_monitor（）`中调用`init_ftrace_stfunc()`读取并保存符号表中的函数信息, 注意需要放在`parse_args()`之后, 不然读取不到参数
-- 关于区分jal和jalr函数调用, riscv手册如是说:
+- 考虑如何从jal和jalr指令中正确识别出函数调用指令和函数返回指令, riscv手册如是说:
 
 <img src="../../figs/windows-screenshot 2024-08-13 233254.png" />
+
+- 因此函数调用和函数返回的情况如下:
+    - 调用: jal, rd == x1/x5
+    - 调用: jalr, rd == x1/x5, rs1 != x1&x5
+    - 调用: jalr, rd == x1/x5, rs1 == rd
+    - 返回: jalr, rd != x1&x5, rs1 == x1/x5
+    - 先返回后调用: jalr, rd == x1/x5, rs1 == x1/x5, rd != rs1
