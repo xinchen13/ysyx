@@ -69,3 +69,6 @@ itrace (instruction trace), 它可以记录客户程序执行的每一条指令.
 
 - 直接在`paddr.c`的`paddr_read()`和`paddr_write()`函数中添加`Log()`输出，读内存输出读取地址和读字节数，写内存输出写地址、写字节数和写数据
 - 在`Kconfig`中添加`MTRACE`选项，可以通过menuconfig来打开或者关闭mtrace，并设置了`MTRACE_START`和`MTRACE_END`可以控制输出读写内容的地址范围
+
+## 函数调用的踪迹 - ftrace
+ftrace是带有程序语义的trace, 用来追踪程序执行过程中的函数调用和返回
