@@ -50,3 +50,16 @@ AM提供的是程序运行必不可少的API，以及一些常用库函数, 和O
 - `stdarg`提供了va_list类型与`va_start()`, `va_arg()`, `va_end()`三个宏，进行参数提取
 - 基本思路是检测格式化输出符号: 如果fmt中字符不涉及格式化输出, 则直接写入out中, 否则对类型进行匹配, 格式化输出对应的参数
 - 暂不支持形如`%%d`形式的参数与位宽, 精度等(分支pa2s2)
+
+## bug诊断的利器 - trace
+在软件工程领域, 记录程序执行过程的信息称为踪迹(trace), 可以判断程序的执行过程是否符合预期, 从而进行bug的诊断
+
+## 指令执行的踪迹 - itrace
+itrace (instruction trace), 它可以记录客户程序执行的每一条指令. 代码只要记录`inst_fetch()`取到的每一条指令, 然后调用llvm项目提供的反汇编功能(在`nemu/src/utils/disasm.cc`中实现). itrace会输出指令的PC, 二进制表示以及反汇编结果. 框架代码默认已经打开了这个功能, 客户程序执行的指令都会被记录到`build/nemu-log.txt`中
+
+一般来说只会关心出错现场前的trace, 可以维护一个环形缓冲区iringbuf来实现在客户程序出错(例如访问物理内存越界)的时候输出最近执行的若干条指令:
+
+- 分析trace的性质, 应当是作为nemu计算机运行的监视程序, 可以将其归类到monitor中, 因此参考watchpoint的实现方式:  在`$NEMU_HOME/src/monitor/sdb/sdb.h`中声明了`iRingBuffer`数据结构以及初始化、写入与输出的函数; 具体实现位于`$NEMU_HOME/src/monitor/sdb/iringbuf.c`, 在其中使用函数对静态变量nemu_iringbuf进行读写
+- 指令环形缓冲区的初始化放在`$NEMU_HOME/src/monitor/monitor.c`中的`init_monitor()`函数中进行, 当没有配置itrace时不进行初始化节约时间开销
+- 在cpu执行过程中(即运行`cpu_exec()`), `trace_and_difftest()`函数通过`CONFIG_ITRACE`宏配置开关iringbuf的读写; 通过把128位的`s->logbuf`写入iringbuf来维护指令执行历史; 当遇到`nemu_state.state = NEMU_ABORT`时，输出缓冲区
+- 把`inst.c`中的指令注释后运行nemu，验证实现正确性
