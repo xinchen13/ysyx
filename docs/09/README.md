@@ -69,3 +69,12 @@ itrace (instruction trace), 它可以记录客户程序执行的每一条指令.
 
 - 直接在`paddr.c`的`paddr_read()`和`paddr_write()`函数中添加`Log()`输出，读内存输出读取地址和读字节数，写内存输出写地址、写字节数和写数据
 - 在`Kconfig`中添加`MTRACE`选项，可以通过menuconfig来打开或者关闭mtrace，并设置了`MTRACE_START`和`MTRACE_END`可以控制输出读写内容的地址范围
+
+## 函数调用的踪迹 - ftrace
+ftrace是带有程序语义的trace, 用来追踪程序执行过程中的函数调用和返回: 在函数调用指令中记录目标地址, 表示将要调用某个函数; 然后在函数返回指令中记录当前PC, 表示将要从PC所在的函数返回
+
+### 消失的符号
+在`am-kernels/tests/cpu-tests/tests/add.c`中定义了宏`NR_DATA`, 同时也在`add()`函数中定义了局部变量c和形参a, b, 但在符号表中找不到和它们对应的表项, 为什么会这样?
+- 宏在预处理阶段已经被整合进代码文本中
+- 局部变量被分配了寄存器
+
