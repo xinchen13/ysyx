@@ -67,7 +67,7 @@ void paddr_write(paddr_t addr, int len, word_t data) {
     // memory trace
     #ifdef CONFIG_MTRACE
         if (addr >= CONFIG_MTRACE_START && addr <= CONFIG_MTRACE_END) {
-            Log("write, len = %3d (bytes), addr = " FMT_WORD " data = " FMT_WORD, len, addr, data);
+            Log("write, len = %3d (bytes), addr = " FMT_WORD ", data = " FMT_WORD, len, addr, data);
         }
     #endif 
     if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
