@@ -104,51 +104,54 @@ static int parse_args(int argc, char *argv[]) {
 }
 
 void init_monitor(int argc, char *argv[]) {
-  /* Perform some global initialization. */
-  IFDEF(CONFIG_ITRACE, init_iringbuf()); // initialize itrace ringbuffer
+    /* Perform some global initialization. */
 
-  IFDEF(CONFIG_FTRACE, init_ftrace_stfunc(elf_file));
+    // initialize itrace ringbuffer
+    IFDEF(CONFIG_ITRACE, init_iringbuf()); 
 
-  /* Parse arguments. */
-  parse_args(argc, argv);
+    /* Parse arguments. */
+    parse_args(argc, argv);
 
-  /* Set random seed. */
-  init_rand();
+    // read elf file to get function infomation
+    IFDEF(CONFIG_FTRACE, init_ftrace_stfunc(elf_file));
 
-  /* Open the log file. */
-  init_log(log_file);
+    /* Set random seed. */
+    init_rand();
 
-  /* Initialize memory. */
-  init_mem();
+    /* Open the log file. */
+    init_log(log_file);
 
-  /* Initialize devices. */
-  IFDEF(CONFIG_DEVICE, init_device());
+    /* Initialize memory. */
+    init_mem();
 
-  /* Perform ISA dependent initialization. */
-  init_isa();
+    /* Initialize devices. */
+    IFDEF(CONFIG_DEVICE, init_device());
 
-  /* Load the image to memory. This will overwrite the built-in image. */
-  long img_size = load_img();
+    /* Perform ISA dependent initialization. */
+    init_isa();
 
-  /* Initialize differential testing. */
-  init_difftest(diff_so_file, img_size, difftest_port);
+    /* Load the image to memory. This will overwrite the built-in image. */
+    long img_size = load_img();
 
-  /* Initialize the simple debugger. */
-  init_sdb();
+    /* Initialize differential testing. */
+    init_difftest(diff_so_file, img_size, difftest_port);
 
-#ifndef CONFIG_ISA_loongarch32r
-  IFDEF(CONFIG_ITRACE, init_disasm(
-    MUXDEF(CONFIG_ISA_x86,     "i686",
-    MUXDEF(CONFIG_ISA_mips32,  "mipsel",
-    MUXDEF(CONFIG_ISA_riscv,
-      MUXDEF(CONFIG_RV64,      "riscv64",
-                               "riscv32"),
-                               "bad"))) "-pc-linux-gnu"
-  ));
-#endif
+    /* Initialize the simple debugger. */
+    init_sdb();
 
-  /* Display welcome message. */
-  welcome();
+    #ifndef CONFIG_ISA_loongarch32r
+    IFDEF(CONFIG_ITRACE, init_disasm(
+        MUXDEF(CONFIG_ISA_x86,     "i686",
+        MUXDEF(CONFIG_ISA_mips32,  "mipsel",
+        MUXDEF(CONFIG_ISA_riscv,
+        MUXDEF(CONFIG_RV64,      "riscv64",
+                                "riscv32"),
+                                "bad"))) "-pc-linux-gnu"
+    ));
+    #endif
+
+    /* Display welcome message. */
+    welcome();
 }
 #else // CONFIG_TARGET_AM
 static long load_img() {
