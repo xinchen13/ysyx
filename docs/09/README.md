@@ -40,5 +40,9 @@ AM提供的是程序运行必不可少的API，以及一些常用库函数, 和O
 ## 实现字符串处理函数
 实现`abstract-machine/klib/src/string.c`中列出的字符串处理函数, 让`cpu-tests`中的测试用例`string`可以成功运行
 
+- 通过`man 3 <str-function-name>`查看手册, `strcpy`, `strncpy`, `memset`, `memcpy`不允许dst和src的内存重叠(overlap), 但是 `memmove`需要支持overlap
+- 对于`memmove`的实现，通过在函数内的tmp临时变量作为缓冲，设置的大小为256(也就是说n > 256会产生未定义行为)
+- 一些函数的实现参考了手册中的example
+
 ## 实现sprintf
 为了运行测试用例`hello-str`, 还需要实现`abstract-machine/klib/src/stdio.c`中的库函数`sprintf()`. 和其它库函数相比, `sprintf()`比较特殊, 因为它的参数数目是可变的. 为了获得数目可变的参数, 可以使用C库`stdarg.h`中提供的宏, 具体用法查阅`man stdarg`. 目前只需要实现`%s`和`%d`就能通过`hello-str`的测试了, 其它功能(包括位宽, 精度等)可以在将来需要的时候再自行实现
