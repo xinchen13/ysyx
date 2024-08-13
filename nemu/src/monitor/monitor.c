@@ -45,6 +45,7 @@ void sdb_set_batch_mode();
 static char *log_file = NULL;
 static char *diff_so_file = NULL;
 static char *img_file = NULL;
+static char *elf_file = NULL;
 static int difftest_port = 1234;
 
 static long load_img() {
@@ -73,23 +74,26 @@ static int parse_args(int argc, char *argv[]) {
   const struct option table[] = {
     {"batch"    , no_argument      , NULL, 'b'},
     {"log"      , required_argument, NULL, 'l'},
+    {"elf"      , required_argument, NULL, 'e'},
     {"diff"     , required_argument, NULL, 'd'},
     {"port"     , required_argument, NULL, 'p'},
     {"help"     , no_argument      , NULL, 'h'},
     {0          , 0                , NULL,  0 },
   };
   int o;
-  while ( (o = getopt_long(argc, argv, "-bhl:d:p:", table, NULL)) != -1) {
+  while ( (o = getopt_long(argc, argv, "-bhl:e:d:p:", table, NULL)) != -1) {
     switch (o) {
       case 'b': sdb_set_batch_mode(); break;
       case 'p': sscanf(optarg, "%d", &difftest_port); break;
       case 'l': log_file = optarg; break;
+      case 'e': elf_file = optarg; break;
       case 'd': diff_so_file = optarg; break;
       case 1: img_file = optarg; return 0;
       default:
         printf("Usage: %s [OPTION...] IMAGE [args]\n\n", argv[0]);
         printf("\t-b,--batch              run with batch mode\n");
         printf("\t-l,--log=FILE           output log to FILE\n");
+        printf("\t-e,--elf=FILE           get ftrace elf to elf_file\n");
         printf("\t-d,--diff=REF_SO        run DiffTest with reference REF_SO\n");
         printf("\t-p,--port=PORT          run DiffTest with port PORT\n");
         printf("\n");
@@ -100,49 +104,55 @@ static int parse_args(int argc, char *argv[]) {
 }
 
 void init_monitor(int argc, char *argv[]) {
-  /* Perform some global initialization. */
-  IFDEF(CONFIG_ITRACE, init_iringbuf()); // initialize itrace ringbuffer
+    /* Perform some global initialization. */
 
-  /* Parse arguments. */
-  parse_args(argc, argv);
+    // initialize itrace ringbuffer
+    IFDEF(CONFIG_ITRACE, init_iringbuf()); 
 
-  /* Set random seed. */
-  init_rand();
+    /* Parse arguments. */
+    parse_args(argc, argv);
 
-  /* Open the log file. */
-  init_log(log_file);
+    // read elf file to get function infomation
+    IFDEF(CONFIG_FTRACE, init_ftrace_stfunc(elf_file));
+    display_elfstfunc();
 
-  /* Initialize memory. */
-  init_mem();
+    /* Set random seed. */
+    init_rand();
 
-  /* Initialize devices. */
-  IFDEF(CONFIG_DEVICE, init_device());
+    /* Open the log file. */
+    init_log(log_file);
 
-  /* Perform ISA dependent initialization. */
-  init_isa();
+    /* Initialize memory. */
+    init_mem();
 
-  /* Load the image to memory. This will overwrite the built-in image. */
-  long img_size = load_img();
+    /* Initialize devices. */
+    IFDEF(CONFIG_DEVICE, init_device());
 
-  /* Initialize differential testing. */
-  init_difftest(diff_so_file, img_size, difftest_port);
+    /* Perform ISA dependent initialization. */
+    init_isa();
 
-  /* Initialize the simple debugger. */
-  init_sdb();
+    /* Load the image to memory. This will overwrite the built-in image. */
+    long img_size = load_img();
 
-#ifndef CONFIG_ISA_loongarch32r
-  IFDEF(CONFIG_ITRACE, init_disasm(
-    MUXDEF(CONFIG_ISA_x86,     "i686",
-    MUXDEF(CONFIG_ISA_mips32,  "mipsel",
-    MUXDEF(CONFIG_ISA_riscv,
-      MUXDEF(CONFIG_RV64,      "riscv64",
-                               "riscv32"),
-                               "bad"))) "-pc-linux-gnu"
-  ));
-#endif
+    /* Initialize differential testing. */
+    init_difftest(diff_so_file, img_size, difftest_port);
 
-  /* Display welcome message. */
-  welcome();
+    /* Initialize the simple debugger. */
+    init_sdb();
+
+    #ifndef CONFIG_ISA_loongarch32r
+    IFDEF(CONFIG_ITRACE, init_disasm(
+        MUXDEF(CONFIG_ISA_x86,     "i686",
+        MUXDEF(CONFIG_ISA_mips32,  "mipsel",
+        MUXDEF(CONFIG_ISA_riscv,
+        MUXDEF(CONFIG_RV64,      "riscv64",
+                                "riscv32"),
+                                "bad"))) "-pc-linux-gnu"
+    ));
+    #endif
+
+    /* Display welcome message. */
+    welcome();
 }
 #else // CONFIG_TARGET_AM
 static long load_img() {

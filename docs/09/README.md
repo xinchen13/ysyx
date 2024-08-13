@@ -71,4 +71,20 @@ itrace (instruction trace), 它可以记录客户程序执行的每一条指令.
 - 在`Kconfig`中添加`MTRACE`选项，可以通过menuconfig来打开或者关闭mtrace，并设置了`MTRACE_START`和`MTRACE_END`可以控制输出读写内容的地址范围
 
 ## 函数调用的踪迹 - ftrace
-ftrace是带有程序语义的trace, 用来追踪程序执行过程中的函数调用和返回
+ftrace是带有程序语义的trace, 用来追踪程序执行过程中的函数调用和返回: 在函数调用指令中记录目标地址, 表示将要调用某个函数; 然后在函数返回指令中记录当前PC, 表示将要从PC所在的函数返回
+
+### 消失的符号
+在`am-kernels/tests/cpu-tests/tests/add.c`中定义了宏`NR_DATA`, 同时也在`add()`函数中定义了局部变量c和形参a, b, 但在符号表中找不到和它们对应的表项, 为什么会这样?
+- 宏在预处理阶段已经被整合进代码文本中
+- 局部变量被分配了寄存器
+
+### 实现ftrace
+- `CONFIG_FTRACE`宏配置ftrace的开关
+- 首先实现ELF文件的读取，将解析后的符号表和字符串表信息保存在自定义的数据结构elfStFunc中实现, 在`$NEMU_HOME/src/monitor/sdb/sdb.h`中声明, 包括函数名, 地址, 大小和函数数量. 还有一些函数
+- 具体实现与iringbuf类似，在`$NEMU_HOME/src/monitor/sdb/ftrace.c`中定义一个静态变量; 实现函数, 包括读取、保存、打印以及输出ftrace信息
+- elf文件的解析参考`man 5 elf`与gpt
+- 在编译时需要为nemu传入一个ELF文件: 在`$AM_HOME/scripts/platform/nemu.mk`中添加`NEMUFLAGS += -e $(IMAGE).elf`, 作为传入nemu的文件
+- nemu实现解析elf文件, 通过在`parse_args()`中添加`-e`选项来指定elf文件; 在`init_monitor（）`中调用`init_ftrace_stfunc()`读取并保存符号表中的函数信息, 注意需要放在`parse_args()`之后, 不然读取不到参数
+- 关于区分jal和jalr函数调用, riscv手册如是说:
+
+<img src="../../figs/windows-screenshot 2024-08-13 233254.png" width="580" />
