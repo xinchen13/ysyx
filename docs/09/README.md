@@ -58,3 +58,8 @@ AM提供的是程序运行必不可少的API，以及一些常用库函数, 和O
 itrace (instruction trace), 它可以记录客户程序执行的每一条指令. 代码只要记录`inst_fetch()`取到的每一条指令, 然后调用llvm项目提供的反汇编功能(在`nemu/src/utils/disasm.cc`中实现). itrace会输出指令的PC, 二进制表示以及反汇编结果. 框架代码默认已经打开了这个功能, 客户程序执行的指令都会被记录到`build/nemu-log.txt`中
 
 一般来说只会关心出错现场前的trace, 可以维护一个环形缓冲区iringbuf来实现在客户程序出错(例如访问物理内存越界)的时候输出最近执行的若干条指令:
+
+- 分析trace的性质, 应当是作为nemu计算机运行的监视程序, 可以将其归类到monitor中, 因此参考watchpoint的实现方式:  在`$NEMU_HOME/src/monitor/sdb/sdb.h`中声明了`iRingBuffer`数据结构以及初始化、写入与输出的函数; 具体实现位于`$NEMU_HOME/src/monitor/sdb/iringbuf.c`, 在其中使用函数对静态变量nemu_iringbuf进行读写
+- 指令环形缓冲区的初始化放在`$NEMU_HOME/src/monitor/monitor.c`中的`init_monitor()`函数中进行, 当没有配置itrace时不进行初始化节约时间开销
+- 在cpu执行过程中(即运行`cpu_exec()`), `trace_and_difftest()`函数通过`CONFIG_ITRACE`宏配置开关iringbuf的读写; 通过把128位的`s->logbuf`写入iringbuf来维护指令执行历史; 当遇到`nemu_state.state = NEMU_ABORT`时，输出缓冲区
+- 把`inst.c`中的指令注释后运行nemu，验证实现正确性

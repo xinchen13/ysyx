@@ -18,10 +18,11 @@ void write_iringbuf(const char *data) {
 
 void print_iringbuf() {
     for (int current_ptr = 0; current_ptr < IRINGBUF_SIZE; current_ptr++) {
-    if (current_ptr == nemu_iringbuf.write_ptr){
-        Log(" --> %s", nemu_iringbuf.data[current_ptr]);
-    }
-    else
-        Log("     %s", nemu_iringbuf.data[current_ptr]);
+        if (current_ptr == nemu_iringbuf.write_ptr) {
+            Log(" --> %s", nemu_iringbuf.data[current_ptr]);
+        }
+        else {
+            Log("     %s", nemu_iringbuf.data[current_ptr]);
+        } 
     }
 }
