@@ -87,4 +87,4 @@ ftrace是带有程序语义的trace, 用来追踪程序执行过程中的函数�
 - nemu实现解析elf文件, 通过在`parse_args()`中添加`-e`选项来指定elf文件; 在`init_monitor（）`中调用`init_ftrace_stfunc()`读取并保存符号表中的函数信息, 注意需要放在`parse_args()`之后, 不然读取不到参数
 - 关于区分jal和jalr函数调用, riscv手册如是说:
 
-<img src="../../figs/windows-screenshot 2024-08-13 233254.png" width="580" />
+<img src="../../figs/windows-screenshot 2024-08-13 233254.png" />
