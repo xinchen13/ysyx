@@ -242,7 +242,7 @@ int sprintf(char *out, const char *fmt, ...) {
                         *p = ' ';
                         p--;
                     }
-                    p = p + real_width; 
+                    p = p + real_width + 1; 
                     length += real_width;
                     break;
                 default:
