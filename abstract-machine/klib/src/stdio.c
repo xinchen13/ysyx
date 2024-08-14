@@ -6,7 +6,84 @@
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
 int printf(const char *fmt, ...) {
-    panic("Not implemented");
+    // panic("Not implemented");
+    va_list ap;
+    va_start(ap, fmt);
+    char str_tmp[128];
+    char *p = str_tmp;
+    char *rp = str_tmp;
+    int count = 0;  // the size of str
+
+    while (*fmt) {
+        if (*fmt == '%') {
+            fmt++;  // skip '%'
+            switch (*fmt) {
+                case 'c':
+                    char arg_char = va_arg(ap, int);
+                    *p = arg_char;
+                    p++;
+                    count++;
+                    break;
+                case 's':
+                    char *arg = va_arg(ap, char*);
+                    while (*arg) {
+                        *p = *arg++;
+                        p++;
+                        count++;
+                    }
+                    break;
+                case 'd':
+                    int num = va_arg(ap, int);       
+                    if (num < 0) {
+                        *p = '-';
+                        p++;
+                        count++;
+                        num = -num;
+                    }
+                    else if (num == 0) {
+                        *p = '0';
+                        p++;
+                        count++;
+                        break;
+                    }
+                    int num_digits = 0;
+                    int temp = num;
+                    while (temp > 0) {
+                        temp /= 10;
+                        num_digits++;
+                    }
+                    p = p + num_digits - 1;
+                    while (num > 0) {
+                        *p = '0' + num % 10;
+                        p--;
+                        num /= 10;
+                    }
+                    p = p + num_digits + 1; 
+                    count += num_digits;
+                    break;
+                default:
+                    *p = *fmt;
+                    p++;
+                    count++;
+                    break;
+            }
+        } 
+        else {
+            *p = *fmt;
+            p++;
+            count++;
+        }
+        fmt++;
+    }
+    *p = '\0';  // 添加字符串结束标志
+    va_end(ap);
+
+    while (*rp != '\0') {
+        putch(*rp);
+        rp++;
+    }
+
+    return count;
 }
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
