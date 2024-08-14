@@ -85,7 +85,7 @@ void *memset(void *s, int c, size_t n) {
     // pointed to by s with the constant byte c.
     unsigned char *p = s;
     while (n > 0) {
-        // *p = (unsigned char)c;
+        *p = (unsigned char)c;
         p++;
         n--;
     }
