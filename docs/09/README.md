@@ -109,3 +109,16 @@ trace可以用于性能优化:
 ## 测试klib
 框架代码编译到native的时候默认链接到glibc, 通过在`abstract-machine/klib/include/klib.h`中通过定义宏`__NATIVE_USE_KLIB__`来把库函数链接到klib
 
+- 在`am-kernels/tests/klib-tests`中编写测试klib的代码
+- 可以先在native上用glibc的库函数来测试编写的测试代码, 然后在native上用这些测试代码来测试klib实现, 最后再在NEMU上运行这些测试代码来测试NEMU实现
+
+## Differential Testing
+见 [difftest](./difftest.md)
+
+## 一键回归测试
+`cpu-tests`的回归测试: 运行 `make ARCH=riscv32-nemu run`
+
+## 捕捉死循环
+NEMU除了作为模拟器之外, 还具有简单的调试功能, 可以设置断点, 查看程序状态. 如果需要添加如下功能: 当用户程序陷入死循环时, 让用户程序暂停下来, 并输出相应的提示信息, 该如何实现?
+
+stfw: 为了防止用户程序陷入死循环，或者不调用系统服务且不将控制返回给操作系统，可以使用定时器，设置指定周期后中断计算机
