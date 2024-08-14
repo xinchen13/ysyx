@@ -124,12 +124,23 @@ NEMU作为一个平台, 设备的行为是与ISA无关的, 因此我们只需要
 
 - dhrystone跑分结果:
 
-<img src="../../fig/Screenshot from 2024-02-26 14-18-59.png" width="600" />
+<img src="../../figs/nemu-dhrystone.png" width="600" />
 
 - coremark跑分结果:
 
-<img src="../../fig/Screenshot from 2024-02-26 14-22-04.png" width="600" />
+<img src="../../figs/nemu-coremark.png" width="600" />
 
 - microbench的ref规模跑分结果(在参考值范围内):
 
-<img src="../../fig/Screenshot from 2024-02-26 14-25-11.png" width="600" />
+<img src="../../figs/nemu-microbench-ref.png" width="600" />
+
+### 运行具有演示性的小程序
+为了运行它们, 需要实现简单的版的klib中的`malloc()`和`free()`
+
+- 在`malloc()`中维护一个上次分配内存位置的变量addr, 每次调用`malloc()`时, 就返回`[addr, addr + size)`这段空间. addr的初值设为`heap.start`, 表示从堆区开始分配. 具体实现参考了microbench中的`bench_alloc`和`bench_reset()`函数
+- `malloc()`对返回的地址要求对于所有的数据类型对齐，最大为64位，因此选择8字节对齐
+- `free()`直接留空, 表示只分配不释放, 目前NEMU中的可用内存足够运行各种测试程序
+- 修改`am-kernels/kernels/demo/include/io.h`中的代码, 把`HAS_GUI`宏注释掉, 演示程序就会将画图通过字符输出到终端
+- 在 `am-kernels/kernels/demo/` 中通过 `make ARCH=riscv32-nemu run mainargs=*` 即可运行查看结果(其中*对应程序序号，具体rtfsc)
+- 在输出时需要支持`%c`,即字符的输出，在klib的`stdio.c`中添加相关支持
+- 在`am-kernels/kernels/bad-apple/`目录下还可以运行字符版 bad apple
