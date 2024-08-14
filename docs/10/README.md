@@ -95,6 +95,5 @@ NEMU作为一个平台, 设备的行为是与ISA无关的, 因此我们只需要
 ### 实现printf
 有了`putch()`, 就可以在klib中实现`printf()`了. 之前已经实现了`sprintf()`, 它和`printf()`的功能非常相似, 这意味着它们之间会有不少重复的代码. 实现了`printf()`之后, 就可以在AM程序中使用输出调试法了
 
-- 实现printf后，通过了在 `am-kernels/tests/klib-tests/printf` 中编写的测试程序
 - 运行`am-kernels/tests/alu-tests/`目录下alu-tests: `make ARCH=riscv32-nemu run`, 发现这是个alu测试用例生成器，如果没有错误不会调用printf函数，也就不会报错，通过给`gen_alu_test.c`注入错误，就能够验证printf的正确性
 - 位宽, 精度等需要的时候再实现
