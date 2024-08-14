@@ -170,7 +170,7 @@ int sprintf(char *out, const char *fmt, ...) {
     char *p = out;
     const char *fmt_ptr = fmt;
     int length = 0;  // the size of str
-    int width = 0;
+    int width;
 
     while (*fmt_ptr) {
         if (*fmt_ptr == '%') {
@@ -226,7 +226,7 @@ int sprintf(char *out, const char *fmt, ...) {
                     int real_width = (width > num_digits) ? width : num_digits;
                     int width_counter = real_width;
                     p = p + real_width - 1;
-                    while (num > 0) {
+                    while (num >= 0) {
                         *p = '0' + num % 10;
                         p--;
                         width_counter--;
