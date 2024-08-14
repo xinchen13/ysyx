@@ -23,4 +23,13 @@ void difftest_init();
 
 NEMU的框架代码已经准备好DiffTest的功能了, 在menuconfig中可以打开相应的选项
 
-- 安装device-tree-compiler: `sudo apt-get install device-tree-compiler`
+riscv32对应的ref为Spike. Spike是RISC-V社区的一款全系统模拟器, 它的工作原理与NEMU非常类似. 已经在Spike中增加了少量接口来实现DiffTest的API. 为了运行Spike, 还需要安装device-tree-compiler: `sudo apt-get install device-tree-compiler`
+
+`nemu/tools/difftest.mk`中已经设置了相应的规则和参数, 会自动进入`nemu/tools/`下的相应子目录`spike-diff`编译动态库, 并把其作为NEMU的`--diff`选项的参数传入. 打开DiffTest后, `nemu/src/cpu/difftest/dut.c`中的`init_difftest()`会额外进行以下初始化工作:
+
+- 打开传入的动态库文件ref_so_file.
+通过动态链接对动态库中的上述API符号进行符号解析和重定位, 返回它们的地址.
+对REF的DIffTest功能进行初始化, 具体行为因REF而异.
+将DUT的guest memory拷贝到REF中.
+将DUT的寄存器状态拷贝到REF中.
+进行了上述初始化工作之后, DUT和REF就处于相同的状态了. 接下来就可以进行逐条指令执行后的状态对比了, 实现这一功能的是difftest_step()函数(在nemu/src/cpu/difftest/dut.c中定义). 它会在cpu_exec()的主循环中被调用, 在NEMU中执行完一条指令后, 就在difftest_step()中让REF执行相同的指令, 然后读出REF中的寄存器, 并进行对比. 由于不同ISA的寄存器有所不同, 框架代码把寄存器对比抽象成一个ISA相关的API, 即isa_difftest_checkregs()函数(在nemu/src/isa/$ISA/difftest/dut.c中定义). 你需要实现isa_difftest_checkregs()函数, 把通用寄存器和PC与从DUT中读出的寄存器的值进行比较. 若对比结果一致, 函数返回true; 如果发现值不一样, 函数返回false, 框架代码会自动停止客户程序的运行. 特别地, isa_difftest_checkregs()对比结果不一致时, 第二个参数pc应指向导致对比结果不一致的指令, 可用于打印提示信息.
