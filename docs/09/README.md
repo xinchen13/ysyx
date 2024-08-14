@@ -96,6 +96,6 @@ ftrace是带有程序语义的trace, 用来追踪程序执行过程中的函数�
     - 返回: jalr, rd != x1&x5, rs1 == x1/x5
     - 先返回后调用: jalr, rd == x1/x5, rs1 == x1/x5, rd != rs1
 
-- 在译码阶段添加判断，当根据上述规则检测到函数调用/返回时在`trace_and_difftest()`中调用`ftrace.c`中的输出对应信息. 译码相关的标识符设置为静态变量
+- 在译码阶段添加判断，当根据上述规则检测到函数调用/返回时在`trace_and_difftest()`中调用`ftrace.c`中的输出对应信息. 译码相关的标识符在`inst.c`设置为静态变量
 
 实现上在`nemu/include/cpu/cpu.h`定义`flag_call`和`flag_ret`标识符, 当检测到函数调用时令`flag_call`为1,调用`ftrace_call`; 当检测到函数返回时令`flag_ret`为1,调用`ftrace_retn`
