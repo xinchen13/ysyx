@@ -200,33 +200,49 @@ int sprintf(char *out, const char *fmt, ...) {
                     }
                     break;
                 case 'd':   // decimal
-                    int num = va_arg(ap, int);       
+                    int num = va_arg(ap, int);
+                    int num_digits = 0;   
+                    int neg = 0;
                     if (num < 0) {
-                        *p = '-';
-                        p++;
-                        length++;
+                        // *p = '-';
+                        // p++;
+                        // length++;
+                        neg = 1;
                         num = -num;
+                        num_digits = 1;
                     } 
                     else if (num == 0) {
-                        *p = '0';
-                        p++;
-                        length++;
+                        // *p = '0';
+                        // p++;
+                        // length++;
+                        num_digits = 1;
                         break;
                     }
-                    int num_digits = 0;
                     int temp = num;
                     while (temp > 0) {
                         temp /= 10;
                         num_digits++;
                     }
-                    p = p + num_digits - 1;
-                    while (num > 0) {
+                    int real_width = (width > num_digits) ? width : num_digits;
+                    int width_counter = real_width;
+                    p = p + real_width - 1;
+                    while (num >= 0) {
                         *p = '0' + num % 10;
                         p--;
+                        width_counter--;
                         num /= 10;
                     }
-                    p = p + num_digits + 1; 
-                    length += num_digits;
+                    if (neg) {
+                        *p = '-';
+                        p--;
+                        width_counter--;
+                    }
+                    while (width_counter-- > 0) {
+                        *p = ' ';
+                        p--;
+                    }
+                    p = p + real_width; 
+                    length += real_width;
                     break;
                 default:
                     *p = *fmt_ptr;
