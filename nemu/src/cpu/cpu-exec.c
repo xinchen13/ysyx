@@ -63,12 +63,12 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
     // ftracer
     #ifdef CONFIG_FTRACE
         if (func_retn()) {
-            func_call_depth--;
+            func_call_depth-=2;
             ftrace_retn(_this->pc, func_call_depth);
         }
         if (func_call()) {
             ftrace_call(_this->pc, _this->dnpc, func_call_depth);
-            func_call_depth++;
+            func_call_depth+=2;
         }
     #endif
 }
