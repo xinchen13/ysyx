@@ -75,8 +75,8 @@ typedef struct {
 
 void init_ftrace_stfunc(const char *elf_file);
 void display_elfstfunc(); // for debug
-void ftrace_call(word_t curr_addr, word_t j_addr);
-void ftrace_retn(word_t curr_addr);
+void ftrace_call(word_t curr_addr, word_t j_addr, int depth);
+void ftrace_retn(word_t curr_addr, int depth);
 // -------------------------------------------------------
 
 #endif
