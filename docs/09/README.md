@@ -78,3 +78,20 @@ ftrace是带有程序语义的trace, 用来追踪程序执行过程中的函数�
 - 宏在预处理阶段已经被整合进代码文本中
 - 局部变量被分配了寄存器
 
+### 实现ftrace
+- `CONFIG_FTRACE`宏配置ftrace的开关
+- 首先实现ELF文件的读取，将解析后的符号表和字符串表信息保存在自定义的数据结构elfStFunc中实现, 在`$NEMU_HOME/src/monitor/sdb/sdb.h`中声明, 包括函数名, 地址, 大小和函数数量. 还有一些函数
+- 具体实现与iringbuf类似，在`$NEMU_HOME/src/monitor/sdb/ftrace.c`中定义一个静态变量; 实现函数, 包括读取、保存、打印以及输出ftrace信息
+- elf文件的解析参考`man 5 elf`与gpt
+- 在编译时需要为nemu传入一个ELF文件: 在`$AM_HOME/scripts/platform/nemu.mk`中添加`NEMUFLAGS += -e $(IMAGE).elf`, 作为传入nemu的文件
+- nemu实现解析elf文件, 通过在`parse_args()`中添加`-e`选项来指定elf文件; 在`init_monitor（）`中调用`init_ftrace_stfunc()`读取并保存符号表中的函数信息, 注意需要放在`parse_args()`之后, 不然读取不到参数
+- 考虑如何从jal和jalr指令中正确识别出函数调用指令和函数返回指令, The RISC-V Instruction Set Manual Volume I如是说:
+
+<img src="../../figs/windows-screenshot 2024-08-13 233254.png" />
+
+- 因此函数调用和函数返回的情况如下:
+    - 调用: jal, rd == x1/x5
+    - 调用: jalr, rd == x1/x5, rs1 != x1&x5
+    - 调用: jalr, rd == x1/x5, rs1 == rd
+    - 返回: jalr, rd != x1&x5, rs1 == x1/x5
+    - 先返回后调用: jalr, rd == x1/x5, rs1 == x1/x5, rd != rs1

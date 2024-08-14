@@ -47,7 +47,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
     #ifdef CONFIG_ITRACE
         write_iringbuf(_this->logbuf);  // write log to iringbuf
         if (nemu_state.state == NEMU_ABORT) {
-        print_iringbuf();
+            print_iringbuf();
         }
     #endif
 
@@ -57,6 +57,15 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
             nemu_state.state = NEMU_STOP;
         }
     );
+    // ftracer
+    #ifdef CONFIG_FTRACE
+        if (func_retn()) {
+            ftrace_retn(_this->pc);
+        }
+        if (func_call()) {
+            ftrace_call(_this->pc, _this->dnpc);
+        }
+    #endif
 }
 
 static void exec_once(Decode *s, vaddr_t pc) {

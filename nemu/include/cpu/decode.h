@@ -99,4 +99,7 @@ finish:
 #define INSTPAT_START(name) { const void ** __instpat_end = &&concat(__instpat_end_, name);
 #define INSTPAT_END(name)   concat(__instpat_end_, name): ; }
 
+int func_call();
+int func_retn();
+
 #endif
