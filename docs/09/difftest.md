@@ -48,3 +48,5 @@ NEMU的简化会导致某些指令的行为与REF有所差异, 因而无法进�
 
 - 有的指令不能让REF直接执行, 或者执行后的行为肯定与NEMU不同, 例如nemu_trap指令, 在REF中, 执行后将会抛出一个调试异常. 此时可以通过`difftest_skip_ref()`进行校准, 执行它后, 在`difftest_step()`中会让REF跳过当前指令的执行, 同时把NEMU的当前的寄存器状态直接同步到REF中, 效果相当于"该指令的执行结果以NEMU的状态为准".
 - 由于实现的特殊性, QEMU在少数时候会把几条指令打包一起执行. 这时候, 我们调用一次`difftest_step()`, QEMU就会执行多条指令. 但由于NEMU的`fetch_decode_exec_updatepc()`是一次执行一条指令, 这样就会引入偏差. 此时可以通过`difftest_skip_dut(int nr_ref, int nr_dut)`来进行校准, 执行它后, 会马上让REF单步执行nr_ref次, 然后期望NEMU可以在nr_dut条指令之内追上REF的状态, 期间会跳过其中所有指令的检查
+
+RISC-V作为一个RISC架构, 通常是不支持不对齐访存的, 在Spike中执行一条地址不对齐的访存指令将会抛出异常, 让PC跳转到0. 但NEMU为了简化, 没有实现这样的功能, 因此如果让NEMU和Spike同时执行这样的指令, DiffTest将会报错. 不过这很可能是软件实现(例如klib)有问题, 检查并修改相关代码
