@@ -121,3 +121,15 @@ NEMU作为一个平台, 设备的行为是与ISA无关的, 因此我们只需要
 - 尝试在NEMU中依次运行以下benchmark(已经按照程序的复杂度排序, 均在`am-kernel/benchmarks/`目录下):dhrystone, coremark, microbench 
 - 跑分时关闭NEMU的监视点, trace以及DiffTest, 同时取消menuconfig中的`Enable debug information`并重新编译NEMU, 以获得较为真实的跑分
 - coremark和dhrystone结果显示 "Finised in 0 ms." 并且报错 "Floating point exception (core dumped)". rtfsc发现是跑分程序最后计算分值的时候做了浮点除法，r如在dhrystone中除数有User_time，而User_time为0，从而发生浮点错误. 而获取时间使用的是`timer.c`中刚实现的AM_TIMER_UPDATE. 继续rtfsc查看接口与回调函数等，发现`$NEMU_HOME/src/device/timer.c` 中回调函数 `rtc_io_handler()`只有在offset为4的时候才更新时间，也就是说当读取低32位rtc的时候事实上读取的是上一次更新的结果，因此修改为在offset为0时更新低32位，offset为4时更新高32位
+
+- dhrystone跑分结果:
+
+<img src="../../fig/Screenshot from 2024-02-26 14-18-59.png" width="600" />
+
+- coremark跑分结果:
+
+<img src="../../fig/Screenshot from 2024-02-26 14-22-04.png" width="600" />
+
+- microbench的ref规模跑分结果(在参考值范围内):
+
+<img src="../../fig/Screenshot from 2024-02-26 14-25-11.png" width="600" />
