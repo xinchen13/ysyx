@@ -35,5 +35,8 @@ riscv32对应的ref为Spike. Spike是RISC-V社区的一款全系统模拟器, �
 
 进行了上述初始化工作之后, DUT和REF就处于相同的状态了. 接下来就可以进行逐条指令执行后的状态对比了, 实现这一功能的是`difftest_step()`函数(在`nemu/src/cpu/difftest/dut.c`中定义). 它会在`cpu_exec()`的主循环中被调用, 在NEMU中执行完一条指令后, 就在`difftest_step()`中让REF执行相同的指令, 然后读出REF中的寄存器, 并进行对比. 由于不同ISA的寄存器有所不同, 框架代码把寄存器对比抽象成一个ISA相关的API, 即`isa_difftest_checkregs()`函数(在`nemu/src/isa/$ISA/difftest/dut.c`中定义). 
 
+## 实现 `isa_difftest_checkregs()`
 需要实现`isa_difftest_checkregs()`函数, 把通用寄存器和PC与从DUT中读出的寄存器的值进行比较. 若对比结果一致, 函数返回true; 如果发现值不一样, 函数返回false, 框架代码会自动停止客户程序的运行. 特别地, `isa_difftest_checkregs()`对比结果不一致时, 第二个参数pc应指向导致对比结果不一致的指令, 可用于打印提示信息
 
+- 上文在介绍API约定的时候, 提到了寄存器状态r需要把寄存器按照某种顺序排列. 首先RTFSC, 在`$NEMU_HOME/tools/spike-diff/difftest.cc`中发现了`difftest_regcpy`函数，即`$NEMU_HOME/src/cpu/difftest/dut.c`中调用的函数，结合传入参数可以发现这一顺序就是`CPU_state`的存储顺序
+- 按顺序在`isa_difftest_checkregs()`中对比即可
