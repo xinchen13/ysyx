@@ -32,7 +32,9 @@ uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 
-static int func_call_depth = 1;     // for ftrace
+#ifdef CONFIG_FTRACE
+    static int func_call_depth = 1;     // for ftrace
+#endif
 
 void device_update();
 
