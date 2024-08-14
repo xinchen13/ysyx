@@ -184,6 +184,7 @@ int sprintf(char *out, const char *fmt, ...) {
                     fmt_ptr++;
                 }
             }
+
             switch (*fmt_ptr) {
                 case 'c':
                     char arg_char = va_arg(ap, int);
@@ -216,7 +217,6 @@ int sprintf(char *out, const char *fmt, ...) {
                         // p++;
                         // length++;
                         num_digits = 1;
-                        break;
                     }
                     int temp = num;
                     while (temp > 0) {
