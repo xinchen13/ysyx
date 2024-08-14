@@ -9,5 +9,6 @@ int main(const char *args) {
   printf("fjef3h9823r23\n");
   printf("a = %d, b = %d\n", a, b);
   printf("%c != %c123\n", 'a', 'b');
+  printf("a =%02d, b =%3d\n", a, b);
   return 0;
 }
