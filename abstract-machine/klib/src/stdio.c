@@ -94,27 +94,109 @@ int sprintf(char *out, const char *fmt, ...) {
     // panic("Not implemented");
     // produce output according to a format: fmt
     // write output to the character string: out
+    // va_list ap;
+    // va_start(ap, fmt);
+    // char *p = out;
+    // int count = 0;  // the size of str
+
+    // while (*fmt) {
+    //     if (*fmt == '%') {
+    //         fmt++;  // skip '%'
+    //         switch (*fmt) {
+    //             case 'c':   // char
+    //                 char arg_char = va_arg(ap, int);
+    //                 *p = arg_char;
+    //                 p++;
+    //                 count++;
+    //                 break;
+    //             case 's':   // string
+    //                 char *arg = va_arg(ap, char*);
+    //                 while (*arg) {
+    //                     *p = *arg++;
+    //                     p++;
+    //                     count++;
+    //                 }
+    //                 break;
+    //             case 'd':   // decimal
+    //                 int num = va_arg(ap, int);       
+    //                 if (num < 0) {
+    //                     *p = '-';
+    //                     p++;
+    //                     count++;
+    //                     num = -num;
+    //                 } 
+    //                 else if (num == 0) {
+    //                     *p = '0';
+    //                     p++;
+    //                     count++;
+    //                     break;
+    //                 }
+    //                 int num_digits = 0;
+    //                 int temp = num;
+    //                 while (temp > 0) {
+    //                     temp /= 10;
+    //                     num_digits++;
+    //                 }
+    //                 p = p + num_digits - 1;
+    //                 while (num > 0) {
+    //                     *p = '0' + num % 10;
+    //                     p--;
+    //                     num /= 10;
+    //                 }
+    //                 p = p + num_digits + 1; 
+    //                 count += num_digits;
+    //                 break;
+    //             default:
+    //                 *p = *fmt;
+    //                 p++;
+    //                 count++;
+    //                 break;
+    //         }
+    //     } 
+    //     else {
+    //         *p = *fmt;
+    //         p++;
+    //         count++;
+    //     }
+    //     fmt++;
+    // }
+
+    // *p = '\0';  // 添加字符串结束标志
+    // va_end(ap);
+    // return count;
+
     va_list ap;
     va_start(ap, fmt);
     char *p = out;
-    int count = 0;  // the size of str
+    const char *fmt_ptr = fmt;
+    int length = 0;  // the size of str
+    int width = 0;
 
-    while (*fmt) {
-        if (*fmt == '%') {
-            fmt++;  // skip '%'
-            switch (*fmt) {
-                case 'c':   // char
+    while (*fmt_ptr) {
+        if (*fmt_ptr == '%') {
+            fmt_ptr++;  // skip '%'
+
+            // tackle width
+            width = 0;
+            if (*fmt_ptr >= '0' && *fmt_ptr <= '9') {
+                while (*fmt_ptr >= '0' && *fmt_ptr <= '9') {
+                    width = width * 10 + (*fmt_ptr - '0');
+                    fmt_ptr++;
+                }
+            }
+            switch (*fmt_ptr) {
+                case 'c':
                     char arg_char = va_arg(ap, int);
                     *p = arg_char;
                     p++;
-                    count++;
+                    length++;
                     break;
                 case 's':   // string
                     char *arg = va_arg(ap, char*);
                     while (*arg) {
                         *p = *arg++;
                         p++;
-                        count++;
+                        length++;
                     }
                     break;
                 case 'd':   // decimal
@@ -122,13 +204,13 @@ int sprintf(char *out, const char *fmt, ...) {
                     if (num < 0) {
                         *p = '-';
                         p++;
-                        count++;
+                        length++;
                         num = -num;
                     } 
                     else if (num == 0) {
                         *p = '0';
                         p++;
-                        count++;
+                        length++;
                         break;
                     }
                     int num_digits = 0;
@@ -144,26 +226,25 @@ int sprintf(char *out, const char *fmt, ...) {
                         num /= 10;
                     }
                     p = p + num_digits + 1; 
-                    count += num_digits;
+                    length += num_digits;
                     break;
                 default:
-                    *p = *fmt;
+                    *p = *fmt_ptr;
                     p++;
-                    count++;
+                    length++;
                     break;
             }
-        } 
-        else {
-            *p = *fmt;
-            p++;
-            count++;
         }
-        fmt++;
+        else {
+            *p = *fmt_ptr;
+            p++;
+            length++;
+        }
+        fmt_ptr++;
     }
-
-    *p = '\0';  // 添加字符串结束标志
+    *p = '\0';  // terminating sign
     va_end(ap);
-    return count;
+    return length;
 }
 
 int snprintf(char *out, size_t n, const char *fmt, ...) {
