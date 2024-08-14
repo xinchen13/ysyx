@@ -238,7 +238,7 @@ int sprintf(char *out, const char *fmt, ...) {
                         p--;
                         width_counter--;
                     }
-                    while (width_counter-- >= 0) {
+                    while (width_counter-- > 0) {
                         *p = ' ';
                         p--;
                     }
