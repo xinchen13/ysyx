@@ -104,7 +104,7 @@ void display_elfstfunc() {
 void ftrace_call(word_t curr_addr, word_t j_addr, int depth) {
     for (int i = 0; i < nemu_elfstfunc.valid_func; i++) {
         if ((j_addr >= nemu_elfstfunc.addr[i]) && (j_addr < nemu_elfstfunc.addr[i] + nemu_elfstfunc.size[i])) {
-            Log(FMT_PADDR ":%.*s call [%s@" FMT_PADDR "]", curr_addr, depth, "", nemu_elfstfunc.name[i], j_addr);
+            Log(FMT_PADDR ":%.*s call [%s@" FMT_PADDR "]", curr_addr, depth, " ", nemu_elfstfunc.name[i], j_addr);
         }
     }
 }
@@ -112,7 +112,7 @@ void ftrace_call(word_t curr_addr, word_t j_addr, int depth) {
 void ftrace_retn(word_t curr_addr, int depth) {
     for (int i = 0; i < nemu_elfstfunc.valid_func; i++) {
         if ((curr_addr >= nemu_elfstfunc.addr[i]) && (curr_addr < nemu_elfstfunc.addr[i] + nemu_elfstfunc.size[i])) {
-            Log(FMT_PADDR ":%.*s ret [%s]", curr_addr, depth, "", nemu_elfstfunc.name[i]);
+            Log(FMT_PADDR ":%.*s ret [%s]", curr_addr, depth, " ", nemu_elfstfunc.name[i]);
         }
     }
 }
