@@ -231,10 +231,10 @@ int sprintf(char *out, const char *fmt, ...) {
                         p--;
                         width_counter--;
                     }
-                    while (width_counter-- > 0) {
-                        *p = ' ';
-                        p--;
-                    }
+                    // while (width_counter-- > 0) {
+                    //     *p = ' ';
+                    //     p--;
+                    // }
                     p = p + real_width; 
                     length += real_width;
                     break;
