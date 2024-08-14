@@ -27,6 +27,12 @@ enum {
   TYPE_N, TYPE_J, TYPE_R, TYPE_B // none
 };
 
+static int func_call_flag;  // for ftrace
+static int func_retn_flag;   // for ftrace
+static int rs1;
+static int rs2;
+
+
 #define src1R() do { *src1 = R(rs1); } while (0)
 #define src2R() do { *src2 = R(rs2); } while (0)
 #define immI() do { *imm = SEXT(BITS(i, 31, 20), 12); } while(0)
@@ -37,8 +43,8 @@ enum {
 
 static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_t *imm, int type) {
   uint32_t i = s->isa.inst.val;
-  int rs1 = BITS(i, 19, 15);
-  int rs2 = BITS(i, 24, 20);
+  rs1 = BITS(i, 19, 15);
+  rs2 = BITS(i, 24, 20);
   *rd     = BITS(i, 11, 7);
   switch (type) {
     case TYPE_I: src1R();          immI(); break;
@@ -51,6 +57,8 @@ static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_
 }
 
 static int decode_exec(Decode *s) {
+  func_call_flag = 0;       // for ftrace
+  func_retn_flag = 0;        // for ftrace
   int rd = 0;
   word_t src1 = 0, src2 = 0, imm = 0;
   s->dnpc = s->snpc;
@@ -111,8 +119,31 @@ static int decode_exec(Decode *s) {
     INSTPAT("??????? ????? ????? 110 ????? 11000 11", bltu   , B, if(src1 < src2) s->dnpc = s->pc + imm);
     INSTPAT("??????? ????? ????? 111 ????? 11000 11", bgeu   , B, if(src1 >= src2) s->dnpc = s->pc + imm);
 
-    INSTPAT("??????? ????? ????? ??? ????? 11011 11", jal    , J, R(rd) = s->pc + 4, s->dnpc = s->pc + imm);
-    INSTPAT("??????? ????? ????? 000 ????? 11001 11", jalr   , I, R(rd) = s->pc + 4, s->dnpc = src1 + imm);
+    INSTPAT("??????? ????? ????? ??? ????? 11011 11", jal    , J, R(rd) = s->pc + 4, s->dnpc = s->pc + imm;
+        {
+            if ((rd == 1) || (rd == 5)) {
+                func_call_flag = 1;         // push ras
+            }
+        }
+    );
+    INSTPAT("??????? ????? ????? 000 ????? 11001 11", jalr   , I, R(rd) = s->pc + 4, s->dnpc = src1 + imm;
+        {
+            if (((rd == 1) || (rd == 5)) && (rs1 != 1) && (rs1 != 5)) {
+                func_call_flag = 1;         // push ras
+            }
+            else if (((rd == 1) || (rd == 5)) && (rs1 == rd)) {
+                func_call_flag = 1;         // push ras
+            }
+            else if (((rs1 == 1) || (rs1 == 5)) && (rd != 1) && (rd != 5)) {
+                func_retn_flag = 1;
+            }
+            else if (((rd == 1) && (rs1 == 5)) || ((rd == 5) && (rs1 == 1))) {
+                // pop ras, then push
+                func_retn_flag = 1;
+                func_call_flag = 1;
+            }
+        }
+    );
     INSTPAT("??????? ????? ????? ??? ????? 01101 11", lui    , U, R(rd) = imm);
     INSTPAT("??????? ????? ????? ??? ????? 00101 11", auipc  , U, R(rd) = s->pc + imm);
     
@@ -128,4 +159,12 @@ static int decode_exec(Decode *s) {
 int isa_exec_once(Decode *s) {
   s->isa.inst.val = inst_fetch(&s->snpc, 4);
   return decode_exec(s);
+}
+
+int func_call() {
+    return func_call_flag;
+}
+
+int func_retn() {
+    return func_retn_flag;
 }
