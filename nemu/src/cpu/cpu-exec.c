@@ -32,7 +32,7 @@ uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 
-static int func_call_depth = 2;     // for ftrace
+static int func_call_depth = 1;     // for ftrace
 
 void device_update();
 
@@ -63,8 +63,8 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
     // ftracer
     #ifdef CONFIG_FTRACE
         if (func_retn()) {
-            ftrace_retn(_this->pc, func_call_depth);
             func_call_depth--;
+            ftrace_retn(_this->pc, func_call_depth);
         }
         if (func_call()) {
             ftrace_call(_this->pc, _this->dnpc, func_call_depth);
