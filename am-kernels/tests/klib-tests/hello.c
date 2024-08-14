@@ -3,9 +3,9 @@
 #include <klib.h>
 
 int main(const char *args) {
-    const char *fmt =
-        "Hello, AbstractMachine!\n"
-        "mainargs = '%'.\n";
-    printf("%s",fmt);
+    int a = 2;
+    if (a == 3) {
+        ;
+    }
     return 0;
 }
