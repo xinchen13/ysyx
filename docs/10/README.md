@@ -55,4 +55,38 @@ NEMU的框架代码已经在nemu/src/device/目录下提供了设备相关的代
 具体的, `paddr_read()`和`paddr_write()`会判断地址addr落在物理内存空间还是设备空间, 若落在物理内存空间, 就会通过`pmem_read()`和`pmem_write()`来访问真正的物理内存; 否则就通过`map_read()`和`map_write()`来访问相应的设备. 从这个角度来看, 内存和外设在CPU来看并没有什么不同, 只不过都是一个字节编址的对象而已.
 
 ### 设备
-NEMU实现了串口, 时钟, 键盘, VGA, 声卡, 磁盘, SD卡七种设备，都不可编程，需要在menuconfig开启设备
+NEMU实现了串口, 时钟, 键盘, VGA, 声卡, 磁盘, SD卡七种设备，都不可编程. 需要在menuconfig开启Device选项，即可开启设备支持
+
+NEMU使用SDL库来实现设备的模拟, `nemu/src/device/device.c`含有和SDL库相关的代码. `init_device()`函数主要进行以下工作:
+- 调用`init_map()`进行初始化
+- 对上述设备进行初始化, 其中在初始化VGA时还会进行一些和SDL相关的初始化工作, 包括创建窗口, 设置显示模式等
+- 定时器(alarm)相关的初始化工作. 定时器的功能在PA4最后才会用到, 目前可以忽略它
+
+`cpu_exec()`在执行每条指令之后就会调用`device_update()`函数, 这个函数首先会检查距离上次设备更新是否已经超过一定时间, 若是, 则会尝试刷新屏幕, 并进一步检查是否有按键按下/释放, 以及是否点击了窗口的X按钮; 否则则直接返回, 避免检查过于频繁, 因为上述事件发生的频率是很低的
+
+为了使得DiffTest可以正常工作, 框架代码在访问设备的过程中调用了`difftest_skip_ref()`函数 (见`nemu/include/device/map.h`中定义的`find_mapid_by_addr()`函数)来跳过与REF的检查
+
+## 将输入输出抽象成IOE
+设备访问的具体实现是架构相关的; 与TRM不同, 设备访问是为计算机提供输入输出的功能, 因此把它们划入一类新的API: IOE(I/O Extension). 在 `abstract-machine/am/src/platform/nemu/ioe/ioe.c` 中实现了3个api:
+
+```c
+bool ioe_init();
+void ioe_read(int reg, void *buf);
+void ioe_write(int reg, void *buf);
+```
+
+第一个API用于进行IOE相关的初始化操作. 后两个API分别用于从编号为reg的寄存器中读出内容到缓冲区buf中, 以及往编号为reg寄存器中写入缓冲区buf中的内容. 需要注意的是, 这里的reg寄存器并不是上文讨论的设备寄存器, 因为设备寄存器的编号是架构相关的. 在IOE中, 我们希望采用一种架构无关的"抽象寄存器", 这个reg其实是一个功能编号, 我们约定在不同的架构中, 同一个功能编号的含义也是相同的, 这样就实现了设备寄存器的抽象. `abstract-machine/am/include/amdev.h`中定义了常见设备的"抽象寄存器"编号和相应的结构. 为了方便地对这些抽象寄存器进行访问, klib中提供了`io_read()`和`io_write()`两个宏, 它们分别对`ioe_read()`和`ioe_write()`这两个API进行了进一步的封装
+
+NEMU作为一个平台, 设备的行为是与ISA无关的, 因此我们只需要在`abstract-machine/am/src/platform/nemu/ioe/`目录下实现一份IOE, 来供NEMU平台的架构共享
+
+## 串口
+串口是最简单的输出设备. `nemu/src/device/serial.c`模拟了串口的功能, 只保留了数据寄存器. 
+
+串口初始化时会注册`0xa00003F8`处长度为8字节的MMIO空间映射到串口的数据寄存器. 由于NEMU串行模拟计算机系统的工作, 串口的状态寄存器可以一直处于空闲状态; 每当CPU往数据寄存器中写入数据时, 串口会将数据传送到主机的标准错误流进行输出.
+
+`abstract-machine/am/src/platform/nemu/trm.c`中的`putch()`就是通过串口输出的, 然而AM把`putch()`放在TRM, 而不是IOE中: `putch()`的加入让TRM具有输出字符的能力, 被扩充后的TRM更靠近一个实用的机器, 而不再是只会计算的数学模型
+
+### 运行Hello World:
+在`am-kernels/kernels/hello/`目录下键入`make ARCH=riscv32-nemu run mainargs=test`就可以在终端看到对应的输出
+
+mainargs是通过 `$AM_HOME/scripts/platform/nemu.mk` 中的语句 `CFLAGS += -DMAINARGS=\"$(mainargs)\"`定义了MAINARGS宏. 之后在`$AM_HOME/am/src/platform/nemu/trm.c`中使用了MAINARGS宏来输入给程序
