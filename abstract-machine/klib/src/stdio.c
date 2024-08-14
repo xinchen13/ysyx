@@ -12,70 +12,98 @@ int printf(const char *fmt, ...) {
     char str_tmp[128];
     char *p = str_tmp;
     char *rp = str_tmp;
-    int count = 0;  // the size of str
+    const char *fmt_ptr = fmt;
+    int length = 0;  // the size of str
+    int width;
 
-    while (*fmt) {
-        if (*fmt == '%') {
-            fmt++;  // skip '%'
-            switch (*fmt) {
+   while (*fmt_ptr) {
+        if (*fmt_ptr == '%') {
+            fmt_ptr++;  // skip '%'
+
+            // tackle width
+            width = 0;
+            if (*fmt_ptr >= '0' && *fmt_ptr <= '9') {
+                while (*fmt_ptr >= '0' && *fmt_ptr <= '9') {
+                    width = width * 10 + (*fmt_ptr - '0');
+                    fmt_ptr++;
+                }
+            }
+
+            switch (*fmt_ptr) {
                 case 'c':
                     char arg_char = va_arg(ap, int);
                     *p = arg_char;
                     p++;
-                    count++;
+                    length++;
                     break;
-                case 's':
+                case 's':   // string
                     char *arg = va_arg(ap, char*);
                     while (*arg) {
                         *p = *arg++;
                         p++;
-                        count++;
+                        length++;
                     }
                     break;
-                case 'd':
-                    int num = va_arg(ap, int);       
+                case 'd':   // decimal
+                    int num = va_arg(ap, int);
+                    int num_digits = 0;   
+                    int neg = 0;
                     if (num < 0) {
-                        *p = '-';
-                        p++;
-                        count++;
+                        neg = 1;
                         num = -num;
-                    }
+                        num_digits = 1;
+                    } 
                     else if (num == 0) {
-                        *p = '0';
-                        p++;
-                        count++;
-                        break;
+                        num_digits = 1;
                     }
-                    int num_digits = 0;
                     int temp = num;
                     while (temp > 0) {
                         temp /= 10;
                         num_digits++;
                     }
-                    p = p + num_digits - 1;
-                    while (num > 0) {
-                        *p = '0' + num % 10;
+                    int real_width = (width > num_digits) ? width : num_digits;
+                    int width_counter = real_width;
+                    p = p + real_width - 1;
+                    if (num == 0) {
+                        *p = '0';
                         p--;
-                        num /= 10;
+                        width_counter--;
                     }
-                    p = p + num_digits + 1; 
-                    count += num_digits;
+                    else {
+                        while (num > 0) {
+                            *p = '0' + num % 10;
+                            p--;
+                            width_counter--;
+                            num /= 10;
+                        }
+                    }
+                    if (neg) {
+                        *p = '-';
+                        p--;
+                        width_counter--;
+                    }
+                    while (width_counter-- > 0) {
+                        *p = ' ';
+                        p--;
+                    }
+                    p = p + real_width + 1; 
+                    length += real_width;
                     break;
                 default:
-                    *p = *fmt;
+                    *p = *fmt_ptr;
                     p++;
-                    count++;
+                    length++;
                     break;
             }
-        } 
-        else {
-            *p = *fmt;
-            p++;
-            count++;
         }
-        fmt++;
+        else {
+            *p = *fmt_ptr;
+            p++;
+            length++;
+        }
+        fmt_ptr++;
     }
-    *p = '\0';  // 添加字符串结束标志
+    *p = '\0';  // terminating sign
     va_end(ap);
 
     while (*rp != '\0') {
@@ -83,7 +111,7 @@ int printf(const char *fmt, ...) {
         rp++;
     }
 
-    return count;
+    return length;
 }
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
