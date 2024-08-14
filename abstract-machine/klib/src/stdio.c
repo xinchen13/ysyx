@@ -226,7 +226,7 @@ int sprintf(char *out, const char *fmt, ...) {
                     int real_width = (width > num_digits) ? width : num_digits;
                     int width_counter = real_width;
                     p = p + real_width - 1;
-                    while (num >= 0) {
+                    while (num > 0) {
                         *p = '0' + num % 10;
                         p--;
                         width_counter--;
@@ -241,7 +241,7 @@ int sprintf(char *out, const char *fmt, ...) {
                         *p = ' ';
                         p--;
                     }
-                    p = p + real_width + 1; 
+                    p = p + real_width; 
                     length += real_width;
                     break;
                 default:
