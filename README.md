@@ -38,7 +38,4 @@ cd ysyx
 - [支持RV32IM的NEMU(pa2s1)](./docs/07/)
 - [用RTL实现最简单的处理器(npc-addi)](./docs/08/)
 - [运行时环境和基础设施(pa2s2)](./docs/09/)
-- [支持RV32E的单周期NPC](./docs/10/)
-- [设备和输入输出](./docs/11/)
-- [异常处理和RT-Thread](./docs/12/)
-- [总线](./docs/13)
+- [nemu的设备和输入输出(pa2s3)](./docs/10/)
