@@ -205,17 +205,11 @@ int sprintf(char *out, const char *fmt, ...) {
                     int num_digits = 0;   
                     int neg = 0;
                     if (num < 0) {
-                        // *p = '-';
-                        // p++;
-                        // length++;
                         neg = 1;
                         num = -num;
                         num_digits = 1;
                     } 
                     else if (num == 0) {
-                        // *p = '0';
-                        // p++;
-                        // length++;
                         num_digits = 1;
                     }
                     int temp = num;
@@ -241,7 +235,7 @@ int sprintf(char *out, const char *fmt, ...) {
                         *p = ' ';
                         p--;
                     }
-                    p = p + real_width + 1; 
+                    p = p + real_width; 
                     length += real_width;
                     break;
                 default:
