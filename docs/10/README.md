@@ -96,7 +96,8 @@ NEMU作为一个平台, 设备的行为是与ISA无关的, 因此我们只需要
 有了`putch()`, 就可以在klib中实现`printf()`了. 之前已经实现了`sprintf()`, 它和`printf()`的功能非常相似, 这意味着它们之间会有不少重复的代码. 实现了`printf()`之后, 就可以在AM程序中使用输出调试法了
 
 - 运行`am-kernels/tests/alu-tests/`目录下alu-tests: `make ARCH=riscv32-nemu run`, 发现这是个alu测试用例生成器，如果没有错误不会调用printf函数，也就不会报错，通过给生成的`alu_test.c`注入错误，就能够验证printf的正确性
-- 当前的`printf()`还很不完善, 十六进制, 位宽, 精度等需要的时候再实现
+- 实现了位宽功能, 测试程序位于`am-kernels/tests/klib-tests/printf_test`
+- 当前的`printf()`还很不完善, 十六进制, 精度等需要的时候再实现
 
 ## 时钟
 `nemu/src/device/timer.c` 模拟了i8253计时器的功能, 保留了"发起时钟中断"的功能, 同时添加了一个自定义的时钟. i8253计时器初始化时会注册`0xa0000048`处长度为8字节的MMIO空间映射到两个32位的RTC寄存器. CPU可以访问这两个寄存器来获得用64位表示的当前时间
@@ -112,5 +113,4 @@ NEMU作为一个平台, 设备的行为是与ISA无关的, 因此我们只需要
 
 - `abstract-machine/am/src/platform/nemu/include/nemu.h` 中的RTC_ADDR宏提供了8字节的MMIO空间的起始地址; `abstract-machine/am/src/$ISA/$ISA.h` 中的`inl()`函数提供了根据地址读取32位寄存器的方法
 - 实现后, 在riscv32-nemu中运行`am-kernel/tests/am-tests`中的real-time clock test测试. rtfc知道对应命令为 `make ARCH=riscv32-nemu run mainargs=t`
-- 看到程序每隔1秒往终端输出一行信息，但观察发现由于我们的printf没有实现位宽，输出的内容中有`02d`等内容，给测试程序删除位宽后显示正常
-- 由于没有实现AM_TIMER_RTC, 测试应当总是输出1900年0月0日0时0分0秒, 这属于正常行为
+- 看到程序每隔1秒往终端输出一行信息，实现位宽后显示正常(若未实现, 行中有`02d`等内容); 由于没有实现AM_TIMER_RTC, 测试应当总是输出1900年0月0日0时0分0秒, 这属于正常行为
