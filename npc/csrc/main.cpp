@@ -83,7 +83,11 @@ int main(int argc, char** argv) {
         tfp->dump(contextp->time()); // dump wave
         contextp->timeInc(1); // time + 1
     }
-    tfp->close(); //close
+
+    // close waveform gen
+    tfp->close();
+
+    // verilator exit
     delete top;
     delete contextp;
     return 0;
