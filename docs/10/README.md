@@ -156,9 +156,24 @@ NEMU作为一个平台, 设备的行为是与ISA无关的, 因此我们只需要
 
 - `abstract-machine/am/include/amdev.h`中为键盘的功能定义了一个抽象寄存器: `AM_INPUT_KEYBRD`, AM键盘控制器, 可读出按键信息. keydown为true时表示按下按键, 否则表示释放按键. keycode为按键的断码, 没有按键时, keycode为`AM_KEY_NONE`
 
-#### 实现IOE(2)
+### 实现IOE(2)
 在`abstract-machine/am/src/platform/nemu/ioe/input.c`中实现AM_INPUT_KEYBRD的功能:
 
 - 参考native的键盘实现与timer的读取方式实现, 键盘的数据寄存器最高位为按键有效位, 低31位是键盘码
 - 实现后, 在`$ISA-nemu`中运行`am-tests`中的`readkey test`测试(`make ARCH=riscv32-nemu run mainargs=k`). 如果实现正确, 在程序运行时弹出的新窗口中按下按键, 将会看到程序输出相应的按键信息, 包括按键名, 键盘码, 以及按键状态
 - 可以运行控制字符版红白机超级玛丽
+
+## VGA
+VGA可以用于显示颜色像素, 是最常用的输出设备. `nemu/src/device/vga.c`模拟了VGA的功能. VGA初始化时注册了从`0xa1000000`开始的一段用于映射到video memory(显存, 也叫frame buffer, 帧缓冲)的MMIO空间. 代码只模拟了400x300x32的图形模式, 一个像素占32个bit的存储空间, R(red), G(green), B(blue), A(alpha)各占8 bit, 其中VGA不使用alpha的信息
+
+在AM中, 显示相关的设备叫GPU, GPU是一个专门用来进行图形渲染的设备. 在NEMU中, 我们并不支持一个完整GPU的功能, 而仅仅保留绘制像素的基本功能. `abstract-machine/am/include/amdev.h`中为GPU定义了五个抽象寄存器, 在NEMU中只会用到其中的两个:
+
+- AM_GPU_CONFIG, AM显示控制器信息, 可读出屏幕大小信息width和height. 另外AM假设系统在运行过程中, 屏幕大小不会发生变化
+- AM_GPU_FBDRAW, AM帧缓冲控制器, 可写入绘图信息, 向屏幕(x, y)坐标处绘制w*h的矩形图像. 图像像素按行优先方式存储在pixels中, 每个像素用32位整数以00RRGGBB的方式描述颜色. 若sync为true, 则马上将帧缓冲中的内容同步到屏幕上
+
+### 实现IOE(3)
+实现VGA设备的屏幕大小寄存器和同步寄存器
+
+- 在am中`void __am_gpu_config(AM_GPU_CONFIG_T *cfg)`中实现从vga地址读取屏幕大小, 根据nemu中`init_vga()`的设定，需要移位与掩码
+- 在nemu中根据`vga_update_screen()`的框架代码指示完善代码，且根据am的`gpu.c`可知存放sync信号的地址在偏移为4的位置，也就是`vgactl_port_base[1]`
+- 在`__am_gpu_init()`中添加相关代码，运行am-tests中的display test测试，结果如下:
