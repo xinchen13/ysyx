@@ -81,7 +81,7 @@ int main(int argc, char** argv) {
     assert(scope); // Check for nullptr if scope not found
     svSetScope(scope);
 
-
+    parse_args(argc, argv);
     // init physical memory randomly
     init_mem(pmem);
 
