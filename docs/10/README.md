@@ -143,3 +143,4 @@ NEMU作为一个平台, 设备的行为是与ISA无关的, 因此我们只需要
 - 修改`am-kernels/kernels/demo/include/io.h`中的代码, 把`HAS_GUI`宏注释掉, 演示程序就会将画图通过字符输出到终端
 - 在 `am-kernels/kernels/demo/` 中通过 `make ARCH=riscv32-nemu run mainargs=*` 即可运行查看结果(其中*对应程序序号，具体rtfsc)
 - 在`am-kernels/kernels/bad-apple/`目录下还可以运行字符版 bad apple
+- 运行红白机模拟器, 可以在NEMU上运行字符版本的FCEUX. 修改`fceux-am/src/config.h`中的代码, 把HAS_GUI宏注释掉, FCEUX就会通过`putch()`来输出画面. 然后参考pa1中运行FCEUX的方式, 来将超级玛丽运行在nemu上. 为了获得比较好的显示效果, 需要在一个不少于60行的终端中运行. 由于此时还没有实现键盘, 不能对游戏进行操作, 但可以观看超级玛丽自带的演示(需要在开始界面中等待约10秒)

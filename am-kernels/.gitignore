@@ -13,3 +13,4 @@ _*
 *~
 build/
 !.gitignore
+!bad-apple.mp4
