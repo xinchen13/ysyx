@@ -34,7 +34,7 @@ long load_img(uint8_t* mem, char *img) {
 
 static uint32_t fetch_instruction(uint32_t pc) {
     if (pc >= BASE_ADDRESS && pc < BASE_ADDRESS + MEMORY_SIZE) {
-        return *(uint32_t *)pmem[pc - BASE_ADDRESS];
+        return *(uint32_t *)(pmem + pc - BASE_ADDRESS);
     } else {
         // address out of memory bound
         printf("Error: PC value is out of memory bounds\n");
