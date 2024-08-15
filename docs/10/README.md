@@ -177,3 +177,8 @@ VGA可以用于显示颜色像素, 是最常用的输出设备. `nemu/src/device
 - 在am中`void __am_gpu_config(AM_GPU_CONFIG_T *cfg)`中实现从vga地址读取屏幕大小, 根据nemu中`init_vga()`的设定，需要移位与掩码
 - 在nemu中根据`vga_update_screen()`的框架代码指示完善代码，且根据am的`gpu.c`可知存放sync信号的地址在偏移为4的位置，也就是`vgactl_port_base[1]`
 - 在`__am_gpu_init()`中添加相关代码，运行am-tests中的display test测试，结果如下:
+
+<img src="../../figs/Screenshot from 2024-08-15 13-51-54.png" width="600" />
+
+### 实现IOE(4)
+事实上, 蓝绿渐变的颜色信息并不是display test期望输出的画面, 这是因为AM_GPU_FBDRAW的功能并未正确实现, 需要正确地实现AM_GPU_FBDRAW的功能:
