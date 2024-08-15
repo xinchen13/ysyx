@@ -182,3 +182,8 @@ VGA可以用于显示颜色像素, 是最常用的输出设备. `nemu/src/device
 
 ### 实现IOE(4)
 事实上, 蓝绿渐变的颜色信息并不是display test期望输出的画面, 这是因为AM_GPU_FBDRAW的功能并未正确实现, 需要正确地实现AM_GPU_FBDRAW的功能:
+
+- 根据AM_GPU_FBDRAW提供的变量和功能描述，在am中完善`__am_gpu_fbdraw()`函数，在刷新画面前把软件写入寄存器的象素数据搬运到VGA显示数据所对应的MMIO地址(帧缓冲)
+- 实现后, 重新运行display test，看到新窗口中输出了相应的动画效果:
+
+<img src="../../figs/Screenshot from 2024-08-15 14-35-02.png" width="600" />
