@@ -1,6 +1,8 @@
 *.*
 *
 !*/
+!default/
+!dummy-riscv32e-npc.bin
 !Makefile
 !*.mk
 !*.[cSh]

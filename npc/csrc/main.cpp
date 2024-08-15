@@ -1,35 +1,40 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
-#include "Vxcore.h"
-#include "verilated.h"
-#include "verilated_vcd_c.h" // for wave gen
+#include "common.h"
 
-#include "Vxcore__Dpi.h"
-#include "svdpi.h"
-
-#define MEMORY_SIZE 256
+#define MEMORY_SIZE 1024
 #define BASE_ADDRESS 0x80000000
 
-uint32_t memory[MEMORY_SIZE];
+uint8_t pmem[MEMORY_SIZE];                  // physical memory
 
-static void initialize_memory() {
-    for (int i = 0; i < MEMORY_SIZE; i++) {
-        memory[i] = 0; // initialize
-    }
-    
-    // instructions (addi)
-    memory[0x80000000 - BASE_ADDRESS] = 0b00000000000100000000101010010011;  // rf[21] = rf[0] + 1 = 0x00000001
-    memory[0x80000004 - BASE_ADDRESS] = 0b00000000000100000000000100010011; // rf[2] = rf[0] + 1 = 0x00000001
-    memory[0x80000008 - BASE_ADDRESS] = 0b11111111111000010000000100010011;  // rf[2] = rf[2] - 2 = 0xffffffff
-    memory[0x8000000c - BASE_ADDRESS] = 0b11111111111100000000000110010011;  // rf[3] = rf[0] - 1 = 0xffffffff
-    memory[0x80000010 - BASE_ADDRESS] = 0b00000000000100000000000001110011;   //  ebreak: 32'h00100073
-    // ...
+void init_mem(uint8_t* mem) {
+    memset(mem, rand(), MEMORY_SIZE);
 }
+
+long load_img(uint8_t* mem, char *img) {
+    if (img == NULL) {
+        printf("No image is given. Use the default build-in image.\n");
+        return 0;
+    }
+
+    FILE *fp = fopen(img, "rb");
+    assert(fp);
+
+    fseek(fp, 0, SEEK_END);
+    long size = ftell(fp);
+
+    printf("load_img(): The image is %s, size = %ld\n", img, size);
+
+    fseek(fp, 0, SEEK_SET);
+    int ret = fread(mem, size, 1, fp);
+    assert(ret == 1);
+
+    fclose(fp);
+    return size;
+}
+
 
 static uint32_t fetch_instruction(uint32_t pc) {
     if (pc >= BASE_ADDRESS && pc < BASE_ADDRESS + MEMORY_SIZE) {
-        return memory[pc - BASE_ADDRESS];
+        return *(uint32_t *)(pmem + pc - BASE_ADDRESS);
     } else {
         // address out of memory bound
         printf("Error: PC value is out of memory bounds\n");
@@ -38,6 +43,27 @@ static uint32_t fetch_instruction(uint32_t pc) {
 }
 
 // vluint64_t sim_time = 8; // initial simulation time
+
+char *img_file = NULL;                      // image file
+int parse_args(int argc, char *argv[]) {
+    const struct option table[] = {
+        {"img"      , required_argument, NULL, 'i'},
+        {"help"     , no_argument      , NULL, 'h'},
+        {0          , 0                , NULL,  0 },
+    };
+    int o;
+    while ((o = getopt_long(argc, argv, "-hi:", table, NULL)) != -1) {
+        switch (o) {
+            case 'i': img_file = optarg; break;
+            default:
+                printf("Usage: %s [OPTION...] IMAGE [args]\n\n", argv[0]);
+                printf("\t-i,--img=FILE read img file\n");
+                printf("\n");
+                exit(0);
+        }
+    }
+    return 0;
+}
 
 int main(int argc, char** argv) {
     VerilatedContext* contextp = new VerilatedContext;
@@ -55,8 +81,13 @@ int main(int argc, char** argv) {
     assert(scope); // Check for nullptr if scope not found
     svSetScope(scope);
 
+    parse_args(argc, argv);
+    // init physical memory randomly
+    init_mem(pmem);
 
-    initialize_memory(); // memory init
+    // load image file to physical memory
+    long img_size = load_img(pmem, img_file);
+
     top->clk = 1;
     
     top->rst_n = 0;
