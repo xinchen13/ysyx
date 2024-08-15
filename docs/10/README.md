@@ -149,6 +149,16 @@ NEMU作为一个平台, 设备的行为是与ISA无关的, 因此我们只需要
 和mtrace类似, 我们也可以记录设备访问的踪迹 dtrace (device trace), 从而观察程序是否以预期的方式访问设备
 
 - Kconfig中设置CONFIG_DTARCE来控制开关
-- 由于nemu设备访问的api为`map_read()`和`map_write()`, 在`paddr.c`中封装为`mmio_read()`和`mmio_write()`, 因此可以这两个函数中使用`Log()`来输出dtrace内容, 参考 mtrace; 但是可以通过`map->name`来获取一段设备地址空间的名字, 这样可以输出可读性较好的信息, 因此最终选择在`$NEMU_HOME/src/device/io/map.c`中实现
+- 由于nemu设备访问的api为`map_read()`和`map_write()`, 在`paddr.c`中封装为`mmio_read()`和`mmio_write()`, 因此可以这两个函数中使用`Log()`来输出dtrace内容, 参考mtrace; 但是可以通过`map->name`来获取一段设备地址空间的名字, 这样可以输出可读性较好的信息, 因此最终选择在`$NEMU_HOME/src/device/io/map.c`中实现
 
+## 键盘
+键盘是最基本的输入设备. 一般工作方式: 当按下一个键的时候, 键盘将会发送该键的通码(make code); 当释放一个键的时候, 键盘将会发送该键的断码(break code). `nemu/src/device/keyboard.c`模拟了i8042通用设备接口芯片的功能, 只保留了键盘接口. i8042芯片初始化时会注册`0xa0000060`处长度为4字节的MMIO空间, 它们都会映射到i8042的数据寄存器. 每当用户敲下/释放按键时, 将会把相应的键盘码放入数据寄存器, CPU可以访问数据寄存器, 获得键盘码; 当无按键可获取时, 将会返回`AM_KEY_NONE`
 
+- `abstract-machine/am/include/amdev.h`中为键盘的功能定义了一个抽象寄存器: `AM_INPUT_KEYBRD`, AM键盘控制器, 可读出按键信息. keydown为true时表示按下按键, 否则表示释放按键. keycode为按键的断码, 没有按键时, keycode为`AM_KEY_NONE`
+
+#### 实现IOE(2)
+在`abstract-machine/am/src/platform/nemu/ioe/input.c`中实现AM_INPUT_KEYBRD的功能:
+
+- 参考native的键盘实现与timer的读取方式实现, 键盘的数据寄存器最高位为按键有效位, 低31位是键盘码
+- 实现后, 在$ISA-nemu中运行am-tests中的readkey test测试. 如果实现正确, 在程序运行时弹出的新窗口中按下按键, 将会看到程序输出相应的按键信息, 包括按键名, 键盘码, 以及按键状态
+- 可以运行控制字符版红白机超级玛丽
