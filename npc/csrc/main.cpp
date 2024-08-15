@@ -43,10 +43,18 @@ int main(int argc, char** argv) {
     VerilatedContext* contextp = new VerilatedContext;
     contextp->commandArgs(argc, argv);
     Vxcore* top = new Vxcore{contextp};
+
+    // open trace: generate waveform
     Verilated::traceEverOn(true);
     VerilatedVcdC* tfp = new VerilatedVcdC;
     top->trace(tfp, 99);
     tfp->open("build/wave.vcd");
+
+    // set scope
+    const svScope scope = svGetScopeFromName("TOP.xcore");
+    assert(scope); // Check for nullptr if scope not found
+    svSetScope(scope);
+
 
     initialize_memory(); // memory init
     top->clk = 1;
@@ -61,10 +69,7 @@ int main(int argc, char** argv) {
     
     top->rst_n = 1;
 
-    // set scope
-    const svScope scope = svGetScopeFromName("TOP.xcore");
-    assert(scope); // Check for nullptr if scope not found
-    svSetScope(scope);
+
     
     while (dpi_that_accesses_ebreak() == 0){
         // printf("%x\n",top->pc);
@@ -78,7 +83,11 @@ int main(int argc, char** argv) {
         tfp->dump(contextp->time()); // dump wave
         contextp->timeInc(1); // time + 1
     }
-    tfp->close(); //close
+
+    // close waveform gen
+    tfp->close();
+
+    // verilator exit
     delete top;
     delete contextp;
     return 0;
