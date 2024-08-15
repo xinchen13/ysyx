@@ -187,3 +187,6 @@ VGA可以用于显示颜色像素, 是最常用的输出设备. `nemu/src/device
 - 实现后, 重新运行display test，看到新窗口中输出了相应的动画效果:
 
 <img src="../../figs/Screenshot from 2024-08-15 14-35-02.png" width="600" />
+
+- 重新定义`am-kernels/kernels/demo/include/io.h`中HAS_GUI, 可以在NEMU上运行图形版本的演示程序了. 运行结束后, 可以按Q键退出演示程序
+- 重新定义`fceux-am/src/config.h`中的HAS_GUI, 就可以在NEMU上运行图形版本的FCEUX了
