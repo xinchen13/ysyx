@@ -71,7 +71,7 @@ void map_write(paddr_t addr, int len, word_t data, IOMap *map) {
     paddr_t offset = addr - map->low;
     host_write(map->space + offset, len, data);
     #ifdef CONFIG_DTRACE
-        Log("@%s write [%d bytes at " FMT_PADDR "]: " FMT_WORD, map->name,
+        printf("@%s write [%d bytes at " FMT_PADDR "]: " FMT_WORD "\n", map->name,
         len, addr, data);
     #endif
     invoke_callback(map->callback, offset, len, true);
