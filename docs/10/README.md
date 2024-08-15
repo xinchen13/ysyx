@@ -190,3 +190,27 @@ VGA可以用于显示颜色像素, 是最常用的输出设备. `nemu/src/device
 
 - 重新定义`am-kernels/kernels/demo/include/io.h`中HAS_GUI, 可以在NEMU上运行图形版本的演示程序了. 运行结束后, 可以按Q键退出演示程序
 - 重新定义`fceux-am/src/config.h`中的HAS_GUI, 就可以在NEMU上运行图形版本的FCEUX了
+
+## 声卡(选做)
+
+## 冯诺依曼计算机系统
+现在可以运行`am-kernels/kernels/`目录下很多演示程序
+
+运行的程序(游戏)可以抽象成一个死循环:
+
+```c
+while (1) {
+  等待新的一帧();  // AM_TIMER_UPTIME
+  处理用户按键();  // AM_INPUT_KEYBRD
+  更新游戏逻辑();  // TRM
+  绘制新的屏幕();  // AM_GPU_FBDRAW
+}
+```
+
+## 分析程序的运行
+分析typing-game是如何运行的: 整个计算机系统(NEMU, ISA, AM, 运行时环境, 程序)是如何协同工作, 从而让打字小游戏实现出"命中"的游戏效果 (打开trace)
+
+- 运行程序后进行ioe和vga的初始化
+- 之后进入死循环: 新帧更新逻辑，之后检测按键(通过ioe读取按键)，渲染屏幕(通过ioe更新vga显存)
+- ioe事实上将所有的设备访问抽象成内存的读写
+- nemu做的就是执行每一条到来的指令，实现状态转移, 更新设备状态
