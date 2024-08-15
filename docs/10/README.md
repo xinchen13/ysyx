@@ -151,4 +151,66 @@ NEMU作为一个平台, 设备的行为是与ISA无关的, 因此我们只需要
 - Kconfig中设置CONFIG_DTARCE来控制开关
 - 由于nemu设备访问的api为`map_read()`和`map_write()`, 在`paddr.c`中封装为`mmio_read()`和`mmio_write()`, 因此可以这两个函数中使用`Log()`来输出dtrace内容, 参考mtrace; 但是可以通过`map->name`来获取一段设备地址空间的名字, 这样可以输出可读性较好的信息, 因此最终选择在`$NEMU_HOME/src/device/io/map.c`中实现
 
+## 键盘
+键盘是最基本的输入设备. 一般工作方式: 当按下一个键的时候, 键盘将会发送该键的通码(make code); 当释放一个键的时候, 键盘将会发送该键的断码(break code). `nemu/src/device/keyboard.c`模拟了i8042通用设备接口芯片的功能, 只保留了键盘接口. i8042芯片初始化时会注册`0xa0000060`处长度为4字节的MMIO空间, 它们都会映射到i8042的数据寄存器. 每当用户敲下/释放按键时, 将会把相应的键盘码放入数据寄存器, CPU可以访问数据寄存器, 获得键盘码; 当无按键可获取时, 将会返回`AM_KEY_NONE`
 
+- `abstract-machine/am/include/amdev.h`中为键盘的功能定义了一个抽象寄存器: `AM_INPUT_KEYBRD`, AM键盘控制器, 可读出按键信息. keydown为true时表示按下按键, 否则表示释放按键. keycode为按键的断码, 没有按键时, keycode为`AM_KEY_NONE`
+
+### 实现IOE(2)
+在`abstract-machine/am/src/platform/nemu/ioe/input.c`中实现AM_INPUT_KEYBRD的功能:
+
+- 参考native的键盘实现与timer的读取方式实现, 键盘的数据寄存器最高位为按键有效位, 低31位是键盘码
+- 实现后, 在`$ISA-nemu`中运行`am-tests`中的`readkey test`测试(`make ARCH=riscv32-nemu run mainargs=k`). 如果实现正确, 在程序运行时弹出的新窗口中按下按键, 将会看到程序输出相应的按键信息, 包括按键名, 键盘码, 以及按键状态
+- 可以运行控制字符版红白机超级玛丽
+
+## VGA
+VGA可以用于显示颜色像素, 是最常用的输出设备. `nemu/src/device/vga.c`模拟了VGA的功能. VGA初始化时注册了从`0xa1000000`开始的一段用于映射到video memory(显存, 也叫frame buffer, 帧缓冲)的MMIO空间. 代码只模拟了400x300x32的图形模式, 一个像素占32个bit的存储空间, R(red), G(green), B(blue), A(alpha)各占8 bit, 其中VGA不使用alpha的信息
+
+在AM中, 显示相关的设备叫GPU, GPU是一个专门用来进行图形渲染的设备. 在NEMU中, 我们并不支持一个完整GPU的功能, 而仅仅保留绘制像素的基本功能. `abstract-machine/am/include/amdev.h`中为GPU定义了五个抽象寄存器, 在NEMU中只会用到其中的两个:
+
+- AM_GPU_CONFIG, AM显示控制器信息, 可读出屏幕大小信息width和height. 另外AM假设系统在运行过程中, 屏幕大小不会发生变化
+- AM_GPU_FBDRAW, AM帧缓冲控制器, 可写入绘图信息, 向屏幕(x, y)坐标处绘制w*h的矩形图像. 图像像素按行优先方式存储在pixels中, 每个像素用32位整数以00RRGGBB的方式描述颜色. 若sync为true, 则马上将帧缓冲中的内容同步到屏幕上
+
+### 实现IOE(3)
+实现VGA设备的屏幕大小寄存器和同步寄存器
+
+- 在am中`void __am_gpu_config(AM_GPU_CONFIG_T *cfg)`中实现从vga地址读取屏幕大小, 根据nemu中`init_vga()`的设定，需要移位与掩码
+- 在nemu中根据`vga_update_screen()`的框架代码指示完善代码，且根据am的`gpu.c`可知存放sync信号的地址在偏移为4的位置，也就是`vgactl_port_base[1]`
+- 在`__am_gpu_init()`中添加相关代码，运行am-tests中的display test测试，结果如下:
+
+<img src="../../figs/Screenshot from 2024-08-15 13-51-54.png" width="600" />
+
+### 实现IOE(4)
+事实上, 蓝绿渐变的颜色信息并不是display test期望输出的画面, 这是因为AM_GPU_FBDRAW的功能并未正确实现, 需要正确地实现AM_GPU_FBDRAW的功能:
+
+- 根据AM_GPU_FBDRAW提供的变量和功能描述，在am中完善`__am_gpu_fbdraw()`函数，在刷新画面前把软件写入寄存器的象素数据搬运到VGA显示数据所对应的MMIO地址(帧缓冲)
+- 实现后, 重新运行display test，看到新窗口中输出了相应的动画效果:
+
+<img src="../../figs/Screenshot from 2024-08-15 14-35-02.png" width="600" />
+
+- 重新定义`am-kernels/kernels/demo/include/io.h`中HAS_GUI, 可以在NEMU上运行图形版本的演示程序了. 运行结束后, 可以按Q键退出演示程序
+- 重新定义`fceux-am/src/config.h`中的HAS_GUI, 就可以在NEMU上运行图形版本的FCEUX了
+
+## 声卡(选做)
+
+## 冯诺依曼计算机系统
+现在可以运行`am-kernels/kernels/`目录下很多演示程序
+
+运行的程序(游戏)可以抽象成一个死循环:
+
+```c
+while (1) {
+  等待新的一帧();  // AM_TIMER_UPTIME
+  处理用户按键();  // AM_INPUT_KEYBRD
+  更新游戏逻辑();  // TRM
+  绘制新的屏幕();  // AM_GPU_FBDRAW
+}
+```
+
+## 分析程序的运行
+分析typing-game是如何运行的: 整个计算机系统(NEMU, ISA, AM, 运行时环境, 程序)是如何协同工作, 从而让打字小游戏实现出"命中"的游戏效果 (打开trace)
+
+- 运行程序后进行ioe和vga的初始化
+- 之后进入死循环: 新帧更新逻辑，之后检测按键(通过ioe读取按键)，渲染屏幕(通过ioe更新vga显存)
+- ioe事实上将所有的设备访问抽象成内存的读写
+- nemu做的就是执行每一条到来的指令，实现状态转移, 更新设备状态
