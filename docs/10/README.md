@@ -120,7 +120,7 @@ NEMU作为一个平台, 设备的行为是与ISA无关的, 因此我们只需要
 
 - 尝试在NEMU中依次运行以下benchmark(已经按照程序的复杂度排序, 均在`am-kernel/benchmarks/`目录下):dhrystone, coremark, microbench 
 - 跑分时关闭NEMU的监视点, trace以及DiffTest, 同时取消menuconfig中的`Enable debug information`并重新编译NEMU, 以获得较为真实的跑分
-- coremark和dhrystone结果显示 "Finised in 0 ms." 并且报错 "Floating point exception (core dumped)". rtfsc发现是跑分程序最后计算分值的时候做了浮点除法，r如在dhrystone中除数有User_time，而User_time为0，从而发生浮点错误. 而获取时间使用的是`timer.c`中刚实现的AM_TIMER_UPDATE. 继续rtfsc查看接口与回调函数等，发现`$NEMU_HOME/src/device/timer.c` 中回调函数 `rtc_io_handler()`只有在offset为4的时候才更新时间，也就是说当读取低32位rtc的时候事实上读取的是上一次更新的结果，因此修改为在offset为0时更新低32位，offset为4时更新高32位
+- coremark和dhrystone结果显示 "Finised in 0 ms." 并且报错 "Floating point exception (core dumped)". rtfsc发现是跑分程序最后计算分值的时候做了浮点除法，例如在dhrystone中除数有User_time，而User_time为0，从而发生浮点错误. 而获取时间使用的是`timer.c`中刚实现的AM_TIMER_UPDATE. 继续rtfsc查看接口与回调函数等，发现`$NEMU_HOME/src/device/timer.c` 中回调函数 `rtc_io_handler()`只有在offset为4的时候才更新时间，也就是说当读取低32位rtc的时候事实上读取的是上一次更新的结果，因此修改为在offset为0时更新低32位，offset为4时更新高32位
 
 - dhrystone跑分结果:
 
@@ -143,3 +143,12 @@ NEMU作为一个平台, 设备的行为是与ISA无关的, 因此我们只需要
 - 修改`am-kernels/kernels/demo/include/io.h`中的代码, 把`HAS_GUI`宏注释掉, 演示程序就会将画图通过字符输出到终端
 - 在 `am-kernels/kernels/demo/` 中通过 `make ARCH=riscv32-nemu run mainargs=*` 即可运行查看结果(其中*对应程序序号，具体rtfsc)
 - 在`am-kernels/kernels/bad-apple/`目录下还可以运行字符版 bad apple
+- 运行红白机模拟器, 可以在NEMU上运行字符版本的FCEUX. 修改`fceux-am/src/config.h`中的代码, 把HAS_GUI宏注释掉, FCEUX就会通过`putch()`来输出画面. 然后参考pa1中运行FCEUX的方式, 来将超级玛丽运行在nemu上. 为了获得比较好的显示效果, 需要在一个不少于60行的终端中运行. 由于此时还没有实现键盘, 不能对游戏进行操作, 但可以观看超级玛丽自带的演示(需要在开始界面中等待约10秒)
+
+## 设备访问的踪迹 - dtrace
+和mtrace类似, 我们也可以记录设备访问的踪迹 dtrace (device trace), 从而观察程序是否以预期的方式访问设备
+
+- Kconfig中设置CONFIG_DTARCE来控制开关
+- 由于nemu设备访问的api为`map_read()`和`map_write()`, 在`paddr.c`中封装为`mmio_read()`和`mmio_write()`, 因此可以这两个函数中使用`Log()`来输出dtrace内容, 参考mtrace; 但是可以通过`map->name`来获取一段设备地址空间的名字, 这样可以输出可读性较好的信息, 因此最终选择在`$NEMU_HOME/src/device/io/map.c`中实现
+
+
