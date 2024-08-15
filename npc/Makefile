@@ -6,6 +6,9 @@ $(shell mkdir -p $(NPC_BUILD_DIR))
 OBJ_DIR = $(NPC_BUILD_DIR)/obj_dir
 BIN = $(NPC_BUILD_DIR)/$(TOPNAME)
 
+# argv
+IMG ?= --img\=./default/dummy-riscv32e-npc.bin
+
 # project source: csrc, vsrc, include
 VSRCS = $(shell find $(abspath ./vsrc) -name "*.v" -or -name "*.sv")
 CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cc" -or -name "*.cpp")
@@ -26,7 +29,7 @@ $(BIN): $(VSRCS) $(CSRCS)
 		$(addprefix -CFLAGS , $(CXXFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 
-NPC_EXEC := $(BIN)
+NPC_EXEC := $(BIN) $(IMG)
 
 .PHONY: all sim wave clean
 
