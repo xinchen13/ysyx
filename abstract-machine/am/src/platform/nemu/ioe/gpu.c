@@ -26,12 +26,17 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
 }
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
+    int w = ctl->w;
+    int h = ctl->h;
+    int y = ctl->y;
+    int x = ctl->x;
+    uint32_t *pix = ctl->pixels;
     uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
-    for (int i = 0; i < ctl->x; i++) {
-        for (int j = 0; j < ctl->y; j++) {
-            for (int k = 0; k < ctl->w * ctl->h; k++) {
-                fb[k] = (uint32_t)(ctl->pixels);
-            }
+    uint32_t sc_width = (inl(VGACTL_ADDR) & 0xffff0000) >> 16;
+    int i, j;
+    for (j = y; j < y+h; j++) {
+        for (i = x; i < x+w; i++) {
+        fb[sc_width * j + i] = pix[(j-y)*w+(i-x)];
         }
     }
     if (ctl->sync) {
