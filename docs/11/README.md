@@ -11,7 +11,7 @@ AM项目已经提供了riscv32e-npc的基本框架, 只需要在 `am-kernels/tes
 - 参考nemu的参数读入，使用`getopt()`来读取命令行提供的`IMG`参数
 - IMG参数由Makefile通过`make sim IMG=xxx`的方式指定, 与am在调用nemu时的传递程序路径的方法相同(具体rtfsc: `$AM_HOME/scripts/platform/nemu.mk`)
 - 根据nemu的存储器重构了仿真环境的存储器
-- 使用`make sim IMG=./default/dummy-riscv32e-npc.bin`测试，成功读入
+- 使用`make sim IMG=--img=./default/dummy-riscv32e-npc.bin`测试，成功读入
 
 ### 一键编译并在NPC上运行AM程序
 在AM项目中, 为riscv32e-npc提供run目标, 使得键入`make ARCH=riscv32e-npc ALL=xxx run`即可把AM程序编译并在NPC上运行
