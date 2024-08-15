@@ -160,5 +160,5 @@ NEMU作为一个平台, 设备的行为是与ISA无关的, 因此我们只需要
 在`abstract-machine/am/src/platform/nemu/ioe/input.c`中实现AM_INPUT_KEYBRD的功能:
 
 - 参考native的键盘实现与timer的读取方式实现, 键盘的数据寄存器最高位为按键有效位, 低31位是键盘码
-- 实现后, 在$ISA-nemu中运行am-tests中的readkey test测试. 如果实现正确, 在程序运行时弹出的新窗口中按下按键, 将会看到程序输出相应的按键信息, 包括按键名, 键盘码, 以及按键状态
+- 实现后, 在`$ISA-nemu`中运行`am-tests`中的`readkey test`测试(`make ARCH=riscv32-nemu run mainargs=k`). 如果实现正确, 在程序运行时弹出的新窗口中按下按键, 将会看到程序输出相应的按键信息, 包括按键名, 键盘码, 以及按键状态
 - 可以运行控制字符版红白机超级玛丽
