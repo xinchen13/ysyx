@@ -1,6 +1,7 @@
 #include "common.h"
 #include "sdb.h"
 #include "vaddr.h"
+#include "reg.h"
 
 void init_regex();
 void init_wp_pool();
@@ -50,11 +51,11 @@ static int cmd_info(char *args) {
     char *info_arg = strtok(NULL, " ");
     if (info_arg != NULL) {
         if (strcmp(info_arg, "r") == 0) {
-            // isa_reg_display();
+            isa_reg_display();
             return 0;
         }
         else if (strcmp(info_arg, "w") == 0) {
-            // watchpoint_display();
+            watchpoint_display();
             return 0;
         }
     }
