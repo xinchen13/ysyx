@@ -22,6 +22,7 @@ VERILATOR_CFLAGS += -MMD --build -cc --trace \
 	-O3 --x-assign fast --x-initial fast --noassert	\
 	$(INCFLAGS)
 CXXFLAGS += -DTOP_NAME="\"V$(TOPNAME)\""
+LDFLAGS ?= -lreadline 
 
 $(BIN): $(VSRCS) $(CSRCS)
 	@rm -rf $(OBJ_DIR)

@@ -4,6 +4,8 @@
 // ---------------------------- configs -----------------------------
 #define CONFIG_MBASE 0x80000000
 #define CONFIG_MSIZE 0x8000000
+#define CONFIG_BATCH_MODE 0
+#define CONFIG_RVE 1
 // ------------------------------------------------------------------
 
 // ----------------------------- header -----------------------------
@@ -11,7 +13,10 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <regex.h>
 #include <getopt.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 #include "Vxcore.h"
 #include "verilated.h"
 #include "verilated_vcd_c.h" // for wave gen
@@ -145,5 +150,23 @@ typedef uint32_t paddr_t;
 // ------------------------------------------------------------------
 
 void init_monitor(int argc, char *argv[]);
+
+// ----------------------------- npc state --------------------------
+enum { NPC_RUNNING, NPC_STOP, NPC_END, NPC_ABORT, NPC_QUIT };
+
+typedef struct {
+    int state;
+    vaddr_t halt_pc;
+    uint32_t halt_ret;
+} npcState;
+// ------------------------------------------------------------------
+
+
+// ---------------------------- monitor regs ------------------------
+typedef struct {
+    word_t gpr[MUXDEF(CONFIG_RVE, 16, 32)];
+    vaddr_t pc;
+} coreState;
+// ------------------------------------------------------------------
 
 #endif

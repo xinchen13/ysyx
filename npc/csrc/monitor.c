@@ -1,9 +1,10 @@
 #include "common.h"
 #include "paddr.h"
 #include "host.h"
+#include "sdb.h"
 
 static char *img_file = NULL;   // image file
-static char *log_file = NULL;
+static char *log_file = NULL;   // log file
 
 extern FILE *log_fp;
 
@@ -84,6 +85,9 @@ void init_monitor(int argc, char *argv[]) {
 
     /* Load the image to memory. This will overwrite the built-in image. */
     long img_size = load_img();
+
+    /* Initialize the simple debugger. */
+    init_sdb();
 
     /* Display welcome message. */
     welcome();
