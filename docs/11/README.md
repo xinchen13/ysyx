@@ -17,3 +17,4 @@ AM项目已经提供了riscv32e-npc的基本框架, 只需要在 `am-kernels/tes
 在AM项目中, 为riscv32e-npc提供run目标, 使得键入`make ARCH=riscv32e-npc ALL=xxx run`即可把AM程序编译并在NPC上运行
 
 - 参考`$AM_HOME/scripts/platform/nemu.mk`, 为`$AM_HOME/scripts/platform/npc.mk`添加run目标, 即可直接将am程序编译到npc上
+
