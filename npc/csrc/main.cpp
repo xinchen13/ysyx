@@ -42,8 +42,6 @@ static uint32_t fetch_instruction(uint32_t pc) {
     }
 }
 
-// vluint64_t sim_time = 8; // initial simulation time
-
 char *img_file = NULL;                      // image file
 int parse_args(int argc, char *argv[]) {
     const struct option table[] = {
