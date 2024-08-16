@@ -5,6 +5,7 @@
 #define CONFIG_MBASE 0x80000000
 #define CONFIG_MSIZE 0x8000000
 #define CONFIG_BATCH_MODE 0
+#define CONFIG_RVE 1
 // ------------------------------------------------------------------
 
 // ----------------------------- header -----------------------------
