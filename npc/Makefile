@@ -41,8 +41,8 @@ sim: $(BIN)
 	$(NPC_EXEC)
 
 wave: $(BIN)
-	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	$(NPC_EXEC)
+	# $(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
+	# $(NPC_EXEC)
 	@gtkwave $(NPC_BUILD_DIR)/wave.vcd
 
 

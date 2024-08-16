@@ -1,5 +1,6 @@
 
 `define CPU_RESET_ADDR 32'h80000000
+`define ZERO_WORD 32'h0
 
 // gprs
 `define REG_ADDR_BUS 4:0
@@ -17,4 +18,15 @@
 `define DATA_BUS 31:0
 
 // inst
+// opcode
+`define R_TYPE_OPCODE 7'b0110011
+`define S_TYPE_OPCODE 7'b0100011
+`define B_TYPE_OPCODE 7'b1100011
+`define I_AL_TYPE_OPCODE 7'b0010011
+`define I_LOAD_TYPE_OPCODE 7'b0000011
+`define JAL_OPCODE 7'b1101111
+`define JALR_OPCODE 7'b1100111
+`define LUI_OPCODE 7'b0110111
+`define AUIPC_OPCODE 7'b0010111
+// ebreak
 `define INST_EBREAK 32'h00100073

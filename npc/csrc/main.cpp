@@ -102,7 +102,7 @@ int main(int argc, char** argv) {
 
 
     
-    while (dpi_that_accesses_ebreak() == 0){
+    while (dpi_that_accesses_ebreak() == 0 && contextp->time() < 999){
         // printf("%x\n",top->pc);
         top->clk ^= 1; top->eval();  // single_cycle();
         tfp->dump(contextp->time()); // dump wave
