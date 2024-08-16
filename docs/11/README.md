@@ -37,4 +37,4 @@ sw指令需要访存内存, 不过对于dummy程序来说, 不实现也不影响
 
 - rtfsc, 发现nemu中的相关功能是通过判断客户程序的返回值实现的
 - 注意到之前实现ebreak的时候，内联汇编会把程序的返回值保存到寄存器a0中，因此只需要在仿真环境中读取a0的值作出判断
-- 阅读verilator编译得到的头文件，发现可以通过`top->rootp->ysyx_22040000_top__DOT__u_regfile__DOT__rf[9]`的方式来访问a0寄存器
+- 阅读verilator编译得到的头文件，发现可以通过`top->rootp->xcore__DOT__regfile_u0__DOT__regs[10]`的方式来访问a0寄存器
