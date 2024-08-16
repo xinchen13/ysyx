@@ -18,3 +18,9 @@ AM项目已经提供了riscv32e-npc的基本框架, 只需要在 `am-kernels/tes
 
 - 参考`$AM_HOME/scripts/platform/nemu.mk`, 为`$AM_HOME/scripts/platform/npc.mk`添加run目标, 即可直接将am程序编译到npc上
 
+### 在NPC上运行dummy程序
+sw指令需要访存内存, 不过对于dummy程序来说, 不实现也不影响运行的结果. 因此目前可以将它实现成空指令, 后面再来正确地实现它. 在架构图上添加auipc, lui, jal, jalr的电路. 实现上述指令, 使得NPC可以运行dummy程序:
+
+<img src="../../figs/CamScanner 08-16-2024 12.24.jpg" width="500" />
+
+修改rtl，添加了新的指令译码和执行，更新pc的生成逻辑
