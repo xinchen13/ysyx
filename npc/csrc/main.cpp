@@ -67,7 +67,7 @@ int parse_args(int argc, char *argv[]) {
 
 int is_exit_status_bad(Vxcore* top) {
     int good = top->rootp->xcore__DOT__regfile_u0__DOT__regs[10];
-    return !good;
+    return good;
 }
 
 int main(int argc, char** argv) {
