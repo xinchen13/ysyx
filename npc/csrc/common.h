@@ -10,6 +10,7 @@
 #include "verilated.h"
 #include "verilated_vcd_c.h" // for wave gen
 #include "Vxcore__Dpi.h"
+#include "Vxcore___024root.h"
 #include "svdpi.h"
 // ------------------------------------------------------------------
 

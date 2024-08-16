@@ -17,11 +17,14 @@ static const char mainargs[] = MAINARGS;
 void putch(char ch) {
 }
 
+#define npc_trap(code) asm volatile("mv a0, %0; ebreak" : :"r"(code))
+
 void halt(int code) {
-  while (1);
+    npc_trap(code);
+    while(1);       // should not reach here
 }
 
 void _trm_init() {
-  int ret = main(mainargs);
-  halt(ret);
+    int ret = main(mainargs);
+    halt(ret);
 }

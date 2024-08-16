@@ -26,3 +26,16 @@ sw指令需要访存内存, 不过对于dummy程序来说, 不实现也不影响
 修改rtl，添加了新的指令译码和执行，更新pc的生成逻辑, 此时查看波形:
 
 <img src="../../figs/Screenshot from 2024-08-16 12-28-26.png"/>
+
+### 实现riscv32e-npc中的halt()函数
+为了可以自动地结束程序, 需要在riscv32e-npc中实现TRM的`halt()`函数, 在其中添加一条ebreak指令. 实现之后,就可以通过一条命令自动在NPC上运行AM程序并自动结束仿真了
+
+- 参考`$AM_HOME/am/src/platform/nemu/include/nemu.h`, 在`$AM_HOME/am/src/riscv/npc/trm.c`添加内联汇编，并在`halt()`函数中调用
+
+### 为NPC实现HIT GOOD/BAD TRAP
+为NPC实现`HIT GOOD`/`BAD TRAP`, 输出程序是否成功结束执行的信息:
+
+- rtfsc, 发现nemu中的相关功能是通过判断客户程序的返回值实现的
+- 注意到之前实现ebreak的时候，内联汇编会把程序的返回值保存到寄存器a0中，因此只需要在仿真环境中读取a0的值作出判断
+- 阅读verilator编译得到的头文件，发现可以通过`top->rootp->xcore__DOT__regfile_u0__DOT__regs[10]`的方式来访问a0寄存器
+- 使得仿真环境返回该值即可
