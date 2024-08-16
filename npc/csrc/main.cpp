@@ -69,6 +69,7 @@ int is_exit_status_bad(Vxcore* dut) {
 }
 
 int main(int argc, char** argv) {
+    // ----------------------- verilator init ---------------------------------
     VerilatedContext* contextp = new VerilatedContext;
     contextp->commandArgs(argc, argv);
     Vxcore* dut = new Vxcore{contextp};
@@ -80,9 +81,12 @@ int main(int argc, char** argv) {
     tfp->open("build/wave.vcd");
 
     // set scope
-    const svScope scope = svGetScopeFromName("TOP.dut");
+    const svScope scope = svGetScopeFromName("TOP.xcore");
     assert(scope); // Check for nullptr if scope not found
     svSetScope(scope);
+    // ------------------------------------------------------------------------
+
+
 
     parse_args(argc, argv);
     // init physical memory randomly
@@ -91,8 +95,11 @@ int main(int argc, char** argv) {
     // load image file to physical memory
     long img_size = load_img(pmem, img_file);
 
+
+
+
+
     dut->clk = 1;
-    
     dut->rst_n = 0;
     dut->clk ^= 1; dut->eval();
     tfp->dump(contextp->time()); // dump wave
@@ -100,30 +107,29 @@ int main(int argc, char** argv) {
     dut->clk ^= 1; dut->eval();
     tfp->dump(contextp->time()); // dump wave
     contextp->timeInc(1); // time + 1
-    
     dut->rst_n = 1;
-
-
-    
     while (dpi_that_accesses_ebreak() == 0 && contextp->time() < 999){
         dut->clk ^= 1; dut->eval();  // single_cycle();
         tfp->dump(contextp->time()); // dump wave
         contextp->timeInc(1); // time + 1
-
         dut->inst = fetch_instruction(dut->pc);
-
         dut->clk ^= 1; dut->eval();  // single_cycle();
         tfp->dump(contextp->time()); // dump wave
         contextp->timeInc(1); // time + 1
     }
-
-    // close waveform gen
-    tfp->close();
-
     int return_val = is_exit_status_bad(dut);
 
-    // verilator exit
+
+    // ----------------------- verilator exit ---------------------------------
+    // close waveform gen
+    tfp->close();
     delete dut;
     delete contextp;
+    // ------------------------------------------------------------------------
+
+
+    // ----------- return the return value of the guest program ---------------
     return return_val;
+    // ------------------------------------------------------------------------
+
 }
