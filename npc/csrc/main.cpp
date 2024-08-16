@@ -65,6 +65,11 @@ int parse_args(int argc, char *argv[]) {
     return 0;
 }
 
+int is_exit_status_bad(Vxcore* top) {
+    int good = top->rootp->xcore__DOT__regfile_u0__DOT__regs[10];
+    return !good;
+}
+
 int main(int argc, char** argv) {
     VerilatedContext* contextp = new VerilatedContext;
     contextp->commandArgs(argc, argv);
@@ -118,8 +123,10 @@ int main(int argc, char** argv) {
     // close waveform gen
     tfp->close();
 
+    int return_val = is_exit_status_bad(top);
+
     // verilator exit
     delete top;
     delete contextp;
-    return 0;
+    return return_val;
 }
