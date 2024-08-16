@@ -4,6 +4,7 @@
 // ---------------------------- configs -----------------------------
 #define CONFIG_MBASE 0x80000000
 #define CONFIG_MSIZE 0x8000000
+#define CONFIG_BATCH_MODE 0
 // ------------------------------------------------------------------
 
 // ----------------------------- header -----------------------------
@@ -11,7 +12,10 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <regex.h>
 #include <getopt.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 #include "Vxcore.h"
 #include "verilated.h"
 #include "verilated_vcd_c.h" // for wave gen

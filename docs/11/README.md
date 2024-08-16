@@ -39,3 +39,14 @@ sw指令需要访存内存, 不过对于dummy程序来说, 不实现也不影响
 - 注意到之前实现ebreak的时候，内联汇编会把程序的返回值保存到寄存器a0中，因此只需要在仿真环境中读取a0的值作出判断
 - 阅读verilator编译得到的头文件，发现可以通过`top->rootp->xcore__DOT__regfile_u0__DOT__regs[10]`的方式来访问a0寄存器
 - 使得仿真环境返回该值即可
+
+## 为NPC搭建基础设施
+在PA中有四大基础设施: sdb, trace, native, DiffTest. 除了native属于AM之外, 其余三大基础设施都可以在NPC中搭建
+
+### 为NPC搭建sdb
+为NPC实现单步执行, 打印寄存器和扫描内存的功能, 而表达式求值和监视点都是基于打印寄存器和扫描内存实现的:
+
+- 首先根据nemu重构了访存系统和log(保存到`build/npc.log`)，并移植了monitor
+- 移植sdb时涉及readline和history库，不仅需要包括头文件，还要在makefile中添加链接选项`-lreadline -lhistory`
+- 通过Verilator编译出的C++文件来访问通用寄存器，如`top->rootp->ysyx_22040000_top__DOT__u_regfile__DOT__rf[i]`表示第i个寄存器
+- 重新编写DPI-C，来获取当前运行的指令，用于判断ebreak与itrace
