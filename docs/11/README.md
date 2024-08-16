@@ -23,4 +23,11 @@ sw指令需要访存内存, 不过对于dummy程序来说, 不实现也不影响
 
 <img src="../../figs/CamScanner 08-16-2024 12.24.jpg" width="500" />
 
-修改rtl，添加了新的指令译码和执行，更新pc的生成逻辑
+修改rtl，添加了新的指令译码和执行，更新pc的生成逻辑, 此时查看波形:
+
+<img src="../../figs/Screenshot from 2024-08-16 12-28-26.png"/>
+
+### 实现riscv32e-npc中的halt()函数
+为了可以自动地结束程序, 需要在riscv32e-npc中实现TRM的`halt()`函数, 在其中添加一条ebreak指令. 实现之后,就可以通过一条命令自动在NPC上运行AM程序并自动结束仿真了
+
+- 参考`$AM_HOME/am/src/platform/nemu/include/nemu.h`, 在`$AM_HOME/am/src/riscv/npc/trm.c`添加内联汇编，并在`halt()`函数中调用
