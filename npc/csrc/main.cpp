@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
 
     init_monitor(argc, argv);
 
-    sdb_mainloop();
+    // sdb_mainloop();
 
     dut->clk = 1;
     dut->rst_n = 0;
