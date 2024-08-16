@@ -63,20 +63,20 @@ int parse_args(int argc, char *argv[]) {
     return 0;
 }
 
-int is_exit_status_bad(Vxcore* top) {
-    int good = top->rootp->xcore__DOT__regfile_u0__DOT__regs[10];
+int is_exit_status_bad(Vxcore* dut) {
+    int good = dut->rootp->xcore__DOT__regfile_u0__DOT__regs[10];
     return good;
 }
 
 int main(int argc, char** argv) {
     VerilatedContext* contextp = new VerilatedContext;
     contextp->commandArgs(argc, argv);
-    Vxcore* top = new Vxcore{contextp};
+    Vxcore* dut = new Vxcore{contextp};
 
     // open trace: generate waveform
     Verilated::traceEverOn(true);
     VerilatedVcdC* tfp = new VerilatedVcdC;
-    top->trace(tfp, 99);
+    dut->trace(tfp, 99);
     tfp->open("build/wave.vcd");
 
     // set scope
@@ -91,29 +91,28 @@ int main(int argc, char** argv) {
     // load image file to physical memory
     long img_size = load_img(pmem, img_file);
 
-    top->clk = 1;
+    dut->clk = 1;
     
-    top->rst_n = 0;
-    top->clk ^= 1; top->eval();
+    dut->rst_n = 0;
+    dut->clk ^= 1; dut->eval();
     tfp->dump(contextp->time()); // dump wave
     contextp->timeInc(1); // time + 1
-    top->clk ^= 1; top->eval();
+    dut->clk ^= 1; dut->eval();
     tfp->dump(contextp->time()); // dump wave
     contextp->timeInc(1); // time + 1
     
-    top->rst_n = 1;
+    dut->rst_n = 1;
 
 
     
     while (dpi_that_accesses_ebreak() == 0 && contextp->time() < 999){
-        // printf("%x\n",top->pc);
-        top->clk ^= 1; top->eval();  // single_cycle();
+        dut->clk ^= 1; dut->eval();  // single_cycle();
         tfp->dump(contextp->time()); // dump wave
         contextp->timeInc(1); // time + 1
 
-        top->inst = fetch_instruction(top->pc);
+        dut->inst = fetch_instruction(dut->pc);
 
-        top->clk ^= 1; top->eval();  // single_cycle();
+        dut->clk ^= 1; dut->eval();  // single_cycle();
         tfp->dump(contextp->time()); // dump wave
         contextp->timeInc(1); // time + 1
     }
@@ -121,10 +120,10 @@ int main(int argc, char** argv) {
     // close waveform gen
     tfp->close();
 
-    int return_val = is_exit_status_bad(top);
+    int return_val = is_exit_status_bad(dut);
 
     // verilator exit
-    delete top;
+    delete dut;
     delete contextp;
     return return_val;
 }
