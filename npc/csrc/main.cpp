@@ -1,67 +1,6 @@
 #include "common.h"
-
-#define MEMORY_SIZE 1024
-#define BASE_ADDRESS 0x80000000
-
-uint8_t pmem[MEMORY_SIZE];                  // physical memory
-
-void init_mem(uint8_t* mem) {
-    memset(mem, rand(), MEMORY_SIZE);
-}
-
-long load_img(uint8_t* mem, char *img) {
-    if (img == NULL) {
-        printf("No image is given. Use the default build-in image.\n");
-        return 0;
-    }
-
-    FILE *fp = fopen(img, "rb");
-    assert(fp);
-
-    fseek(fp, 0, SEEK_END);
-    long size = ftell(fp);
-
-    printf("load_img(): The image is %s, size = %ld\n", img, size);
-
-    fseek(fp, 0, SEEK_SET);
-    int ret = fread(mem, size, 1, fp);
-    assert(ret == 1);
-
-    fclose(fp);
-    return size;
-}
-
-
-static uint32_t fetch_instruction(uint32_t pc) {
-    if (pc >= BASE_ADDRESS && pc < BASE_ADDRESS + MEMORY_SIZE) {
-        return *(uint32_t *)(pmem + pc - BASE_ADDRESS);
-    } else {
-        // address out of memory bound
-        printf("Error: PC value is out of memory bounds\n");
-        return 0;
-    }
-}
-
-char *img_file = NULL;                      // image file
-int parse_args(int argc, char *argv[]) {
-    const struct option table[] = {
-        {"img"      , required_argument, NULL, 'i'},
-        {"help"     , no_argument      , NULL, 'h'},
-        {0          , 0                , NULL,  0 },
-    };
-    int o;
-    while ((o = getopt_long(argc, argv, "-hi:", table, NULL)) != -1) {
-        switch (o) {
-            case 'i': img_file = optarg; break;
-            default:
-                printf("Usage: %s [OPTION...] IMAGE [args]\n\n", argv[0]);
-                printf("\t-i,--img=FILE read img file\n");
-                printf("\n");
-                exit(0);
-        }
-    }
-    return 0;
-}
+#include "vaddr.h"
+#include "monitor.h"
 
 int is_exit_status_bad(Vxcore* dut) {
     int good = dut->rootp->xcore__DOT__regfile_u0__DOT__regs[10];
@@ -87,17 +26,7 @@ int main(int argc, char** argv) {
     // ------------------------------------------------------------------------
 
 
-
-    parse_args(argc, argv);
-    // init physical memory randomly
-    init_mem(pmem);
-
-    // load image file to physical memory
-    long img_size = load_img(pmem, img_file);
-
-
-
-
+    init_monitor(argc, argv);
 
     dut->clk = 1;
     dut->rst_n = 0;
@@ -112,7 +41,7 @@ int main(int argc, char** argv) {
         dut->clk ^= 1; dut->eval();  // single_cycle();
         tfp->dump(contextp->time()); // dump wave
         contextp->timeInc(1); // time + 1
-        dut->inst = fetch_instruction(dut->pc);
+        dut->inst = vaddr_ifetch(dut->pc, 4);
         dut->clk ^= 1; dut->eval();  // single_cycle();
         tfp->dump(contextp->time()); // dump wave
         contextp->timeInc(1); // time + 1
@@ -121,8 +50,7 @@ int main(int argc, char** argv) {
 
 
     // ----------------------- verilator exit ---------------------------------
-    // close waveform gen
-    tfp->close();
+    tfp->close();   // close waveform gen
     delete dut;
     delete contextp;
     // ------------------------------------------------------------------------
