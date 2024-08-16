@@ -1,11 +1,12 @@
 #include "common.h"
 #include "vaddr.h"
-#include "monitor.h"
 
 int is_exit_status_bad(Vxcore* dut) {
     int good = dut->rootp->xcore__DOT__regfile_u0__DOT__regs[10];
     return good;
 }
+
+FILE *log_fp = NULL;
 
 int main(int argc, char** argv) {
     // ----------------------- verilator init ---------------------------------
@@ -49,10 +50,11 @@ int main(int argc, char** argv) {
     int return_val = is_exit_status_bad(dut);
 
 
-    // ----------------------- verilator exit ---------------------------------
+    // ----------------------- ------- exit ----------------------------------
     tfp->close();   // close waveform gen
     delete dut;
     delete contextp;
+    fclose(log_fp); // close log file
     // ------------------------------------------------------------------------
 
 
