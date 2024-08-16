@@ -80,7 +80,7 @@ int main(int argc, char** argv) {
     tfp->open("build/wave.vcd");
 
     // set scope
-    const svScope scope = svGetScopeFromName("TOP.xcore");
+    const svScope scope = svGetScopeFromName("TOP.dut");
     assert(scope); // Check for nullptr if scope not found
     svSetScope(scope);
 
