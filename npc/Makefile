@@ -8,6 +8,7 @@ BIN = $(NPC_BUILD_DIR)/$(TOPNAME)
 
 # argv
 IMG ?= --img\=./default/dummy-riscv32e-npc.bin
+LOG = --log\=$(NPC_BUILD_DIR)/npc.log
 
 # project source: csrc, vsrc, include
 VSRCS = $(shell find $(abspath ./vsrc) -name "*.v" -or -name "*.sv")
@@ -29,7 +30,7 @@ $(BIN): $(VSRCS) $(CSRCS)
 		$(addprefix -CFLAGS , $(CXXFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 
-NPC_EXEC := $(BIN) $(IMG)
+NPC_EXEC := $(BIN) $(IMG) $(LOG)
 
 .PHONY: all sim wave clean
 
@@ -41,8 +42,6 @@ sim: $(BIN)
 	$(NPC_EXEC)
 
 wave: $(BIN)
-	# $(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	# $(NPC_EXEC)
 	@gtkwave $(NPC_BUILD_DIR)/wave.vcd
 
 
