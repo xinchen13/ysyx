@@ -2,24 +2,22 @@
 #include "vaddr.h"
 #include "sdb.h"
 
-int is_exit_status_bad(Vxcore* dut) {
-    int good = dut->rootp->xcore__DOT__regfile_u0__DOT__regs[10];
-    return good;
-}
-
 FILE *log_fp = NULL;
 npcState npc_state;
 coreState core = {};
+VerilatedContext* contextp;
+Vxcore* dut;
+VerilatedVcdC* tfp;
 
 int main(int argc, char** argv) {
     // ----------------------- verilator init ---------------------------------
-    VerilatedContext* contextp = new VerilatedContext;
+    contextp = new VerilatedContext;
     contextp->commandArgs(argc, argv);
-    Vxcore* dut = new Vxcore{contextp};
+    dut = new Vxcore{contextp};
 
     // open trace: generate waveform
     Verilated::traceEverOn(true);
-    VerilatedVcdC* tfp = new VerilatedVcdC;
+    tfp = new VerilatedVcdC;
     dut->trace(tfp, 99);
     tfp->open("build/wave.vcd");
 
@@ -52,10 +50,9 @@ int main(int argc, char** argv) {
         tfp->dump(contextp->time()); // dump wave
         contextp->timeInc(1); // time + 1
     }
-    int return_val = is_exit_status_bad(dut);
 
 
-    // ----------------------- ------- exit ----------------------------------
+    // ------------------------------- exit ----------------------------------
     tfp->close();   // close waveform gen
     delete dut;
     delete contextp;
@@ -64,7 +61,7 @@ int main(int argc, char** argv) {
 
 
     // ----------- return the return value of the guest program ---------------
-    return return_val;
+    return is_exit_status_bad();
     // ------------------------------------------------------------------------
 
 }

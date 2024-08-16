@@ -2,6 +2,7 @@
 #include "sdb.h"
 #include "vaddr.h"
 #include "reg.h"
+#include "tiktok.h"
 
 void init_regex();
 void init_wp_pool();
@@ -25,7 +26,7 @@ static char* rl_gets() {
 }
 
 static int cmd_c(char *args) {
-    // cpu_exec(-1);
+    cpu_exec(-1);
     return 0;
 }
 
@@ -43,7 +44,7 @@ static int cmd_si(char *args) {
     if (step_arg != NULL) {
         sscanf(step_arg, "%d", &step_counter);
     }
-    // cpu_exec(step_counter);
+    cpu_exec(step_counter);
     return 0;
 }
 
@@ -225,4 +226,10 @@ void init_sdb() {
 
     /* Initialize the watchpoint pool. */
     init_wp_pool();
+}
+
+int is_exit_status_bad() {
+    int good = (npc_state.state == NPC_END && npc_state.halt_ret == 0) ||
+        (npc_state.state == NPC_QUIT);
+    return !good;
 }
