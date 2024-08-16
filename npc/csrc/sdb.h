@@ -38,4 +38,6 @@ void init_sdb();
 
 void sdb_mainloop();
 
+int is_exit_status_bad();
+
 #endif
