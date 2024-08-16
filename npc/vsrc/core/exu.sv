@@ -18,5 +18,6 @@ module exu (
 
     assign dnpc = jump_flag_ex ? alu_result : snpc;
     assign reg_wdata_ex = jump_flag_ex ? snpc : alu_result;
+    assign reg_wen_ex = reg_wen_id;
 
 endmodule
