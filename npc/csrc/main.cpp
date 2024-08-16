@@ -8,6 +8,8 @@ int is_exit_status_bad(Vxcore* dut) {
 }
 
 FILE *log_fp = NULL;
+npcState npc_state;
+coreState core = {};
 
 int main(int argc, char** argv) {
     // ----------------------- verilator init ---------------------------------

@@ -1,6 +1,8 @@
 #include "common.h"
 #include "reg.h"
 
+extern coreState core;
+
 const char *regs[] = {
   "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
   "s0", "s1", "a0", "a1", "a2", "a3", "a4", "a5",
@@ -10,15 +12,15 @@ const char *regs[] = {
 
 
 word_t isa_reg_str2val(const char *s, bool *success) {
-    // if (strcmp(s, "pc") == 0) {
-    //     return cpu.pc;
-    // }
-    // int gpr_count = MUXDEF(CONFIG_RVE, 16, 32);
-    // for (int i = 0; i < gpr_count; i++) {
-    //     if (strcmp(s, regs[i]) == 0) {
-    //         return cpu.gpr[i];
-    //     }
-    // }
-    // *success = false;
+    if (strcmp(s, "pc") == 0) {
+        return core.pc;
+    }
+    int gpr_count = MUXDEF(CONFIG_RVE, 16, 32);
+    for (int i = 0; i < gpr_count; i++) {
+        if (strcmp(s, regs[i]) == 0) {
+            return core.gpr[i];
+        }
+    }
+    *success = false;
     return 0;
 }
