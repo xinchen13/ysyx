@@ -76,7 +76,7 @@ static void trace_and_difftest() {
             ftrace_retn(ftrace_pc, func_call_depth);
         }
         if (func_call()) {
-            ftrace_call(ftrace_pc, dnpc, func_call_depth);
+            ftrace_call(ftrace_pc, core.pc, func_call_depth);
             func_call_depth += 2;
         }
     #endif
