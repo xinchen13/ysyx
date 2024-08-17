@@ -5,6 +5,7 @@
 #include "sdb.h"
 
 #ifdef CONFIG_ITRACE
+    static word_t itrace_pc;
     static char logbuf[128];    // for itrace
 #endif
 
@@ -94,6 +95,11 @@ void set_npc_state(int state, uint32_t pc, int halt_ret) {
 }
 
 static void exec_once() {
+
+    #ifdef CONFIG_ITRACE
+        itrace_pc = core.pc;
+    #endif
+
     dut->clk ^= 1; dut->eval();  // negedge
     tfp->dump(contextp->time());
     contextp->timeInc(1);
@@ -108,7 +114,7 @@ static void exec_once() {
     #ifdef CONFIG_ITRACE
         word_t this_inst = dpi_that_accesses_inst();
         char *p = logbuf;
-        p += snprintf(p, sizeof(logbuf), FMT_WORD ":", core.pc);
+        p += snprintf(p, sizeof(logbuf), FMT_WORD ":", itrace_pc);
         int ilen = 4;
         int i;
         uint8_t *inst = (uint8_t *)&this_inst;
@@ -121,7 +127,7 @@ static void exec_once() {
         space_len = space_len * 3 + 1;
         memset(p, ' ', space_len);
         p += space_len;
-        disassemble(p, logbuf + sizeof(logbuf) - p, core.pc, (uint8_t *)&this_inst, ilen);
+        disassemble(p, logbuf + sizeof(logbuf) - p, itrace_pc, (uint8_t *)&this_inst, ilen);
     #endif
 }
 
