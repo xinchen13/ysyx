@@ -4,7 +4,81 @@
 #include "reg.h"
 #include "sdb.h"
 
+#ifdef CONFIG_ITRACE
+    static word_t itrace_pc;
+    static char logbuf[128];    // for itrace
+#endif
+
+#ifdef CONFIG_FTRACE
+    #define JAL_OPCODE 0x6fu
+    #define JALR_OPCODE 0x67u
+
+    static int func_call_depth = 1;     // for ftrace
+    static word_t ftrace_inst;
+    static word_t ftrace_pc;
+    static uint32_t opcode;
+    static uint32_t rd;
+    static uint32_t rs1;
+
+    static int func_call() {
+        if (opcode == JAL_OPCODE) {
+            if ((rd == 1) || (rd == 5)) {
+                return 1;
+            }
+        }
+        else if (opcode == JALR_OPCODE) {
+            if (((rd == 1) || (rd == 5)) && (rs1 != 1) && (rs1 != 5)) {
+                return 1;
+            }
+            else if (((rd == 1) || (rd == 5)) && (rs1 == rd)) {
+                return 1;
+            }
+            else if (((rd == 1) && (rs1 == 5)) || ((rd == 5) && (rs1 == 1))) {
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+    static int func_retn() {
+        if (opcode == JALR_OPCODE) {
+            if (((rs1 == 1) || (rs1 == 5)) && (rd != 1) && (rd != 5)) {
+                return 1;
+            }
+            else if (((rd == 1) && (rs1 == 5)) || ((rd == 5) && (rs1 == 1))) {
+                return 1;
+            }
+        }
+        return 0;
+    }
+#endif
+
 static void trace_and_difftest() {
+    // itrace
+    #ifdef CONFIG_ITRACE
+        Log("%s", logbuf);
+        write_iringbuf(logbuf);  // write log to iringbuf
+        if (npc_state.state == NPC_ABORT) {
+            print_iringbuf();
+        }
+    #endif
+
+    // ftracer
+    #ifdef CONFIG_FTRACE
+        ftrace_inst = dpi_that_accesses_inst();
+        opcode = ftrace_inst & 0x7fu;
+        rd = (ftrace_inst >> 7) & 0x1fu;
+        rs1 = (ftrace_inst >> 15) & 0x1fu;
+        if (func_retn()) {
+            func_call_depth -= 2;
+            ftrace_retn(ftrace_pc, func_call_depth);
+        }
+        if (func_call()) {
+            ftrace_call(ftrace_pc, core.pc, func_call_depth);
+            func_call_depth += 2;
+        }
+    #endif
+
     // enable check watchpoints
     IFDEF(CONFIG_WATCHPOINT,
         if (check_watchpoint() == 1 && npc_state.state != NPC_END) {
@@ -20,6 +94,15 @@ void set_npc_state(int state, uint32_t pc, int halt_ret) {
 }
 
 static void exec_once() {
+
+    #ifdef CONFIG_ITRACE
+        itrace_pc = core.pc;
+    #endif
+
+    #ifdef CONFIG_FTRACE
+        ftrace_pc = core.pc;
+    #endif
+
     dut->clk ^= 1; dut->eval();  // negedge
     tfp->dump(contextp->time());
     contextp->timeInc(1);
@@ -30,13 +113,32 @@ static void exec_once() {
 
     // update regs in monitor
     isa_reg_update();
+
+    #ifdef CONFIG_ITRACE
+        word_t this_inst = dpi_that_accesses_inst();
+        char *p = logbuf;
+        p += snprintf(p, sizeof(logbuf), FMT_WORD ":", itrace_pc);
+        int ilen = 4;
+        int i;
+        uint8_t *inst = (uint8_t *)&this_inst;
+        for (i = ilen - 1; i >= 0; i --) {
+            p += snprintf(p, 4, " %02x", inst[i]);
+        }
+        int ilen_max = 4;
+        int space_len = ilen_max - ilen;
+        if (space_len < 0) space_len = 0;
+        space_len = space_len * 3 + 1;
+        memset(p, ' ', space_len);
+        p += space_len;
+        disassemble(p, logbuf + sizeof(logbuf) - p, itrace_pc, (uint8_t *)&this_inst, ilen);
+    #endif
 }
 
 static void execute(uint64_t n) {
     for (;n > 0; n --) {
         exec_once();
         trace_and_difftest();
-        if (dpi_that_accesses_ebreak() == 1 || contextp->time() > 999) {
+        if (dpi_that_accesses_inst() == 0x00100073 || contextp->time() > 999) {
             set_npc_state(NPC_END, core.pc, core.gpr[10]);
             break;
         }

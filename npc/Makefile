@@ -9,6 +9,7 @@ BIN = $(NPC_BUILD_DIR)/$(TOPNAME)
 # argv
 IMG ?= --img\=./default/dummy-riscv32e-npc.bin
 LOG = --log\=$(NPC_BUILD_DIR)/npc.log
+ELF ?= --elf\=./default/dummy-riscv32e-npc.elf
 
 # project source: csrc, vsrc, include
 VSRCS = $(shell find $(abspath ./vsrc) -name "*.v" -or -name "*.sv")
@@ -21,8 +22,14 @@ VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc --trace \
 	-O3 --x-assign fast --x-initial fast --noassert	\
 	$(INCFLAGS)
-CXXFLAGS += -DTOP_NAME="\"V$(TOPNAME)\""
-LDFLAGS ?= -lreadline 
+
+# rules for gcc
+LLVM_CXXFLAGS  = -I/usr/lib/llvm-14/include -std=c++14
+LLVM_CXXFLAGS += -fno-exceptions -D_GNU_SOURCE 
+LLVM_CXXFLAGS += -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS 
+CXXFLAGS += -DTOP_NAME="\"V$(TOPNAME)\"" $(LLVM_CXXFLAGS) -fPIE
+LDFLAGS ?= -lreadline $(shell llvm-config --libs)
+
 
 $(BIN): $(VSRCS) $(CSRCS)
 	@rm -rf $(OBJ_DIR)
@@ -31,7 +38,7 @@ $(BIN): $(VSRCS) $(CSRCS)
 		$(addprefix -CFLAGS , $(CXXFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 
-NPC_EXEC := $(BIN) $(IMG) $(LOG)
+NPC_EXEC := $(BIN) $(IMG) $(LOG) $(ELF)
 
 .PHONY: all sim wave clean
 

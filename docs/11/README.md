@@ -51,3 +51,18 @@ sw指令需要访存内存, 不过对于dummy程序来说, 不实现也不影响
 - 通过Verilator编译出的C++文件来访问通用寄存器，如`dut->rootp->xcore__DOT__regfile_u0__DOT__regs[i]`表示第i个寄存器
 - 在npc仿真环境中构造了一组寄存器，在每次执行后与rtl模型进行同步，这样接口更清晰
 - 在`main.cpp`中生命了一部分全局变量，这样方便sdb与monitor使用
+
+### 为NPC添加trace支持
+在NPC中实现itrace, mtrace和ftrace
+
+#### itrace
+- 重新编写DPI-C，来获取当前运行的指令，用于判断ebreak与itrace
+- 链接llvm库, 具体参考`$NEMU_HOME/src/utils/filelist.mk`: 主要是为Makefile添加源文件、编译规则和链接规则; 在使用函数时需要声明
+- 具体的itrace参考nemu, 反汇编需要在monitor中初始化
+
+#### ftrace
+- 为`parse_args()`提供解析elf文件的选项`--elf`，从而读取到函数信息(默认的elf位于`$NPC_HOME/default/`目录下)
+- 还是整体移植了nemu的ftrace,主要实现部分位于给予核激励阶段
+
+#### mtrace
+- npc实现访存指令后再实现

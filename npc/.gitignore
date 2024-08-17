@@ -3,6 +3,7 @@
 !*/
 !default/
 !dummy-riscv32e-npc.bin
+!dummy-riscv32e-npc.elf
 !Makefile
 !*.mk
 !*.[cSh]
