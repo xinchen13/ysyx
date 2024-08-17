@@ -9,8 +9,8 @@
 #endif
 
 #ifdef CONFIG_FTRACE
-    #define JAL_OPCODE 0x6f
-    #define JALR_OPCODE 0x67
+    #define JAL_OPCODE 0x6fu
+    #define JALR_OPCODE 0x67u
 
     static int func_call_depth = 1;     // for ftrace
     static word_t ftrace_inst;
@@ -66,9 +66,9 @@ static void trace_and_difftest() {
     #ifdef CONFIG_FTRACE
         ftrace_inst = dpi_that_accesses_inst();
         dnpc = dut->rootp->xcore__DOT__dnpc;
-        opcode = ftrace_inst & 0x7f;
-        rd = (ftrace_inst >> 7) & 0x1f;
-        rs1 = (ftrace_inst >> 15) & 0x1f;
+        opcode = ftrace_inst & 0x7fu;
+        rd = (ftrace_inst >> 7) & 0x1fu;
+        rs1 = (ftrace_inst >> 15) & 0x1fu;
         if (func_retn()) {
             func_call_depth -= 2;
             ftrace_retn(core.pc, func_call_depth);
