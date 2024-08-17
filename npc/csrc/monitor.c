@@ -3,10 +3,12 @@
 #include "host.h"
 #include "sdb.h"
 #include "tiktok.h"
+#include "difftest.h"
 
 static char *img_file = NULL;   // image file
 static char *log_file = NULL;   // log file
 static char *elf_file = NULL;
+static char *diff_so_file = NULL;
 
 extern FILE *log_fp;
 
@@ -54,6 +56,7 @@ static int parse_args(int argc, char *argv[]) {
         {"log"      , required_argument, NULL, 'l'},
         {"img"      , required_argument, NULL, 'i'},
         {"elf"      , required_argument, NULL, 'e'},
+        {"diff"     , required_argument, NULL, 'd'},
         {"help"     , no_argument      , NULL, 'h'},
         {0          , 0                , NULL,  0 },
     };
@@ -63,11 +66,13 @@ static int parse_args(int argc, char *argv[]) {
             case 'l': log_file = optarg; break;
             case 'i': img_file = optarg; break;
             case 'e': elf_file = optarg; break;
+            case 'd': diff_so_file = optarg; break;
             default:
                 printf("Usage: %s [OPTION...] IMAGE [args]\n\n", argv[0]);
-                printf("\t-l,--log=FILE     output log to FILE\n");
-                printf("\t-i,--img=FILE     read img file\n");
-                printf("\t-e,--elf=FILE     get ftrace elf to elf_file\n");
+                printf("\t-l,--log=FILE        output log to FILE\n");
+                printf("\t-i,--img=FILE        read img file\n");
+                printf("\t-e,--elf=FILE        get ftrace elf to elf_file\n");
+                printf("\t-d,--diff=REF_SO     run DiffTest with reference REF_SO\n");
                 printf("\n");
                 exit(0);
         }
@@ -97,6 +102,11 @@ void init_monitor(int argc, char *argv[]) {
 
     /* Load the image to memory. This will overwrite the built-in image. */
     long img_size = load_img();
+
+    // init difftest
+    #ifdef CONFIG_DIFFTEST
+        init_difftest(diff_so_file, img_size, 1234);
+    #endif
 
     /* Initialize the simple debugger. */
     init_sdb();
