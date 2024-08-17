@@ -42,10 +42,6 @@ static void exec_once() {
     // update regs in monitor
     isa_reg_update();
 
-    if (dpi_that_accesses_inst() == 0x00f12423) {
-        set_npc_state(NPC_ABORT, core.pc, 0);
-    }
-
     #ifdef CONFIG_ITRACE
         word_t this_inst = dpi_that_accesses_inst();
         char *p = logbuf;

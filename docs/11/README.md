@@ -58,6 +58,7 @@ sw指令需要访存内存, 不过对于dummy程序来说, 不实现也不影响
 #### itrace
 - 重新编写DPI-C，来获取当前运行的指令，用于判断ebreak与itrace
 - 链接llvm库, 具体参考`$NEMU_HOME/src/utils/filelist.mk`: 主要是为Makefile添加源文件、编译规则和链接规则; 在使用函数时需要声明
+- 具体的itrace参考nemu, 反汇编需要在monitor中初始化
 
 #### ftrace
 - 为`parse_args()`提供解析elf文件的选项`--elf`，从而读取到函数信息(默认的elf位于`$NPC_HOME/default/`目录下)
