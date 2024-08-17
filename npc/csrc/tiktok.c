@@ -194,4 +194,5 @@ void core_init() {
     tfp->dump(contextp->time());
     contextp->timeInc(1);
     dut->rst_n = 1;
+    isa_reg_update();
 }
