@@ -15,6 +15,7 @@
 
     static int func_call_depth = 1;     // for ftrace
     static word_t ftrace_inst;
+    static word_t ftrace_pc;
     static word_t dnpc;
     static uint32_t opcode;
     static uint32_t rd;
@@ -72,10 +73,10 @@ static void trace_and_difftest() {
         rs1 = (ftrace_inst >> 15) & 0x1fu;
         if (func_retn()) {
             func_call_depth -= 2;
-            ftrace_retn(core.pc, func_call_depth);
+            ftrace_retn(ftrace_pc, func_call_depth);
         }
         if (func_call()) {
-            ftrace_call(core.pc, dnpc, func_call_depth);
+            ftrace_call(ftrace_pc, dnpc, func_call_depth);
             func_call_depth += 2;
         }
     #endif
@@ -98,6 +99,10 @@ static void exec_once() {
 
     #ifdef CONFIG_ITRACE
         itrace_pc = core.pc;
+    #endif
+
+    #ifdef CONFIG_FTRACE
+        ftrace_pc = core.pc;
     #endif
 
     dut->clk ^= 1; dut->eval();  // negedge
