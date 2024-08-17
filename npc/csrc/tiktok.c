@@ -4,7 +4,7 @@
 #include "reg.h"
 #include "sdb.h"
 
-static char logbuf[256];    // for itrace
+static char logbuf[128];    // for itrace
 
 static void trace_and_difftest() {
     #ifdef CONFIG_ITRACE
@@ -55,7 +55,6 @@ static void exec_once() {
         memset(p, ' ', space_len);
         p += space_len;
         disassemble(p, logbuf + sizeof(logbuf) - p, core.pc, (uint8_t *)&this_inst, ilen);
-
     #endif
 }
 
