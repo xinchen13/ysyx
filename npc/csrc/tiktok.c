@@ -37,9 +37,8 @@ static void exec_once() {
     // update regs in monitor
     isa_reg_update();
 
-    word_t this_inst = dpi_that_accesses_inst();
-
     #ifdef CONFIG_ITRACE
+        word_t this_inst = dpi_that_accesses_inst();
         char *p = logbuf;
         p += snprintf(p, sizeof(logbuf), FMT_WORD ":", core.pc);
         int ilen = 4;

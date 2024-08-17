@@ -2,6 +2,7 @@
 #include "paddr.h"
 #include "host.h"
 #include "sdb.h"
+#include "tiktok.h"
 
 static char *img_file = NULL;   // image file
 static char *log_file = NULL;   // log file
@@ -88,6 +89,9 @@ void init_monitor(int argc, char *argv[]) {
 
     /* Initialize the simple debugger. */
     init_sdb();
+
+    /* init disasm */
+    IFDEF(CONFIG_ITRACE, init_disasm("riscv32-pc-linux-gnu"));
 
     /* Display welcome message. */
     welcome();
