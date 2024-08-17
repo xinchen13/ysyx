@@ -12,7 +12,6 @@
 // #define CONFIG_MTRACE 1
 #define CONFIG_DIFFTEST
 
-
 #if defined(CONFIG_ITRACE) || defined(CONFIG_FTRACE) || defined(CONFIG_MTRACE)
     #define CONFIG_TRACE 1
 #endif
