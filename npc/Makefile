@@ -21,8 +21,14 @@ VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc --trace \
 	-O3 --x-assign fast --x-initial fast --noassert	\
 	$(INCFLAGS)
-CXXFLAGS += -DTOP_NAME="\"V$(TOPNAME)\""
-LDFLAGS ?= -lreadline 
+
+# rules for gcc
+LLVM_CXXFLAGS  = -I/usr/lib/llvm-14/include -std=c++14
+LLVM_CXXFLAGS += -fno-exceptions -D_GNU_SOURCE 
+LLVM_CXXFLAGS += -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS 
+CXXFLAGS += -DTOP_NAME="\"V$(TOPNAME)\"" $(LLVM_CXXFLAGS) -fPIE
+LDFLAGS ?= -lreadline $(shell llvm-config --libs)
+
 
 $(BIN): $(VSRCS) $(CSRCS)
 	@rm -rf $(OBJ_DIR)

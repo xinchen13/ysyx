@@ -4,6 +4,8 @@
 #include "reg.h"
 #include "sdb.h"
 
+static char logbuf[256];    // for itrace
+
 static void trace_and_difftest() {
     // enable check watchpoints
     IFDEF(CONFIG_WATCHPOINT,
@@ -30,13 +32,38 @@ static void exec_once() {
 
     // update regs in monitor
     isa_reg_update();
+
+    // #ifdef CONFIG_ITRACE
+    //     char *p = logbuf;
+    //     p += snprintf(p, sizeof(logbuf), FMT_WORD ":", core.pc);
+    //     int ilen = s->snpc - s->pc;
+    //     int i;
+    //     uint8_t *inst = (uint8_t *)&s->isa.inst.val;
+    //     for (i = ilen - 1; i >= 0; i --) {
+    //         p += snprintf(p, 4, " %02x", inst[i]);
+    //     }
+    //     int ilen_max = MUXDEF(CONFIG_ISA_x86, 8, 4);
+    //     int space_len = ilen_max - ilen;
+    //     if (space_len < 0) space_len = 0;
+    //     space_len = space_len * 3 + 1;
+    //     memset(p, ' ', space_len);
+    //     p += space_len;
+
+    //     #ifndef CONFIG_ISA_loongarch32r
+    //     void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
+    //     disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
+    //         MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst.val, ilen);
+    //     #else
+    //     p[0] = '\0'; // the upstream llvm does not support loongarch32r
+    //     #endif
+    // #endif
 }
 
 static void execute(uint64_t n) {
     for (;n > 0; n --) {
         exec_once();
         trace_and_difftest();
-        if (dpi_that_accesses_ebreak() == 1 || contextp->time() > 999) {
+        if (dpi_that_accesses_inst() == 0x00100073 || contextp->time() > 999) {
             set_npc_state(NPC_END, core.pc, core.gpr[10]);
             break;
         }

@@ -15,12 +15,9 @@ module xcore (
     logic [`DATA_BUS] reg_wdata_ex;
     logic [`INST_ADDR_BUS] dnpc;
 
-    logic ebreak;
-    assign ebreak = (inst == `INST_EBREAK) ? 1'b1 : 1'b0; 
-
-    export "DPI-C" function dpi_that_accesses_ebreak;
-    function bit dpi_that_accesses_ebreak();
-        return ebreak;
+    export "DPI-C" function dpi_that_accesses_inst;
+    function bit [31:0] dpi_that_accesses_inst();
+        return inst;
     endfunction
 
 
