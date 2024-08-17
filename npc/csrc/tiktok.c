@@ -8,7 +8,7 @@ static char logbuf[128];    // for itrace
 
 static void trace_and_difftest() {
     #ifdef CONFIG_ITRACE
-        Log("%s\n", logbuf);
+        Log("%s", logbuf);
     #endif
 
     // enable check watchpoints
