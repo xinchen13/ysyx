@@ -47,6 +47,7 @@ sw指令需要访存内存, 不过对于dummy程序来说, 不实现也不影响
 为NPC实现单步执行, 打印寄存器和扫描内存的功能, 而表达式求值和监视点都是基于打印寄存器和扫描内存实现的:
 
 - 首先根据nemu重构了访存系统和log(保存到`build/npc.log`)，并移植了monitor
-- 移植sdb时涉及readline和history库，不仅需要包括头文件，还要在makefile中添加链接选项`-lreadline -lhistory`
-- 通过Verilator编译出的C++文件来访问通用寄存器，如`top->rootp->ysyx_22040000_top__DOT__u_regfile__DOT__rf[i]`表示第i个寄存器
-- 重新编写DPI-C，来获取当前运行的指令，用于判断ebreak与itrace
+- 移植sdb时涉及readline和history库，不仅需要包括头文件，还要在makefile中添加链接选项`-lreadline`
+- 通过Verilator编译出的C++文件来访问通用寄存器，如`dut->rootp->xcore__DOT__regfile_u0__DOT__regs[i]`表示第i个寄存器
+- 在npc仿真环境中构造了一组寄存器，在每次执行后与rtl模型进行同步，这样接口更清晰
+- 在`main.cpp`中生命了一部分全局变量，这样方便sdb与monitor使用

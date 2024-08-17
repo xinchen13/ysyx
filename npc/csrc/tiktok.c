@@ -1,20 +1,53 @@
 #include "common.h"
+#include "tiktok.h"
+#include "vaddr.h"
+#include "reg.h"
+#include "sdb.h"
 
-extern npcState npc_state;
+static void trace_and_difftest() {
+    // enable check watchpoints
+    IFDEF(CONFIG_WATCHPOINT,
+        if (check_watchpoint() == 1 && npc_state.state != NPC_END) {
+            npc_state.state = NPC_STOP;
+        }
+    );
+}
+
+void set_npc_state(int state, uint32_t pc, int halt_ret) {
+    npc_state.state = state;
+    npc_state.halt_pc = pc;
+    npc_state.halt_ret = halt_ret;
+}
 
 static void exec_once() {
-    ;
+    dut->clk ^= 1; dut->eval();  // negedge
+    tfp->dump(contextp->time());
+    contextp->timeInc(1);
+    dut->inst = vaddr_ifetch(dut->pc, 4);
+    dut->clk ^= 1; dut->eval();  // posedge
+    tfp->dump(contextp->time());
+    contextp->timeInc(1); // time + 1
+
+    // update regs in monitor
+    isa_reg_update();
 }
 
 static void execute(uint64_t n) {
     for (;n > 0; n --) {
         exec_once();
-        if (npc_state.state != NPC_RUNNING) break;
+        trace_and_difftest();
+        if (dpi_that_accesses_ebreak() == 1 || contextp->time() > 999) {
+            set_npc_state(NPC_END, core.pc, core.gpr[10]);
+            break;
+        }
+        if (npc_state.state != NPC_RUNNING) {
+            break;
+        }
     }
 }
 
 /* Simulate how the core works. */
-void cpu_exec(uint64_t n) {
+void core_exec(uint64_t n) {
     switch (npc_state.state) {
         case NPC_END: case NPC_ABORT:
         printf("Program execution has ended. To restart the program, exit NEMU and run again.\n");
@@ -37,4 +70,16 @@ void cpu_exec(uint64_t n) {
         // fall through
         case NPC_QUIT: ;
     }
+}
+
+void core_init() {
+    dut->clk = 1;
+    dut->rst_n = 0;
+    dut->clk ^= 1; dut->eval();
+    tfp->dump(contextp->time());
+    contextp->timeInc(1);
+    dut->clk ^= 1; dut->eval(); // posedge
+    tfp->dump(contextp->time());
+    contextp->timeInc(1);
+    dut->rst_n = 1;
 }
