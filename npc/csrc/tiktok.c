@@ -4,7 +4,53 @@
 #include "reg.h"
 #include "sdb.h"
 
-static char logbuf[128];    // for itrace
+#ifdef CONFIG_ITRACE
+    static char logbuf[128];    // for itrace
+#endif
+
+#ifdef CONFIG_FTRACE
+    #define JAL_OPCODE 0x6f
+    #define JALR_OPCODE 0x67
+
+    static int func_call_depth = 1;     // for ftrace
+    static word_t ftrace_inst;
+    static word_t dnpc;
+    static uint32_t opcode;
+    static uint32_t rd;
+    static uint32_t rs1;
+
+    static int func_call() {
+        if (opcode == JAL_OPCODE) {
+            if ((rd == 1) || (rd == 5)) {
+                return 1;
+            }
+        }
+        else if (opcode == JALR_OPCODE) {
+            if (((rd == 1) || (rd == 5)) && (rs1 != 1) && (rs1 != 5)) {
+                return 1;
+            }
+            else if (((rd == 1) || (rd == 5)) && (rs1 == rd)) {
+                return 1;
+            }
+            else if (((rd == 1) && (rs1 == 5)) || ((rd == 5) && (rs1 == 1))) {
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+    static int func_retn() {
+        if (opcode == JALR_OPCODE) {
+            if (((rs1 == 1) || (rs1 == 5)) && (rd != 1) && (rd != 5)) {
+                return 1;
+            }
+            else if (((rd == 1) && (rs1 == 5)) || ((rd == 5) && (rs1 == 1))) {
+                return 1;
+            }
+        }
+        return 0;
+    }
+#endif
 
 static void trace_and_difftest() {
     // itrace
@@ -13,6 +59,23 @@ static void trace_and_difftest() {
         write_iringbuf(logbuf);  // write log to iringbuf
         if (npc_state.state == NPC_ABORT) {
             print_iringbuf();
+        }
+    #endif
+
+    // ftracer
+    #ifdef CONFIG_FTRACE
+        ftrace_inst = dpi_that_accesses_inst();
+        dnpc = dut->rootp->xcore__DOT__dnpc;
+        opcode = ftrace_inst & 0x7f;
+        rd = (ftrace_inst >> 7) & 0x1f;
+        rs1 = (ftrace_inst >> 15) & 0x1f;
+        if (func_retn()) {
+            func_call_depth -= 2;
+            ftrace_retn(core.pc, func_call_depth);
+        }
+        if (func_call()) {
+            ftrace_call(core.pc, dnpc, func_call_depth);
+            func_call_depth += 2;
         }
     #endif
 

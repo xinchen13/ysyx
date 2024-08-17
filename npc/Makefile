@@ -9,6 +9,7 @@ BIN = $(NPC_BUILD_DIR)/$(TOPNAME)
 # argv
 IMG ?= --img\=./default/dummy-riscv32e-npc.bin
 LOG = --log\=$(NPC_BUILD_DIR)/npc.log
+ELF ?= --elf\=./default/dummy-riscv32e-npc.elf
 
 # project source: csrc, vsrc, include
 VSRCS = $(shell find $(abspath ./vsrc) -name "*.v" -or -name "*.sv")
@@ -37,7 +38,7 @@ $(BIN): $(VSRCS) $(CSRCS)
 		$(addprefix -CFLAGS , $(CXXFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 
-NPC_EXEC := $(BIN) $(IMG) $(LOG)
+NPC_EXEC := $(BIN) $(IMG) $(LOG) $(ELF)
 
 .PHONY: all sim wave clean
 

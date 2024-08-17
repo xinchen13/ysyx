@@ -6,6 +6,7 @@
 
 static char *img_file = NULL;   // image file
 static char *log_file = NULL;   // log file
+static char *elf_file = NULL;
 
 extern FILE *log_fp;
 
@@ -52,18 +53,21 @@ static int parse_args(int argc, char *argv[]) {
     const struct option table[] = {
         {"log"      , required_argument, NULL, 'l'},
         {"img"      , required_argument, NULL, 'i'},
+        {"elf"      , required_argument, NULL, 'e'},
         {"help"     , no_argument      , NULL, 'h'},
         {0          , 0                , NULL,  0 },
     };
     int o;
-    while ((o = getopt_long(argc, argv, "-hl:i:", table, NULL)) != -1) {
+    while ((o = getopt_long(argc, argv, "-hl:i:e:", table, NULL)) != -1) {
         switch (o) {
             case 'l': log_file = optarg; break;
             case 'i': img_file = optarg; break;
+            case 'e': elf_file = optarg; break;
             default:
                 printf("Usage: %s [OPTION...] IMAGE [args]\n\n", argv[0]);
-                printf("\t-l,--log=FILE           output log to FILE\n");
-                printf("\t-i,--img=FILE read img file\n");
+                printf("\t-l,--log=FILE     output log to FILE\n");
+                printf("\t-i,--img=FILE     read img file\n");
+                printf("\t-e,--elf=FILE     get ftrace elf to elf_file\n");
                 printf("\n");
                 exit(0);
         }
@@ -80,6 +84,9 @@ void init_monitor(int argc, char *argv[]) {
 
     /* Parse arguments. */
     parse_args(argc, argv);
+
+    // read elf file to get function infomation
+    IFDEF(CONFIG_FTRACE, init_ftrace_stfunc(elf_file));
 
     /* Open the log file. */
     init_log(log_file);

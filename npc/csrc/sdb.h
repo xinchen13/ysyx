@@ -45,6 +45,25 @@ void print_iringbuf();
 // -------------------------------------------------------
 
 
+// ------------------ ftrace elfstfunc -------------------
+#include <elf.h>
+#define ELF_ST_NAME_LEN 64
+#define ELF_ST_FUNC_NUM 64
+
+typedef struct {
+    char name[ELF_ST_FUNC_NUM][ELF_ST_NAME_LEN];
+    word_t addr[ELF_ST_FUNC_NUM];
+    word_t size[ELF_ST_FUNC_NUM];
+    word_t valid_func;
+} elfStFunc;
+
+void init_ftrace_stfunc(const char *elf_file);
+void display_elfstfunc(); // for debug
+void ftrace_call(word_t curr_addr, word_t j_addr, int depth);
+void ftrace_retn(word_t curr_addr, int depth);
+// -------------------------------------------------------
+
+
 word_t expr(char *e, bool *success);
 
 void init_wp_pool();
