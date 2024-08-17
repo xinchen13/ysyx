@@ -1,14 +1,26 @@
 #include "common.h"
 #include "tiktok.h"
+#include "vaddr.h"
 
 static void exec_once() {
-    ;
+    dut->clk ^= 1; dut->eval();  // negedge
+    tfp->dump(contextp->time());
+    contextp->timeInc(1);
+    dut->inst = vaddr_ifetch(dut->pc, 4);
+    dut->clk ^= 1; dut->eval();  // posedge
+    tfp->dump(contextp->time());
+    contextp->timeInc(1); // time + 1
 }
 
 static void execute(uint64_t n) {
     for (;n > 0; n --) {
+        if (dpi_that_accesses_ebreak() == 0 && contextp->time() < 999) {
+            break;
+        }
         exec_once();
-        if (npc_state.state != NPC_RUNNING) break;
+        if (npc_state.state != NPC_RUNNING) {
+            break;
+        }
     }
 }
 
