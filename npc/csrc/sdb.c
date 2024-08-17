@@ -185,10 +185,12 @@ static int cmd_help(char *args) {
 
 
 void sdb_mainloop() {
-    if (CONFIG_BATCH_MODE) {
-        cmd_c(NULL);
-        return;
-    }
+    IFDEF(CONFIG_BATCH_MODE,
+        {
+            cmd_c(NULL);
+            return;
+        }
+    );
 
     for (char *str; (str = rl_gets()) != NULL; ) {
         char *str_end = str + strlen(str);
