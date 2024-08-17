@@ -87,6 +87,7 @@ void init_monitor(int argc, char *argv[]) {
 
     // read elf file to get function infomation
     IFDEF(CONFIG_FTRACE, init_ftrace_stfunc(elf_file));
+    display_elfstfunc();
 
     /* Open the log file. */
     init_log(log_file);
