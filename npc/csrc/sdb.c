@@ -4,9 +4,6 @@
 #include "reg.h"
 #include "tiktok.h"
 
-void init_regex();
-void init_wp_pool();
-
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
     static char *line_read = NULL;
@@ -26,7 +23,7 @@ static char* rl_gets() {
 }
 
 static int cmd_c(char *args) {
-    cpu_exec(-1);
+    core_exec(-1);
     return 0;
 }
 
@@ -44,7 +41,7 @@ static int cmd_si(char *args) {
     if (step_arg != NULL) {
         sscanf(step_arg, "%d", &step_counter);
     }
-    cpu_exec(step_counter);
+    core_exec(step_counter);
     return 0;
 }
 
@@ -226,6 +223,8 @@ void init_sdb() {
 
     /* Initialize the watchpoint pool. */
     init_wp_pool();
+
+    core_init();
 }
 
 int is_exit_status_bad() {

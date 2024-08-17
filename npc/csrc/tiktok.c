@@ -1,6 +1,5 @@
 #include "common.h"
-
-extern npcState npc_state;
+#include "tiktok.h"
 
 static void exec_once() {
     ;
@@ -14,7 +13,7 @@ static void execute(uint64_t n) {
 }
 
 /* Simulate how the core works. */
-void cpu_exec(uint64_t n) {
+void core_exec(uint64_t n) {
     switch (npc_state.state) {
         case NPC_END: case NPC_ABORT:
         printf("Program execution has ended. To restart the program, exit NEMU and run again.\n");
@@ -37,4 +36,16 @@ void cpu_exec(uint64_t n) {
         // fall through
         case NPC_QUIT: ;
     }
+}
+
+void core_init() {
+    dut->clk = 1;
+    dut->rst_n = 0;
+    dut->clk ^= 1; dut->eval();
+    tfp->dump(contextp->time());
+    contextp->timeInc(1);
+    dut->clk ^= 1; dut->eval(); // posedge
+    tfp->dump(contextp->time());
+    contextp->timeInc(1);
+    dut->rst_n = 1;
 }

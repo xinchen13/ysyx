@@ -30,24 +30,17 @@ int main(int argc, char** argv) {
 
     init_monitor(argc, argv);
 
-    // sdb_mainloop();
+    sdb_mainloop();
 
-    dut->clk = 1;
-    dut->rst_n = 0;
-    dut->clk ^= 1; dut->eval();
-    tfp->dump(contextp->time()); // dump wave
-    contextp->timeInc(1); // time + 1
-    dut->clk ^= 1; dut->eval();
-    tfp->dump(contextp->time()); // dump wave
-    contextp->timeInc(1); // time + 1
-    dut->rst_n = 1;
+
     while (dpi_that_accesses_ebreak() == 0 && contextp->time() < 999){
-        dut->clk ^= 1; dut->eval();  // single_cycle();
-        tfp->dump(contextp->time()); // dump wave
-        contextp->timeInc(1); // time + 1
+        dut->clk ^= 1; dut->eval();  // negedge
+        tfp->dump(contextp->time());
+
+        contextp->timeInc(1);
         dut->inst = vaddr_ifetch(dut->pc, 4);
-        dut->clk ^= 1; dut->eval();  // single_cycle();
-        tfp->dump(contextp->time()); // dump wave
+        dut->clk ^= 1; dut->eval();  // posedge
+        tfp->dump(contextp->time());
         contextp->timeInc(1); // time + 1
     }
 
@@ -61,8 +54,7 @@ int main(int argc, char** argv) {
 
 
     // ----------- return the return value of the guest program ---------------
-    // return is_exit_status_bad();
-    return 0;
+    return is_exit_status_bad();
     // ------------------------------------------------------------------------
 
 }
