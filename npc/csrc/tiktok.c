@@ -7,9 +7,9 @@
 static char logbuf[256];    // for itrace
 
 static void trace_and_difftest() {
-    // #ifdef CONFIG_ITRACE
-    //     Log("%s\n", logbuf);
-    // #endif
+    #ifdef CONFIG_ITRACE
+        Log("%s\n", logbuf);
+    #endif
 
     // enable check watchpoints
     IFDEF(CONFIG_WATCHPOINT,
@@ -37,8 +37,9 @@ static void exec_once() {
     // update regs in monitor
     isa_reg_update();
 
+    word_t this_inst = dpi_that_accesses_inst();
+
     #ifdef CONFIG_ITRACE
-        word_t this_inst = dpi_that_accesses_inst();
         char *p = logbuf;
         p += snprintf(p, sizeof(logbuf), FMT_WORD ":", core.pc);
         int ilen = 4;
@@ -54,6 +55,7 @@ static void exec_once() {
         memset(p, ' ', space_len);
         p += space_len;
         disassemble(p, logbuf + sizeof(logbuf) - p, core.pc, (uint8_t *)&this_inst, ilen);
+
     #endif
 }
 
