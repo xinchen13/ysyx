@@ -16,7 +16,6 @@
     static int func_call_depth = 1;     // for ftrace
     static word_t ftrace_inst;
     static word_t ftrace_pc;
-    static word_t dnpc;
     static uint32_t opcode;
     static uint32_t rd;
     static uint32_t rs1;
@@ -67,7 +66,6 @@ static void trace_and_difftest() {
     // ftracer
     #ifdef CONFIG_FTRACE
         ftrace_inst = dpi_that_accesses_inst();
-        dnpc = dut->rootp->xcore__DOT__dnpc;
         opcode = ftrace_inst & 0x7fu;
         rd = (ftrace_inst >> 7) & 0x1fu;
         rs1 = (ftrace_inst >> 15) & 0x1fu;
