@@ -1,8 +1,6 @@
 #include "common.h"
 #include "reg.h"
 
-extern coreState core;
-
 const char *regs[] = {
   "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
   "s0", "s1", "a0", "a1", "a2", "a3", "a4", "a5",
@@ -33,4 +31,13 @@ word_t isa_reg_str2val(const char *s, bool *success) {
     }
     *success = false;
     return 0;
+}
+
+// for monitor
+void isa_reg_update() {
+    core.pc = dut->pc;
+    int gpr_count = MUXDEF(CONFIG_RVE, 16, 32);
+    for (int i = 0; i < gpr_count; i++) {
+        core.gpr[i] = dut->rootp->xcore__DOT__regfile_u0__DOT__regs[i];
+    }
 }

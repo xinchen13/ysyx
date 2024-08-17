@@ -1,6 +1,13 @@
 #include "common.h"
 #include "tiktok.h"
 #include "vaddr.h"
+#include "reg.h"
+
+void set_npc_state(int state, uint32_t pc, int halt_ret) {
+    npc_state.state = state;
+    npc_state.halt_pc = pc;
+    npc_state.halt_ret = halt_ret;
+}
 
 static void exec_once() {
     dut->clk ^= 1; dut->eval();  // negedge
@@ -10,14 +17,18 @@ static void exec_once() {
     dut->clk ^= 1; dut->eval();  // posedge
     tfp->dump(contextp->time());
     contextp->timeInc(1); // time + 1
+
+    // update regs in monitor
+    isa_reg_update();
 }
 
 static void execute(uint64_t n) {
     for (;n > 0; n --) {
+        exec_once();
         if (dpi_that_accesses_ebreak() == 0 && contextp->time() < 999) {
+            set_npc_state(NPC_END, core.pc, core.gpr[10]);
             break;
         }
-        exec_once();
         if (npc_state.state != NPC_RUNNING) {
             break;
         }

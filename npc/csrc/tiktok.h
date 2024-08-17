@@ -4,6 +4,7 @@
 #include "common.h"
 
 extern npcState npc_state;
+extern coreState core;
 extern VerilatedContext* contextp;
 extern Vxcore* dut;
 extern VerilatedVcdC* tfp;
