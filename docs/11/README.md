@@ -62,8 +62,7 @@ sw指令需要访存内存, 不过对于dummy程序来说, 不实现也不影响
 
 #### ftrace
 - 为`parse_args()`提供解析elf文件的选项`--elf`，从而读取到函数信息(默认的elf位于`$NPC_HOME/default/`目录下)
-- 相比nemu的ftrace，添加了: 在开启ftrace时未传入elf文件/传入错误路径时的assert检查
-- 指令解析与跳转、返回识别采取与nemu一样的策略，在`trace_and_difftest()`中实现
+- 还是整体移植了nemu的ftrace,主要实现部分位于给予核激励阶段
 
 #### mtrace
 - npc实现访存指令后再实现
