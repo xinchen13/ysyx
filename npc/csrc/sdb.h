@@ -30,6 +30,21 @@ int check_watchpoint();
 // -------------------------------------------------------
 
 
+// ------------------  itrace ringbuf  -------------------
+#define IRINGBUF_SIZE 20
+#define LOG_LEHGTH 128 // which is equal to s->logbuf
+
+typedef struct {
+    char data[IRINGBUF_SIZE][LOG_LEHGTH];
+    int write_ptr;
+} iRingBuffer;
+
+void init_iringbuf();
+void write_iringbuf(const char *log_buf);
+void print_iringbuf();
+// -------------------------------------------------------
+
+
 word_t expr(char *e, bool *success);
 
 void init_wp_pool();

@@ -7,8 +7,13 @@
 static char logbuf[128];    // for itrace
 
 static void trace_and_difftest() {
+    // itrace
     #ifdef CONFIG_ITRACE
         Log("%s", logbuf);
+        write_iringbuf(logbuf);  // write log to iringbuf
+        if (npc_state.state == NPC_ABORT) {
+            print_iringbuf();
+        }
     #endif
 
     // enable check watchpoints

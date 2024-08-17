@@ -75,6 +75,9 @@ static int parse_args(int argc, char *argv[]) {
 void init_monitor(int argc, char *argv[]) {
     /* Perform some global initialization. */
 
+    // initialize itrace ringbuffer
+    IFDEF(CONFIG_ITRACE, init_iringbuf());
+
     /* Parse arguments. */
     parse_args(argc, argv);
 
