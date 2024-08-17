@@ -19,7 +19,7 @@ module idu (
             `B_TYPE_OPCODE: 
                 imm = {{20{inst_id[31]}}, inst_id[7], inst_id[30:25], inst_id[11:8], 1'b0};
             `I_AL_TYPE_OPCODE,`I_LOAD_TYPE_OPCODE,`JALR_OPCODE: 
-                imm = {{20{inst_id[31]}}, inst_id[31:20]};
+                imm = {{20{inst_id[31]}}, inst_id[31:20]} +2;
             `JAL_OPCODE: 
                 imm = {{12{inst_id[31]}}, inst_id[19:12], inst_id[20], inst_id[30:21], 1'b0};
             `LUI_OPCODE,`AUIPC_OPCODE: 
@@ -37,7 +37,7 @@ module idu (
             `AUIPC_OPCODE, `JAL_OPCODE:
                 src1_sel = 2'b01;   // pc
             `JALR_OPCODE, `I_AL_TYPE_OPCODE:
-                src1_sel = 2'b00;   // reg_rdata1
+                src1_sel = 2'b10;   // reg_rdata1
             default: 
                 src1_sel = 2'b00;
         endcase
