@@ -2,6 +2,16 @@
 #include "tiktok.h"
 #include "vaddr.h"
 #include "reg.h"
+#include "sdb.h"
+
+static void trace_and_difftest() {
+    // enable check watchpoints
+    IFDEF(CONFIG_WATCHPOINT,
+        if (check_watchpoint() == 1 && npc_state.state != NPC_END) {
+            npc_state.state = NPC_STOP;
+        }
+    );
+}
 
 void set_npc_state(int state, uint32_t pc, int halt_ret) {
     npc_state.state = state;
@@ -25,6 +35,7 @@ static void exec_once() {
 static void execute(uint64_t n) {
     for (;n > 0; n --) {
         exec_once();
+        trace_and_difftest();
         if (dpi_that_accesses_ebreak() == 1 || contextp->time() > 999) {
             set_npc_state(NPC_END, core.pc, core.gpr[10]);
             break;
