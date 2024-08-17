@@ -25,7 +25,7 @@ static void exec_once() {
 static void execute(uint64_t n) {
     for (;n > 0; n --) {
         exec_once();
-        if (dpi_that_accesses_ebreak() == 0 && contextp->time() < 999) {
+        if (dpi_that_accesses_ebreak() == 1 || contextp->time() > 999) {
             set_npc_state(NPC_END, core.pc, core.gpr[10]);
             break;
         }
