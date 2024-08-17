@@ -40,7 +40,6 @@ static void exec_once() {
     #ifdef CONFIG_ITRACE
         word_t this_inst = dpi_that_accesses_inst();
         char *p = logbuf;
-        p += snprintf(p, sizeof("itrace: "), "itrace: ");
         p += snprintf(p, sizeof(logbuf), FMT_WORD ":", core.pc);
         int ilen = 4;
         int i;
