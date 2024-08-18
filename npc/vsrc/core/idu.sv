@@ -36,8 +36,12 @@ module idu (
                 src1_sel = 2'b00;   // 32'h0
             `AUIPC_OPCODE, `JAL_OPCODE:
                 src1_sel = 2'b01;   // pc
-            `JALR_OPCODE, `I_AL_TYPE_OPCODE:
+            // `JALR_OPCODE, `I_AL_TYPE_OPCODE:
+            //     src1_sel = 2'b10;   // reg_rdata1
+                        `JALR_OPCODE:
                 src1_sel = 2'b10;   // reg_rdata1
+                        `I_AL_TYPE_OPCODE:
+                src1_sel = 2'b01;   // reg_rdata1
             default: 
                 src1_sel = 2'b00;
         endcase
