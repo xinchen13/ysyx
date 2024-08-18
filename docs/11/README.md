@@ -73,4 +73,31 @@ sw指令需要访存内存, 不过对于dummy程序来说, 不实现也不影响
 - 在`nemu/src/cpu/difftest/ref.c`中实现DiffTest的API, 包括`difftest_memcpy()`, `difftest_regcpy()`和`difftest_exec()`. 此外`difftest_raise_intr()`是为中断准备的, 目前暂不使用; 其中`difftest_memcpy`只实现了写入REF，`difftest_regcpy()`实现了双向读写(由于npc一定是DUT)
 - 在nemu的menuconfig中选择共享库作为编译的目标`Build target`: `(X) Shared object (used as REF for differential testing)`. 重新编译nemu, 成功后将会生成动态库文件`nemu/build/riscv32-nemu-interpreter-so`, 将其作为参数传入, 供npc动态链接
 - 移植difftest的dut功能到npc，并在`trace_and_difftest()`中进行调用
+- 需要为nemu开启`RVE`拓展,否则`difftest_regcpy()`会有错误
 - 在打开DiffTest机制的情况下在npc中正确运行dummy程序； 为了检查DiffTest机制是否生效, 为NPC中addi指令的实现注入一个错误，difftest能够及时报告
+
+## 实现RV32E指令集
+
+### 硬件如何区分有符号数和无符号数
+编写 test.c:
+```c
+#include <stdint.h>
+int32_t fun1(int32_t a, int32_t b) { return a + b; }
+uint32_t fun2(uint32_t a, uint32_t b) { return a + b; }
+```
+
+`riscv64-linux-gnu-gcc -c -march=rv32g -mabi=ilp32 -O2 test.c`编译, `riscv64-linux-gnu-objdump -d test.o`反汇编:
+
+```asm
+Disassembly of section .text:
+
+00000000 <fun1>:
+   0:	00b50533          	add	a0,a0,a1
+   4:	00008067          	ret
+
+00000008 <fun2>:
+   8:	00b50533          	add	a0,a0,a1
+   c:	00008067          	ret
+```
+
+发现两个函数的汇编指令序列是一样的，说明对于有符号整数和无符号整数的加法操作，处理器执行的指令序列是相同的，换句话说处理器并不关心操作数的符号位，而是按照位级进行操作
