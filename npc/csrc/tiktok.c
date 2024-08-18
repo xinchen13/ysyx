@@ -3,6 +3,7 @@
 #include "vaddr.h"
 #include "reg.h"
 #include "sdb.h"
+#include "difftest.h"
 
 #ifdef CONFIG_ITRACE
     static word_t itrace_pc;
