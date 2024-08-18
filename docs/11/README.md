@@ -66,3 +66,12 @@ sw指令需要访存内存, 不过对于dummy程序来说, 不实现也不影响
 
 #### mtrace
 - npc实现访存指令后再实现
+
+### 为NPC添加DiffTest支持
+在这里DUT是npc, 而REF则选择nemu
+
+- 在`nemu/src/cpu/difftest/ref.c`中实现DiffTest的API, 包括`difftest_memcpy()`, `difftest_regcpy()`和`difftest_exec()`. 此外`difftest_raise_intr()`是为中断准备的, 目前暂不使用; 其中`difftest_memcpy`只实现了写入REF，`difftest_regcpy()`实现了双向读写(由于npc一定是DUT)
+- 在nemu的menuconfig中选择共享库作为编译的目标`Build target`: `(X) Shared object (used as REF for differential testing)`. 重新编译nemu, 成功后将会生成动态库文件`nemu/build/riscv32-nemu-interpreter-so`, 将其作为参数传入, 供npc动态链接
+- 移植difftest的dut功能到npc，并在`trace_and_difftest()`中进行调用
+- 需要为nemu开启`RVE`拓展,否则`difftest_regcpy()`会有错误
+- 在打开DiffTest机制的情况下在npc中正确运行dummy程序； 为了检查DiffTest机制是否生效, 为NPC中addi指令的实现注入一个错误，difftest能够及时报告

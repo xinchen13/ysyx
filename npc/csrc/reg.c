@@ -41,3 +41,16 @@ void isa_reg_update() {
         core.gpr[i] = dut->rootp->xcore__DOT__regfile_u0__DOT__regs[i];
     }
 }
+
+bool isa_difftest_checkregs(coreState *ref_r, vaddr_t pc) {
+    int reg_num = MUXDEF(CONFIG_RVE, 16, 32);
+    for (int i = 0; i < reg_num; i++) {
+        if (ref_r->gpr[i] != core.gpr[i]) {
+            return false;
+        }
+    }
+    if (ref_r->pc != core.pc) {
+        return false;
+    }
+    return true;
+}

@@ -3,6 +3,7 @@
 #include "vaddr.h"
 #include "reg.h"
 #include "sdb.h"
+#include "difftest.h"
 
 #ifdef CONFIG_ITRACE
     static word_t itrace_pc;
@@ -53,6 +54,10 @@
     }
 #endif
 
+#ifdef CONFIG_DIFFTEST
+    static word_t difftest_pc;
+#endif
+
 static void trace_and_difftest() {
     // itrace
     #ifdef CONFIG_ITRACE
@@ -62,6 +67,8 @@ static void trace_and_difftest() {
             print_iringbuf();
         }
     #endif
+
+    IFDEF(CONFIG_DIFFTEST, difftest_step(difftest_pc, core.pc));
 
     // ftracer
     #ifdef CONFIG_FTRACE
@@ -101,6 +108,10 @@ static void exec_once() {
 
     #ifdef CONFIG_FTRACE
         ftrace_pc = core.pc;
+    #endif
+
+    #ifdef CONFIG_DIFFTEST
+        difftest_pc = core.pc;;
     #endif
 
     dut->clk ^= 1; dut->eval();  // negedge
@@ -184,4 +195,5 @@ void core_init() {
     tfp->dump(contextp->time());
     contextp->timeInc(1);
     dut->rst_n = 1;
+    isa_reg_update();
 }
