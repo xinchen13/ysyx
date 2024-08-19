@@ -13,6 +13,18 @@ static char *wave_file = NULL;
 
 extern FILE *log_fp;
 extern VerilatedVcdC* tfp;
+extern Vxcore* dut;
+
+static void init_wave_dump () {
+    if (wave_file != NULL) {
+        Verilated::traceEverOn(true);
+        dut->trace(tfp, 99);
+        tfp->open(wave_file);
+    }
+    else {
+        Verilated::traceEverOn(false);
+    }
+}
 
 static void welcome() {
     Log("Trace: %s", MUXDEF(CONFIG_TRACE, ANSI_FMT("ON", ANSI_FG_GREEN), ANSI_FMT("OFF", ANSI_FG_RED)));
@@ -96,7 +108,7 @@ void init_monitor(int argc, char *argv[]) {
     parse_args(argc, argv);
 
     // dump waves to "wave_file"
-    tfp->open(wave_file);
+    init_wave_dump();   // verilator
 
     // read elf file to get function infomation
     IFDEF(CONFIG_FTRACE, init_ftrace_stfunc(elf_file));

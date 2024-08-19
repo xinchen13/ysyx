@@ -13,10 +13,7 @@ int main(int argc, char** argv) {
     contextp = new VerilatedContext;
     contextp->commandArgs(argc, argv);
     dut = new Vxcore{contextp};
-    // open trace: generate waveform
-    Verilated::traceEverOn(true);
     tfp = new VerilatedVcdC;
-    dut->trace(tfp, 99);
     // set scope
     const svScope scope = svGetScopeFromName("TOP.xcore");
     assert(scope); // Check for nullptr if scope not found
@@ -38,7 +35,11 @@ int main(int argc, char** argv) {
 
 
     // ------------------------------- exit -----------------------------------
-    tfp->close();   // close waveform gen
+    printf("*******tfp_open = %d********\n", tfp->isOpen());
+    if (tfp->isOpen()) {
+        tfp->close();   // close waveform gen
+    }
+    delete tfp;
     delete dut;
     delete contextp;
     fclose(log_fp); // close log file
