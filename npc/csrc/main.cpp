@@ -18,20 +18,14 @@ int main(int argc, char** argv) {
     const svScope scope = svGetScopeFromName("TOP.xcore");
     assert(scope); // Check for nullptr if scope not found
     svSetScope(scope);
-    // ------------------------------------------------------------------------
-
 
 
     // ----------------------- initialization ---------------------------------
     init_monitor(argc, argv);
-    // ------------------------------------------------------------------------
-
 
 
     // ------------------- drive the DUT and monitor --------------------------
     sdb_mainloop();
-    // ------------------------------------------------------------------------
-
 
 
     // ------------------------------- exit -----------------------------------
@@ -42,12 +36,8 @@ int main(int argc, char** argv) {
     delete dut;
     delete contextp;
     fclose(log_fp); // close log file
-    // ------------------------------------------------------------------------
-
 
 
     // ----------- return the return value of the guest program ---------------
     return is_exit_status_bad();
-    // ------------------------------------------------------------------------
-
 }
