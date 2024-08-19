@@ -14,7 +14,7 @@ int main(int argc, char** argv) {
     contextp->commandArgs(argc, argv);
     dut = new Vxcore{contextp};
     tfp = new VerilatedVcdC;
-    // set scope
+    // set scope: for DPI-C
     const svScope scope = svGetScopeFromName("TOP.xcore");
     assert(scope); // Check for nullptr if scope not found
     svSetScope(scope);
@@ -35,7 +35,6 @@ int main(int argc, char** argv) {
 
 
     // ------------------------------- exit -----------------------------------
-    printf("*******tfp_open = %d********\n", tfp->isOpen());
     if (tfp->isOpen()) {
         tfp->close();   // close waveform gen
     }
