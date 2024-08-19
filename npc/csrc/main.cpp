@@ -17,7 +17,6 @@ int main(int argc, char** argv) {
     Verilated::traceEverOn(true);
     tfp = new VerilatedVcdC;
     dut->trace(tfp, 99);
-    tfp->open("build/wave.vcd");
     // set scope
     const svScope scope = svGetScopeFromName("TOP.xcore");
     assert(scope); // Check for nullptr if scope not found
