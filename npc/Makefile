@@ -41,7 +41,7 @@ $(BIN): $(VSRCS) $(CSRCS)
 		$(addprefix -CFLAGS , $(CXXFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 
-NPC_EXEC := $(BIN) $(IMG) $(LOG) $(ELF) $(DIF)
+NPC_EXEC := $(BIN) $(IMG) $(LOG) $(ELF) $(DIF) $(WAV)
 
 .PHONY: all sim wave clean
 
