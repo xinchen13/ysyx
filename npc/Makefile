@@ -12,7 +12,7 @@ IMG ?= --img\=./default/dummy-riscv32e-npc.bin
 LOG = --log\=$(NPC_BUILD_DIR)/npc.log
 ELF ?= --elf\=./default/dummy-riscv32e-npc.elf
 DIF ?= --diff\=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so
-WAV ?= --wave\=$(NPC_BUILD_DIR)/$(WAVE_FILE)
+WAV ?= --wave\=$(WAVE_FILE)
 
 # project source: csrc, vsrc, include
 VSRCS = $(shell find $(abspath ./vsrc) -name "*.v" -or -name "*.sv")
