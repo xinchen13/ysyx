@@ -5,12 +5,14 @@ NPC_BUILD_DIR = ./build
 $(shell mkdir -p $(NPC_BUILD_DIR))
 OBJ_DIR = $(NPC_BUILD_DIR)/obj_dir
 BIN = $(NPC_BUILD_DIR)/$(TOPNAME)
+WAVE_FILE = $(NPC_BUILD_DIR)/wave.vcd
 
 # argv
 IMG ?= --img\=./default/dummy-riscv32e-npc.bin
 LOG = --log\=$(NPC_BUILD_DIR)/npc.log
 ELF ?= --elf\=./default/dummy-riscv32e-npc.elf
 DIF ?= --diff\=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so
+WAV ?= --wave\=$(WAVE_FILE)
 
 # project source: csrc, vsrc, include
 VSRCS = $(shell find $(abspath ./vsrc) -name "*.v" -or -name "*.sv")
@@ -41,6 +43,8 @@ $(BIN): $(VSRCS) $(CSRCS)
 
 NPC_EXEC := $(BIN) $(IMG) $(LOG) $(ELF) $(DIF)
 
+NPC_EXEC_WAVE := $(BIN) $(IMG) $(LOG) $(ELF) $(DIF) $(WAV)
+
 .PHONY: all sim wave clean
 
 all:
@@ -51,7 +55,9 @@ sim: $(BIN)
 	$(NPC_EXEC)
 
 wave: $(BIN)
-	@gtkwave $(NPC_BUILD_DIR)/wave.vcd
+	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
+	$(NPC_EXEC_WAVE)
+	@gtkwave $(WAVE_FILE)
 
 
 clean:

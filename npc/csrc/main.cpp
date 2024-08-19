@@ -13,42 +13,31 @@ int main(int argc, char** argv) {
     contextp = new VerilatedContext;
     contextp->commandArgs(argc, argv);
     dut = new Vxcore{contextp};
-    // open trace: generate waveform
-    Verilated::traceEverOn(true);
     tfp = new VerilatedVcdC;
-    dut->trace(tfp, 99);
-    tfp->open("build/wave.vcd");
-    // set scope
+    // set scope: for DPI-C
     const svScope scope = svGetScopeFromName("TOP.xcore");
     assert(scope); // Check for nullptr if scope not found
     svSetScope(scope);
-    // ------------------------------------------------------------------------
-
 
 
     // ----------------------- initialization ---------------------------------
     init_monitor(argc, argv);
-    // ------------------------------------------------------------------------
-
 
 
     // ------------------- drive the DUT and monitor --------------------------
     sdb_mainloop();
-    // ------------------------------------------------------------------------
-
 
 
     // ------------------------------- exit -----------------------------------
-    tfp->close();   // close waveform gen
+    if (tfp->isOpen()) {
+        tfp->close();   // close waveform gen
+    }
+    delete tfp;
     delete dut;
     delete contextp;
     fclose(log_fp); // close log file
-    // ------------------------------------------------------------------------
-
 
 
     // ----------- return the return value of the guest program ---------------
     return is_exit_status_bad();
-    // ------------------------------------------------------------------------
-
 }
