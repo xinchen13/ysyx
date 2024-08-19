@@ -1,56 +1,206 @@
 `include "../inc/defines.svh"
 
 module idu (
-    input logic [`INST_DATA_BUS] inst_id,
-    input logic [`INST_ADDR_BUS] pc_id,
+    // from ifu
+    input logic [`INST_DATA_BUS] inst,
+    input logic [`INST_ADDR_BUS] pc,
+
+    // from regfile
     input logic [`DATA_BUS] reg_rdata1,
-    output logic [`DATA_BUS] src1,
-    output logic [`DATA_BUS] src2,
-    output logic jump_flag_id,
-    output logic reg_wen_id
+    input logic [`DATA_BUS] reg_rdata2,
+
+    // to exu (mem, wb)
+    output logic [`DATA_BUS] alu_src1,
+    output logic [`DATA_BUS] alu_src2,
+    output logic [3:0] alu_ctrl,
+    output logic [`DATA_BUS] imm_o,
+    output logic [`DATA_BUS] pc_adder_src2,
+    output logic dmem_wen,
+    output logic dmem_req,
+    output logic reg_wen,
+    output logic reg_wdata_sel
 );
     logic [`DATA_BUS] imm;
-    logic [6:0] opcode = inst_id[6:0];
+    logic [6:0] opcode = inst[6:0];
+    logic [2:0] funct3 = inst[14:12];
+    logic funct7_5 = inst[30];
 
+    // imm gen
     always @ (*) begin
         case (opcode)
             `S_TYPE_OPCODE: 
-                imm = {{20{inst_id[31]}}, inst_id[31:25], inst_id[11:7]};
+                imm = {{20{inst[31]}}, inst[31:25], inst[11:7]};
             `B_TYPE_OPCODE: 
-                imm = {{20{inst_id[31]}}, inst_id[7], inst_id[30:25], inst_id[11:8], 1'b0};
+                imm = {{20{inst[31]}}, inst[7], inst[30:25], inst[11:8], 1'b0};
             `I_AL_TYPE_OPCODE,`I_LOAD_TYPE_OPCODE,`JALR_OPCODE: 
-                imm = {{20{inst_id[31]}}, inst_id[31:20]};
+                imm = {{20{inst[31]}}, inst[31:20]};
             `JAL_OPCODE: 
-                imm = {{12{inst_id[31]}}, inst_id[19:12], inst_id[20], inst_id[30:21], 1'b0};
+                imm = {{12{inst[31]}}, inst[19:12], inst[20], inst[30:21], 1'b0};
             `LUI_OPCODE,`AUIPC_OPCODE: 
-                imm = {inst_id[31:12], 12'b0};
+                imm = {inst[31:12], 12'b0};
             default: 
                 imm = `ZERO_WORD;
         endcase
     end
+    assign imm_o = imm;
 
-    logic [1:0] src1_sel;
+    // alu_src1
     always @ (*) begin
         case (opcode)
-            `LUI_OPCODE: 
-                src1_sel = 2'b00;   // 32'h0
-            `AUIPC_OPCODE, `JAL_OPCODE:
-                src1_sel = 2'b01;   // pc
-            `JALR_OPCODE, `I_AL_TYPE_OPCODE:
-                src1_sel = 2'b10;   // reg_rdata1
-            default: 
-                src1_sel = 2'b00;
+            `LUI_OPCODE, `AUIPC_OPCODE,
+            `JALR_OPCODE, `JAL_OPCODE: begin
+                alu_src1 = pc;
+            end
+            default: begin
+                alu_src1 = reg_rdata1;
+            end
         endcase
     end
 
-    // jump flag
+    // alu_src2
     always @ (*) begin
         case (opcode)
-            `JAL_OPCODE, `JALR_OPCODE: begin
-                jump_flag_id = 1'b1;     
+            `LUI_OPCODE,`AUIPC_OPCODE,
+            `I_AL_TYPE_OPCODE,`I_LOAD_TYPE_OPCODE,
+            `S_TYPE_OPCODE:begin
+                alu_src2 = imm;
+            end
+            `JALR_OPCODE,`JAL_OPCODE: begin
+                alu_src2 = 32'd4;
+            end
+            `R_TYPE_OPCODE,`B_TYPE_OPCODE: begin
+                alu_src2 = reg_rdata2;
             end
             default: begin
-                jump_flag_id = 1'b0;
+                alu_src2 = reg_rdata2;
+            end
+        endcase
+    end
+
+    // alu_ctrl
+    always @ (*) begin
+        case (opcode) 
+            `AUIPC_OPCODE,`JALR_OPCODE,
+            `JAL_OPCODE,`I_LOAD_TYPE_OPCODE,
+            `S_TYPE_OPCODE: begin
+                alu_ctrl = `ALU_ADD;
+            end
+            `B_TYPE_OPCODE: begin
+                case (funct3) 
+                    3'b000,3'b001,3'b100,3'b101: begin
+                        alu_ctrl = `ALU_LESS_THAN;
+                    end
+                    3'b110,3'b111: begin
+                        alu_ctrl = `ALU_LESS_THAN_U;
+                    end
+                    default: begin
+                        alu_ctrl = `ALU_ADD;
+                    end
+                endcase
+            end
+            `LUI_OPCODE: begin
+                alu_ctrl = `ALU_NONE;
+            end
+            `R_TYPE_OPCODE: begin
+                case (funct3)
+                    3'b000: begin
+                        alu_ctrl = funct7_5 ? `ALU_SUB : `ALU_ADD;
+                    end
+                    3'b001: begin
+                        alu_ctrl = `ALU_SHIFT_L;
+                    end
+                    3'b010: begin
+                        alu_ctrl = `ALU_LESS_THAN;
+                    end
+                    3'b011: begin
+                        alu_ctrl = `ALU_LESS_THAN_U;
+                    end
+                    3'b100: begin
+                        alu_ctrl = `ALU_XOR;
+                    end
+                    3'b101: begin
+                        alu_ctrl = funct7_5 ? `ALU_SHIFT_R_ARITH : `ALU_SHIFT_R_LOGIC;
+                    end
+                    3'b110: begin
+                        alu_ctrl = `ALU_OR;
+                    end
+                    3'b111: begin
+                        alu_ctrl = `ALU_AND;
+                    end
+                    default: begin
+                        alu_ctrl = `ALU_ADD;
+                    end
+                endcase
+            end
+            `I_AL_TYPE_OPCODE: begin
+                case (funct3)
+                    3'b000: begin
+                        alu_ctrl = `ALU_ADD;
+                    end
+                    3'b010: begin
+                        alu_ctrl = `ALU_LESS_THAN;
+                    end
+                    3'b011: begin
+                        alu_ctrl = `ALU_LESS_THAN_U;
+                    end
+                    3'b100: begin
+                        alu_ctrl = `ALU_XOR;
+                    end
+                    3'b110: begin
+                        alu_ctrl = `ALU_OR;
+                    end
+                    3'b111: begin
+                        alu_ctrl = `ALU_AND;
+                    end
+                    3'b001: begin
+                        alu_ctrl = `ALU_SHIFT_L;
+                    end
+                    3'b101: begin
+                        alu_ctrl = funct7_5 ? `ALU_SHIFT_R_ARITH : `ALU_SHIFT_R_LOGIC;
+                    end
+                    default: begin
+                        alu_ctrl = `ALU_ADD;
+                    end
+                endcase
+            end
+            default: begin
+                alu_ctrl = `ALU_ADD;
+            end
+        endcase
+    end
+
+    // pc_adder_src2
+    always @ (*) begin
+        case (opcode)
+            `JALR_OPCODE: begin
+                pc_adder_src2 = reg_rdata1;
+            end
+            default: begin
+                pc_adder_src2 = pc;
+            end
+        endcase
+    end
+
+    // dmem_wen
+    always @ (*) begin
+        case (opcode)
+            `S_TYPE_OPCODE: begin
+                dmem_wen = 1'b1;
+            end
+            default: begin
+                dmem_wen = 1'b0;
+            end
+        endcase
+    end
+
+    // dmem_req
+    always @ (*) begin
+        case (opcode)
+            `I_LOAD_TYPE_OPCODE: begin
+                dmem_req = 1'b1;
+            end
+            default: begin
+                dmem_req = 1'b0;
             end
         endcase
     end
@@ -58,17 +208,26 @@ module idu (
     // regfile write enable 
     always @ (*) begin
         case (opcode) 
-            `LUI_OPCODE, `AUIPC_OPCODE, `I_AL_TYPE_OPCODE,`JALR_OPCODE,
+            `LUI_OPCODE, `AUIPC_OPCODE, `I_AL_TYPE_OPCODE, `JALR_OPCODE,
             `I_LOAD_TYPE_OPCODE, `R_TYPE_OPCODE, `JAL_OPCODE: begin
-                reg_wen_id = 1'b1;
+                reg_wen = 1'b1;
             end
             default: begin
-                reg_wen_id = 1'b0;
+                reg_wen = 1'b0;
             end
         endcase
     end
 
-    assign src1 = src1_sel[1] ? reg_rdata1 : (src1_sel[0] ? pc_id : `ZERO_WORD);
-    assign src2 = imm;
+    // reg_wdata_sel
+    always @ (*) begin
+        case (opcode)
+            `I_LOAD_TYPE_OPCODE: begin
+                reg_wdata_sel = 1'b1;
+            end
+            default: begin
+                reg_wdata_sel = 1'b0;
+            end
+        endcase
+    end
 
 endmodule
