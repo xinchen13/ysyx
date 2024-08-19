@@ -1,5 +1,4 @@
 #include "difftest.h"
-#include <dlfcn.h>
 #include "paddr.h"
 #include "reg.h"
 

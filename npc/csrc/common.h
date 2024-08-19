@@ -25,6 +25,7 @@
 #include <assert.h>
 #include <regex.h>
 #include <getopt.h>
+#include <dlfcn.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "Vxcore.h"
