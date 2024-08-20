@@ -22,4 +22,8 @@ void paddr_write(paddr_t addr, int len, word_t data);
 
 void init_mem();
 
+// DPI-C
+extern "C" int dpic_pmem_read(int raddr);
+extern "C" void dpic_pmem_write(int waddr, int wdata, char wmask);
+
 #endif

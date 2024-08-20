@@ -117,7 +117,7 @@ static void exec_once() {
     dut->clk ^= 1; dut->eval();  // negedge
     tfp->dump(contextp->time());
     contextp->timeInc(1);
-    dut->inst = vaddr_ifetch(dut->pc, 4);
+    // dut->inst = vaddr_ifetch(dut->pc, 4);
     dut->clk ^= 1; dut->eval();  // posedge
     tfp->dump(contextp->time());
     contextp->timeInc(1); // time + 1

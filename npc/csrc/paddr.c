@@ -42,3 +42,38 @@ void paddr_write(paddr_t addr, int len, word_t data) {
     }
     out_of_bound(addr);
 }
+
+int dpic_pmem_read(int raddr) {
+    // raddr & ~0x3u 
+    int aligned_address = raddr & (~0x3u);
+    if (aligned_address >= CONFIG_MBASE && aligned_address <= (CONFIG_MBASE + CONFIG_MSIZE)) {
+        int read_data = paddr_read(aligned_address, 4);
+        #ifdef CONFIG_MTRACE
+            Log("mtrace: ( read %2d bytes): mem[" FMT_WORD "] = " FMT_WORD "\n", 4, aligned_address, read_data);
+        #endif
+        return read_data;
+    }
+    else {
+        return -1;
+    }
+}
+
+void dpic_pmem_write(int waddr, int wdata, char wmask) {
+    int aligned_address = waddr & (~0x3u);
+
+    if (aligned_address >= CONFIG_MBASE && aligned_address <= (CONFIG_MBASE + CONFIG_MSIZE)) {
+        int *wdata_ptr = &wdata;
+        char *byte_ptr = (char *)wdata_ptr;
+        for (int i = 0; i < 4; i++) {
+            if (wmask & (1u << i)) {
+                paddr_write(aligned_address+i, 1, *(byte_ptr + i));
+                #ifdef CONFIG_MTRACE
+                    Log("mtrace: (write %2d bytes): mem[" FMT_WORD "] = " FMT_WORD "\n", 1, aligned_address+i, *(byte_ptr + i));
+                #endif 
+            }
+        }
+    }
+    else {
+        Assert(0, "wrong write: " FMT_PADDR, waddr);
+    }
+}

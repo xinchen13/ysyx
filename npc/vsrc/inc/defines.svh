@@ -1,6 +1,7 @@
 
 `define CPU_RESET_ADDR 32'h80000000
 `define ZERO_WORD 32'h0
+`define BYTE_BUS 7:0
 
 // gprs
 `define REG_ADDR_BUS 4:0
@@ -16,6 +17,19 @@
 `define INST_DATA_BUS 31:0
 `define DATA_WIDTH 32
 `define DATA_BUS 31:0
+
+// alu
+`define ALU_ADD 4'b0000
+`define ALU_SUB 4'b1000
+`define ALU_SHIFT_L 4'b0001
+`define ALU_LESS_THAN 4'b0010
+`define ALU_LESS_THAN_U 4'b1010
+`define ALU_NONE 4'b0011
+`define ALU_XOR 4'b0100
+`define ALU_SHIFT_R_ARITH 4'b1101
+`define ALU_SHIFT_R_LOGIC 4'b0101
+`define ALU_OR 4'b0110
+`define ALU_AND 4'b0111
 
 // inst
 // opcode
