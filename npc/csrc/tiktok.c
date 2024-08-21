@@ -8,7 +8,7 @@
 #ifdef CONFIG_ITRACE
     static word_t itrace_pc;
     static char logbuf[128];    // for itrace
-    static word_t this_inst;
+    static word_t itrace_inst;
 #endif
 
 #ifdef CONFIG_FTRACE
@@ -103,7 +103,7 @@ void set_npc_state(int state, uint32_t pc, int halt_ret) {
 static void exec_once() {
 
     #ifdef CONFIG_ITRACE
-        this_inst = dpi_that_accesses_inst();
+        itrace_inst = dpi_that_accesses_inst();
         itrace_pc = core.pc;
     #endif
 
@@ -132,7 +132,7 @@ static void exec_once() {
         p += snprintf(p, sizeof(logbuf), FMT_WORD ":", itrace_pc);
         int ilen = 4;
         int i;
-        uint8_t *inst = (uint8_t *)&this_inst;
+        uint8_t *inst = (uint8_t *)&itrace_inst;
         for (i = ilen - 1; i >= 0; i --) {
             p += snprintf(p, 4, " %02x", inst[i]);
         }
@@ -142,7 +142,7 @@ static void exec_once() {
         space_len = space_len * 3 + 1;
         memset(p, ' ', space_len);
         p += space_len;
-        disassemble(p, logbuf + sizeof(logbuf) - p, itrace_pc, (uint8_t *)&this_inst, ilen);
+        disassemble(p, logbuf + sizeof(logbuf) - p, itrace_pc, (uint8_t *)&itrace_inst, ilen);
     #endif
 }
 
@@ -151,6 +151,7 @@ static void execute(uint64_t n) {
         exec_once();
         trace_and_difftest();
         if (dpi_that_accesses_inst() == 0x00100073 || contextp->time() > 999) {
+            trace_and_difftest();
             set_npc_state(NPC_END, core.pc, core.gpr[10]);
             break;
         }
