@@ -8,6 +8,7 @@
 #ifdef CONFIG_ITRACE
     static word_t itrace_pc;
     static char logbuf[128];    // for itrace
+    static word_t this_inst;
 #endif
 
 #ifdef CONFIG_FTRACE
@@ -102,6 +103,7 @@ void set_npc_state(int state, uint32_t pc, int halt_ret) {
 static void exec_once() {
 
     #ifdef CONFIG_ITRACE
+        this_inst = dpi_that_accesses_inst();
         itrace_pc = core.pc;
     #endif
 
@@ -126,7 +128,6 @@ static void exec_once() {
     isa_reg_update();
 
     #ifdef CONFIG_ITRACE
-        word_t this_inst = dpi_that_accesses_inst();
         char *p = logbuf;
         p += snprintf(p, sizeof(logbuf), FMT_WORD ":", itrace_pc);
         int ilen = 4;
