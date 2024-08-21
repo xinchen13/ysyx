@@ -1,6 +1,5 @@
 `include "../inc/defines.svh"
 
-/* verilator lint_off LATCH */
 module mem (
     input logic [`INST_DATA_BUS] inst,
     input logic [`DATA_BUS] raddr,
@@ -108,9 +107,13 @@ module mem (
         if (req) begin
             dmem_rdata_raw = dpic_pmem_read(raddr);
         end
-        else if (wen) begin
+        else begin
+            dmem_rdata_raw = 0;
+        end
+        if (wen) begin
             dpic_pmem_write(waddr, dmem_wdata_offset, wmask);
         end
+
     end
 
 endmodule
