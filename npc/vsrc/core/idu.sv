@@ -205,7 +205,7 @@ module idu (
         endcase
     end
 
-    // regfile write enable 
+    // reg_wen
     always @ (*) begin
         case (opcode) 
             `LUI_OPCODE, `AUIPC_OPCODE, `I_AL_TYPE_OPCODE, `JALR_OPCODE,
