@@ -5,9 +5,12 @@
 #include "sdb.h"
 #include "difftest.h"
 
+static word_t this_inst;
+
 #ifdef CONFIG_ITRACE
     static word_t itrace_pc;
     static char logbuf[128];    // for itrace
+    static word_t itrace_inst;
 #endif
 
 #ifdef CONFIG_FTRACE
@@ -72,7 +75,6 @@ static void trace_and_difftest() {
 
     // ftracer
     #ifdef CONFIG_FTRACE
-        ftrace_inst = dpi_that_accesses_inst();
         opcode = ftrace_inst & 0x7fu;
         rd = (ftrace_inst >> 7) & 0x1fu;
         rs1 = (ftrace_inst >> 15) & 0x1fu;
@@ -103,16 +105,20 @@ void set_npc_state(int state, uint32_t pc, int halt_ret) {
 static void exec_once() {
 
     #ifdef CONFIG_ITRACE
+        itrace_inst = dpi_that_accesses_inst();
         itrace_pc = core.pc;
     #endif
 
     #ifdef CONFIG_FTRACE
+        ftrace_inst = dpi_that_accesses_inst();
         ftrace_pc = core.pc;
     #endif
 
     #ifdef CONFIG_DIFFTEST
-        difftest_pc = core.pc;;
+        difftest_pc = core.pc;
     #endif
+
+    this_inst = dpi_that_accesses_inst();
 
     dut->clk ^= 1; dut->eval();  // negedge
     tfp->dump(contextp->time());
@@ -126,12 +132,11 @@ static void exec_once() {
     isa_reg_update();
 
     #ifdef CONFIG_ITRACE
-        word_t this_inst = dpi_that_accesses_inst();
         char *p = logbuf;
         p += snprintf(p, sizeof(logbuf), FMT_WORD ":", itrace_pc);
         int ilen = 4;
         int i;
-        uint8_t *inst = (uint8_t *)&this_inst;
+        uint8_t *inst = (uint8_t *)&itrace_inst;
         for (i = ilen - 1; i >= 0; i --) {
             p += snprintf(p, 4, " %02x", inst[i]);
         }
@@ -141,7 +146,7 @@ static void exec_once() {
         space_len = space_len * 3 + 1;
         memset(p, ' ', space_len);
         p += space_len;
-        disassemble(p, logbuf + sizeof(logbuf) - p, itrace_pc, (uint8_t *)&this_inst, ilen);
+        disassemble(p, logbuf + sizeof(logbuf) - p, itrace_pc, (uint8_t *)&itrace_inst, ilen);
     #endif
 }
 
@@ -149,7 +154,7 @@ static void execute(uint64_t n) {
     for (;n > 0; n --) {
         exec_once();
         trace_and_difftest();
-        if (dpi_that_accesses_inst() == 0x00100073 || contextp->time() > 999) {
+        if (this_inst == 0x00100073 || contextp->time() > 999) {
             set_npc_state(NPC_END, core.pc, core.gpr[10]);
             break;
         }
