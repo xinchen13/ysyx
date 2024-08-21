@@ -150,8 +150,7 @@ static void execute(uint64_t n) {
     for (;n > 0; n --) {
         exec_once();
         trace_and_difftest();
-        if (dpi_that_accesses_inst() == 0x00100073 || contextp->time() > 999) {
-            trace_and_difftest();
+        if (itrace_inst == 0x00100073 || contextp->time() > 999) {
             set_npc_state(NPC_END, core.pc, core.gpr[10]);
             break;
         }
