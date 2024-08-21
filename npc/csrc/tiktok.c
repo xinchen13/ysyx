@@ -72,7 +72,6 @@ static void trace_and_difftest() {
 
     // ftracer
     #ifdef CONFIG_FTRACE
-        ftrace_inst = dpi_that_accesses_inst();
         opcode = ftrace_inst & 0x7fu;
         rd = (ftrace_inst >> 7) & 0x1fu;
         rs1 = (ftrace_inst >> 15) & 0x1fu;
@@ -107,6 +106,7 @@ static void exec_once() {
     #endif
 
     #ifdef CONFIG_FTRACE
+        ftrace_inst = dpi_that_accesses_inst();
         ftrace_pc = core.pc;
     #endif
 
