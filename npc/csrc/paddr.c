@@ -48,7 +48,7 @@ int dpic_pmem_read(int raddr) {
     int aligned_address = raddr & (~0x3u);
     if (aligned_address >= CONFIG_MBASE && aligned_address <= (CONFIG_MBASE + CONFIG_MSIZE)) {
         int read_data = paddr_read(aligned_address, 4);
-        printf("read data = %08x", read_data);
+        // printf("read data = %08x", read_data);
         #ifdef CONFIG_MTRACE
             Log("mtrace: ( read %2d bytes): mem[" FMT_WORD "] = " FMT_WORD "\n", 4, aligned_address, read_data);
         #endif
