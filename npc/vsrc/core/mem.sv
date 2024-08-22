@@ -14,6 +14,19 @@ module mem (
     import "DPI-C" function int dpic_pmem_read(input int raddr);
     import "DPI-C" function void dpic_pmem_write(input int waddr, input int wdata, input byte wmask);
 
+    always @ (*) begin
+        if (req) begin
+            dmem_rdata_raw = dpic_pmem_read(raddr);
+        end
+        else begin
+            dmem_rdata_raw = 0;
+        end
+        if (wen) begin
+            dpic_pmem_write(waddr, dmem_wdata_offset, wmask);
+        end
+    end
+
+
     logic [6:0] opcode = inst[6:0];
     logic [2:0] funct3 = inst[14:12];
     logic [`BYTE_BUS] wmask;
@@ -103,17 +116,5 @@ module mem (
     end
     logic [`DATA_BUS] dmem_wdata_offset = wdata << (dmem_offset << 3);
 
-    always @ (*) begin
-        if (req) begin
-            dmem_rdata_raw = dpic_pmem_read(waddr);
-        end
-        else begin
-            dmem_rdata_raw = 0;
-        end
-        if (wen) begin
-            dpic_pmem_write(waddr, dmem_wdata_offset, wmask);
-        end
-
-    end
 
 endmodule
