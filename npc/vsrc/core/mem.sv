@@ -105,7 +105,7 @@ module mem (
 
     always @ (*) begin
         if (req) begin
-            dmem_rdata_raw = dpic_pmem_read(raddr);
+            dmem_rdata_raw = dpic_pmem_read(waddr);
         end
         else begin
             dmem_rdata_raw = 0;

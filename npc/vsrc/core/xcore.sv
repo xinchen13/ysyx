@@ -36,7 +36,6 @@ module xcore (
         inst = dpic_pmem_read(pc);
     end
 
-
     pc_reg pc_reg_u0 (
         .clk(clk),
         .rst_n(rst_n),
