@@ -88,7 +88,7 @@ module mem (
             end
         endcase
     end
-    assign rdata = dmem_rdata_raw;
+    assign rdata = masked_dmem_rdata;
 
     // wmask
     always @ (*) begin
