@@ -34,7 +34,6 @@ module mem (
     logic [`DATA_BUS] masked_dmem_rdata;
 
     // rmask
-    logic [2:0] rmask;
     logic [4:0] dmem_offset = {3'b0, raddr[1:0]};
     logic [`DATA_BUS] dmem_rdata_offset = dmem_rdata_raw >> (dmem_offset << 3);
     always @ (*) begin
@@ -42,46 +41,24 @@ module mem (
             `I_LOAD_TYPE_OPCODE: begin
                 case (funct3)
                     3'b000: begin
-                        rmask = 3'b001;
+                        masked_dmem_rdata = {{24{dmem_rdata_offset[7]}}, dmem_rdata_offset[7:0]};
                     end
                     3'b001: begin
-                        rmask = 3'b010;
+                        masked_dmem_rdata = {{16{dmem_rdata_offset[15]}}, dmem_rdata_offset[15:0]};
                     end
                     3'b010: begin
-                        rmask = 3'b011;
+                        masked_dmem_rdata = dmem_rdata_offset;
                     end
                     3'b100: begin
-                        rmask = 3'b100;
+                        masked_dmem_rdata = {{24'b0}, dmem_rdata_offset[7:0]};
                     end
                     3'b101: begin
-                        rmask = 3'b101;
+                        masked_dmem_rdata = {{16'b0}, dmem_rdata_offset[15:0]};
                     end
                     default: begin
-                        rmask = 3'b000;
+                        masked_dmem_rdata = dmem_rdata_offset;
                     end
                 endcase
-            end
-            default: begin
-                rmask = 3'b000;
-            end
-        endcase
-    end
-    always @ (*) begin
-        case (rmask) 
-            3'b001: begin
-                masked_dmem_rdata = {{24{dmem_rdata_offset[7]}}, dmem_rdata_offset[7:0]};
-            end
-            3'b010: begin
-                masked_dmem_rdata = {{16{dmem_rdata_offset[15]}}, dmem_rdata_offset[15:0]};
-            end
-            3'b011: begin
-                masked_dmem_rdata = dmem_rdata_offset;
-            end
-            3'b100: begin
-                masked_dmem_rdata = {{24'b0}, dmem_rdata_offset[7:0]};
-            end
-            3'b101: begin
-                masked_dmem_rdata = {{16'b0}, dmem_rdata_offset[15:0]};
             end
             default: begin
                 masked_dmem_rdata = dmem_rdata_offset;
