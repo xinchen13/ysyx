@@ -40,3 +40,4 @@ cd ysyx
 - [运行时环境和基础设施(pa2s2)](./docs/09/)
 - [nemu的设备和输入输出(pa2s3)](./docs/10/)
 - [支持RV32E的单周期NPC(npc-rv32e-sc)](./docs/11/)
+- [npc的设备和输入输出(npc-io)](./docs/12/)
