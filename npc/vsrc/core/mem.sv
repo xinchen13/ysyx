@@ -93,7 +93,8 @@ module mem (
             end
         endcase
     end
-    logic [`DATA_BUS] dmem_wdata_offset = wdata << (dmem_offset << 3);
+    logic [`DATA_BUS] dmem_wdata_offset;
+    assign dmem_wdata_offset = wdata << (dmem_offset << 3);
 
 
 endmodule
