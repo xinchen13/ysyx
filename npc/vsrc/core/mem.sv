@@ -10,6 +10,15 @@ module mem (
     output logic [`DATA_BUS] rdata
 );
 
+    logic [6:0] opcode = inst[6:0];
+    logic [2:0] funct3 = inst[14:12];
+    logic [`BYTE_BUS] wmask;
+    logic [`DATA_BUS] dmem_rdata_raw;
+    logic [`DATA_BUS] masked_dmem_rdata;
+    logic [4:0] dmem_offset;
+    logic [`DATA_BUS] dmem_rdata_offset;
+    logic [`DATA_BUS] dmem_wdata_offset;
+
     // DPI-C: pmem_read, pmem_write
     import "DPI-C" function int dpic_pmem_read(input int raddr);
     import "DPI-C" function void dpic_pmem_write(input int waddr, input int wdata, input byte wmask);
@@ -26,17 +35,8 @@ module mem (
         end
     end
 
-
-    logic [6:0] opcode = inst[6:0];
-    logic [2:0] funct3 = inst[14:12];
-    logic [`BYTE_BUS] wmask;
-    logic [`DATA_BUS] dmem_rdata_raw;
-    logic [`DATA_BUS] masked_dmem_rdata;
-
     // rmask
-    logic [4:0] dmem_offset;
     assign dmem_offset = {3'b0, raddr[1:0]};
-    logic [`DATA_BUS] dmem_rdata_offset;
     assign dmem_rdata_offset = dmem_rdata_raw >> (dmem_offset << 3);
     always @ (*) begin
         case (opcode)
@@ -67,6 +67,7 @@ module mem (
             end
         endcase
     end
+
     assign rdata = masked_dmem_rdata;
 
     // wmask
@@ -93,7 +94,7 @@ module mem (
             end
         endcase
     end
-    logic [`DATA_BUS] dmem_wdata_offset;
+    
     assign dmem_wdata_offset = wdata << (dmem_offset << 3);
 
 
