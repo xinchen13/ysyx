@@ -156,7 +156,7 @@ static void execute(uint64_t n) {
         exec_once();
         inst_count++;
         trace_and_difftest();
-        if (this_inst == 0x00100073 || contextp->time() > 99999) {
+        if (this_inst == 0x00100073 || contextp->time() > 999999) {
             set_npc_state(NPC_END, core.pc, core.gpr[10]);
             break;
         }
