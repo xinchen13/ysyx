@@ -53,6 +53,7 @@ module alu (
     end
 
     assign zero_flag = ~(|alu_sub);
-    assign less_flag = result[0];
+    // assign less_flag = result[0];
+    assign less_flag = (result == 32'h1) ? 1'b1 : 1'b0;
 
 endmodule
