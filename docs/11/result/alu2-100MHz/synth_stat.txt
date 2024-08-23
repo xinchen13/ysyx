@@ -1,0 +1,55 @@
+
+16. Printing statistics.
+
+=== alu2 ===
+
+   Number of wires:                675
+   Number of wire bits:            771
+   Number of public wires:           5
+   Number of public wire bits:     101
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                702
+     AND2_X1                        16
+     AND2_X2                         3
+     AND3_X1                        28
+     AND3_X2                         3
+     AND4_X1                         1
+     AOI211_X2                       9
+     AOI211_X4                       1
+     AOI21_X1                       43
+     BUF_X1                         73
+     BUF_X16                         1
+     BUF_X2                          7
+     BUF_X32                         6
+     BUF_X4                         18
+     INV_X1                         24
+     INV_X2                          2
+     INV_X32                         2
+     MUX2_X1                        10
+     MUX2_X2                        10
+     NAND2_X1                       96
+     NAND2_X2                        1
+     NAND2_X4                        1
+     NAND3_X1                       50
+     NAND4_X1                        7
+     NOR2_X1                        74
+     NOR2_X2                         2
+     NOR2_X4                        15
+     NOR3_X1                        46
+     NOR3_X4                         1
+     NOR4_X1                         1
+     OAI211_X2                      23
+     OAI211_X4                       1
+     OAI21_X1                       91
+     OAI21_X2                        3
+     OAI221_X1                       7
+     OR2_X1                          5
+     OR2_X4                          3
+     OR3_X1                         10
+     OR3_X2                          4
+     OR3_X4                          4
+
+   Chip area for module '\alu2': 904.932000
+

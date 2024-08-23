@@ -1,0 +1,95 @@
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I20240823 20:33:15.980057 83718 Sta.cc:375] read verilog file /home/xinchen/yosys-sta/result/alu0-100MHz/alu0.netlist.fixed.v start
+I20240823 20:33:15.980410 83718 VerilogParserRustC.cc:41] load verilog file /home/xinchen/yosys-sta/result/alu0-100MHz/alu0.netlist.fixed.v
+r str /home/xinchen/yosys-sta/result/alu0-100MHz/alu0.netlist.fixed.v
+I20240823 20:33:15.986801 83718 Sta.cc:379] read verilog end
+I20240823 20:33:15.989003 83718 Sta.cc:298] load lib start
+I20240823 20:33:15.999174 83720 LibParserRustC.cc:1269] load liberty file /home/xinchen/yosys-sta/scripts/../nangate45/lib/merged.lib
+rust read lib file /home/xinchen/yosys-sta/scripts/../nangate45/lib/merged.lib
+I20240823 20:33:17.200651 83720 LibParserRustC.cc:1278] load liberty file /home/xinchen/yosys-sta/scripts/../nangate45/lib/merged.lib success.
+I20240823 20:33:17.202697 83718 Sta.cc:317] load lib end
+I20240823 20:33:17.202875 83718 Sta.cc:405] link design alu0 start
+I20240823 20:33:17.243594 83781 LibParserRustC.cc:1289] link liberty file /home/xinchen/yosys-sta/scripts/../nangate45/lib/merged.lib start.
+I20240823 20:33:17.855590 83781 LibParserRustC.cc:1295] link liberty file /home/xinchen/yosys-sta/scripts/../nangate45/lib/merged.lib success.
+I20240823 20:33:17.887128 83718 Sta.cc:790] link design alu0 end
+I20240823 20:33:17.887498 83718 Sta.cc:172] read sdc alu_yosys_sta_case0/gcd.sdc start 
+I20240823 20:33:17.890250 83718 CmdCreateClock.cc:116] create clock core_clock for pin/port: clk
+I20240823 20:33:17.890293 83718 Sta.cc:185] read sdc end
+I20240823 20:33:17.890331 83718 StaBuildGraph.cc:310] build graph start
+I20240823 20:33:17.930752 83718 StaBuildGraph.cc:327] build graph end
+I20240823 20:33:17.930889 83718 Sta.cc:2287] update timing start
+I20240823 20:33:17.931454 83718 StaApplySdc.cc:694] apply sdc start
+I20240823 20:33:17.931547 83718 StaApplySdc.cc:725] apply sdc end
+I20240823 20:33:17.931564 83718 StaClockPropagation.cc:320] ideal clock propagation start
+I20240823 20:33:17.931627 83718 StaClockPropagation.cc:416] ideal clock propagation end
+I20240823 20:33:17.931638 83718 StaCheck.cc:129] found loop fwd start
+I20240823 20:33:17.932130 83718 StaCheck.cc:148] found loop fwd end
+I20240823 20:33:17.932137 83718 StaCheck.cc:150] found loop bwd start
+I20240823 20:33:17.932581 83718 StaCheck.cc:172] found loop bwd end
+I20240823 20:33:17.932591 83718 StaSlewPropagation.cc:266] slew propagation start
+E20240823 20:33:17.938079 83809 Lib.cc:174] Warning: val outside table ranges:  val = 0; min_val = 0.00117378; max_val = 0.198535
+E20240823 20:33:17.938347 83813 Lib.cc:174] Warning: val outside table ranges:  val = 0; min_val = 0.00117378; max_val = 0.198535
+E20240823 20:33:17.938419 83813 Lib.cc:174] Warning: val outside table ranges:  val = 0; min_val = 0.00117378; max_val = 0.198535
+E20240823 20:33:17.938436 83809 Lib.cc:174] Warning: val outside table ranges:  val = 0; min_val = 0.00117378; max_val = 0.198535
+E20240823 20:33:17.938443 83813 Lib.cc:174] Warning: val outside table ranges:  val = 0; min_val = 0.00117378; max_val = 0.198535
+E20240823 20:33:17.938484 83813 Lib.cc:174] Warning: val outside table ranges:  val = 0; min_val = 0.00117378; max_val = 0.198535
+E20240823 20:33:17.938678 83813 Lib.cc:174] Warning: val outside table ranges:  val = 0; min_val = 0.00117378; max_val = 0.198535
+E20240823 20:33:17.938707 83813 Lib.cc:174] Warning: val outside table ranges:  val = 0; min_val = 0.00117378; max_val = 0.198535
+E20240823 20:33:17.938717 83798 Lib.cc:174] Warning: val outside table ranges:  val = 0; min_val = 0.00117378; max_val = 0.198535
+E20240823 20:33:17.938481 83809 Lib.cc:174] Warning: val outside table ranges:  val = 0; min_val = 0.00117378; max_val = 0.198535
+I20240823 20:33:17.958978 83718 StaSlewPropagation.cc:305] slew propagation end
+I20240823 20:33:17.959523 83718 StaDelayPropagation.cc:268] delay propagation start
+I20240823 20:33:17.978672 83718 StaDelayPropagation.cc:309] delay propagation end
+I20240823 20:33:17.978766 83718 StaClockPropagation.cc:322] propagated(kNormal) clock propagation start
+I20240823 20:33:17.978796 83718 StaClockPropagation.cc:418] propagated(kNormal) clock propagation end
+I20240823 20:33:17.978804 83718 StaApplySdc.cc:694] apply sdc start
+I20240823 20:33:17.978813 83718 StaApplySdc.cc:725] apply sdc end
+I20240823 20:33:17.978821 83718 StaClockPropagation.cc:324] propagated(kGenerated) clock propagation start
+I20240823 20:33:17.978827 83718 StaClockPropagation.cc:420] propagated(kGenerated) clock propagation end
+I20240823 20:33:17.978835 83718 StaApplySdc.cc:694] apply sdc start
+I20240823 20:33:17.978842 83718 StaApplySdc.cc:725] apply sdc end
+I20240823 20:33:17.979338 83718 StaBuildPropTag.cc:325] build propagation tag start
+I20240823 20:33:17.979370 83718 StaDataPropagation.cc:589] data fwd propagation start
+I20240823 20:33:17.984339 83848 StaDataPropagation.cc:529] Thread 136343438898752 date fwd propagate found start vertex.ctrl[3]
+I20240823 20:33:17.984457 83849 StaDataPropagation.cc:529] Thread 136343447291456 date fwd propagate found start vertex.ctrl[1]
+I20240823 20:33:17.985196 83865 StaDataPropagation.cc:529] Thread 136343556396608 date fwd propagate found start vertex.a[10]
+I20240823 20:33:17.984591 83854 StaDataPropagation.cc:529] Thread 136343648716352 date fwd propagate found start vertex.a[1]
+I20240823 20:33:17.984481 83848 StaDataPropagation.cc:529] Thread 136343438898752 date fwd propagate found start vertex.ctrl[2]
+I20240823 20:33:17.985538 83865 StaDataPropagation.cc:529] Thread 136343556396608 date fwd propagate found start vertex.b[10]
+I20240823 20:33:17.985555 83854 StaDataPropagation.cc:529] Thread 136343648716352 date fwd propagate found start vertex.b[1]
+I20240823 20:33:17.985574 83865 StaDataPropagation.cc:529] Thread 136343556396608 date fwd propagate found start vertex.a[8]
+I20240823 20:33:17.984592 83849 StaDataPropagation.cc:529] Thread 136343447291456 date fwd propagate found start vertex.ctrl[0]
+I20240823 20:33:17.985219 83863 StaDataPropagation.cc:529] Thread 136343573182016 date fwd propagate found start vertex.a[11]
+I20240823 20:33:18.034319 83718 StaDataPropagation.cc:632] data fwd propagation end
+I20240823 20:33:18.034427 83718 StaDataPropagation.cc:589] data fwd propagation start
+I20240823 20:33:18.087110 83718 StaDataPropagation.cc:632] data fwd propagation end
+I20240823 20:33:18.087289 83718 StaAnalyze.cc:539] analyze timing path start
+E20240823 20:33:18.087347 83718 StaAnalyze.cc:324] The output port result[0] is not constrained
+E20240823 20:33:18.087379 83718 StaAnalyze.cc:324] The output port result[0] is not constrained
+E20240823 20:33:18.087399 83718 StaAnalyze.cc:324] The output port result[1] is not constrained
+E20240823 20:33:18.087416 83718 StaAnalyze.cc:324] The output port result[1] is not constrained
+E20240823 20:33:18.087435 83718 StaAnalyze.cc:324] The output port result[2] is not constrained
+E20240823 20:33:18.087451 83718 StaAnalyze.cc:324] The output port result[2] is not constrained
+E20240823 20:33:18.087471 83718 StaAnalyze.cc:324] The output port result[3] is not constrained
+E20240823 20:33:18.087487 83718 StaAnalyze.cc:324] The output port result[3] is not constrained
+E20240823 20:33:18.087505 83718 StaAnalyze.cc:324] The output port result[4] is not constrained
+E20240823 20:33:18.087522 83718 StaAnalyze.cc:324] The output port result[4] is not constrained
+I20240823 20:33:18.087673 83718 StaAnalyze.cc:577] analyze timing path end
+I20240823 20:33:18.087760 83718 StaApplySdc.cc:694] apply sdc start
+I20240823 20:33:18.087805 83718 StaApplySdc.cc:725] apply sdc end
+I20240823 20:33:18.087865 83718 StaDataPropagation.cc:635] data bwd propagation start
+I20240823 20:33:18.096647 83718 StaDataPropagation.cc:670] data bwd propagation end
+I20240823 20:33:18.096757 83718 Sta.cc:2316] update timing end
+I20240823 20:33:18.097115 83718 Sta.cc:2410] start write sta report.
+I20240823 20:33:18.097177 83718 Sta.cc:2411] output sta report path: /home/xinchen/yosys-sta/result/alu0-100MHz
+I20240823 20:33:18.097776 83718 Sta.cc:1390] 
++----------+-------------+------------+------------+---------------+------+-------+-----------+
+| Endpoint | Clock Group | Delay Type | Path Delay | Path Required | CPPR | Slack | Freq(MHz) |
++----------+-------------+------------+------------+---------------+------+-------+-----------+
+I20240823 20:33:18.097941 83718 Sta.cc:1391] 
++-------+------------+-----+
+| Clock | Delay Type | TNS |
++-------+------------+-----+
+I20240823 20:33:18.111425 83718 NetlistWriter.cc:52] start write verilog file /home/xinchen/yosys-sta/result/alu0-100MHz/alu0.v
+I20240823 20:33:18.117058 83718 NetlistWriter.cc:71] finish write verilog file /home/xinchen/yosys-sta/result/alu0-100MHz/alu0.v
+I20240823 20:33:18.117157 83718 Sta.cc:2495] The timing engine run success.
