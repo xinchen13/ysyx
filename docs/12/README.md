@@ -15,3 +15,7 @@
 
 ### 在NPC仿真环境中实现时钟
 - 使用`<time.h>`提供的`clock_gettime()`函数获取时间
+- 在`$AM_HOME/am/src/riscv/npc/timer.c`中实现`__am_timer_uptime()`读时间寄存器, 运行am-tests的real-time clock test测试 (使用 `clock_gettime(CLOCK_THREAD_CPUTIME_ID, &ts)` 防止溢出)
+
+### 运行字符版本的红白机模拟器
+结果如下(能打开但是性能惨不忍睹):
