@@ -34,7 +34,8 @@ module mem (
     logic [`DATA_BUS] masked_dmem_rdata;
 
     // rmask
-    logic [4:0] dmem_offset = {3'b0, raddr[1:0]};
+    logic [4:0] dmem_offset;
+    assign dmem_offset = {3'b0, raddr[1:0]};
     logic [`DATA_BUS] dmem_rdata_offset;
     assign dmem_rdata_offset = dmem_rdata_raw >> (dmem_offset << 3);
     always @ (*) begin
