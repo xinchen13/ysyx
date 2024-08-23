@@ -1,0 +1,110 @@
+[Data config set] lib = /home/xinchen/yosys-sta/scripts/../nangate45/lib/merged.lib
+[Data config set] sdc = alu_yosys_sta_case1/gcd.sdc
+[Data config set] tech lef = /home/xinchen/yosys-sta/scripts/../nangate45/lef/NangateOpenCellLibrary.tech.lef
+Read LEF file : /home/xinchen/yosys-sta/scripts/../nangate45/lef/NangateOpenCellLibrary.tech.lef
+[Data config set] lef = /home/xinchen/yosys-sta/scripts/../nangate45/lef/NangateOpenCellLibrary.macro.mod.lef
+Read LEF file : /home/xinchen/yosys-sta/scripts/../nangate45/lef/NangateOpenCellLibrary.macro.mod.lef
+[Data config set] verilog = /home/xinchen/yosys-sta/result/alu1-100MHz/alu1.netlist.syn.v
+Read Verilog file success : /home/xinchen/yosys-sta/result/alu1-100MHz/alu1.netlist.syn.v
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I20240823 20:33:24.297597 83967 VerilogParserRustC.cc:41] load verilog file /home/xinchen/yosys-sta/result/alu1-100MHz/alu1.netlist.syn.v
+r str /home/xinchen/yosys-sta/result/alu1-100MHz/alu1.netlist.syn.v
+I20240823 20:33:24.312438 83967 Sta.cc:298] load lib start
+I20240823 20:33:24.349596 84018 LibParserRustC.cc:1269] load liberty file /home/xinchen/yosys-sta/scripts/../nangate45/lib/merged.lib
+rust read lib file /home/xinchen/yosys-sta/scripts/../nangate45/lib/merged.lib
+I20240823 20:33:25.566642 84018 LibParserRustC.cc:1278] load liberty file /home/xinchen/yosys-sta/scripts/../nangate45/lib/merged.lib success.
+I20240823 20:33:25.567167 83967 Sta.cc:317] load lib end
+I20240823 20:33:25.616307 84019 LibParserRustC.cc:1289] link liberty file /home/xinchen/yosys-sta/scripts/../nangate45/lib/merged.lib start.
+I20240823 20:33:26.193060 84019 LibParserRustC.cc:1295] link liberty file /home/xinchen/yosys-sta/scripts/../nangate45/lib/merged.lib success.
+I20240823 20:33:26.195255 83967 TimingIDBAdapter.cc:738] core area width -0um height -0um
+I20240823 20:33:26.265245 83967 Sta.cc:172] read sdc alu_yosys_sta_case1/gcd.sdc start 
+I20240823 20:33:26.266566 83967 CmdCreateClock.cc:116] create clock core_clock for pin/port: clk
+I20240823 20:33:26.266614 83967 Sta.cc:185] read sdc end
+I20240823 20:33:26.266642 83967 StaBuildGraph.cc:310] build graph start
+I20240823 20:33:26.324605 83967 StaBuildGraph.cc:327] build graph end
+I20240823 20:33:26.327427 83967 Sta.cc:2287] update timing start
+I20240823 20:33:26.328472 83967 StaApplySdc.cc:694] apply sdc start
+I20240823 20:33:26.328558 83967 StaApplySdc.cc:725] apply sdc end
+I20240823 20:33:26.328572 83967 StaClockPropagation.cc:320] ideal clock propagation start
+I20240823 20:33:26.328612 83967 StaClockPropagation.cc:416] ideal clock propagation end
+I20240823 20:33:26.328619 83967 StaCheck.cc:129] found loop fwd start
+I20240823 20:33:26.329471 83967 StaCheck.cc:148] found loop fwd end
+I20240823 20:33:26.330437 83967 StaCheck.cc:150] found loop bwd start
+I20240823 20:33:26.331884 83967 StaCheck.cc:172] found loop bwd end
+I20240823 20:33:26.331992 83967 StaSlewPropagation.cc:266] slew propagation start
+E20240823 20:33:26.342137 84072 Lib.cc:174] Warning: val outside table ranges:  val = 0; min_val = 0.00117378; max_val = 0.198535
+E20240823 20:33:26.342293 84072 Lib.cc:174] Warning: val outside table ranges:  val = 0; min_val = 0.00117378; max_val = 0.198535
+E20240823 20:33:26.342324 84072 Lib.cc:174] Warning: val outside table ranges:  val = 0; min_val = 0.00117378; max_val = 0.198535
+E20240823 20:33:26.342343 84072 Lib.cc:174] Warning: val outside table ranges:  val = 0; min_val = 0.00117378; max_val = 0.198535
+E20240823 20:33:26.342458 84072 Lib.cc:174] Warning: val outside table ranges:  val = 0; min_val = 0.00117378; max_val = 0.198535
+E20240823 20:33:26.342509 84072 Lib.cc:174] Warning: val outside table ranges:  val = 0; min_val = 0.00117378; max_val = 0.198535
+E20240823 20:33:26.342535 84072 Lib.cc:174] Warning: val outside table ranges:  val = 0; min_val = 0.00117378; max_val = 0.198535
+E20240823 20:33:26.342559 84072 Lib.cc:174] Warning: val outside table ranges:  val = 0; min_val = 0.00117378; max_val = 0.198535
+E20240823 20:33:26.342793 84072 Lib.cc:174] Warning: val outside table ranges:  val = 0; min_val = 0.00117378; max_val = 0.198535
+E20240823 20:33:26.342845 84072 Lib.cc:174] Warning: val outside table ranges:  val = 0; min_val = 0.00117378; max_val = 0.198535
+I20240823 20:33:26.425657 83967 StaSlewPropagation.cc:305] slew propagation end
+I20240823 20:33:26.425879 83967 StaDelayPropagation.cc:268] delay propagation start
+I20240823 20:33:26.456037 83967 StaDelayPropagation.cc:309] delay propagation end
+I20240823 20:33:26.456184 83967 StaClockPropagation.cc:322] propagated(kNormal) clock propagation start
+I20240823 20:33:26.456230 83967 StaClockPropagation.cc:418] propagated(kNormal) clock propagation end
+I20240823 20:33:26.456250 83967 StaApplySdc.cc:694] apply sdc start
+I20240823 20:33:26.456269 83967 StaApplySdc.cc:725] apply sdc end
+I20240823 20:33:26.456285 83967 StaClockPropagation.cc:324] propagated(kGenerated) clock propagation start
+I20240823 20:33:26.456300 83967 StaClockPropagation.cc:420] propagated(kGenerated) clock propagation end
+I20240823 20:33:26.456319 83967 StaApplySdc.cc:694] apply sdc start
+I20240823 20:33:26.456336 83967 StaApplySdc.cc:725] apply sdc end
+I20240823 20:33:26.457046 83967 StaBuildPropTag.cc:325] build propagation tag start
+I20240823 20:33:26.457144 83967 StaDataPropagation.cc:589] data fwd propagation start
+I20240823 20:33:26.466279 84170 StaDataPropagation.cc:529] Thread 126026891728448 date fwd propagate found start vertex.a[14]
+I20240823 20:33:26.466405 84172 StaDataPropagation.cc:529] Thread 126026908513856 date fwd propagate found start vertex.ctrl[0]
+I20240823 20:33:26.466418 84170 StaDataPropagation.cc:529] Thread 126026891728448 date fwd propagate found start vertex.b[14]
+I20240823 20:33:26.466543 84170 StaDataPropagation.cc:529] Thread 126026891728448 date fwd propagate found start vertex.a[15]
+I20240823 20:33:26.466604 84171 StaDataPropagation.cc:529] Thread 126026900121152 date fwd propagate found start vertex.a[3]
+I20240823 20:33:26.466548 84169 StaDataPropagation.cc:529] Thread 126026883335744 date fwd propagate found start vertex.a[0]
+I20240823 20:33:26.466719 84171 StaDataPropagation.cc:529] Thread 126026900121152 date fwd propagate found start vertex.b[3]
+I20240823 20:33:26.466529 84172 StaDataPropagation.cc:529] Thread 126026908513856 date fwd propagate found start vertex.ctrl[2]
+I20240823 20:33:26.466531 84174 StaDataPropagation.cc:529] Thread 126027252614720 date fwd propagate found start vertex.a[2]
+I20240823 20:33:26.466565 84170 StaDataPropagation.cc:529] Thread 126026891728448 date fwd propagate found start vertex.b[15]
+I20240823 20:33:26.475589 83967 StaDataPropagation.cc:632] data fwd propagation end
+I20240823 20:33:26.475692 83967 StaDataPropagation.cc:589] data fwd propagation start
+I20240823 20:33:26.486886 83967 StaDataPropagation.cc:632] data fwd propagation end
+I20240823 20:33:26.486961 83967 StaAnalyze.cc:539] analyze timing path start
+E20240823 20:33:26.487015 83967 StaAnalyze.cc:324] The output port result[0] is not constrained
+E20240823 20:33:26.487033 83967 StaAnalyze.cc:324] The output port result[0] is not constrained
+E20240823 20:33:26.487042 83967 StaAnalyze.cc:324] The output port result[1] is not constrained
+E20240823 20:33:26.487051 83967 StaAnalyze.cc:324] The output port result[1] is not constrained
+E20240823 20:33:26.487058 83967 StaAnalyze.cc:324] The output port result[2] is not constrained
+E20240823 20:33:26.487066 83967 StaAnalyze.cc:324] The output port result[2] is not constrained
+E20240823 20:33:26.487074 83967 StaAnalyze.cc:324] The output port result[3] is not constrained
+E20240823 20:33:26.487082 83967 StaAnalyze.cc:324] The output port result[3] is not constrained
+E20240823 20:33:26.487090 83967 StaAnalyze.cc:324] The output port result[4] is not constrained
+E20240823 20:33:26.487097 83967 StaAnalyze.cc:324] The output port result[4] is not constrained
+I20240823 20:33:26.487195 83967 StaAnalyze.cc:577] analyze timing path end
+I20240823 20:33:26.487205 83967 StaApplySdc.cc:694] apply sdc start
+I20240823 20:33:26.487226 83967 StaApplySdc.cc:725] apply sdc end
+I20240823 20:33:26.487238 83967 StaDataPropagation.cc:635] data bwd propagation start
+I20240823 20:33:26.564229 83967 StaDataPropagation.cc:670] data bwd propagation end
+I20240823 20:33:26.564345 83967 Sta.cc:2316] update timing end
+[1;31m
+  _____       _ _     _____        _         
+ |_   _|     (_) |   |  __ \      | |        
+   | |  _ __  _| |_  | |  | | __ _| |_ __ _  
+   | | | '_ \| | __| | |  | |/ _` | __/ _` | 
+  _| |_| | | | | |_  | |__| | (_| | || (_| | 
+ |_____|_| |_|_|\__| |_____/ \__,_|\__\__,_| 
+                                             
+[0m
+[1;35m
+  ______ _        ______                      _    
+ |  ____(_)      |  ____|                    | |   
+ | |__   ___  __ | |__ __ _ _ __   ___  _   _| |_  
+ |  __| | \ \/ / |  __/ _` | '_ \ / _ \| | | | __| 
+ | |    | |>  <  | | | (_| | | | | (_) | |_| | |_  
+ |_|    |_/_/\_\ |_|  \__,_|_| |_|\___/ \__,_|\__| 
+                                                   
+[0m
+I20240823 20:33:26.565137 83967 FixFanout.cpp:55] [Result: ] Find 0 Net with fanout violation.
+I20240823 20:33:26.565209 83967 FixFanout.cpp:56] [Result: ] Insert 0 Buffers.
+iNO fixfanout run successfully.
+I20240823 20:33:26.565512 83967 verilog_write.cpp:55] start write verilog file /home/xinchen/yosys-sta/result/alu1-100MHz/alu1.netlist.fixed.v
+I20240823 20:33:26.579972 83967 verilog_write.cpp:73] finish write verilog file /home/xinchen/yosys-sta/result/alu1-100MHz/alu1.netlist.fixed.v

@@ -126,8 +126,21 @@ Disassembly of section .text:
 - 部分`cpu-tests`仿真时间较长, 需要合理修改最大仿真时间
 
 ###  观察ALU的综合结果
-尝试使用yosys-sta项目对ALU进行综合, 观察综合结果, 回答如下问题:
+尝试使用yosys-sta项目对ALU进行综合, 观察综合结果.
 
-#### 我们知道, 补码减法可以用加法器来实现, 而比较指令和分支指令本质上也需要通过补码减法来实现. 如果我们在RTL代码中直接编写`-`或`<`等各种运算符, yosys能否自动将它们的减法功能合并为同一个加法器?
+对四种配置进行了综合:
+- [alu_yosys_sta_case0](./alu_yosys_sta_case0): 补码加法实现的32位减法
+- [alu_yosys_sta_case1](./alu_yosys_sta_case1): 补码加法实现的32位减法, `-`实现的32位减法和`<`实现的32位无符号比大小
+- [alu_yosys_sta_case2](./alu_yosys_sta_case2): 32位的移位运算`<<`与`>>`
+- 综合命令example: `make sta DESIGN=alu0 SDC_FILE=alu_yosys_sta_case0/gcd.sdc RTL_FILES="./alu_yosys_sta_case0/alu0.sv" CLK_FREQ_MHZ=100`
+- 综合结果见 [result/](./result/)
+- 本来想直接比较cell数量，后来发现log中提供了更多信息
+
+#### 我们知道, 补码减法可以用加法器来实现, 而比较指令和分支指令本质上也需要通过补码减法来实现. 如果我们在RTL代码中直接编写`-`或`<`等各种运算符, yosys能否自动将它们的减法功能合并为同一个加法器
+观察log并不能合并，分别例化了工艺库中 `alu` 中的 `add`, `sub` 和 `lt`
+
 #### 移位运算符`<<`和`>>`被yosys综合成什么电路?
+查看 log 文件可以看到被映射为工艺库中的 `shl` 和 `shr`
+
 #### yosys从运算符直接综合出电路是否有改进的空间?
+有, 如上

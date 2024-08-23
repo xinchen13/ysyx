@@ -1,0 +1,944 @@
+
+ /----------------------------------------------------------------------------\
+ |                                                                            |
+ |  yosys -- Yosys Open SYnthesis Suite                                       |
+ |                                                                            |
+ |  Copyright (C) 2012 - 2019  Clifford Wolf <clifford@clifford.at>           |
+ |                                                                            |
+ |  Permission to use, copy, modify, and/or distribute this software for any  |
+ |  purpose with or without fee is hereby granted, provided that the above    |
+ |  copyright notice and this permission notice appear in all copies.         |
+ |                                                                            |
+ |  THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES  |
+ |  WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF          |
+ |  MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR   |
+ |  ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES    |
+ |  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN     |
+ |  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF   |
+ |  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.            |
+ |                                                                            |
+ \----------------------------------------------------------------------------/
+
+ Yosys 0.9 (git sha1 1979e0b)
+
+
+-- Executing script file `-' --
+[TCL: yosys -import] Command name collision: found pre-existing command `cd' -> skip.
+[TCL: yosys -import] Command name collision: found pre-existing command `eval' -> skip.
+[TCL: yosys -import] Command name collision: found pre-existing command `read' -> skip.
+[TCL: yosys -import] Command name collision: found pre-existing command `trace' -> skip.
+
+1. Executing Verilog-2005 frontend: ./alu_yosys_sta_case2/alu2.sv
+Parsing SystemVerilog input from `./alu_yosys_sta_case2/alu2.sv' to AST representation.
+Generating RTLIL representation for module `\alu2'.
+Successfully finished Verilog frontend.
+
+2. Executing Verilog-2005 frontend: /home/xinchen/yosys-sta/scripts/../nangate45/verilog/blackbox.v
+Parsing Verilog input from `/home/xinchen/yosys-sta/scripts/../nangate45/verilog/blackbox.v' to AST representation.
+Successfully finished Verilog frontend.
+
+3. Executing Verilog-2005 frontend: /home/xinchen/yosys-sta/scripts/../nangate45/verilog/cells_clkgate.v
+Parsing Verilog input from `/home/xinchen/yosys-sta/scripts/../nangate45/verilog/cells_clkgate.v' to AST representation.
+Generating RTLIL representation for module `\OPENROAD_CLKGATE'.
+Successfully finished Verilog frontend.
+
+4. Executing SYNTH pass.
+
+4.1. Executing HIERARCHY pass (managing design hierarchy).
+
+4.1.1. Analyzing design hierarchy..
+Top module:  \alu2
+
+4.1.2. Analyzing design hierarchy..
+Top module:  \alu2
+Removing unused module `\OPENROAD_CLKGATE'.
+Removed 1 unused modules.
+
+4.2. Executing PROC pass (convert processes to netlists).
+
+4.2.1. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Cleaned up 0 empty switches.
+
+4.2.2. Executing PROC_RMDEAD pass (remove dead branches from decision trees).
+Marked 1 switch rules as full_case in process $proc$./alu_yosys_sta_case2/alu2.sv:21$3 in module alu2.
+Removed a total of 0 dead cases.
+
+4.2.3. Executing PROC_INIT pass (extract init attributes).
+
+4.2.4. Executing PROC_ARST pass (detect async resets in processes).
+
+4.2.5. Executing PROC_MUX pass (convert decision trees to multiplexers).
+Creating decoders for process `\alu2.$proc$./alu_yosys_sta_case2/alu2.sv:21$3'.
+     1/2: $1\result[31:0]
+     2/2: $0\result[31:0]
+
+4.2.6. Executing PROC_DLATCH pass (convert process syncs to latches).
+No latch inferred for signal `\alu2.\result' from process `\alu2.$proc$./alu_yosys_sta_case2/alu2.sv:21$3'.
+
+4.2.7. Executing PROC_DFF pass (convert process syncs to FFs).
+
+4.2.8. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Found and cleaned up 1 empty switch in `\alu2.$proc$./alu_yosys_sta_case2/alu2.sv:21$3'.
+Removing empty process `alu2.$proc$./alu_yosys_sta_case2/alu2.sv:21$3'.
+Cleaned up 1 empty switch.
+
+4.3. Executing OPT_EXPR pass (perform const folding).
+Optimizing module alu2.
+
+4.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \alu2..
+Removed 0 unused cells and 5 unused wires.
+<suppressed ~1 debug messages>
+
+4.5. Executing CHECK pass (checking for obvious problems).
+checking module alu2..
+found and reported 0 problems.
+
+4.6. Executing OPT pass (performing simple optimizations).
+
+4.6.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module alu2.
+
+4.6.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\alu2'.
+Removed a total of 0 cells.
+
+4.6.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \alu2..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~1 debug messages>
+
+4.6.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \alu2.
+Performed a total of 0 changes.
+
+4.6.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\alu2'.
+Removed a total of 0 cells.
+
+4.6.6. Executing OPT_RMDFF pass (remove dff with constant values).
+
+4.6.7. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \alu2..
+
+4.6.8. Executing OPT_EXPR pass (perform const folding).
+Optimizing module alu2.
+
+4.6.9. Finished OPT passes. (There is nothing left to do.)
+
+4.7. Executing WREDUCE pass (reducing word size of cells).
+Removed top 1 bits (of 4) from port B of cell alu2.$procmux$6_CMP0 ($eq).
+Removed top 3 bits (of 4) from port B of cell alu2.$procmux$7_CMP0 ($eq).
+
+4.8. Executing PEEPOPT pass (run peephole optimizers).
+
+4.9. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \alu2..
+
+4.10. Executing TECHMAP pass (map to technology primitives).
+
+4.10.1. Executing Verilog-2005 frontend: /usr/bin/../share/yosys/cmp2lut.v
+Parsing Verilog input from `/usr/bin/../share/yosys/cmp2lut.v' to AST representation.
+Generating RTLIL representation for module `\_90_lut_cmp_'.
+Successfully finished Verilog frontend.
+
+4.10.2. Continuing TECHMAP pass.
+No more expansions possible.
+<suppressed ~36 debug messages>
+
+4.11. Executing ALUMACC pass (create $alu and $macc cells).
+Extracting $alu and $macc cells in module alu2:
+  created 0 $alu and 0 $macc cells.
+
+4.12. Executing SHARE pass (SAT-based resource sharing).
+Found 2 cells in module alu2 that may be considered for resource sharing.
+  Analyzing resource sharing options for $shr$./alu_yosys_sta_case2/alu2.sv:19$2 ($shr):
+    Found 1 activation_patterns using ctrl signal $procmux$6_CMP.
+    No candidates found.
+  Analyzing resource sharing options for $shl$./alu_yosys_sta_case2/alu2.sv:18$1 ($shl):
+    Found 1 activation_patterns using ctrl signal $procmux$7_CMP.
+    No candidates found.
+
+4.13. Executing OPT pass (performing simple optimizations).
+
+4.13.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module alu2.
+
+4.13.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\alu2'.
+Removed a total of 0 cells.
+
+4.13.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \alu2..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~1 debug messages>
+
+4.13.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \alu2.
+Performed a total of 0 changes.
+
+4.13.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\alu2'.
+Removed a total of 0 cells.
+
+4.13.6. Executing OPT_RMDFF pass (remove dff with constant values).
+
+4.13.7. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \alu2..
+
+4.13.8. Executing OPT_EXPR pass (perform const folding).
+Optimizing module alu2.
+
+4.13.9. Finished OPT passes. (There is nothing left to do.)
+
+4.14. Executing FSM pass (extract and optimize FSM).
+
+4.14.1. Executing FSM_DETECT pass (finding FSMs in design).
+
+4.14.2. Executing FSM_EXTRACT pass (extracting FSM from design).
+
+4.14.3. Executing FSM_OPT pass (simple optimizations of FSMs).
+
+4.14.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \alu2..
+
+4.14.5. Executing FSM_OPT pass (simple optimizations of FSMs).
+
+4.14.6. Executing FSM_RECODE pass (re-assigning FSM state encoding).
+
+4.14.7. Executing FSM_INFO pass (dumping all available information on FSM cells).
+
+4.14.8. Executing FSM_MAP pass (mapping FSMs to basic logic).
+
+4.15. Executing OPT pass (performing simple optimizations).
+
+4.15.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module alu2.
+
+4.15.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\alu2'.
+Removed a total of 0 cells.
+
+4.15.3. Executing OPT_RMDFF pass (remove dff with constant values).
+
+4.15.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \alu2..
+
+4.15.5. Finished fast OPT passes.
+
+4.16. Executing MEMORY pass.
+
+4.16.1. Executing MEMORY_DFF pass (merging $dff cells to $memrd and $memwr).
+
+4.16.2. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \alu2..
+
+4.16.3. Executing MEMORY_SHARE pass (consolidating $memrd/$memwr cells).
+
+4.16.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \alu2..
+
+4.16.5. Executing MEMORY_COLLECT pass (generating $mem cells).
+
+4.17. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \alu2..
+
+4.18. Executing OPT pass (performing simple optimizations).
+
+4.18.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module alu2.
+
+4.18.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\alu2'.
+Removed a total of 0 cells.
+
+4.18.3. Executing OPT_RMDFF pass (remove dff with constant values).
+
+4.18.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \alu2..
+
+4.18.5. Finished fast OPT passes.
+
+4.19. Executing MEMORY_MAP pass (converting $mem cells to logic and flip-flops).
+
+4.20. Executing OPT pass (performing simple optimizations).
+
+4.20.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module alu2.
+
+4.20.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\alu2'.
+Removed a total of 0 cells.
+
+4.20.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \alu2..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~1 debug messages>
+
+4.20.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \alu2.
+Performed a total of 0 changes.
+
+4.20.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\alu2'.
+Removed a total of 0 cells.
+
+4.20.6. Executing OPT_RMDFF pass (remove dff with constant values).
+
+4.20.7. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \alu2..
+
+4.20.8. Executing OPT_EXPR pass (perform const folding).
+Optimizing module alu2.
+
+4.20.9. Finished OPT passes. (There is nothing left to do.)
+
+4.21. Executing TECHMAP pass (map to technology primitives).
+
+4.21.1. Executing Verilog-2005 frontend: <techmap.v>
+Parsing Verilog input from `<techmap.v>' to AST representation.
+Generating RTLIL representation for module `\_90_simplemap_bool_ops'.
+Generating RTLIL representation for module `\_90_simplemap_reduce_ops'.
+Generating RTLIL representation for module `\_90_simplemap_logic_ops'.
+Generating RTLIL representation for module `\_90_simplemap_compare_ops'.
+Generating RTLIL representation for module `\_90_simplemap_various'.
+Generating RTLIL representation for module `\_90_simplemap_registers'.
+Generating RTLIL representation for module `\_90_shift_ops_shr_shl_sshl_sshr'.
+Generating RTLIL representation for module `\_90_shift_shiftx'.
+Generating RTLIL representation for module `\_90_fa'.
+Generating RTLIL representation for module `\_90_lcu'.
+Generating RTLIL representation for module `\_90_alu'.
+Generating RTLIL representation for module `\_90_macc'.
+Generating RTLIL representation for module `\_90_alumacc'.
+Generating RTLIL representation for module `\$__div_mod_u'.
+Generating RTLIL representation for module `\$__div_mod'.
+Generating RTLIL representation for module `\_90_div'.
+Generating RTLIL representation for module `\_90_mod'.
+Generating RTLIL representation for module `\_90_pow'.
+Generating RTLIL representation for module `\_90_pmux'.
+Generating RTLIL representation for module `\_90_lut'.
+Successfully finished Verilog frontend.
+
+4.21.2. Continuing TECHMAP pass.
+Using template $paramod$constmap:4621fcf06a436d1e2a4080e2ed9866a7d07a6e07$paramod$887c9fe2c55be14c90171bd2ff359c086a0858d7\_90_shift_ops_shr_shl_sshl_sshr for cells of type $shl.
+Using template $paramod$constmap:4621fcf06a436d1e2a4080e2ed9866a7d07a6e07$paramod$770435fdf938ca78b5f1ecab2552fff9f675f686\_90_shift_ops_shr_shl_sshl_sshr for cells of type $shr.
+Using extmapper simplemap for cells of type $eq.
+Using template $paramod\_90_pmux\WIDTH=32\S_WIDTH=2 for cells of type $pmux.
+Using extmapper simplemap for cells of type $reduce_or.
+Using extmapper simplemap for cells of type $and.
+No more expansions possible.
+<suppressed ~813 debug messages>
+
+4.22. Executing OPT pass (performing simple optimizations).
+
+4.22.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module alu2.
+<suppressed ~5 debug messages>
+
+4.22.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\alu2'.
+<suppressed ~6 debug messages>
+Removed a total of 2 cells.
+
+4.22.3. Executing OPT_RMDFF pass (remove dff with constant values).
+
+4.22.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \alu2..
+Removed 0 unused cells and 117 unused wires.
+<suppressed ~1 debug messages>
+
+4.22.5. Finished fast OPT passes.
+
+4.23. Executing ABC pass (technology mapping using ABC).
+
+4.23.1. Extracting gate netlist of module `\alu2' to `<abc-temp-dir>/input.blif'..
+Extracted 458 gates and 501 wires to a netlist network with 41 inputs and 32 outputs.
+
+4.23.1.1. Executing ABC.
+Running ABC command: berkeley-abc -s -f <abc-temp-dir>/abc.script 2>&1
+ABC: ABC command line: "source <abc-temp-dir>/abc.script".
+ABC: 
+ABC: + read_blif <abc-temp-dir>/input.blif 
+ABC: + read_library <abc-temp-dir>/stdcells.genlib 
+ABC: Entered genlib library with 17 gates from file "<abc-temp-dir>/stdcells.genlib".
+ABC: + strash 
+ABC: + dretime 
+ABC: + retime 
+ABC: + map 
+ABC: + write_blif <abc-temp-dir>/output.blif 
+
+4.23.1.2. Re-integrating ABC results.
+ABC RESULTS:            ANDNOT cells:        4
+ABC RESULTS:              AOI3 cells:        2
+ABC RESULTS:               MUX cells:      268
+ABC RESULTS:              NAND cells:        6
+ABC RESULTS:               NOT cells:       37
+ABC RESULTS:              OAI4 cells:       32
+ABC RESULTS:                OR cells:       57
+ABC RESULTS:             ORNOT cells:        4
+ABC RESULTS:        internal signals:      428
+ABC RESULTS:           input signals:       41
+ABC RESULTS:          output signals:       32
+Removing temp directory.
+
+4.24. Executing OPT pass (performing simple optimizations).
+
+4.24.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module alu2.
+<suppressed ~129 debug messages>
+
+4.24.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\alu2'.
+Removed a total of 0 cells.
+
+4.24.3. Executing OPT_RMDFF pass (remove dff with constant values).
+
+4.24.4. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \alu2..
+Removed 3 unused cells and 98 unused wires.
+<suppressed ~6 debug messages>
+
+4.24.5. Finished fast OPT passes.
+
+4.25. Executing HIERARCHY pass (managing design hierarchy).
+
+4.25.1. Analyzing design hierarchy..
+Top module:  \alu2
+
+4.25.2. Analyzing design hierarchy..
+Top module:  \alu2
+Removed 0 unused modules.
+
+4.26. Printing statistics.
+
+=== alu2 ===
+
+   Number of wires:                380
+   Number of wire bits:            476
+   Number of public wires:           5
+   Number of public wire bits:     101
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                407
+     $_ANDNOT_                       4
+     $_AOI3_                         2
+     $_MUX_                        268
+     $_NAND_                         6
+     $_NOT_                         34
+     $_OAI4_                        32
+     $_ORNOT_                        4
+     $_OR_                          57
+
+4.27. Executing CHECK pass (checking for obvious problems).
+checking module alu2..
+found and reported 0 problems.
+
+5. Executing OPT pass (performing simple optimizations).
+
+5.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module alu2.
+
+5.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\alu2'.
+Removed a total of 0 cells.
+
+5.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \alu2..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Removed 0 multiplexer ports.
+
+5.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \alu2.
+Performed a total of 0 changes.
+
+5.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\alu2'.
+Removed a total of 0 cells.
+
+5.6. Executing OPT_RMDFF pass (remove dff with constant values).
+
+5.7. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \alu2..
+
+5.8. Executing OPT_EXPR pass (perform const folding).
+Optimizing module alu2.
+
+5.9. Finished OPT passes. (There is nothing left to do.)
+
+6. Executing TECHMAP pass (map to technology primitives).
+
+6.1. Executing Verilog-2005 frontend: /home/xinchen/yosys-sta/scripts/../nangate45/verilog/cells_latch.v
+Parsing Verilog input from `/home/xinchen/yosys-sta/scripts/../nangate45/verilog/cells_latch.v' to AST representation.
+Generating RTLIL representation for module `\$_DLATCH_P_'.
+Generating RTLIL representation for module `\$_DLATCH_N_'.
+Successfully finished Verilog frontend.
+
+6.2. Continuing TECHMAP pass.
+No more expansions possible.
+
+7. Executing DFFLIBMAP pass (mapping DFF cells to sequential cells from liberty file).
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X2' - skipping.
+  cell DFF_X1 (noninv, pins=4, area=4.52) is a direct match for cell type $_DFF_P_.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X2' - skipping.
+  cell DFFR_X1 (noninv, pins=5, area=5.32) is a direct match for cell type $_DFF_PN0_.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X2' - skipping.
+  cell DFFS_X1 (noninv, pins=5, area=5.32) is a direct match for cell type $_DFF_PN1_.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X2' - skipping.
+  cell DFFRS_X1 (noninv, pins=6, area=6.38) is a direct match for cell type $_DFFSR_PNN_.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFRS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFR_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFFS_X2' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X1' - skipping.
+Warning: Found unsupported expression 'SE*SI+D*!SE' in pin attribute of cell 'SDFF_X2' - skipping.
+  create mapping for $_DFF_PP0_ from mapping for $_DFF_PN0_.
+  create mapping for $_DFF_PP1_ from mapping for $_DFF_PN1_.
+  create mapping for $_DFFSR_PPN_ from mapping for $_DFFSR_PNN_.
+  create mapping for $_DFFSR_PNP_ from mapping for $_DFFSR_PNN_.
+  create mapping for $_DFFSR_PPP_ from mapping for $_DFFSR_PNP_.
+  create mapping for $_DFF_N_ from mapping for $_DFF_P_.
+  create mapping for $_DFF_NN0_ from mapping for $_DFF_PN0_.
+  create mapping for $_DFF_NP0_ from mapping for $_DFF_NN0_.
+  create mapping for $_DFF_NN1_ from mapping for $_DFF_NN0_.
+  create mapping for $_DFF_NP1_ from mapping for $_DFF_NN1_.
+  create mapping for $_DFFSR_NNN_ from mapping for $_DFFSR_PNN_.
+  create mapping for $_DFFSR_NPN_ from mapping for $_DFFSR_NNN_.
+  create mapping for $_DFFSR_NNP_ from mapping for $_DFFSR_NNN_.
+  create mapping for $_DFFSR_NPP_ from mapping for $_DFFSR_NNP_.
+  final dff cell mappings:
+    DFF_X1 _DFF_N_ (.CK(~C), .D( D), .Q( Q), .QN(~Q));
+    DFF_X1 _DFF_P_ (.CK( C), .D( D), .Q( Q), .QN(~Q));
+    DFFR_X1 _DFF_NN0_ (.CK(~C), .D( D), .Q( Q), .QN(~Q), .RN( R));
+    DFFR_X1 _DFF_NN1_ (.CK(~C), .D(~D), .Q(~Q), .QN( Q), .RN( R));
+    DFFR_X1 _DFF_NP0_ (.CK(~C), .D( D), .Q( Q), .QN(~Q), .RN(~R));
+    DFFR_X1 _DFF_NP1_ (.CK(~C), .D(~D), .Q(~Q), .QN( Q), .RN(~R));
+    DFFR_X1 _DFF_PN0_ (.CK( C), .D( D), .Q( Q), .QN(~Q), .RN( R));
+    DFFS_X1 _DFF_PN1_ (.CK( C), .D( D), .Q( Q), .QN(~Q), .SN( R));
+    DFFR_X1 _DFF_PP0_ (.CK( C), .D( D), .Q( Q), .QN(~Q), .RN(~R));
+    DFFS_X1 _DFF_PP1_ (.CK( C), .D( D), .Q( Q), .QN(~Q), .SN(~R));
+    DFFRS_X1 _DFFSR_NNN_ (.CK(~C), .D( D), .Q( Q), .QN(~Q), .RN( R), .SN( S));
+    DFFRS_X1 _DFFSR_NNP_ (.CK(~C), .D( D), .Q( Q), .QN(~Q), .RN(~R), .SN( S));
+    DFFRS_X1 _DFFSR_NPN_ (.CK(~C), .D( D), .Q( Q), .QN(~Q), .RN( R), .SN(~S));
+    DFFRS_X1 _DFFSR_NPP_ (.CK(~C), .D( D), .Q( Q), .QN(~Q), .RN(~R), .SN(~S));
+    DFFRS_X1 _DFFSR_PNN_ (.CK( C), .D( D), .Q( Q), .QN(~Q), .RN( R), .SN( S));
+    DFFRS_X1 _DFFSR_PNP_ (.CK( C), .D( D), .Q( Q), .QN(~Q), .RN(~R), .SN( S));
+    DFFRS_X1 _DFFSR_PPN_ (.CK( C), .D( D), .Q( Q), .QN(~Q), .RN( R), .SN(~S));
+    DFFRS_X1 _DFFSR_PPP_ (.CK( C), .D( D), .Q( Q), .QN(~Q), .RN(~R), .SN(~S));
+Mapping DFF cells in module `\alu2':
+
+8. Executing OPT pass (performing simple optimizations).
+
+8.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module alu2.
+
+8.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\alu2'.
+Removed a total of 0 cells.
+
+8.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \alu2..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Removed 0 multiplexer ports.
+
+8.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \alu2.
+Performed a total of 0 changes.
+
+8.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\alu2'.
+Removed a total of 0 cells.
+
+8.6. Executing OPT_RMDFF pass (remove dff with constant values).
+
+8.7. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \alu2..
+
+8.8. Executing OPT_EXPR pass (perform const folding).
+Optimizing module alu2.
+
+8.9. Finished OPT passes. (There is nothing left to do.)
+
+9. Executing ABC pass (technology mapping using ABC).
+
+9.1. Extracting gate netlist of module `\alu2' to `/tmp/yosys-abc-hYaumU/input.blif'..
+Extracted 407 gates and 448 wires to a netlist network with 41 inputs and 32 outputs.
+
+9.1.1. Executing ABC.
+Running ABC command: berkeley-abc -s -f /tmp/yosys-abc-hYaumU/abc.script 2>&1
+ABC: ABC command line: "source /tmp/yosys-abc-hYaumU/abc.script".
+ABC: 
+ABC: + read_blif /tmp/yosys-abc-hYaumU/input.blif 
+ABC: + read_lib -w /home/xinchen/yosys-sta/scripts/../nangate45/lib/merged.lib 
+ABC: Parsing finished successfully.  Parsing time =     0.11 sec
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_1024x32" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_2048x39" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_256x34" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_256x95" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_256x96" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_32x64" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_512x64" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_64x15" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_64x21" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_64x32" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_64x7" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "fakeram45_64x96" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "ANTENNA_X1" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATETST_X1" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATETST_X2" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATETST_X4" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATETST_X8" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATE_X1" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATE_X2" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATE_X4" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped cell "CLKGATE_X8" without logic function.
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFRS_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFRS_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFR_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFR_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFS_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFFS_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFF_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DFF_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DLH_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DLH_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DLL_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "DLL_X2".
+ABC: Scl_LibertyReadGenlib() skipped cell "FILLCELL_X2" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped cell "FILLCELL_X4" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped cell "FILLCELL_X8" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped cell "FILLCELL_X32" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped cell "LOGIC0_X1" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped cell "LOGIC1_X1" due to dont_use attribute.
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFFRS_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFFRS_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFFR_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFFR_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFFS_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFFS_X2".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFF_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "SDFF_X2".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TBUF_X1".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TBUF_X2".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TBUF_X4".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TBUF_X8".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TBUF_X16".
+ABC: Scl_LibertyReadGenlib() skipped three-state cell "TINV_X1".
+ABC: Scl_LibertyReadGenlib() skipped sequential cell "TLAT_X1".
+ABC: Library "nangate45_merged" from "/home/xinchen/yosys-sta/scripts/../nangate45/lib/merged.lib" has 88 cells (47 skipped: 21 seq; 6 tri-state; 20 no func; 7 dont_use).  Time =     0.17 sec
+ABC: Memory =    8.88 MB. Time =     0.17 sec
+ABC: Warning: Detected 2 multi-output gates (for example, "FA_X1").
+ABC: + strash 
+ABC: + ifraig 
+ABC: + retime -D -D 10000.0 -M 6 
+ABC: + strash 
+ABC: + dch -f 
+ABC: + map -p -M 1 -D 10000.0 -f 
+ABC: + topo 
+ABC: + dnsize 
+ABC: + buffer -p 
+ABC: + upsize 
+ABC: + 
+ABC: + write_blif /tmp/yosys-abc-hYaumU/output.blif 
+
+9.1.2. Re-integrating ABC results.
+ABC RESULTS:           AND2_X1 cells:       16
+ABC RESULTS:           AND2_X2 cells:        3
+ABC RESULTS:           AND3_X1 cells:       28
+ABC RESULTS:           AND3_X2 cells:        3
+ABC RESULTS:           AND4_X1 cells:        1
+ABC RESULTS:         AOI211_X2 cells:        9
+ABC RESULTS:         AOI211_X4 cells:        1
+ABC RESULTS:          AOI21_X1 cells:       43
+ABC RESULTS:           BUF_X16 cells:        1
+ABC RESULTS:            BUF_X2 cells:        7
+ABC RESULTS:           BUF_X32 cells:        6
+ABC RESULTS:            BUF_X4 cells:       18
+ABC RESULTS:            INV_X1 cells:       24
+ABC RESULTS:            INV_X2 cells:        2
+ABC RESULTS:           INV_X32 cells:        2
+ABC RESULTS:           MUX2_X1 cells:       10
+ABC RESULTS:           MUX2_X2 cells:       10
+ABC RESULTS:          NAND2_X1 cells:       96
+ABC RESULTS:          NAND2_X2 cells:        1
+ABC RESULTS:          NAND2_X4 cells:        1
+ABC RESULTS:          NAND3_X1 cells:       50
+ABC RESULTS:          NAND4_X1 cells:        7
+ABC RESULTS:           NOR2_X1 cells:       74
+ABC RESULTS:           NOR2_X2 cells:        2
+ABC RESULTS:           NOR2_X4 cells:       15
+ABC RESULTS:           NOR3_X1 cells:       46
+ABC RESULTS:           NOR3_X4 cells:        1
+ABC RESULTS:           NOR4_X1 cells:        1
+ABC RESULTS:         OAI211_X2 cells:       23
+ABC RESULTS:         OAI211_X4 cells:        1
+ABC RESULTS:          OAI21_X1 cells:       91
+ABC RESULTS:          OAI21_X2 cells:        3
+ABC RESULTS:         OAI221_X1 cells:        7
+ABC RESULTS:            OR2_X1 cells:        5
+ABC RESULTS:            OR2_X4 cells:        3
+ABC RESULTS:            OR3_X1 cells:       10
+ABC RESULTS:            OR3_X2 cells:        4
+ABC RESULTS:            OR3_X4 cells:        4
+ABC RESULTS:        internal signals:      375
+ABC RESULTS:           input signals:       41
+ABC RESULTS:          output signals:       32
+Removing temp directory.
+
+10. Executing HILOMAP pass (mapping to constant drivers).
+
+11. Executing SETUNDEF pass (replace undef values with defined constants).
+
+12. Executing SPLITNETS pass (splitting up multi-bit signals).
+
+13. Executing INSBUF pass (insert buffer cells for connected wires).
+Added alu2.$auto$insbuf.cc:79:execute$2278: \b [2] -> $abc$1648$b[2]
+Added alu2.$auto$insbuf.cc:79:execute$2279: \b [1] -> $abc$1648$b[1]
+Added alu2.$auto$insbuf.cc:79:execute$2280: \a [0] -> $abc$1648$a[0]
+Added alu2.$auto$insbuf.cc:79:execute$2281: \a [1] -> $abc$1648$a[1]
+Added alu2.$auto$insbuf.cc:79:execute$2282: \b [0] -> $abc$1648$b[0]
+Added alu2.$auto$insbuf.cc:79:execute$2283: \a [2] -> $abc$1648$a[2]
+Added alu2.$auto$insbuf.cc:79:execute$2284: \a [3] -> $abc$1648$a[3]
+Added alu2.$auto$insbuf.cc:79:execute$2285: \a [4] -> $abc$1648$a[4]
+Added alu2.$auto$insbuf.cc:79:execute$2286: \a [5] -> $abc$1648$a[5]
+Added alu2.$auto$insbuf.cc:79:execute$2287: \a [6] -> $abc$1648$a[6]
+Added alu2.$auto$insbuf.cc:79:execute$2288: \a [7] -> $abc$1648$a[7]
+Added alu2.$auto$insbuf.cc:79:execute$2289: \a [8] -> $abc$1648$a[8]
+Added alu2.$auto$insbuf.cc:79:execute$2290: \a [9] -> $abc$1648$a[9]
+Added alu2.$auto$insbuf.cc:79:execute$2291: \a [10] -> $abc$1648$a[10]
+Added alu2.$auto$insbuf.cc:79:execute$2292: \a [11] -> $abc$1648$a[11]
+Added alu2.$auto$insbuf.cc:79:execute$2293: \a [12] -> $abc$1648$a[12]
+Added alu2.$auto$insbuf.cc:79:execute$2294: \a [13] -> $abc$1648$a[13]
+Added alu2.$auto$insbuf.cc:79:execute$2295: \a [14] -> $abc$1648$a[14]
+Added alu2.$auto$insbuf.cc:79:execute$2296: \a [15] -> $abc$1648$a[15]
+Added alu2.$auto$insbuf.cc:79:execute$2297: \b [3] -> $abc$1648$b[3]
+Added alu2.$auto$insbuf.cc:79:execute$2298: \a [16] -> $abc$1648$a[16]
+Added alu2.$auto$insbuf.cc:79:execute$2299: \a [17] -> $abc$1648$a[17]
+Added alu2.$auto$insbuf.cc:79:execute$2300: \a [18] -> $abc$1648$a[18]
+Added alu2.$auto$insbuf.cc:79:execute$2301: \a [19] -> $abc$1648$a[19]
+Added alu2.$auto$insbuf.cc:79:execute$2302: \a [20] -> $abc$1648$a[20]
+Added alu2.$auto$insbuf.cc:79:execute$2303: \a [21] -> $abc$1648$a[21]
+Added alu2.$auto$insbuf.cc:79:execute$2304: \a [22] -> $abc$1648$a[22]
+Added alu2.$auto$insbuf.cc:79:execute$2305: \a [23] -> $abc$1648$a[23]
+Added alu2.$auto$insbuf.cc:79:execute$2306: \a [24] -> $abc$1648$a[24]
+Added alu2.$auto$insbuf.cc:79:execute$2307: \a [25] -> $abc$1648$a[25]
+Added alu2.$auto$insbuf.cc:79:execute$2308: \a [26] -> $abc$1648$a[26]
+Added alu2.$auto$insbuf.cc:79:execute$2309: \a [27] -> $abc$1648$a[27]
+Added alu2.$auto$insbuf.cc:79:execute$2310: \a [28] -> $abc$1648$a[28]
+Added alu2.$auto$insbuf.cc:79:execute$2311: \a [29] -> $abc$1648$a[29]
+Added alu2.$auto$insbuf.cc:79:execute$2312: \a [30] -> $abc$1648$a[30]
+Added alu2.$auto$insbuf.cc:79:execute$2313: \a [31] -> $abc$1648$a[31]
+Added alu2.$auto$insbuf.cc:79:execute$2314: \b [4] -> $abc$1648$b[4]
+Added alu2.$auto$insbuf.cc:79:execute$2315: \ctrl [1] -> $abc$1648$ctrl[1]
+Added alu2.$auto$insbuf.cc:79:execute$2316: \ctrl [0] -> $abc$1648$ctrl[0]
+Added alu2.$auto$insbuf.cc:79:execute$2317: \ctrl [3] -> $abc$1648$ctrl[3]
+Added alu2.$auto$insbuf.cc:79:execute$2318: \ctrl [2] -> $abc$1648$ctrl[2]
+Added alu2.$auto$insbuf.cc:79:execute$2319: $abc$1648$result[0] -> \result [0]
+Added alu2.$auto$insbuf.cc:79:execute$2320: $abc$1648$result[1] -> \result [1]
+Added alu2.$auto$insbuf.cc:79:execute$2321: $abc$1648$result[2] -> \result [2]
+Added alu2.$auto$insbuf.cc:79:execute$2322: $abc$1648$result[3] -> \result [3]
+Added alu2.$auto$insbuf.cc:79:execute$2323: $abc$1648$result[4] -> \result [4]
+Added alu2.$auto$insbuf.cc:79:execute$2324: $abc$1648$result[5] -> \result [5]
+Added alu2.$auto$insbuf.cc:79:execute$2325: $abc$1648$result[6] -> \result [6]
+Added alu2.$auto$insbuf.cc:79:execute$2326: $abc$1648$result[7] -> \result [7]
+Added alu2.$auto$insbuf.cc:79:execute$2327: $abc$1648$result[8] -> \result [8]
+Added alu2.$auto$insbuf.cc:79:execute$2328: $abc$1648$result[9] -> \result [9]
+Added alu2.$auto$insbuf.cc:79:execute$2329: $abc$1648$result[10] -> \result [10]
+Added alu2.$auto$insbuf.cc:79:execute$2330: $abc$1648$result[11] -> \result [11]
+Added alu2.$auto$insbuf.cc:79:execute$2331: $abc$1648$result[12] -> \result [12]
+Added alu2.$auto$insbuf.cc:79:execute$2332: $abc$1648$result[13] -> \result [13]
+Added alu2.$auto$insbuf.cc:79:execute$2333: $abc$1648$result[14] -> \result [14]
+Added alu2.$auto$insbuf.cc:79:execute$2334: $abc$1648$result[15] -> \result [15]
+Added alu2.$auto$insbuf.cc:79:execute$2335: $abc$1648$result[16] -> \result [16]
+Added alu2.$auto$insbuf.cc:79:execute$2336: $abc$1648$result[17] -> \result [17]
+Added alu2.$auto$insbuf.cc:79:execute$2337: $abc$1648$result[18] -> \result [18]
+Added alu2.$auto$insbuf.cc:79:execute$2338: $abc$1648$result[19] -> \result [19]
+Added alu2.$auto$insbuf.cc:79:execute$2339: $abc$1648$result[20] -> \result [20]
+Added alu2.$auto$insbuf.cc:79:execute$2340: $abc$1648$result[21] -> \result [21]
+Added alu2.$auto$insbuf.cc:79:execute$2341: $abc$1648$result[22] -> \result [22]
+Added alu2.$auto$insbuf.cc:79:execute$2342: $abc$1648$result[23] -> \result [23]
+Added alu2.$auto$insbuf.cc:79:execute$2343: $abc$1648$result[24] -> \result [24]
+Added alu2.$auto$insbuf.cc:79:execute$2344: $abc$1648$result[25] -> \result [25]
+Added alu2.$auto$insbuf.cc:79:execute$2345: $abc$1648$result[26] -> \result [26]
+Added alu2.$auto$insbuf.cc:79:execute$2346: $abc$1648$result[27] -> \result [27]
+Added alu2.$auto$insbuf.cc:79:execute$2347: $abc$1648$result[28] -> \result [28]
+Added alu2.$auto$insbuf.cc:79:execute$2348: $abc$1648$result[29] -> \result [29]
+Added alu2.$auto$insbuf.cc:79:execute$2349: $abc$1648$result[30] -> \result [30]
+Added alu2.$auto$insbuf.cc:79:execute$2350: $abc$1648$result[31] -> \result [31]
+
+14. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \alu2..
+Removed 0 unused cells and 375 unused wires.
+<suppressed ~1 debug messages>
+
+15. Executing CHECK pass (checking for obvious problems).
+checking module alu2..
+Warning: Wire alu2.\result [31] is used but has no driver.
+Warning: Wire alu2.\result [30] is used but has no driver.
+Warning: Wire alu2.\result [29] is used but has no driver.
+Warning: Wire alu2.\result [28] is used but has no driver.
+Warning: Wire alu2.\result [27] is used but has no driver.
+Warning: Wire alu2.\result [26] is used but has no driver.
+Warning: Wire alu2.\result [25] is used but has no driver.
+Warning: Wire alu2.\result [24] is used but has no driver.
+Warning: Wire alu2.\result [23] is used but has no driver.
+Warning: Wire alu2.\result [22] is used but has no driver.
+Warning: Wire alu2.\result [21] is used but has no driver.
+Warning: Wire alu2.\result [20] is used but has no driver.
+Warning: Wire alu2.\result [19] is used but has no driver.
+Warning: Wire alu2.\result [18] is used but has no driver.
+Warning: Wire alu2.\result [17] is used but has no driver.
+Warning: Wire alu2.\result [16] is used but has no driver.
+Warning: Wire alu2.\result [15] is used but has no driver.
+Warning: Wire alu2.\result [14] is used but has no driver.
+Warning: Wire alu2.\result [13] is used but has no driver.
+Warning: Wire alu2.\result [12] is used but has no driver.
+Warning: Wire alu2.\result [11] is used but has no driver.
+Warning: Wire alu2.\result [10] is used but has no driver.
+Warning: Wire alu2.\result [9] is used but has no driver.
+Warning: Wire alu2.\result [8] is used but has no driver.
+Warning: Wire alu2.\result [7] is used but has no driver.
+Warning: Wire alu2.\result [6] is used but has no driver.
+Warning: Wire alu2.\result [5] is used but has no driver.
+Warning: Wire alu2.\result [4] is used but has no driver.
+Warning: Wire alu2.\result [3] is used but has no driver.
+Warning: Wire alu2.\result [2] is used but has no driver.
+Warning: Wire alu2.\result [1] is used but has no driver.
+Warning: Wire alu2.\result [0] is used but has no driver.
+found and reported 32 problems.
+
+16. Printing statistics.
+
+=== alu2 ===
+
+   Number of wires:                675
+   Number of wire bits:            771
+   Number of public wires:           5
+   Number of public wire bits:     101
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                702
+     AND2_X1                        16
+     AND2_X2                         3
+     AND3_X1                        28
+     AND3_X2                         3
+     AND4_X1                         1
+     AOI211_X2                       9
+     AOI211_X4                       1
+     AOI21_X1                       43
+     BUF_X1                         73
+     BUF_X16                         1
+     BUF_X2                          7
+     BUF_X32                         6
+     BUF_X4                         18
+     INV_X1                         24
+     INV_X2                          2
+     INV_X32                         2
+     MUX2_X1                        10
+     MUX2_X2                        10
+     NAND2_X1                       96
+     NAND2_X2                        1
+     NAND2_X4                        1
+     NAND3_X1                       50
+     NAND4_X1                        7
+     NOR2_X1                        74
+     NOR2_X2                         2
+     NOR2_X4                        15
+     NOR3_X1                        46
+     NOR3_X4                         1
+     NOR4_X1                         1
+     OAI211_X2                      23
+     OAI211_X4                       1
+     OAI21_X1                       91
+     OAI21_X2                        3
+     OAI221_X1                       7
+     OR2_X1                          5
+     OR2_X4                          3
+     OR3_X1                         10
+     OR3_X2                          4
+     OR3_X4                          4
+
+   Chip area for module '\alu2': 904.932000
+
+17. Executing Verilog backend.
+Dumping module `\alu2'.
+
+Warnings: 40 unique messages, 104 total
+End of script. Logfile hash: 7b0579a137
+CPU: user 0.97s system 0.30s, MEM: 43.47 MB total, 30.79 MB resident
+Yosys 0.9 (git sha1 1979e0b)
+Time spent: 16% 2x stat (0 sec), 15% 1x dfflibmap (0 sec), ...
