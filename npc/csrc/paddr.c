@@ -54,6 +54,12 @@ int dpic_pmem_read(int raddr) {
         #endif 
         return read_data;
     }
+    else if (aligned_address == 0xa0000048) {
+        struct timespec ts;
+        clock_gettime(CLOCK_THREAD_CPUTIME_ID, &ts);
+        int microseconds = ts.tv_nsec / 1000 + ts.tv_sec * 1000000;
+        return microseconds;
+    }
     else {
         return -1;
     }
@@ -74,6 +80,9 @@ void dpic_pmem_write(int waddr, int wdata, char wmask) {
                 paddr_write(aligned_address+i, 1, *(byte_ptr + i));
             }
         }
+    }
+    else if (waddr == 0xa00003f8) {
+        putchar(wdata);
     }
     else {
         Assert(0, "wrong write: " FMT_PADDR, waddr);
