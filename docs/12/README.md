@@ -9,5 +9,9 @@
 在RV32E的NPC上运行超级玛丽需要实现串口和时钟
 
 ### 在NPC仿真环境中实现串口的输出功能, 并运行hello程序
-- 在`$AM_HOME/am/src/riscv/npc/trm.c`中完成`putch()`函数，当调用时对`SERIAL_PORT`进行写1字节操作
+- 在`$AM_HOME/am/src/riscv/npc/trm.c`中完成`putch()`函数，当调用时对`SERIAL_PORT`进行写1字节操作 (需要定义函数和地址宏)
 - 在DPI-C中的`pmem_write()`中增加地址判断，写端口地址时直接`putchar()`对应地址内容
+
+
+### 在NPC仿真环境中实现时钟
+- 使用`<time.h>`提供的`clock_gettime()`函数获取时间

@@ -54,6 +54,12 @@ int dpic_pmem_read(int raddr) {
         #endif 
         return read_data;
     }
+    else if (aligned_address == 0xa0000048) {
+        struct timespec ts;
+        clock_gettime(CLOCK_THREAD_CPUTIME_ID, &ts);
+        int microseconds = ts.tv_nsec / 1000 + ts.tv_sec * 1000000;
+        return microseconds;
+    }
     else {
         return -1;
     }
