@@ -14,7 +14,14 @@ Area heap = RANGE(&_heap_start, PMEM_END);
 #endif
 static const char mainargs[] = MAINARGS;
 
+// ------- simulate serial port -------
+#define DEVICE_BASE    0xa0000000
+#define SERIAL_PORT    (DEVICE_BASE + 0x00003f8)
+static inline void outb(uintptr_t addr, uint8_t  data) { *(volatile uint8_t  *)addr = data; }
+// ------------------------------------
+
 void putch(char ch) {
+    outb(SERIAL_PORT, ch);
 }
 
 #define npc_trap(code) asm volatile("mv a0, %0; ebreak" : :"r"(code))
