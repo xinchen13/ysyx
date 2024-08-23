@@ -18,4 +18,4 @@
 - 在`$AM_HOME/am/src/riscv/npc/timer.c`中实现`__am_timer_uptime()`读时间寄存器, 运行am-tests的real-time clock test测试 (使用 `clock_gettime(CLOCK_THREAD_CPUTIME_ID, &ts)` 防止溢出)
 
 ### 运行字符版本的红白机模拟器
-结果如下(能打开但是性能惨不忍睹):
+注释掉HAS_GUI能打开但是性能惨不忍睹：（
