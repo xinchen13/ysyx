@@ -6,6 +6,7 @@
 #include "difftest.h"
 
 static word_t this_inst;
+static int inst_count = 0;
 
 #ifdef CONFIG_ITRACE
     static word_t itrace_pc;
@@ -153,6 +154,7 @@ static void exec_once() {
 static void execute(uint64_t n) {
     for (;n > 0; n --) {
         exec_once();
+        inst_count++;
         trace_and_difftest();
         if (this_inst == 0x00100073 || contextp->time() > 999) {
             set_npc_state(NPC_END, core.pc, core.gpr[10]);
@@ -174,6 +176,8 @@ void core_exec(uint64_t n) {
     }
 
     execute(n);
+
+    Log("total guest instructions = %d", inst_count);
 
     switch (npc_state.state) {
         case NPC_RUNNING: 
