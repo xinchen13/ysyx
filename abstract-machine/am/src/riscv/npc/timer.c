@@ -1,5 +1,11 @@
 #include <am.h>
 
+// ------- simulate rtc -------
+#define DEVICE_BASE     0xa0000000
+#define RTC_ADDR        (DEVICE_BASE + 0x0000048)
+static inline uint32_t inl(uintptr_t addr) { return *(volatile uint32_t *)addr; }
+// ----------------------------
+
 void __am_timer_init() {
 }
 
