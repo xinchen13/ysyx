@@ -22,3 +22,6 @@ image: $(IMAGE).elf
 
 run: image
 	$(MAKE) -C $(NPC_HOME) sim IMG=--img\=$(IMAGE).bin ELF=--elf\=$(IMAGE).elf
+
+gdb: image
+	$(MAKE) -C $(NPC_HOME) wave IMG=--img\=$(IMAGE).bin ELF=--elf\=$(IMAGE).elf
