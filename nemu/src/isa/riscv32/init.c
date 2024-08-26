@@ -35,7 +35,6 @@ static void restart() {
 
     // for difftest
     cpu.mstatus = 0x00001800;
-    cpu.mcause = 0;
 }
 
 void init_isa() {
