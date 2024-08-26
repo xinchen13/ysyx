@@ -58,6 +58,7 @@ riscv32通过`mret`指令从异常处理过程中返回, 它将根据mepc寄存�
 - 在 `$NEMU_HOME/src/isa/riscv32/include/isa-def.h` 中添加4个用到的csr寄存器
 - 参考`cte_init()`中的内联汇编, 找到了异常入口地址, 进一步rtfsc, 实际上是`$AM_HOME/am/src/riscv/nemu/trap.S`中的`__am_asm_trap`
 - 按照riscv32触发异常后硬件的响应过程实现 `isa_raise_intr()`
+- 在`inst.c`中实现ecall, csrrs和csrrw指令. 其中ecall调用`isa_raise_intr()`函数并设置跳转pc; csr寄存器的索引使用与gpr类似的索引机制，并在`$NEMU_HOME/src/isa/riscv32/local-include/reg.h`中实现映射; csrrw
 
 ## 在NEMU中运行RT-Thread
 根据PA讲义完成PA4阶段1, 直到启动RT-Thread. 后续Nanos-lite相关的内容暂时不管

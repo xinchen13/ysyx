@@ -162,7 +162,7 @@ static int decode_exec(Decode *s) {
 
     INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrw  , I, 
         {
-            // write after read 
+            // write after read: atomically swaps values in the CSRs and integer registers
             word_t tmp = CSR(imm);
             SET_CSR(imm, src1);
             R(rd) = tmp;
