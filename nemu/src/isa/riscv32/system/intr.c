@@ -20,14 +20,14 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
     * Then return the address of the interrupt/exception vector.
     */
 
-    // ------------- for debug ------------
-    printf("ref mcause  = %d \n", NO);
-    printf("ref mstatus = %d \n", cpu.mstatus);
-    printf("ref mepc    = %d \n", epc);
-    for (int i = 0; i < ARRLEN(cpu.gpr); i++) {
-        printf("ref reg[%d] = %d \n", i, cpu.gpr[i]);
-    }
-    // ------------------------------------
+    // // ------------- for debug ------------
+    // printf("ref mcause  = %d \n", NO);
+    // printf("ref mstatus = %d \n", cpu.mstatus);
+    // printf("ref mepc    = %d \n", epc);
+    // for (int i = 0; i < ARRLEN(cpu.gpr); i++) {
+    //     printf("ref reg[%d] = %d \n", i, cpu.gpr[i]);
+    // }
+    // // ------------------------------------
     cpu.mepc = epc;
     cpu.mcause = NO;
     return cpu.mtvec;

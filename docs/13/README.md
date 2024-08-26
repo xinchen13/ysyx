@@ -77,7 +77,18 @@ riscv32通过`mret`指令从异常处理过程中返回, 它将根据mepc寄存�
 
 ### 重新组织Context结构体
 - 理解上下文形成的过程并RTFSC, 然后重新组织`$AM_HOME/am/include/arch/riscv.h`中定义的Context结构体的成员, 使得这些成员的定义顺序和`$AM_HOME/am/src/riscv/nemu/trap.S`中构造的上下文保持一致(正确地处理地址空间信息的位置, 否则可能会在PA4中遇到难以理解的错误): 根据存储顺序重新排列
-- 实现之后, 在`__am_irq_handle()`中通过printf输出上下文c的内容
+- 实现之后, 在`__am_irq_handle()`中通过printf输出上下文c的内容, 在`isa_raise_intr()`输出ref, 除了zero和sp其他寄存器的值都一样, 合理
+
+### 理解上下文结构体的前世今生
+会在`__am_irq_handle()`中看到有一个上下文结构指针c, c指向的上下文结构究竟在哪里? 这个上下文结构又是怎么来的? 具体地, 这个上下文结构有很多成员, 每一个成员究竟在哪里赋值的? 
+
+- c指向的上下文结构就是触发自陷指令时的上下文, 就是`trap.S`压栈的上下文
+- `trap.S`中`jal __am_irq_handle`调用了该函数, 上一句是`mv a0, sp`, 根据调用约定, a0就是函数的首个参数, 也就是说当前sp指向的上下文就是这里的c
+
+### 事件分发, 识别自陷事件
+`__am_irq_handle()`的代码会把执行流切换的原因打包成事件, 然后调用在`cte_init()`中注册的事件处理回调函数, 将事件交给yield test来处理. 在yield test中, 这一回调函数是`am-kernels/tests/am-tests/src/tests/intr.c`中的`simple_trap()`函数. `simple_trap()`函数会根据事件类型再次进行分发
+
+根据`yield()`的定义, `__am_irq_handle()`函数需要将自陷事件打包成编号为EVENT_YIELD的事件: 实现后在yield test中识别到自陷事件之后输出一个字符y
 
 ## 在NEMU中运行RT-Thread
 根据PA讲义完成PA4阶段1, 直到启动RT-Thread. 后续Nanos-lite相关的内容暂时不管
