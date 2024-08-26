@@ -41,3 +41,4 @@ cd ysyx
 - [nemu的设备和输入输出(pa2s3)](./docs/10/)
 - [支持RV32E的单周期NPC(npc-rv32e-sc)](./docs/11/)
 - [npc的设备和输入输出(npc-io)](./docs/12/)
+- [异常处理和RT-Thread(exception)](./docs/13/)
