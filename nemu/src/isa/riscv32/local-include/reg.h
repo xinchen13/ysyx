@@ -30,4 +30,12 @@ static inline const char* reg_name(int idx) {
   return regs[check_reg_idx(idx)];
 }
 
+// csr regs
+#define csr(idx) (  \
+        (idx == 0x300) ? cpu.mstatus :              \
+        (idx == 0x305) ? cpu.mtvec :                \
+        (idx == 0x341) ? cpu.mepc :                 \
+        (idx == 0x342) ? cpu.mcause : cpu.gpr[0]    \
+    )
+
 #endif

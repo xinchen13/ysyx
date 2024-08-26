@@ -19,6 +19,7 @@
 #include <cpu/decode.h>
 
 #define R(i) gpr(i)
+#define CSR(i) csr(i)
 #define Mr vaddr_read
 #define Mw vaddr_write
 
@@ -148,12 +149,40 @@ static int decode_exec(Decode *s) {
     INSTPAT("??????? ????? ????? ??? ????? 00101 11", auipc  , U, R(rd) = s->pc + imm);
     
     INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak , N, NEMUTRAP(s->pc, R(10))); // R(10) is $a0
+    INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , I, 
+        {
+            bool succe;
+            word_t excep_no = MUXDEF(CONFIG_RVE, 
+                isa_reg_str2val("a5", &succe), isa_reg_str2val("a7", &succe)
+            );
+            s->dnpc=isa_raise_intr(excep_no, s->pc);   
+        }
+    );
+
+    INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrw  , I, 
+        {
+            // write after read 
+            word_t tmp = CSR(imm);
+            // CSR(imm) = src1; 
+            R(rd) = tmp;
+        }
+    );
+    INSTPAT("??????? ????? ????? 010 ????? 11100 11", csrrs  , I, 
+        // set after read 
+        word_t tmp = CSR(imm);
+        // CSR(imm) = tmp | src1; 
+        R(rd) = tmp;
+    );
+    INSTPAT("0011000 00010 00000 000 00000 11100 11", mret   , R, 
+        s->dnpc = CSR(0x341);
+    );
+
     INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));
     INSTPAT_END();
 
-  R(0) = 0; // reset $zero to 0
+    R(0) = 0; // reset $zero to 0
 
-  return 0;
+    return 0;
 }
 
 int isa_exec_once(Decode *s) {
