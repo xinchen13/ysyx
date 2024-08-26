@@ -38,4 +38,12 @@ static inline const char* reg_name(int idx) {
         (idx == 0x342) ? cpu.mcause : cpu.gpr[0]    \
     )
 
+#define set_csr(i, value)   \
+    do { \
+    if (i == 0x300)         cpu.mstatus = value;   \
+    else if (i == 0x305)    cpu.mtvec = value;      \
+    else if (i == 0x341)    cpu.mepc = value;       \
+    else if (i == 0x342)    cpu.mcause = value;     \
+    } while(0)
+
 #endif

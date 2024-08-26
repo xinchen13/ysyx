@@ -20,6 +20,7 @@
 
 #define R(i) gpr(i)
 #define CSR(i) csr(i)
+#define SET_CSR(i, value) set_csr(i, value)
 #define Mr vaddr_read
 #define Mw vaddr_write
 
@@ -163,15 +164,17 @@ static int decode_exec(Decode *s) {
         {
             // write after read 
             word_t tmp = CSR(imm);
-            // CSR(imm) = src1; 
+            SET_CSR(imm, src1);
             R(rd) = tmp;
         }
     );
     INSTPAT("??????? ????? ????? 010 ????? 11100 11", csrrs  , I, 
-        // set after read 
-        word_t tmp = CSR(imm);
-        // CSR(imm) = tmp | src1; 
-        R(rd) = tmp;
+        {
+            // set after read 
+            word_t tmp = CSR(imm);
+            SET_CSR(imm, tmp | src1);
+            R(rd) = tmp;   
+        }
     );
     INSTPAT("0011000 00010 00000 000 00000 11100 11", mret   , R, 
         s->dnpc = CSR(0x341);
