@@ -90,5 +90,12 @@ riscv32通过`mret`指令从异常处理过程中返回, 它将根据mepc寄存�
 
 根据`yield()`的定义, `__am_irq_handle()`函数需要将自陷事件打包成编号为EVENT_YIELD的事件: 实现后在yield test中识别到自陷事件之后输出一个字符y
 
+### 恢复上下文
+`__am_asm_trap()`将根据之前保存的上下文内容, 恢复程序的状态, 最后执行"异常返回指令"返回到程序触发异常之前的状态
+
+- 实现mret(设置dnpc为mepc). 重新运行yield test. yield test不断输出y
+- riscv在软件中实现`epc+4`, 在`__am_irq_handle()`中实现, 而不是在nemu中
+
+
 ## 在NEMU中运行RT-Thread
 根据PA讲义完成PA4阶段1, 直到启动RT-Thread. 后续Nanos-lite相关的内容暂时不管
