@@ -50,6 +50,17 @@ Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
     Context *new_c = kstack.end - sizeof(Context);
     new_c->mepc = (uintptr_t)entry;
     new_c->mstatus = 0x1800;  // for difftest
+    #ifdef __riscv_e
+        // a0 - a5
+        for (int i = 10; i <= 15; i++) {
+            new_c->gpr[i] = (uintptr_t)(arg+i-10);
+        }
+    #else
+        // a0 - a7
+        for (int i = 10; i <= 17; i++) {
+            new_c->gpr[i] = (uintptr_t)(arg+i-10);
+        }
+    #endif
     return new_c;
 }
 
