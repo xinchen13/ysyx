@@ -28,6 +28,13 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
     //     printf("ref reg[%d] = %d \n", i, cpu.gpr[i]);
     // }
     // // ------------------------------------
+
+    #ifdef CONFIG_ETRACE
+        Log("etrace: cpu.mcause  = %d", NO);
+        Log("etrace: cpu.mstatus = " FMT_WORD, cpu.mstatus);
+        Log("etrace: cpu.mepc    = " FMT_WORD, epc);
+    #endif
+
     cpu.mepc = epc;
     cpu.mcause = NO;
     return cpu.mtvec;

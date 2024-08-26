@@ -93,9 +93,18 @@ riscv32通过`mret`指令从异常处理过程中返回, 它将根据mepc寄存�
 ### 恢复上下文
 `__am_asm_trap()`将根据之前保存的上下文内容, 恢复程序的状态, 最后执行"异常返回指令"返回到程序触发异常之前的状态
 
-- 实现mret(设置dnpc为mepc). 重新运行yield test. yield test不断输出y
-- riscv在软件中实现`epc+4`, 在`__am_irq_handle()`中实现, 而不是在nemu中
+- 实现`mret`(设置dnpc为mepc). 重新运行yield test. yield test不断输出y (不断执行ecall->mret的循环)
+- riscv在软件中实现`epc+4`, 在`__am_irq_handle()`中实现, 而不是在nemu中, 此时输出y有时间间隔
 
+### 理解穿越时空的旅程
+从yield test调用`yield()`开始, 到从`yield()`返回的期间, 这一趟旅程具体经历了什么? 软(AM, yield test)硬(NEMU)件是如何相互协助来完成这趟旅程的? 解释这一过程中的每一处细节, 包括涉及的每一行汇编代码/C代码的行为, 尤其是一些比较关键的指令/变量
+
+- 已总结在以上
+
+### 异常处理的踪迹 - etrace
+使用nemu而不是cte实现etrace: etrace在NEMU中输出不会改变程序的行为; etrace也不受程序行为的影响(如果程序包含一些致命的bug导致无法进入异常处理函数, 那就无法在CTE中调用`printf()`来输出)
+- Kconfig实现开关
+- 在`isa_raise_intr()`中实现简单的etrace
 
 ## 在NEMU中运行RT-Thread
 根据PA讲义完成PA4阶段1, 直到启动RT-Thread. 后续Nanos-lite相关的内容暂时不管
