@@ -173,7 +173,7 @@ static int decode_exec(Decode *s) {
             // set after read 
             word_t tmp = CSR(imm);
             SET_CSR(imm, tmp | src1);
-            R(rd) = tmp;   
+            R(rd) = tmp;
         }
     );
     INSTPAT("0011000 00010 00000 000 00000 11100 11", mret   , R, 
