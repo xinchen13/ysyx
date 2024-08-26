@@ -58,7 +58,26 @@ riscv32通过`mret`指令从异常处理过程中返回, 它将根据mepc寄存�
 - 在 `$NEMU_HOME/src/isa/riscv32/include/isa-def.h` 中添加4个用到的csr寄存器
 - 参考`cte_init()`中的内联汇编, 找到了异常入口地址, 进一步rtfsc, 实际上是`$AM_HOME/am/src/riscv/nemu/trap.S`中的`__am_asm_trap`
 - 按照riscv32触发异常后硬件的响应过程实现 `isa_raise_intr()`
-- 在`inst.c`中实现ecall, csrrs和csrrw指令. 其中ecall调用`isa_raise_intr()`函数并设置跳转pc; csr寄存器的索引使用与gpr类似的索引机制，并在`$NEMU_HOME/src/isa/riscv32/local-include/reg.h`中实现映射; csrrw
+- 在`inst.c`中实现ecall, csrrs和csrrw指令. 其中ecall调用`isa_raise_intr()`函数并设置跳转pc; csr寄存器的索引使用与gpr类似的索引机制，并在`$NEMU_HOME/src/isa/riscv32/local-include/reg.h`中实现映射,包括获取值与设置值. csrrw与csrrs按手册实现
+- 实现后, 重新运行yield test, 对比`am-kernels/tests/am-tests/build/amtest-riscv32-nemu.txt`中的异常处理地址与itrace提供的指令执行历史, 可以看到正确找到了异常入口, 最终调用回调函数, 进入panic
+
+### 让DiffTest支持异常响应机制
+针对riscv32, 需要将mstatus初始化为0x1800: 在 `$NEMU_HOME/src/isa/riscv32/init.c` 中初始化
+
+### 保存上下文
+成功跳转到异常入口地址之后, 就要在软件上开始真正的异常处理过程, 首先需要sw指令将各个通用寄存器依次压栈. 除了通用寄存器之外, 上下文还包括:
+
+- 触发异常时的PC和处理器状态: 对于riscv32来说, 就是epc/mepc和status/mstatus寄存器, 异常响应机制把它们保存在相应的系统寄存器中, 我们还需要将它们从系统寄存器中读出, 然后保存在堆栈上
+- 异常号: 对于riscv32, 异常号已经由硬件保存在cause/mcause寄存器中, 我们还需要将其保存在堆栈上
+- 地址空间: 这是为PA4准备的, riscv32将地址空间信息与0号寄存器共用存储空间, 反正0号寄存器的值总是0, 也不需要保存和恢复. 不过目前暂时不使用地址空间信息, 目前可以忽略它们的含义
+
+保存上下文后，接下来代码会调用C函数`__am_irq_handle()`(在`$AM_HOME/am/src/$ISA/nemu/cte.c`中定义), 来进行异常的处理: 可以在`trap.S`中看到`jal __am_irq_handle`, 在这一函数中调用`cte_init()`注册的handler函数来进行异常/中断处理, 包括解析事件, 上下文切换等
+
+这部分主要由`trap.S`完成，具体rtfsc
+
+### 重新组织Context结构体
+- 理解上下文形成的过程并RTFSC, 然后重新组织`$AM_HOME/am/include/arch/riscv.h`中定义的Context结构体的成员, 使得这些成员的定义顺序和`$AM_HOME/am/src/riscv/nemu/trap.S`中构造的上下文保持一致(正确地处理地址空间信息的位置, 否则可能会在PA4中遇到难以理解的错误): 根据存储顺序重新排列
+- 实现之后, 在`__am_irq_handle()`中通过printf输出上下文c的内容
 
 ## 在NEMU中运行RT-Thread
 根据PA讲义完成PA4阶段1, 直到启动RT-Thread. 后续Nanos-lite相关的内容暂时不管
