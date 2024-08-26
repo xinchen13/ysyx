@@ -7,7 +7,7 @@ static Context* (*user_handler)(Event, Context*) = NULL;
 Context* __am_irq_handle(Context *c) {
 
     // ------------- for debug ------------
-    printf("mcause  = 0x%08x \n", c->mcause);
+    printf("mcause  = %08x \n", c->mcause);
     printf("mstatus = 0x%08x \n", c->mstatus);
     printf("mepc    = 0x%08x \n", c->mepc);
     for (int i = 0; i < 32; i++) {
