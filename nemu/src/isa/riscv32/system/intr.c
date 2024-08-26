@@ -16,13 +16,30 @@
 #include <isa.h>
 
 word_t isa_raise_intr(word_t NO, vaddr_t epc) {
-  /* TODO: Trigger an interrupt/exception with ``NO''.
-   * Then return the address of the interrupt/exception vector.
-   */
+    /* TODO: Trigger an interrupt/exception with ``NO''.
+    * Then return the address of the interrupt/exception vector.
+    */
 
-  return 0;
+    // // ------------- for debug ------------
+    // printf("ref mcause  = %d \n", NO);
+    // printf("ref mstatus = %d \n", cpu.mstatus);
+    // printf("ref mepc    = %d \n", epc);
+    // for (int i = 0; i < ARRLEN(cpu.gpr); i++) {
+    //     printf("ref reg[%d] = %d \n", i, cpu.gpr[i]);
+    // }
+    // // ------------------------------------
+
+    #ifdef CONFIG_ETRACE
+        Log("etrace: cpu.mcause  = %d", NO);
+        Log("etrace: cpu.mstatus = " FMT_WORD, cpu.mstatus);
+        Log("etrace: cpu.mepc    = " FMT_WORD, epc);
+    #endif
+
+    cpu.mepc = epc;
+    cpu.mcause = NO;
+    return cpu.mtvec;
 }
 
 word_t isa_query_intr() {
-  return INTR_EMPTY;
+    return INTR_EMPTY;
 }
