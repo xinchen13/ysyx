@@ -52,5 +52,12 @@ riscv32通过`mret`指令从异常处理过程中返回, 它将根据mepc寄存�
 ### 设置异常入口地址
 `abstract-machine/am/src/$ISA/nemu/cte.c中的cte_init()`函数会做两件事情, 第一件就是设置异常入口地址: 对于riscv32来说, 直接将异常入口地址设置到mtvec寄存器中即可; 第二件事是注册一个事件处理回调函数
 
+### 实现异常响应机制
+实现新指令, 并实现`isa_raise_intr()`函数. 然后阅读`cte_init()`的代码, 找出相应的异常入口地址. 对于riscv32, 会发现status/mstatus寄存器中有非常多状态位, 不过目前完全不实现这些状态位的功能也不影响程序的执行, 因此目前只需要将status/mstatus寄存器看成一个只用于存放32位数据的寄存器即可
+
+- 在 `$NEMU_HOME/src/isa/riscv32/include/isa-def.h` 中添加4个用到的csr寄存器
+- 参考`cte_init()`中的内联汇编, 找到了异常入口地址, 进一步rtfsc, 实际上是`$AM_HOME/am/src/riscv/nemu/trap.S`中的`__am_asm_trap`
+- 按照riscv32触发异常后硬件的响应过程实现 `isa_raise_intr()`
+
 ## 在NEMU中运行RT-Thread
 根据PA讲义完成PA4阶段1, 直到启动RT-Thread. 后续Nanos-lite相关的内容暂时不管
