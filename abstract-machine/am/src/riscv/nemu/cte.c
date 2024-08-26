@@ -47,7 +47,10 @@ bool cte_init(Context*(*handler)(Event, Context*)) {
 }
 
 Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
-  return NULL;
+    Context *new_c = kstack.end - sizeof(Context);
+    new_c->mepc = (uintptr_t)entry;
+    new_c->mstatus = 0x1800;  // for difftest
+    return new_c;
 }
 
 void yield() {
