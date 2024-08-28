@@ -27,6 +27,7 @@ module xcore (
     logic [`CSR_ADDR_BUS] csr_waddr1;
     logic csr_wen1;
     logic [`DATA_BUS] csr_rdata;
+    logic [4:0] reg_rs1;
 
     export "DPI-C" function dpi_that_accesses_inst;
     function bit [31:0] dpi_that_accesses_inst();
@@ -53,7 +54,7 @@ module xcore (
         .clk(clk),
         .wdata(reg_wdata),
         .waddr(inst[11:7]),
-        .raddr1(inst[19:15]),
+        .raddr1(reg_rs1),
         .raddr2(inst[24:20]),
         .rdata1(reg_rdata1),
         .rdata2(reg_rdata2),
@@ -65,6 +66,7 @@ module xcore (
         .pc(pc),
         .reg_rdata1(reg_rdata1),
         .reg_rdata2(reg_rdata2),
+        .reg_rs1(reg_rs1),
         .csr_rdata(csr_rdata),
         .alu_src1(alu_src1),
         .alu_src2(alu_src2),

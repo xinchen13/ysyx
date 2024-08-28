@@ -9,6 +9,9 @@ module idu (
     input logic [`DATA_BUS] reg_rdata1,
     input logic [`DATA_BUS] reg_rdata2,
 
+    // to regfile
+    output logic [4:0] reg_rs1,
+
     // from csr regs
     input logic [`DATA_BUS] csr_rdata,
 
@@ -34,6 +37,9 @@ module idu (
     logic funct7_5 = inst[30];
     logic inst_ecall = (inst == `INST_ECALL) ? 1'b1 : 1'b0;
     logic inst_mret = (inst == `INST_MRET) ? 1'b1 : 1'b0;
+
+    // reg rs1
+    assign reg_rs1 = inst_ecall ? 5'd15 : inst[19:15];
 
     // csr wen2
     assign csr_wen2 = inst_ecall;
