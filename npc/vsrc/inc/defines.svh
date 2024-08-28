@@ -10,6 +10,14 @@
 `define RV32_REG_NUM 32
 `define RV32E_REG_NUM 32
 
+// csr
+`define CSR_ADDR_WIDTH 12
+`define CSR_ADDR_BUS 11:0
+`define CSR_MTVEC   12'h305
+`define CSR_MCAUSE  12'h342
+`define CSR_MEPC    12'h341
+`define CSR_MSTATUS 12'h300
+
 // buses
 `define INST_ADDR_WIDTH 32
 `define INST_ADDR_BUS 31:0
@@ -42,5 +50,9 @@
 `define JALR_OPCODE 7'b1100111
 `define LUI_OPCODE 7'b0110111
 `define AUIPC_OPCODE 7'b0010111
-// ebreak
+`define CSR_OPCODE    7'b1110011  // CSR inst
+
+// ebreak, ecall, mret
 `define INST_EBREAK 32'h00100073
+`define INST_ECALL  32'h73
+`define INST_MRET   32'h30200073

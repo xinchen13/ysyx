@@ -9,6 +9,12 @@ module idu (
     input logic [`DATA_BUS] reg_rdata1,
     input logic [`DATA_BUS] reg_rdata2,
 
+    // to regfile
+    output logic [4:0] reg_rs1,
+
+    // from csr regs
+    input logic [`DATA_BUS] csr_rdata,
+
     // to exu (mem, wb)
     output logic [`DATA_BUS] alu_src1,
     output logic [`DATA_BUS] alu_src2,
@@ -18,12 +24,98 @@ module idu (
     output logic dmem_wen,
     output logic dmem_req,
     output logic reg_wen,
-    output logic reg_wdata_sel
+    output logic [1:0] reg_wdata_sel,
+    output logic [`CSR_ADDR_BUS] csr_raddr,
+    output logic [`DATA_BUS] csr_wdata1,
+    output logic [`CSR_ADDR_BUS] csr_waddr1,
+    output logic csr_wen1,
+    output logic csr_wen2
 );
     logic [`DATA_BUS] imm;
     logic [6:0] opcode = inst[6:0];
     logic [2:0] funct3 = inst[14:12];
     logic funct7_5 = inst[30];
+    logic inst_ecall = (inst == `INST_ECALL) ? 1'b1 : 1'b0;
+    logic inst_mret = (inst == `INST_MRET) ? 1'b1 : 1'b0;
+
+    // reg rs1
+    assign reg_rs1 = inst_ecall ? 5'd15 : inst[19:15];
+
+    // csr wen2
+    assign csr_wen2 = inst_ecall;
+
+    always @ (*) begin
+        case (opcode)
+            `CSR_OPCODE: begin
+                if (inst_ecall) begin
+                    csr_wdata1 = reg_rdata1;
+                end
+                else if (inst_mret) begin
+                    csr_wdata1 = `ZERO_WORD;
+                end
+                else begin
+                    case (funct3)
+                        3'b001: begin // csrrw
+                            csr_wdata1 = reg_rdata1;
+                        end
+                        3'b010: begin // csrrs
+                            csr_wdata1 = reg_rdata1 | csr_rdata;
+                        end
+                        default: begin
+                            csr_wdata1 = `ZERO_WORD;
+                        end
+                    endcase
+                end
+            end
+            default: begin
+                csr_wdata1 = `ZERO_WORD;
+            end
+        endcase
+    end
+
+    // csr waddr1 wen1
+    always @ (*) begin
+        case (opcode)
+            `CSR_OPCODE: begin
+                if (inst_ecall) begin
+                    csr_wen1 = 1'b1;
+                    csr_waddr1 = `CSR_MCAUSE;
+                end
+                else if (inst_mret) begin
+                    csr_wen1 = 1'b0;
+                    csr_waddr1 = 12'h0;
+                end
+                else begin
+                    csr_wen1 = 1'b1;
+                    csr_waddr1 = inst[31:20];
+                end
+            end
+            default: begin
+                csr_wen1 = 1'b0;
+                csr_waddr1 = 12'h0;
+            end
+        endcase
+    end
+
+    // csr raddr
+    always @ (*) begin
+        case (opcode)
+            `CSR_OPCODE: begin
+                if (inst_ecall) begin
+                    csr_raddr = `CSR_MTVEC;
+                end
+                else if (inst_mret) begin
+                    csr_raddr = `CSR_MEPC;
+                end
+                else begin
+                    csr_raddr = inst[31:20];
+                end
+            end
+            default: begin
+                csr_raddr = 12'h0;
+            end
+        endcase
+    end
 
     // imm gen
     always @ (*) begin
@@ -212,6 +304,16 @@ module idu (
             `I_LOAD_TYPE_OPCODE, `R_TYPE_OPCODE, `JAL_OPCODE: begin
                 reg_wen = 1'b1;
             end
+            `CSR_OPCODE: begin
+                case (funct3)   
+                    3'b001, 3'b010: begin
+                        reg_wen = 1'b1;
+                    end
+                    default: begin
+                        reg_wen = 1'b0;
+                    end
+                endcase
+            end
             default: begin
                 reg_wen = 1'b0;
             end
@@ -222,10 +324,13 @@ module idu (
     always @ (*) begin
         case (opcode)
             `I_LOAD_TYPE_OPCODE: begin
-                reg_wdata_sel = 1'b1;
+                reg_wdata_sel = 2'b01;
+            end
+            `CSR_OPCODE: begin
+                reg_wdata_sel = 2'b10;
             end
             default: begin
-                reg_wdata_sel = 1'b0;
+                reg_wdata_sel = 2'b00;
             end
         endcase
     end
