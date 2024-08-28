@@ -7,6 +7,7 @@ module exu (
     input logic [3:0] alu_ctrl,
     input logic [`DATA_BUS] imm_i,
     input logic [`DATA_BUS] pc_adder_src2,
+    input logic [`DATA_BUS] csr_rdata,
     output logic [`DATA_BUS] alu_result,
     output logic [`INST_ADDR_BUS] dnpc
 );
@@ -15,6 +16,10 @@ module exu (
     logic less_flag;
     logic [6:0] opcode = inst[6:0];
     logic [2:0] funct3 = inst[14:12];
+    logic [`INST_ADDR_BUS] dnpc_tmp;
+
+    logic inst_ecall = (inst == `INST_ECALL) ? 1'b1 : 1'b0;
+    logic inst_mret = (inst == `INST_MRET) ? 1'b1 : 1'b0;
 
     // pc_adder_src1
     always @ (*) begin
@@ -48,7 +53,8 @@ module exu (
     end
 
     // pc adder
-    assign dnpc = pc_adder_src1 + pc_adder_src2;
+    assign dnpc_tmp = pc_adder_src1 + pc_adder_src2;
+    assign dnpc = (inst_ecall || inst_mret) ? csr_rdata : dnpc_tmp;
 
 
     alu alu_u0 (
