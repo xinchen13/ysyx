@@ -176,3 +176,5 @@ RT-Thread是一个流行的商业级嵌入式实时OS, 具备完善的OS功能�
 - ecall和mret都会导致NPC发生跳转, 可以**复用地址逻辑的数据通路**
 - 目前只实现ecall这一种异常, 它是一种需要NPC无条件响应的自陷异常, 只需要同时设置mcause和mepc, 然后跳转到mtvec中存放的异常入口即可
 - 首先画出架构:
+
+<img src="../../figs/rv32e-sc-csr.drawio.png"/>
