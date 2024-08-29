@@ -74,3 +74,9 @@ NPC仿真环境提供的`dpic_pmem_read()`没有读延迟, 收到读请求的当
 - 用于综合的源文件见 [npc](./npc/), 为了顺利综合, 把写入寄存器的值引出作为输出
 - 命令: `make sta DESIGN=xcore SDC_FILE=npc/gcd.sdc RTL_FILES="./npc/defines.svh ./npc/alu.sv ./npc/csr_regs.sv ./npc/exu.sv ./npc/idu.sv ./npc/mem.sv ./npc/pc_reg.sv ./npc/ram.sv ./npc/regfile.sv ./npc/rom.sv ./npc/wb.sv ./npc/xcore.sv" CLK_FREQ_MHZ=50`
 - 综合出的面积是106971.634, 主频为382.639MHz
+
+#### 估算结果并不准确, 可以说是非常乐观的
+- 这个单周期NPC距离可流片的配置还差很远, 例如修改存储器的时候把I/O相关的部分都忽略了
+- 上述主频是综合后的主频, 布局布线之后引入的线延迟会进一步把主频拉低
+- 取指单元对应的存储器因为没有写操作, 被yosys优化掉了
+- 访存单元对应的存储器其实也远远装不下microbench. 要成功把train规模的测试运行起来, 数据需要占用1MB内存. 这个大小都已经远远超过实际处理器芯片设计中可以容纳的触发器数量了, 先不考虑EDA工具的处理时间, 光是在芯片上摆满这么多触发器, 从占用面积来估算线延迟就已经巨大了
