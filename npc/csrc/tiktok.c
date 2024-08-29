@@ -72,7 +72,7 @@ static void trace_and_difftest() {
     #ifdef CONFIG_DIFFTEST
         if (dut->rootp->xcore__DOT__alu_result == (0xa00003f8)) {
             difftest_skip_ref();
-            printf("%x, adfafsf, %x\n",dut->rootp->xcore__DOT__alu_result, core.pc);
+            printf("%x, adfafsf, %x\n",(uint32_t)dut->rootp->xcore__DOT__alu_result, core.pc);
         }
         difftest_step(core.pc, core.pc);    // 第二个参数暂时没用
     #endif
