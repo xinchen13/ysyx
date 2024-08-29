@@ -48,7 +48,7 @@ void print_iringbuf();
 // ------------------ ftrace elfstfunc -------------------
 #include <elf.h>
 #define ELF_ST_NAME_LEN 64
-#define ELF_ST_FUNC_NUM 1024
+#define ELF_ST_FUNC_NUM 2048
 
 typedef struct {
     char name[ELF_ST_FUNC_NUM][ELF_ST_NAME_LEN];
