@@ -72,7 +72,10 @@ static void trace_and_difftest() {
         }
     #endif
 
-    IFDEF(CONFIG_DIFFTEST, difftest_step(difftest_pc, core.pc));
+    // difftest
+    #ifdef CONFIG_DIFFTEST
+        difftest_step(difftest_pc, core.pc);
+    #endif
 
     // ftracer
     #ifdef CONFIG_FTRACE

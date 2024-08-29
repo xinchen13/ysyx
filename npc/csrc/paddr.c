@@ -84,8 +84,8 @@ void dpic_pmem_write(int waddr, int wdata, char wmask) {
         }
     }
     else if (waddr == 0xa00003f8) {
-        difftest_skip_ref();
         putchar(wdata);
+        difftest_skip_ref();
     }
     else {
         Assert(0, "wrong write: " FMT_PADDR, waddr);
