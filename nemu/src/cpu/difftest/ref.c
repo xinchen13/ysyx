@@ -28,6 +28,7 @@ __EXPORT void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction)
 }
 
 __EXPORT void difftest_regcpy(void *dut, bool direction) {
+    isa_reg_display();
     int reg_num = ARRLEN(cpu.gpr);
     CPU_state *cpu_ptr = (CPU_state *)dut;
     if (direction == DIFFTEST_TO_REF) {
