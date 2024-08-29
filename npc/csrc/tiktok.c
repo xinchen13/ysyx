@@ -8,6 +8,10 @@
 static word_t this_inst;
 static int inst_count = 0;
 
+#ifdef CONFIG_DIFFTEST
+    static word_t difftest_pc;
+#endif
+
 #ifdef CONFIG_ITRACE
     static word_t itrace_pc;
     static char logbuf[128];    // for itrace
@@ -58,10 +62,6 @@ static int inst_count = 0;
     }
 #endif
 
-#ifdef CONFIG_DIFFTEST
-    static word_t difftest_pc;
-#endif
-
 static void trace_and_difftest() {
     // itrace
     #ifdef CONFIG_ITRACE
@@ -72,7 +72,14 @@ static void trace_and_difftest() {
         }
     #endif
 
-    IFDEF(CONFIG_DIFFTEST, difftest_step(difftest_pc, core.pc));
+    // difftest
+    #ifdef CONFIG_DIFFTEST
+        difftest_step(difftest_pc, core.pc);
+        // skip device inst
+        if ((uint32_t)dut->rootp->xcore__DOT__alu_result == (0xa00003f8)) {
+            difftest_skip_ref();
+        }
+    #endif
 
     // ftracer
     #ifdef CONFIG_FTRACE
@@ -104,22 +111,20 @@ void set_npc_state(int state, uint32_t pc, int halt_ret) {
 }
 
 static void exec_once() {
-
+    this_inst = dpi_that_accesses_inst();
     #ifdef CONFIG_ITRACE
-        itrace_inst = dpi_that_accesses_inst();
+        itrace_inst = this_inst;
         itrace_pc = core.pc;
     #endif
 
     #ifdef CONFIG_FTRACE
-        ftrace_inst = dpi_that_accesses_inst();
+        ftrace_inst = this_inst;
         ftrace_pc = core.pc;
     #endif
 
     #ifdef CONFIG_DIFFTEST
         difftest_pc = core.pc;
     #endif
-
-    this_inst = dpi_that_accesses_inst();
 
     dut->clk ^= 1; dut->eval();  // negedge
     tfp->dump(contextp->time());
