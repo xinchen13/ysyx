@@ -181,3 +181,7 @@ RT-Thread是一个流行的商业级嵌入式实时OS, 具备完善的OS功能�
 
 - 在am中实现npc的cte, 就可以运行am-tests(intr.c)和yield-os程序了
 - 为了使npc重新支持ref为nemu的difftest, 修改npc中的coreState定义, 添加四个csr寄存器, 与nemu的CPU_state保持一致; 同时由于difftest不支持device(如对串口的写入或读取), 在检测到指令访存地址为串口时仿真环境会调用`difftest_skip_ref()`跳过该指令
+- 在npc开启ftrace运行RT-Thread时,需要把`sdb.h`中的ELF_ST_FUNC_NUM改到2048,否则存不下所有函数
+
+### 修复RT-Thread运行时不输出最后的命令提示符的问题
+观察到和NEMU不同, 在NPC上运行RT-Thread时, 最后的`msh />`并没有输出. (如果你对这个问题感兴趣, 你可以现在思考如何解决这个问题. 你也可以选择无视这个问题, 在后续接入SoC时, 你会再次遇到类似的问题)
