@@ -180,4 +180,4 @@ RT-Thread是一个流行的商业级嵌入式实时OS, 具备完善的OS功能�
 <img src="../../figs/rv32e-sc-csr.drawio.png"/>
 
 - 在am中实现npc的cte, 就可以运行am-tests(intr.c)和yield-os程序了
-- 为了使npc重新支持ref为nemu的difftest, 修改npc中的coreState定义, 添加四个csr寄存器, 与nemu的CPU_state保持一致
+- 为了使npc重新支持ref为nemu的difftest, 修改npc中的coreState定义, 添加四个csr寄存器, 与nemu的CPU_state保持一致; 同时由于difftest不支持device(如对串口的写入或读取), 在检测到访存地址为串口时仿真环境会跳过
