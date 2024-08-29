@@ -29,6 +29,7 @@
 - [支持RV32E的单周期NPC(npc-rv32e-sc)](./docs/11/)
 - [npc的设备和输入输出(npc-io)](./docs/12/)
 - [异常处理和RT-Thread(exception)](./docs/13/)
+- [总线(bus)](./docs/14/)
 
 ## Tips
 #### set environment variables
