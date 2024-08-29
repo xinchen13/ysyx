@@ -8,6 +8,10 @@
 static word_t this_inst;
 static int inst_count = 0;
 
+#ifdef CONFIG_DIFFTEST
+    static word_t difftest_pc;
+#endif
+
 #ifdef CONFIG_ITRACE
     static word_t itrace_pc;
     static char logbuf[128];    // for itrace
@@ -74,7 +78,7 @@ static void trace_and_difftest() {
             printf("a%u, adfafsf\n",dut->rootp->xcore__DOT__alu_result);
             difftest_skip_ref();
         }
-        difftest_step(core.pc, core.pc);    // 第二个参数暂时没用
+        difftest_step(difftest_pc, core.pc);
     #endif
 
     // ftracer
@@ -116,6 +120,10 @@ static void exec_once() {
     #ifdef CONFIG_FTRACE
         ftrace_inst = this_inst;
         ftrace_pc = core.pc;
+    #endif
+
+    #ifdef CONFIG_DIFFTEST
+        difftest_pc = core.pc;
     #endif
 
     dut->clk ^= 1; dut->eval();  // negedge

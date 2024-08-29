@@ -78,7 +78,6 @@ static void checkregs(coreState *ref, vaddr_t pc) {
 
 void difftest_step(vaddr_t pc, vaddr_t npc) {
     coreState ref_r;
-    coreState to_ref;
 
     if (skip_dut_nr_inst > 0) {
         ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
@@ -95,9 +94,7 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
 
     if (is_skip_ref) {
         // to skip the checking of an instruction, just copy the reg state to reference design
-        memcpy(&to_ref, &core, sizeof(coreState));
-        to_ref.pc = to_ref.pc + 4;
-        ref_difftest_regcpy(&to_ref, DIFFTEST_TO_REF);
+        ref_difftest_regcpy(&core DIFFTEST_TO_REF);
         is_skip_ref = false;
         return;
     }
