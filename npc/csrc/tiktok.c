@@ -107,7 +107,6 @@ void set_npc_state(int state, uint32_t pc, int halt_ret) {
 }
 
 static void exec_once() {
-
     #ifdef CONFIG_ITRACE
         itrace_inst = dpi_that_accesses_inst();
         itrace_pc = core.pc;
