@@ -4,7 +4,7 @@
 // ---------------------------- configs -----------------------------
 #define CONFIG_MBASE 0x80000000
 #define CONFIG_MSIZE 0x8000000
-// #define CONFIG_BATCH_MODE 1
+#define CONFIG_BATCH_MODE 1
 #define CONFIG_RVE 1
 // #define CONFIG_WATCHPOINT 1
 // #define CONFIG_ITRACE 1
