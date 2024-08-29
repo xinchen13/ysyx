@@ -1,7 +1,6 @@
 #include "paddr.h"
 #include "common.h"
 #include "host.h"
-#include "difftest.h"
 
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 
@@ -56,7 +55,6 @@ int dpic_pmem_read(int raddr) {
         return read_data;
     }
     else if (aligned_address == 0xa0000048) {
-        difftest_skip_ref();
         struct timespec ts;
         clock_gettime(CLOCK_THREAD_CPUTIME_ID, &ts);
         int microseconds = ts.tv_nsec / 1000 + ts.tv_sec * 1000000;
@@ -85,7 +83,6 @@ void dpic_pmem_write(int waddr, int wdata, char wmask) {
     }
     else if (waddr == 0xa00003f8) {
         putchar(wdata);
-        difftest_skip_ref();
     }
     else {
         Assert(0, "wrong write: " FMT_PADDR, waddr);
