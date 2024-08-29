@@ -60,3 +60,6 @@ NPC仿真环境提供的`dpic_pmem_read()`没有读延迟, 收到读请求的当
 - master(CPU)向slave(MEM)发送读地址raddr
 - 下个周期slave向master回复数据rdata
 - 上述行为每周期都发生
+
+### 评估单周期NPC的主频和程序性能
+#### 先运行microbench的train规模测试, 记录其运行结束所需的周期数
