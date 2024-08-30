@@ -39,6 +39,7 @@ module if_id (
             id_pc   <= if_pc;
         end
         else begin
+            // 因为译码和执行写回间没有阻塞，因此握手失败就输出气泡
             id_inst <= `INST_NOP;
         end
     end
