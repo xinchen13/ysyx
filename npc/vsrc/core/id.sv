@@ -52,7 +52,8 @@ module id (
     // done
     assign done = 1'b1;
 
-    assign id_ready = 1'b1;
+    // assign id_ready = !if_valid || (done && if_ready);
+    assign id_ready = 1'b1; // 避免成环
     assign dnpc_valid = if_valid & done;
 
 
