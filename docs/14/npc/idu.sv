@@ -1,4 +1,4 @@
-`include "../inc/defines.svh"
+`include "defines.svh"
 
 module idu (
     // from ifu

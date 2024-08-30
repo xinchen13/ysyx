@@ -1,4 +1,4 @@
-`include "../inc/defines.svh"
+`include "defines.svh"
 
 module exu (
     input logic [`INST_DATA_BUS] inst,

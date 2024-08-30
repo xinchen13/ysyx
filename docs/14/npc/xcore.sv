@@ -1,8 +1,9 @@
-`include "../inc/defines.svh"
+`include "defines.svh"
 
 module xcore (
     input logic clk,
-    input logic rst_n
+    input logic rst_n,
+    output logic [`DATA_BUS] reg_wdata_out
 );
     logic [`DATA_BUS] reg_rdata1;
     logic [`DATA_BUS] reg_rdata2;
@@ -29,19 +30,13 @@ module xcore (
     logic [`DATA_BUS] csr_rdata;
     logic [4:0] reg_rs1;
 
-    export "DPI-C" function dpi_that_accesses_inst;
-    function bit [31:0] dpi_that_accesses_inst();
-        return inst;
-    endfunction
+    assign reg_wdata_out = reg_wdata;
 
-    // DPI-C: pmem_read, pmem_write
-    import "DPI-C" function int dpic_pmem_read(input int raddr);
-    import "DPI-C" function void dpic_pmem_write(input int waddr, input int wdata, input byte wmask);
 
-    // ifu
-    always @ (*) begin
-        inst = dpic_pmem_read(pc);
-    end
+    rom rom_u0 (
+        .raddr(pc[7:0]),
+        .rdata(inst)
+    );
 
     pc_reg pc_reg_u0 (
         .clk(clk),
@@ -61,7 +56,7 @@ module xcore (
         .wen(reg_wen)
     );
 
-    id id_u0 (
+    idu idu_u0 (
         .inst(inst),
         .pc(pc),
         .reg_rdata1(reg_rdata1),
@@ -84,7 +79,7 @@ module xcore (
         .csr_wen2(csr_wen2)
     );
 
-    ex ex_u0 (
+    exu exu_u0 (
         .inst(inst),
         .alu_src1(alu_src1),
         .alu_src2(alu_src2),
