@@ -1,5 +1,5 @@
 `include "../inc/defines.svh"
-
+/* verilator lint_off UNOPTFLAT */
 module xcore (
     input logic clk,
     input logic rst_n
