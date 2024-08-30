@@ -38,6 +38,9 @@ module if_id (
             id_inst <= if_inst;
             id_pc   <= if_pc;
         end
+        else begin
+            id_inst <= `INST_NOP;
+        end
     end
 
 endmodule
