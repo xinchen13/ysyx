@@ -29,6 +29,11 @@ module xcore (
     logic [`DATA_BUS] csr_rdata;
     logic [4:0] reg_rs1;
 
+    // export "DPI-C" function dpi_that_accesses_inst;
+    // function bit [31:0] dpi_that_accesses_inst();
+    //     return inst;
+    // endfunction
+
     fetch fetch_u0 (
         .clk(clk),
         .rst_n(rst_n),
