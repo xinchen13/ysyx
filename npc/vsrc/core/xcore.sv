@@ -34,14 +34,13 @@ module xcore (
         return inst;
     endfunction
 
-    // DPI-C: pmem_read, pmem_write
-    import "DPI-C" function int dpic_pmem_read(input int raddr);
-    import "DPI-C" function void dpic_pmem_write(input int waddr, input int wdata, input byte wmask);
-
-    // ifu
-    always @ (*) begin
-        inst = dpic_pmem_read(pc);
-    end
+    fetch fetch_u0 (
+        .clk(clk),
+        .rst_n(rst_n),
+        .pc(pc),
+        .inst(inst),
+        .valid()
+    );
 
     pc_reg pc_reg_u0 (
         .clk(clk),
