@@ -1,9 +1,19 @@
 `include "../inc/defines.svh"
 
 module id (
-    // from ifu
+    // from if_id
     input logic [`INST_DATA_BUS] inst,
     input logic [`INST_ADDR_BUS] pc,
+    input logic if_valid,   // 上级的valid输入
+
+    // to if_id
+    output logic id_ready,  // 本级的ready输出
+
+    // from pc_reg(if) (其实应该是ex, 对于双周期处理器来说没有区别)
+    input logic if_ready,   // 下级的 ready 输入
+
+    // to pc_reg
+    output logic dnpc_valid,    // 本级的 valid 输出
 
     // from regfile
     input logic [`DATA_BUS] reg_rdata1,
@@ -37,6 +47,14 @@ module id (
     logic funct7_5 = inst[30];
     logic inst_ecall = (inst == `INST_ECALL) ? 1'b1 : 1'b0;
     logic inst_mret = (inst == `INST_MRET) ? 1'b1 : 1'b0;
+    logic done;
+
+    // done
+    assign done = 1'b1;
+
+    assign id_ready = !if_valid || (done && if_ready);
+    assign dnpc_valid = if_valid & done;
+
 
     // reg rs1
     assign reg_rs1 = inst_ecall ? 5'd15 : inst[19:15];

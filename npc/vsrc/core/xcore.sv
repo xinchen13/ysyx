@@ -1,5 +1,5 @@
 `include "../inc/defines.svh"
-
+/* verilator lint_off UNOPTFLAT */
 module xcore (
     input logic clk,
     input logic rst_n
@@ -12,8 +12,10 @@ module xcore (
     logic [1:0] reg_wdata_sel;
     logic [`DATA_BUS] reg_wdata;
     logic [`INST_ADDR_BUS] dnpc;
-    logic [`INST_ADDR_BUS] pc;
-    logic [`INST_DATA_BUS] inst;
+    logic [`INST_ADDR_BUS] if_pc;
+    logic [`INST_ADDR_BUS] id_pc;
+    logic [`INST_DATA_BUS] if_inst;
+    logic [`INST_DATA_BUS] id_inst;
     logic [3:0] alu_ctrl;
     logic [`DATA_BUS] alu_result;
     logic [`DATA_BUS] imm;
@@ -28,36 +30,60 @@ module xcore (
     logic csr_wen1;
     logic [`DATA_BUS] csr_rdata;
     logic [4:0] reg_rs1;
-
-    fetch fetch_u0 (
-        .clk(clk),
-        .rst_n(rst_n),
-        .pc(pc),
-        .inst(inst),
-        .valid()
-    );
+    logic if_valid;
+    logic dnpc_valid;
+    logic if_ready;
+    logic pc_valid;
+    logic id_ready;
+    logic if_id_valid;
 
     pc_reg pc_reg_u0 (
         .clk(clk),
         .rst_n(rst_n),
         .dnpc(dnpc),
-        .pc(pc)
+        .dnpc_valid(dnpc_valid),
+        .if_ready(if_ready),
+        .pc_if_valid(pc_valid),
+        .pc(if_pc)
+    );
+
+    fetch fetch_u0 (
+        .clk(clk),
+        .rst_n(rst_n),
+        .pc(if_pc),
+        .pc_valid(pc_valid),
+        .if_ready(if_ready),
+        .id_ready(id_ready),
+        .inst(if_inst),
+        .if_valid(if_valid)
+    );
+
+    if_id if_id_u0 (
+        .clk(clk),
+        .rst_n(rst_n),
+        .if_pc(if_pc),
+        .if_inst(if_inst),
+        .if_valid(if_valid),
+        .id_ready(id_ready),
+        .id_pc(id_pc),
+        .id_inst(id_inst),
+        .if_id_valid(if_id_valid)
     );
 
     regfile regfile_u0 (
         .clk(clk),
         .wdata(reg_wdata),
-        .waddr(inst[11:7]),
+        .waddr(id_inst[11:7]),
         .raddr1(reg_rs1),
-        .raddr2(inst[24:20]),
+        .raddr2(id_inst[24:20]),
         .rdata1(reg_rdata1),
         .rdata2(reg_rdata2),
         .wen(reg_wen)
     );
 
     id id_u0 (
-        .inst(inst),
-        .pc(pc),
+        .inst(id_inst),
+        .pc(id_pc),
         .reg_rdata1(reg_rdata1),
         .reg_rdata2(reg_rdata2),
         .reg_rs1(reg_rs1),
@@ -75,11 +101,15 @@ module xcore (
         .csr_wdata1(csr_wdata1),
         .csr_waddr1(csr_waddr1),
         .csr_wen1(csr_wen1),
-        .csr_wen2(csr_wen2)
+        .csr_wen2(csr_wen2),
+        .if_valid(if_id_valid),
+        .id_ready(id_ready),
+        .if_ready(if_ready),
+        .dnpc_valid(dnpc_valid)
     );
 
     ex ex_u0 (
-        .inst(inst),
+        .inst(id_inst),
         .alu_src1(alu_src1),
         .alu_src2(alu_src2),
         .alu_ctrl(alu_ctrl),
@@ -91,7 +121,7 @@ module xcore (
     );
 
     mem mem_u0 (
-        .inst(inst),
+        .inst(id_inst),
         .raddr(alu_result),
         .waddr(alu_result),
         .wdata(reg_rdata2),
@@ -116,7 +146,7 @@ module xcore (
         .wdata1(csr_wdata1),
         .wen1(csr_wen1),
         .waddr2(`CSR_MEPC),
-        .wdata2(pc),
+        .wdata2(id_pc),
         .wen2(csr_wen2),
         .rdata(csr_rdata)
     );
