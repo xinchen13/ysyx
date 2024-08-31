@@ -76,7 +76,6 @@ static void trace_and_difftest() {
     // difftest
     #ifdef CONFIG_DIFFTEST
         difftest_step(difftest_pc, core.pc);
-        printf("diff-pc = " FMT_WORD "\n", difftest_pc);
         // skip device inst
         if ((uint32_t)dut->rootp->xcore__DOT__alu_result == (0xa00003f8)) {
             difftest_skip_ref();
@@ -163,11 +162,7 @@ static void execute(uint64_t n) {
     for (;n > 0; n --) {
         exec_once();
         inst_count++;
-
-        if (dut->rootp->xcore__DOT__pc_valid) {
-            trace_and_difftest();
-        }
-
+        trace_and_difftest();
         if (this_inst == 0x00100073 || contextp->time() > 9999999999) {
             set_npc_state(NPC_END, core.pc, core.gpr[10]);
             break;
