@@ -87,8 +87,8 @@ module fetch_id (
     // buffer reg
     always @ (posedge clk) begin
         if (!rst_n) begin
-            buffer_pc <= `ZERO_WORD;
-            buffer_inst <= `ZERO_WORD;
+            buffer_pc <= `CPU_RESET_ADDR;
+            buffer_inst <= `INST_NOP;
         end
         else if (data_buffer_wren) begin
             buffer_pc <= fetch_pc;
