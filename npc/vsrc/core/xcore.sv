@@ -39,27 +39,27 @@ module xcore (
     logic id_if_ready;
     logic if_ex_ready;
 
-    pc_reg pc_reg_u0 (
-        .clk(clk),
-        .rst_n(rst_n),
-        .dnpc(dnpc),
-        .dnpc_valid(dnpc_valid),
-        .if_ready(if_ready),
-        .pc_if_valid(pc_valid),
-        .pc(fetch_pc)
-    );
-    assign if_ex_ready = if_ready;
-
     // pc_reg pc_reg_u0 (
     //     .clk(clk),
     //     .rst_n(rst_n),
-    //     .i_valid(dnpc_valid),
-    //     .i_ready(if_ex_ready),
-    //     .o_valid(pc_valid),
-    //     .o_ready(if_ready),
     //     .dnpc(dnpc),
-    //     .fetch_pc(fetch_pc)
-    // )
+    //     .dnpc_valid(dnpc_valid),
+    //     .if_ready(if_ready),
+    //     .pc_if_valid(pc_valid),
+    //     .pc(fetch_pc)
+    // );
+    // assign if_ex_ready = if_ready;
+
+    pc_reg pc_reg_u0 (
+        .clk(clk),
+        .rst_n(rst_n),
+        .i_valid(dnpc_valid),
+        .i_ready(if_ex_ready),
+        .o_valid(pc_valid),
+        .o_ready(if_ready),
+        .dnpc(dnpc),
+        .fetch_pc(fetch_pc)
+    );
 
     fetch fetch_u0 (
         .clk(clk),
@@ -72,31 +72,31 @@ module xcore (
         .this_valid(if_valid)
     );
 
-    fetch_id fetch_id_u0 (
-        .clk(clk),
-        .rst_n(rst_n),
-        .if_pc(fetch_pc),
-        .if_inst(fetch_inst),
-        .if_valid(if_valid),
-        .id_ready(id_ready),
-        .id_pc(id_pc),
-        .id_inst(id_inst),
-        .if_id_valid(if_id_valid)
-    );
-    assign id_if_ready = id_ready;
-
     // fetch_id fetch_id_u0 (
     //     .clk(clk),
     //     .rst_n(rst_n),
-    //     .i_valid(if_valid),
-    //     .i_ready(id_if_ready),
-    //     .o_valid(if_id_valid),
-    //     .o_ready(id_ready),
-    //     .fetch_pc(fetch_pc),
-    //     .fetch_inst(fetch_inst),
+    //     .if_pc(fetch_pc),
+    //     .if_inst(fetch_inst),
+    //     .if_valid(if_valid),
+    //     .id_ready(id_ready),
     //     .id_pc(id_pc),
-    //     .id_inst(id_inst)
+    //     .id_inst(id_inst),
+    //     .if_id_valid(if_id_valid)
     // );
+    // assign id_if_ready = id_ready;
+
+    fetch_id fetch_id_u0 (
+        .clk(clk),
+        .rst_n(rst_n),
+        .i_valid(if_valid),
+        .i_ready(id_if_ready),
+        .o_valid(if_id_valid),
+        .o_ready(id_ready),
+        .fetch_pc(fetch_pc),
+        .fetch_inst(fetch_inst),
+        .id_pc(id_pc),
+        .id_inst(id_inst)
+    );
 
 
     regfile regfile_u0 (
