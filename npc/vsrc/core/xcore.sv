@@ -1,5 +1,5 @@
 `include "../inc/defines.svh"
-/* verilator lint_off UNOPTFLAT */
+
 module xcore (
     input logic clk,
     input logic rst_n
@@ -102,10 +102,10 @@ module xcore (
         .csr_waddr1(csr_waddr1),
         .csr_wen1(csr_wen1),
         .csr_wen2(csr_wen2),
-        .if_valid(if_id_valid),
-        .id_ready(id_ready),
-        .if_ready(if_ready),
-        .dnpc_valid(dnpc_valid)
+        .prev_valid(if_id_valid),
+        .this_ready(id_ready),
+        .next_ready(if_ready),
+        .this_valid(dnpc_valid)
     );
 
     ex ex_u0 (

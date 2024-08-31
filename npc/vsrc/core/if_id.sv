@@ -45,3 +45,129 @@ module if_id (
     end
 
 endmodule
+
+
+// module skid_buffer
+// #(
+//     parameter WORD_WIDTH = 32
+// )
+// (
+//     input   wire                        clock,
+//     input   wire                        rst_n,
+
+//     input   wire                        input_valid,
+//     output  wire                        input_ready,
+//     input   wire    [WORD_WIDTH-1:0]    input_data,
+
+//     output  wire                        output_valid,
+//     input   wire                        output_ready,
+//     output  wire    [WORD_WIDTH-1:0]    output_data
+// );
+
+//     localparam WORD_ZERO = {WORD_WIDTH{1'b0}};
+
+//     // data path
+//     reg                     data_buffer_wren; // EMPTY at start, so don't load.
+//     wire [WORD_WIDTH-1:0]   data_buffer_out;
+
+//     // buffer reg
+//     always @ (posedge clock) begin
+//         if (!rst_n) begin
+//             data_buffer_out <= WORD_ZERO;
+//         end
+//         else if (data_buffer_wren) begin
+//             data_buffer_out <= input_data;
+//         end
+//     end 
+
+//     reg                     data_out_wren; // EMPTY at start, so accept data.
+//     reg                     use_buffered_data;
+//     wire [WORD_WIDTH-1:0]   selected_data;
+
+//     // select data out
+//     assign selected_data = (use_buffered_data == 1'b1) ? data_buffer_out : input_data;
+
+//     // data reg
+//     always @ (posedge clock) begin
+//         if (!rst_n) begin
+//             output_data <= WORD_ZERO;
+//         end
+//         else if (data_out_wren) begin
+//             output_data <= selected_data;
+//         end
+//     end
+
+//     // control path: state machine
+//     localparam STATE_BITS = 2;
+
+//     localparam [STATE_BITS-1:0] EMPTY = 'd0; // Output and buffer registers empty
+//     localparam [STATE_BITS-1:0] BUSY  = 'd1; // Output register holds data
+//     localparam [STATE_BITS-1:0] FULL  = 'd2; // Both output and buffer registers hold data
+//     // There is no case where only the buffer register would hold data.
+
+//     // No handling of erroneous and unreachable state 3.
+//     // We could check and raise an error flag.
+
+//     wire [STATE_BITS-1:0] state;
+//     reg  [STATE_BITS-1:0] state_next = EMPTY;
+
+//     // ready reg
+//     always @ (posedge clock) begin
+//         if (!rst_n) begin
+//             input_ready <= 1'b1;
+//         end
+//         else begin
+//             input_ready <= (state_next != FULL);
+//         end
+//     end
+
+//     // valid reg
+//     always @ (posedge clock) begin
+//         if (!rst_n) begin
+//             output_valid <= 1'b0;
+//         end
+//         else begin
+//             output_valid <= (state_next != EMPTY);
+//         end
+//     end
+
+//     wire insert = (input_valid  == 1'b1) && (input_ready  == 1'b1);
+//     wire remove = (output_valid == 1'b1) && (output_ready == 1'b1);
+
+//     // reg load    = 1'b0; // Empty datapath inserts data into output register.
+//     // reg flow    = 1'b0; // New inserted data into output register as the old data is removed.
+//     // reg fill    = 1'b0; // New inserted data into buffer register. Data not removed from output register.
+//     // reg flush   = 1'b0; // Move data from buffer register into output register. Remove old data. No new data inserted.
+//     // reg unload  = 1'b0; // Remove data from output register, leaving the datapath empty.
+
+//     wire load    = (state == EMPTY) && (insert == 1'b1) && (remove == 1'b0);
+//     wire flow    = (state == BUSY)  && (insert == 1'b1) && (remove == 1'b1);
+//     wire fill    = (state == BUSY)  && (insert == 1'b1) && (remove == 1'b0);
+//     wire flush   = (state == FULL)  && (insert == 1'b0) && (remove == 1'b1);
+//     wire unload  = (state == BUSY)  && (insert == 1'b0) && (remove == 1'b1);
+
+//     always @ (*) begin
+//         state_next = (load   == 1'b1) ? BUSY  : state;
+//         state_next = (flow   == 1'b1) ? BUSY  : state_next;
+//         state_next = (fill   == 1'b1) ? FULL  : state_next;
+//         state_next = (flush  == 1'b1) ? BUSY  : state_next;
+//         state_next = (unload == 1'b1) ? EMPTY : state_next;
+//     end
+
+//     // state reg
+//     always @ (posedge clock) begin
+//         if (!rst_n) begin
+//             state <= EMPTY;
+//         end
+//         else begin
+//             state <= state_next;
+//         end
+//     end
+
+//     always @ (*) begin
+//         data_out_wren     = (load  == 1'b1) || (flow == 1'b1) || (flush == 1'b1);
+//         data_buffer_wren  = (fill  == 1'b1);
+//         use_buffered_data = (flush == 1'b1);
+//     end
+
+// endmodule
