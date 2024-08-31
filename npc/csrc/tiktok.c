@@ -76,6 +76,7 @@ static void trace_and_difftest() {
     // difftest
     #ifdef CONFIG_DIFFTEST
         difftest_step(difftest_pc, core.pc);
+        printf("diff-pc = " FMT_WORD "\n", difftest_pc);
         // skip device inst
         if ((uint32_t)dut->rootp->xcore__DOT__alu_result == (0xa00003f8)) {
             difftest_skip_ref();
