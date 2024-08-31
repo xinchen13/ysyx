@@ -58,7 +58,7 @@ module xcore (
         .this_valid(if_valid)
     );
 
-    if_id if_id_u0 (
+    fetch_id fetch_id_u0 (
         .clk(clk),
         .rst_n(rst_n),
         .if_pc(if_pc),

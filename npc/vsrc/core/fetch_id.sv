@@ -1,6 +1,6 @@
 `include "../inc/defines.svh"
 
-module if_id (
+module fetch_id (
     input logic clk,
     input logic rst_n,
 
@@ -47,7 +47,7 @@ module if_id (
 endmodule
 
 
-// module skid_buffer
+// module if_id
 // #(
 //     parameter WORD_WIDTH = 32
 // )
