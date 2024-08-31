@@ -75,7 +75,7 @@ static void trace_and_difftest() {
 
     // difftest
     #ifdef CONFIG_DIFFTEST
-        if (dut->rootp->xcore__DOT__if_id_valid) {
+        if (!dut->rootp->xcore__DOT__pc_valid) {
             difftest_skip_ref();
         }
         difftest_step(difftest_pc, core.pc);
