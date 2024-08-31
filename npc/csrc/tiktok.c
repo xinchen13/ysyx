@@ -130,7 +130,7 @@ static void exec_once() {
     #ifdef CONFIG_DIFFTEST
         difftest_pc = core.pc;
         difftest_run = (dut->rootp->xcore__DOT__if_id_valid == 0) ? false : true;
-        printf("dut->rootp->xcore__DOT__pc_valid = %d\n", dut->rootp->xcore__DOT__pc_valid);
+        printf("dut->rootp->xcore__DOT__id_id_valid = %d\n", dut->rootp->xcore__DOT__if_id_valid);
     #endif
 
     dut->clk ^= 1; dut->eval();  // negedge
