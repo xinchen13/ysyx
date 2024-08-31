@@ -135,10 +135,7 @@ static void exec_once() {
     contextp->timeInc(1); // time + 1
 
     // update regs in monitor
-    if (dut->rootp->xcore__DOT__pc_valid) {
-        isa_reg_update();
-    }
-    
+    isa_reg_update();
 
     #ifdef CONFIG_ITRACE
         char *p = logbuf;
