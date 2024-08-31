@@ -12,8 +12,10 @@ module xcore (
     logic [1:0] reg_wdata_sel;
     logic [`DATA_BUS] reg_wdata;
     logic [`INST_ADDR_BUS] dnpc;
-    logic [`INST_ADDR_BUS] pc;
-    logic [`INST_DATA_BUS] inst;
+    logic [`INST_ADDR_BUS] fetch_pc;
+    logic [`INST_ADDR_BUS] id_pc;
+    logic [`INST_DATA_BUS] fetch_inst;
+    logic [`INST_DATA_BUS] id_inst;
     logic [3:0] alu_ctrl;
     logic [`DATA_BUS] alu_result;
     logic [`DATA_BUS] imm;
@@ -28,42 +30,89 @@ module xcore (
     logic csr_wen1;
     logic [`DATA_BUS] csr_rdata;
     logic [4:0] reg_rs1;
+    logic if_valid;
+    logic dnpc_valid;
+    logic if_ready;
+    logic pc_valid;
+    logic id_ready;
+    logic if_id_valid;
+    logic id_if_ready;
+    logic if_ex_ready;
 
-    export "DPI-C" function dpi_that_accesses_inst;
-    function bit [31:0] dpi_that_accesses_inst();
-        return inst;
-    endfunction
-
-    // DPI-C: pmem_read, pmem_write
-    import "DPI-C" function int dpic_pmem_read(input int raddr);
-    import "DPI-C" function void dpic_pmem_write(input int waddr, input int wdata, input byte wmask);
-
-    // ifu
-    always @ (*) begin
-        inst = dpic_pmem_read(pc);
-    end
+    // pc_reg pc_reg_u0 (
+    //     .clk(clk),
+    //     .rst_n(rst_n),
+    //     .dnpc(dnpc),
+    //     .dnpc_valid(dnpc_valid),
+    //     .if_ready(if_ready),
+    //     .pc_if_valid(pc_valid),
+    //     .pc(fetch_pc)
+    // );
+    // assign if_ex_ready = if_ready;
 
     pc_reg pc_reg_u0 (
         .clk(clk),
         .rst_n(rst_n),
+        .i_valid(dnpc_valid),
+        .i_ready(if_ex_ready),
+        .o_valid(pc_valid),
+        .o_ready(if_ready),
         .dnpc(dnpc),
-        .pc(pc)
+        .fetch_pc(fetch_pc)
     );
+
+    fetch fetch_u0 (
+        .clk(clk),
+        .rst_n(rst_n),
+        .pc(fetch_pc),
+        .prev_valid(pc_valid),
+        .this_ready(if_ready),
+        .next_ready(id_if_ready),
+        .inst(fetch_inst),
+        .this_valid(if_valid)
+    );
+
+    // fetch_id fetch_id_u0 (
+    //     .clk(clk),
+    //     .rst_n(rst_n),
+    //     .if_pc(fetch_pc),
+    //     .if_inst(fetch_inst),
+    //     .if_valid(if_valid),
+    //     .id_ready(id_ready),
+    //     .id_pc(id_pc),
+    //     .id_inst(id_inst),
+    //     .if_id_valid(if_id_valid)
+    // );
+    // assign id_if_ready = id_ready;
+
+    fetch_id fetch_id_u0 (
+        .clk(clk),
+        .rst_n(rst_n),
+        .i_valid(if_valid),
+        .i_ready(id_if_ready),
+        .o_valid(if_id_valid),
+        .o_ready(id_ready),
+        .fetch_pc(fetch_pc),
+        .fetch_inst(fetch_inst),
+        .id_pc(id_pc),
+        .id_inst(id_inst)
+    );
+
 
     regfile regfile_u0 (
         .clk(clk),
         .wdata(reg_wdata),
-        .waddr(inst[11:7]),
+        .waddr(id_inst[11:7]),
         .raddr1(reg_rs1),
-        .raddr2(inst[24:20]),
+        .raddr2(id_inst[24:20]),
         .rdata1(reg_rdata1),
         .rdata2(reg_rdata2),
         .wen(reg_wen)
     );
 
-    idu idu_u0 (
-        .inst(inst),
-        .pc(pc),
+    id id_u0 (
+        .inst(id_inst),
+        .pc(id_pc),
         .reg_rdata1(reg_rdata1),
         .reg_rdata2(reg_rdata2),
         .reg_rs1(reg_rs1),
@@ -81,11 +130,15 @@ module xcore (
         .csr_wdata1(csr_wdata1),
         .csr_waddr1(csr_waddr1),
         .csr_wen1(csr_wen1),
-        .csr_wen2(csr_wen2)
+        .csr_wen2(csr_wen2),
+        .prev_valid(if_id_valid),
+        .this_ready(id_ready),
+        .next_ready(if_ex_ready),
+        .this_valid(dnpc_valid)
     );
 
-    exu exu_u0 (
-        .inst(inst),
+    ex ex_u0 (
+        .inst(id_inst),
         .alu_src1(alu_src1),
         .alu_src2(alu_src2),
         .alu_ctrl(alu_ctrl),
@@ -97,7 +150,7 @@ module xcore (
     );
 
     mem mem_u0 (
-        .inst(inst),
+        .inst(id_inst),
         .raddr(alu_result),
         .waddr(alu_result),
         .wdata(reg_rdata2),
@@ -122,7 +175,7 @@ module xcore (
         .wdata1(csr_wdata1),
         .wen1(csr_wen1),
         .waddr2(`CSR_MEPC),
-        .wdata2(pc),
+        .wdata2(id_pc),
         .wen2(csr_wen2),
         .rdata(csr_rdata)
     );

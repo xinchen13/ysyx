@@ -56,3 +56,4 @@
 `define INST_EBREAK 32'h00100073
 `define INST_ECALL  32'h73
 `define INST_MRET   32'h30200073
+`define INST_NOP    32'h00000001

@@ -25,6 +25,7 @@ static int inst_count = 0;
     static int func_call_depth = 1;     // for ftrace
     static word_t ftrace_inst;
     static word_t ftrace_pc;
+    static word_t ftrace_dnpc;
     static uint32_t opcode;
     static uint32_t rd;
     static uint32_t rs1;
@@ -91,7 +92,7 @@ static void trace_and_difftest() {
             ftrace_retn(ftrace_pc, func_call_depth);
         }
         if (func_call()) {
-            ftrace_call(ftrace_pc, core.pc, func_call_depth);
+            ftrace_call(ftrace_pc, ftrace_dnpc, func_call_depth);
             func_call_depth += 2;
         }
     #endif
@@ -111,7 +112,7 @@ void set_npc_state(int state, uint32_t pc, int halt_ret) {
 }
 
 static void exec_once() {
-    this_inst = dpi_that_accesses_inst();
+    this_inst = dut->rootp->xcore__DOT__id_inst;
     #ifdef CONFIG_ITRACE
         itrace_inst = this_inst;
         itrace_pc = core.pc;
@@ -120,6 +121,7 @@ static void exec_once() {
     #ifdef CONFIG_FTRACE
         ftrace_inst = this_inst;
         ftrace_pc = core.pc;
+        ftrace_dnpc = dut->rootp->xcore__DOT__dnpc;
     #endif
 
     #ifdef CONFIG_DIFFTEST
@@ -161,7 +163,7 @@ static void execute(uint64_t n) {
         exec_once();
         inst_count++;
         trace_and_difftest();
-        if (this_inst == 0x00100073 || contextp->time() > 999999999) {
+        if (this_inst == 0x00100073 || contextp->time() > 9999999999) {
             set_npc_state(NPC_END, core.pc, core.gpr[10]);
             break;
         }

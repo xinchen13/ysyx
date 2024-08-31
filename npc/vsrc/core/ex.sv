@@ -1,6 +1,6 @@
 `include "../inc/defines.svh"
 
-module exu (
+module ex (
     input logic [`INST_DATA_BUS] inst,
     input logic [`DATA_BUS] alu_src1,
     input logic [`DATA_BUS] alu_src2,

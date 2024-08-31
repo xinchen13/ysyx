@@ -1,41 +1,54 @@
 `include "../inc/defines.svh"
 
-// module pc_reg (
+// module fetch_id (
 //     input logic clk,
 //     input logic rst_n,
 
-//     // from ex
-//     input logic [`INST_ADDR_BUS] dnpc,
-//     input logic dnpc_valid,
-
 //     // from fetch
-//     input logic if_ready,
+//     input logic [`INST_ADDR_BUS] if_pc,
+//     input logic [`INST_DATA_BUS] if_inst,
+//     input logic if_valid,
 
-//     // to fetch
-//     output logic pc_if_valid,
-//     output logic [`INST_ADDR_BUS] pc
+//     // from id
+//     input logic id_ready,
+
+//     // to id
+//     output logic [`INST_ADDR_BUS] id_pc,
+//     output logic [`INST_DATA_BUS] id_inst,
+//     output logic if_id_valid
 // );
+
 //     // valid
 //     always @ (posedge clk) begin
 //         if (!rst_n) begin
-//             pc_if_valid <= 1'b1;
+//             if_id_valid <= 1'b0;
 //         end
-//         else if (if_ready) begin
-//             pc_if_valid <= dnpc_valid;
+//         else if (id_ready) begin
+//             if_id_valid <= if_valid;
 //         end
 //     end
 
+//     // data
 //     always @ (posedge clk) begin
 //         if (!rst_n) begin
-//             pc <= `CPU_RESET_ADDR;
+//             id_inst <= `INST_NOP;
+//             id_pc   <= `CPU_RESET_ADDR;
 //         end
-//         else if (dnpc_valid & if_ready) begin
-//             pc <= dnpc;
+//         else if (if_valid & id_ready) begin
+//             id_inst <= if_inst;
+//             id_pc   <= if_pc;
+//         end
+//         else begin
+//             // 因为译码和执行写回间没有阻塞，因此握手失败就输出气泡
+//             id_inst <= `INST_NOP;
 //         end
 //     end
+
 // endmodule
 
-module pc_reg (
+
+
+module fetch_id (
     input logic clk,
     input logic rst_n,
 
@@ -45,38 +58,50 @@ module pc_reg (
     output logic o_valid,
     input logic o_ready,
 
-    // from ex
-    input logic [`INST_ADDR_BUS] dnpc,
+    // from fetch
+    input logic [`INST_ADDR_BUS] fetch_pc,
+    input logic [`INST_DATA_BUS] fetch_inst,
 
-    // to fetch
-    output logic [`INST_ADDR_BUS] fetch_pc
+    // to id
+    output logic [`INST_ADDR_BUS] id_pc,
+    output logic [`INST_DATA_BUS] id_inst
 
 );
 
     // data path
     logic data_buffer_wren; // EMPTY at start, so don't load.
     logic [`INST_ADDR_BUS] buffer_pc;
+    logic [`INST_DATA_BUS] buffer_inst;
     // buffer reg
     always @ (posedge clk) begin
         if (!rst_n) begin
             buffer_pc <= `CPU_RESET_ADDR;
+            buffer_inst <= `INST_NOP;
         end
         else if (data_buffer_wren) begin
-            buffer_pc <= dnpc;
+            buffer_pc <= fetch_pc;
+            buffer_inst <= fetch_inst;
         end
     end 
     logic data_out_wren; // EMPTY at start, so accept data.
     logic use_buffered_data;
     logic [`INST_ADDR_BUS] selected_pc;
+    logic [`INST_DATA_BUS] selected_inst;
     // select data out
-    assign selected_pc = use_buffered_data ? buffer_pc : dnpc;
+    assign selected_pc = use_buffered_data ? buffer_pc : fetch_pc;
+    assign selected_inst = use_buffered_data ? buffer_inst : fetch_inst;
     // pipeline reg
     always @ (posedge clk) begin
         if (!rst_n) begin
-            fetch_pc <= `CPU_RESET_ADDR;
+            id_pc <= `CPU_RESET_ADDR;
+            id_inst <= `INST_NOP;
         end
         else if (data_out_wren) begin
-            fetch_pc <= selected_pc;
+            id_pc <= selected_pc;
+            id_inst <= selected_inst;
+        end
+        else begin
+            id_inst <= `INST_NOP; // 因为译码和执行写回间没有阻塞，因此握手失败就输出气泡
         end
     end
 
@@ -107,7 +132,7 @@ module pc_reg (
     // valid reg
     always @ (posedge clk) begin
         if (!rst_n) begin
-            o_valid <= 1'b1;
+            o_valid <= 1'b0;
         end
         else begin
             o_valid <= (state_next != EMPTY);

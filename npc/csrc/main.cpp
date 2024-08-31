@@ -15,9 +15,9 @@ int main(int argc, char** argv) {
     dut = new Vxcore{contextp};
     tfp = new VerilatedVcdC;
     // set scope: for DPI-C
-    const svScope scope = svGetScopeFromName("TOP.xcore");
-    assert(scope); // Check for nullptr if scope not found
-    svSetScope(scope);
+    // const svScope scope = svGetScopeFromName("TOP.xcore");
+    // assert(scope); // Check for nullptr if scope not found
+    // svSetScope(scope);
 
 
     // ----------------------- initialization ---------------------------------
