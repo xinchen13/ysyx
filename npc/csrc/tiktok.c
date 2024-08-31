@@ -76,7 +76,7 @@ static void trace_and_difftest() {
 
     // difftest
     #ifdef CONFIG_DIFFTEST
-        if (!this_diff) {
+        if (this_diff) {
             difftest_step(difftest_pc, core.pc);
         }
         // skip device inst
