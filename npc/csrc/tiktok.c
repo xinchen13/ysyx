@@ -10,7 +10,6 @@ static int inst_count = 0;
 
 #ifdef CONFIG_DIFFTEST
     static word_t difftest_pc;
-    static bool this_diff = false;
 #endif
 
 #ifdef CONFIG_ITRACE
@@ -76,9 +75,6 @@ static void trace_and_difftest() {
 
     // difftest
     #ifdef CONFIG_DIFFTEST
-        if (!this_diff) {
-            difftest_skip_ref();
-        }
         difftest_step(difftest_pc, core.pc);
         // skip device inst
         if ((uint32_t)dut->rootp->xcore__DOT__alu_result == (0xa00003f8)) {
@@ -130,7 +126,6 @@ static void exec_once() {
 
     #ifdef CONFIG_DIFFTEST
         difftest_pc = core.pc;
-        this_diff = (dut->rootp->xcore__DOT__pc_valid == 0) ? false : true;
     #endif
 
     dut->clk ^= 1; dut->eval();  // negedge
