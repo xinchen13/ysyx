@@ -125,7 +125,7 @@ static void exec_once() {
     #endif
 
     #ifdef CONFIG_DIFFTEST
-        difftest_pc = dut->rootp->xcore__DOT__fetch_pc;
+        difftest_pc = core.pc;
     #endif
 
     dut->clk ^= 1; dut->eval();  // negedge
