@@ -130,7 +130,7 @@ static void exec_once() {
 
     #ifdef CONFIG_DIFFTEST
         difftest_pc = core.pc;
-        this_diff = dut->rootp->xcore__DOT__if_id_valid ? true : false;
+        this_diff = dut->rootp->xcore__DOT__pc_valid ? true : false;
     #endif
 
     dut->clk ^= 1; dut->eval();  // negedge
