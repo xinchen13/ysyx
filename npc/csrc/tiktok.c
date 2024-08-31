@@ -124,6 +124,10 @@ static void exec_once() {
         ftrace_dnpc = dut->rootp->xcore__DOT__dnpc;
     #endif
 
+    #ifdef CONFIG_DIFFTEST
+        difftest_pc = dut->rootp->xcore__DOT__fetch_pc;
+    #endif
+
     dut->clk ^= 1; dut->eval();  // negedge
     tfp->dump(contextp->time());
     contextp->timeInc(1);
@@ -134,10 +138,6 @@ static void exec_once() {
 
     // update regs in monitor
     isa_reg_update();
-
-    #ifdef CONFIG_DIFFTEST
-        difftest_pc = dut->rootp->xcore__DOT__id_pc;
-    #endif
 
     #ifdef CONFIG_ITRACE
         char *p = logbuf;
