@@ -62,15 +62,28 @@ module xcore (
     fetch_id fetch_id_u0 (
         .clk(clk),
         .rst_n(rst_n),
-        .i_valid(if_valid),
-        .i_ready(id_if_ready),
-        .o_valid(if_id_valid),
-        .o_ready(id_ready),
-        .fetch_pc(fetch_pc),
-        .fetch_inst(fetch_inst),
+        .if_pc(fetch_pc),
+        .if_inst(fetch_inst),
+        .if_valid(if_valid),
+        .id_ready(id_ready),
         .id_pc(id_pc),
-        .id_inst(id_inst)
+        .id_inst(id_inst),
+        .if_id_valid(if_id_valid)
     );
+    assign id_if_ready = id_ready;
+
+    // fetch_id fetch_id_u0 (
+    //     .clk(clk),
+    //     .rst_n(rst_n),
+    //     .i_valid(if_valid),
+    //     .i_ready(id_if_ready),
+    //     .o_valid(if_id_valid),
+    //     .o_ready(id_ready),
+    //     .fetch_pc(fetch_pc),
+    //     .fetch_inst(fetch_inst),
+    //     .id_pc(id_pc),
+    //     .id_inst(id_inst)
+    // );
 
 
     regfile regfile_u0 (
