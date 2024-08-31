@@ -35,7 +35,7 @@ __EXPORT void difftest_regcpy(void *dut, bool direction) {
         for (int i = 0; i < reg_num; i++) {
             cpu.gpr[i] = cpu_ptr->gpr[i];
         }
-        isa_reg_display();
+        // isa_reg_display();
     }
     else if (direction == DIFFTEST_TO_DUT) {
         cpu_ptr->pc = cpu.pc;
