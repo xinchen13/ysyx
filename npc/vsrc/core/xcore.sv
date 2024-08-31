@@ -37,6 +37,7 @@ module xcore (
     logic id_ready;
     logic if_id_valid;
     logic id_if_ready;
+    logic if_ex_ready;
 
     pc_reg pc_reg_u0 (
         .clk(clk),
@@ -47,6 +48,18 @@ module xcore (
         .pc_if_valid(pc_valid),
         .pc(fetch_pc)
     );
+    assign if_ex_ready = if_ready;
+
+    // pc_reg pc_reg_u0 (
+    //     .clk(clk),
+    //     .rst_n(rst_n),
+    //     .i_valid(dnpc_valid),
+    //     .i_ready(if_ex_ready),
+    //     .o_valid(pc_valid),
+    //     .o_ready(if_ready),
+    //     .dnpc(dnpc),
+    //     .fetch_pc(fetch_pc)
+    // )
 
     fetch fetch_u0 (
         .clk(clk),
@@ -120,7 +133,7 @@ module xcore (
         .csr_wen2(csr_wen2),
         .prev_valid(if_id_valid),
         .this_ready(id_ready),
-        .next_ready(if_ready),
+        .next_ready(if_ex_ready),
         .this_valid(dnpc_valid)
     );
 
