@@ -53,7 +53,6 @@ module id (
     assign done = 1'b1;
 
     assign this_ready = !prev_valid || (done && next_ready);
-    // assign this_ready = 1'b1;   // break loop
     assign this_valid = prev_valid & done;
 
 
