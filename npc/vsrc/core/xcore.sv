@@ -12,9 +12,9 @@ module xcore (
     logic [1:0] reg_wdata_sel;
     logic [`DATA_BUS] reg_wdata;
     logic [`INST_ADDR_BUS] dnpc;
-    logic [`INST_ADDR_BUS] if_pc;
+    logic [`INST_ADDR_BUS] fetch_pc;
     logic [`INST_ADDR_BUS] id_pc;
-    logic [`INST_DATA_BUS] if_inst;
+    logic [`INST_DATA_BUS] fetch_inst;
     logic [`INST_DATA_BUS] id_inst;
     logic [3:0] alu_ctrl;
     logic [`DATA_BUS] alu_result;
@@ -36,6 +36,7 @@ module xcore (
     logic pc_valid;
     logic id_ready;
     logic if_id_valid;
+    logic id_if_ready;
 
     pc_reg pc_reg_u0 (
         .clk(clk),
@@ -44,31 +45,33 @@ module xcore (
         .dnpc_valid(dnpc_valid),
         .if_ready(if_ready),
         .pc_if_valid(pc_valid),
-        .pc(if_pc)
+        .pc(fetch_pc)
     );
 
     fetch fetch_u0 (
         .clk(clk),
         .rst_n(rst_n),
-        .pc(if_pc),
+        .pc(fetch_pc),
         .prev_valid(pc_valid),
         .this_ready(if_ready),
-        .next_ready(id_ready),
-        .inst(if_inst),
+        .next_ready(id_if_ready),
+        .inst(fetch_inst),
         .this_valid(if_valid)
     );
 
     fetch_id fetch_id_u0 (
         .clk(clk),
         .rst_n(rst_n),
-        .if_pc(if_pc),
-        .if_inst(if_inst),
-        .if_valid(if_valid),
-        .id_ready(id_ready),
+        .i_valid(if_valid),
+        .i_ready(id_if_ready),
+        .o_valid(if_id_valid),
+        .o_ready(id_ready),
+        .fetch_pc(fetch_pc),
+        .fetch_inst(fetch_inst),
         .id_pc(id_pc),
-        .id_inst(id_inst),
-        .if_id_valid(if_id_valid)
+        .id_inst(id_inst)
     );
+
 
     regfile regfile_u0 (
         .clk(clk),
