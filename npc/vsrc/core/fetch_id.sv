@@ -100,6 +100,9 @@ module fetch_id (
             id_pc <= selected_pc;
             id_inst <= selected_inst;
         end
+        else begin
+            id_pc <= `INST_NOP;
+        end
     end
 
 
