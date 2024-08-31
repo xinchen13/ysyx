@@ -51,11 +51,11 @@ module xcore (
         .clk(clk),
         .rst_n(rst_n),
         .pc(if_pc),
-        .pc_valid(pc_valid),
-        .if_ready(if_ready),
-        .id_ready(id_ready),
+        .prev_valid(pc_valid),
+        .this_ready(if_ready),
+        .next_ready(id_ready),
         .inst(if_inst),
-        .if_valid(if_valid)
+        .this_valid(if_valid)
     );
 
     if_id if_id_u0 (
