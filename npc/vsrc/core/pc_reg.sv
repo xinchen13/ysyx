@@ -107,7 +107,7 @@ module pc_reg (
     // valid reg
     always @ (posedge clk) begin
         if (!rst_n) begin
-            o_valid <= 1'b0;
+            o_valid <= 1'b1;
         end
         else begin
             o_valid <= (state_next != EMPTY);
