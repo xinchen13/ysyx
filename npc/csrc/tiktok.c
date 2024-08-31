@@ -160,7 +160,11 @@ static void execute(uint64_t n) {
     for (;n > 0; n --) {
         exec_once();
         inst_count++;
-        trace_and_difftest();
+
+        if (dut->rootp->xcore__DOT__pc_valid) {
+            trace_and_difftest();
+        }
+
         if (this_inst == 0x00100073 || contextp->time() > 9999999999) {
             set_npc_state(NPC_END, core.pc, core.gpr[10]);
             break;
