@@ -134,7 +134,7 @@ static void exec_once() {
 
     #ifdef CONFIG_DIFFTEST
         difftest_pc = this_pc;
-        retire_pc = dut->rootp->xcore__DOT__if_id_valid ? true : false;
+        retire_pc = dut->rootp->xcore__DOT__fetch_id_valid ? true : false;
     #endif
 
     dut->clk ^= 1; dut->eval();  // negedge

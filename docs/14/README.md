@@ -98,3 +98,4 @@ NPC仿真环境提供的`dpic_pmem_read()`没有读延迟, 收到读请求的当
     - 本级输出valid = 本级输入valid & 本级done
 - 其他说明:
     - 如果只给 valid 打拍而 ready 采用纯组合逻辑, 那么一方面逻辑路径长了之后会造成时序紧张, 另一方面会形成组合逻辑环路
+    - 因此采用 skid buffer 来实现流水线寄存器, 给 valid, ready 和数据都打了一拍
