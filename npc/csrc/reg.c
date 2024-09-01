@@ -33,7 +33,7 @@ word_t isa_reg_str2val(const char *s, bool *success) {
     return 0;
 }
 
-// for monitor
+// for monitor & difftest
 void isa_reg_update() {
     core.pc = dut->rootp->xcore__DOT__fetch_pc;
     int gpr_count = MUXDEF(CONFIG_RVE, 16, 32);
