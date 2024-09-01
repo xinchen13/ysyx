@@ -78,7 +78,9 @@ static void trace_and_difftest() {
 
     // difftest
     #ifdef CONFIG_DIFFTEST
-        if (retire_pc)
+        if (!retire_pc) {
+            difftest_skip_ref();
+        }
         difftest_step(difftest_pc, dnpc);
         // skip device inst
         if ((uint32_t)dut->rootp->xcore__DOT__alu_result == (0xa00003f8)) {
