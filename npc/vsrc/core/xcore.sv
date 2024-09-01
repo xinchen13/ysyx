@@ -125,7 +125,7 @@ module xcore (
         .csr_rdata(csr_rdata)
     );
 
-    mem mem_u0 (
+    lsu lsu_u0 (
         .inst(id_inst),
         .raddr(alu_result),
         .waddr(alu_result),
