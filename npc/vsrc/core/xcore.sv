@@ -30,33 +30,22 @@ module xcore (
     logic csr_wen1;
     logic [`DATA_BUS] csr_rdata;
     logic [4:0] reg_rs1;
-    logic if_valid;
+    logic fetch_valid;
     logic dnpc_valid;
-    logic if_ready;
+    logic fetch_ready;
     logic pc_valid;
     logic id_ready;
-    logic if_id_valid;
-    logic id_if_ready;
-    logic if_ex_ready;
-
-    // pc_reg pc_reg_u0 (
-    //     .clk(clk),
-    //     .rst_n(rst_n),
-    //     .dnpc(dnpc),
-    //     .dnpc_valid(dnpc_valid),
-    //     .if_ready(if_ready),
-    //     .pc_if_valid(pc_valid),
-    //     .pc(fetch_pc)
-    // );
-    // assign if_ex_ready = if_ready;
+    logic fetch_id_valid;
+    logic id_fetch_ready;
+    logic fetch_ex_ready;
 
     pc_reg pc_reg_u0 (
         .clk(clk),
         .rst_n(rst_n),
         .i_valid(dnpc_valid),
-        .i_ready(if_ex_ready),
+        .i_ready(fetch_ex_ready),
         .o_valid(pc_valid),
-        .o_ready(if_ready),
+        .o_ready(fetch_ready),
         .dnpc(dnpc),
         .fetch_pc(fetch_pc)
     );
@@ -66,31 +55,18 @@ module xcore (
         .rst_n(rst_n),
         .pc(fetch_pc),
         .prev_valid(pc_valid),
-        .this_ready(if_ready),
-        .next_ready(id_if_ready),
+        .this_ready(fetch_ready),
+        .next_ready(id_fetch_ready),
         .inst(fetch_inst),
-        .this_valid(if_valid)
+        .this_valid(fetch_valid)
     );
-
-    // fetch_id fetch_id_u0 (
-    //     .clk(clk),
-    //     .rst_n(rst_n),
-    //     .if_pc(fetch_pc),
-    //     .if_inst(fetch_inst),
-    //     .if_valid(if_valid),
-    //     .id_ready(id_ready),
-    //     .id_pc(id_pc),
-    //     .id_inst(id_inst),
-    //     .if_id_valid(if_id_valid)
-    // );
-    // assign id_if_ready = id_ready;
 
     fetch_id fetch_id_u0 (
         .clk(clk),
         .rst_n(rst_n),
-        .i_valid(if_valid),
-        .i_ready(id_if_ready),
-        .o_valid(if_id_valid),
+        .i_valid(fetch_valid),
+        .i_ready(id_fetch_ready),
+        .o_valid(fetch_id_valid),
         .o_ready(id_ready),
         .fetch_pc(fetch_pc),
         .fetch_inst(fetch_inst),
@@ -131,9 +107,9 @@ module xcore (
         .csr_waddr1(csr_waddr1),
         .csr_wen1(csr_wen1),
         .csr_wen2(csr_wen2),
-        .prev_valid(if_id_valid),
+        .prev_valid(fetch_id_valid),
         .this_ready(id_ready),
-        .next_ready(if_ex_ready),
+        .next_ready(fetch_ex_ready),
         .this_valid(dnpc_valid)
     );
 

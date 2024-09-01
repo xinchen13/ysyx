@@ -6,10 +6,13 @@
 #include "difftest.h"
 
 static word_t this_inst;
+static word_t this_pc;
+static word_t dnpc;
 static int inst_count = 0;
 
 #ifdef CONFIG_DIFFTEST
     static word_t difftest_pc;
+    static bool retire_pc = false;
 #endif
 
 #ifdef CONFIG_ITRACE
@@ -75,7 +78,10 @@ static void trace_and_difftest() {
 
     // difftest
     #ifdef CONFIG_DIFFTEST
-        difftest_step(difftest_pc, core.pc);
+        if (!retire_pc) {
+            difftest_skip_ref();
+        }
+        difftest_step(difftest_pc, dnpc);
         // skip device inst
         if ((uint32_t)dut->rootp->xcore__DOT__alu_result == (0xa00003f8)) {
             difftest_skip_ref();
@@ -113,19 +119,22 @@ void set_npc_state(int state, uint32_t pc, int halt_ret) {
 
 static void exec_once() {
     this_inst = dut->rootp->xcore__DOT__id_inst;
+    this_pc = dut->rootp->xcore__DOT__id_pc;
+    dnpc = dut->rootp->xcore__DOT__dnpc;
     #ifdef CONFIG_ITRACE
         itrace_inst = this_inst;
-        itrace_pc = core.pc;
+        itrace_pc = this_pc;
     #endif
 
     #ifdef CONFIG_FTRACE
         ftrace_inst = this_inst;
-        ftrace_pc = core.pc;
-        ftrace_dnpc = dut->rootp->xcore__DOT__dnpc;
+        ftrace_pc = this_pc;
+        ftrace_dnpc = dnpc;
     #endif
 
     #ifdef CONFIG_DIFFTEST
-        difftest_pc = core.pc;
+        difftest_pc = this_pc;
+        retire_pc = dut->rootp->xcore__DOT__fetch_id_valid ? true : false;
     #endif
 
     dut->clk ^= 1; dut->eval();  // negedge
@@ -164,7 +173,7 @@ static void execute(uint64_t n) {
         inst_count++;
         trace_and_difftest();
         if (this_inst == 0x00100073 || contextp->time() > 9999999999) {
-            set_npc_state(NPC_END, core.pc, core.gpr[10]);
+            set_npc_state(NPC_END, this_pc, core.gpr[10]);
             break;
         }
         if (npc_state.state != NPC_RUNNING) {
