@@ -6,6 +6,7 @@
 #include "difftest.h"
 
 static word_t this_inst;
+static word_t this_pc;
 static int inst_count = 0;
 
 #ifdef CONFIG_DIFFTEST
@@ -115,14 +116,15 @@ void set_npc_state(int state, uint32_t pc, int halt_ret) {
 
 static void exec_once() {
     this_inst = dut->rootp->xcore__DOT__id_inst;
+    this_pc = dut->rootp->xcore__DOT__id_pc;
     #ifdef CONFIG_ITRACE
         itrace_inst = this_inst;
-        itrace_pc = core.pc;
+        itrace_pc = this_pc;
     #endif
 
     #ifdef CONFIG_FTRACE
         ftrace_inst = this_inst;
-        ftrace_pc = core.pc;
+        ftrace_pc = this_pc;
         ftrace_dnpc = dut->rootp->xcore__DOT__dnpc;
     #endif
 
@@ -167,7 +169,7 @@ static void execute(uint64_t n) {
         inst_count++;
         trace_and_difftest();
         if (this_inst == 0x00100073 || contextp->time() > 9999999999) {
-            set_npc_state(NPC_END, core.pc, core.gpr[10]);
+            set_npc_state(NPC_END, this_pc, core.gpr[10]);
             break;
         }
         if (npc_state.state != NPC_RUNNING) {
