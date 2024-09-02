@@ -25,14 +25,15 @@ module lsu (
     import "DPI-C" function int dpic_pmem_read(input int raddr);
     import "DPI-C" function void dpic_pmem_write(input int waddr, input int wdata, input byte wmask);
 
-    always @ (posedge clk) begin
-        if (rst_n) begin
-            if (req) begin
-                dmem_rdata_raw = dpic_pmem_read(raddr);
-            end
-            if (wen) begin
-                dpic_pmem_write(waddr, dmem_wdata_offset, wmask);
-            end
+    always @ (*) begin
+        if (req) begin
+            dmem_rdata_raw = dpic_pmem_read(raddr);
+        end
+        else begin
+            dmem_rdata_raw = 0;
+        end
+        if (wen) begin
+            dpic_pmem_write(waddr, dmem_wdata_offset, wmask);
         end
     end
 
