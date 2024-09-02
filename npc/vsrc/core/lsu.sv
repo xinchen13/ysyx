@@ -1,6 +1,7 @@
 `include "../inc/defines.svh"
 
 module lsu (
+    input logic clk,
     input logic [`INST_DATA_BUS] inst,
     input logic [`DATA_BUS] raddr,
     input logic [`DATA_BUS] waddr,
@@ -23,7 +24,7 @@ module lsu (
     import "DPI-C" function int dpic_pmem_read(input int raddr);
     import "DPI-C" function void dpic_pmem_write(input int waddr, input int wdata, input byte wmask);
 
-    always @ (*) begin
+    always @ (posedge clk) begin
         if (req) begin
             dmem_rdata_raw = dpic_pmem_read(raddr);
         end
