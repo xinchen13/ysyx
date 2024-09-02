@@ -127,6 +127,7 @@ module xcore (
 
     lsu lsu_u0 (
         .clk(clk),
+        .rst_n(rst_n),
         .inst(id_inst),
         .raddr(alu_result),
         .waddr(alu_result),
