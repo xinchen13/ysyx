@@ -1,6 +1,8 @@
 `include "../inc/defines.svh"
 
 module lsu (
+    input logic clk,
+    input logic rst_n,
     input logic [`INST_DATA_BUS] inst,
     input logic [`DATA_BUS] raddr,
     input logic [`DATA_BUS] waddr,
