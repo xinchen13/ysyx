@@ -39,6 +39,14 @@ module xcore (
     logic id_fetch_ready;
     logic fetch_ex_ready;
 
+    // wb
+    logic [`DATA_BUS] wb_alu_result;
+    logic [1:0] wb_reg_wdata_sel;
+    logic [`DATA_BUS] wb_csr_rdata;
+    logic [`DATA_BUS] wb_dmem_rdata;
+    logic wb_reg_wen;
+    logic [`REG_ADDR_BUS] wb_reg_waddr;
+
     pc_reg pc_reg_u0 (
         .clk(clk),
         .rst_n(rst_n),
@@ -61,7 +69,7 @@ module xcore (
         .this_valid(fetch_valid)
     );
 
-    fetch_id fetch_id_u0 (
+    fetch_id_pipe fetch_id_pipe_u0 (
         .clk(clk),
         .rst_n(rst_n),
         .i_valid(fetch_valid),
@@ -78,12 +86,12 @@ module xcore (
     regfile regfile_u0 (
         .clk(clk),
         .wdata(reg_wdata),
-        .waddr(id_inst[11:7]),
+        .waddr(wb_reg_waddr),
         .raddr1(reg_rs1),
         .raddr2(id_inst[24:20]),
         .rdata1(reg_rdata1),
         .rdata2(reg_rdata2),
-        .wen(reg_wen)
+        .wen(wb_reg_wen)
     );
 
     id id_u0 (
@@ -137,11 +145,32 @@ module xcore (
         .rdata(dmem_rdata)
     );
 
+    lsu_wb_pipe lsu_wb_pipe_u0(
+        .clk(clk),
+        .rst_n(rst_n),
+        .i_valid(fetch_id_valid),
+        .i_ready(),
+        .o_valid(),
+        .o_ready(1'b1),
+        .lsu_alu_result(alu_result),
+        .lsu_reg_wdata_sel(reg_wdata_sel),
+        .lsu_csr_rdata(csr_rdata),
+        .lsu_dmem_rdata(dmem_rdata),
+        .lsu_reg_wen(reg_wen),
+        .lsu_reg_waddr(id_inst[11:7]),
+        .wb_alu_result(wb_alu_result),
+        .wb_reg_wdata_sel(wb_reg_wdata_sel),
+        .wb_csr_rdata(wb_csr_rdata),
+        .wb_dmem_rdata(wb_dmem_rdata),
+        .wb_reg_wen(wb_reg_wen),
+        .wb_reg_waddr(wb_reg_waddr)
+    );
+
     wb wb_u0 (
-        .dmem_rdata(dmem_rdata),
-        .alu_result(alu_result),
-        .reg_wdata_sel(reg_wdata_sel),
-        .csr_rdata(csr_rdata),
+        .dmem_rdata(wb_dmem_rdata),
+        .alu_result(wb_alu_result),
+        .reg_wdata_sel(wb_reg_wdata_sel),
+        .csr_rdata(wb_csr_rdata),
         .reg_wdata(reg_wdata)
     );
 
