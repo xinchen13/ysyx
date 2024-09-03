@@ -17,7 +17,7 @@ module wb (
         reg_wdata_sel[0] ? dmem_rdata : alu_result
     );
 
-    assign this_ready = 1'b1;
+    assign this_ready = !prev_valid;
     assign reg_wen = wb_reg_wen & prev_valid;
 
 endmodule
