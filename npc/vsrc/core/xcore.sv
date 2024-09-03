@@ -40,6 +40,8 @@ module xcore (
     logic id_fetch_ready;
     logic fetch_ex_ready;
     logic wb_ready;
+    logic wb_ex_ready;
+    logic lsu_wb_valid;
 
     // wb
     logic [`DATA_BUS] wb_alu_result;
@@ -119,7 +121,7 @@ module xcore (
         .csr_wen2(csr_wen2),
         .prev_valid(fetch_id_valid),
         .this_ready(id_ready),
-        .next_ready(fetch_ex_ready & wb_ready),
+        .next_ready(fetch_ex_ready & wb_ex_ready),
         .this_valid(dnpc_valid)
     );
 
@@ -150,10 +152,10 @@ module xcore (
     lsu_wb_pipe lsu_wb_pipe_u0(
         .clk(clk),
         .rst_n(rst_n),
-        .i_valid(fetch_id_valid),
-        .i_ready(),
-        .o_valid(),
-        .o_ready(1'b1),
+        .i_valid(dnpc_valid),
+        .i_ready(wb_ex_ready),
+        .o_valid(lsu_wb_valid),
+        .o_ready(wb_ready),
         .lsu_alu_result(alu_result),
         .lsu_reg_wdata_sel(reg_wdata_sel),
         .lsu_csr_rdata(csr_rdata),
@@ -169,7 +171,7 @@ module xcore (
     );
 
     wb wb_u0 (
-        .prev_valid(dnpc_valid),
+        .prev_valid(lsu_wb_valid),
         .this_ready(wb_ready),
         .dmem_rdata(wb_dmem_rdata),
         .alu_result(wb_alu_result),
