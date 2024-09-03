@@ -18,6 +18,6 @@ module wb (
     );
 
     assign this_ready = !prev_valid;
-    assign reg_wen = wb_reg_wen;
+    assign reg_wen = wb_reg_wen & prev_valid;
 
 endmodule
