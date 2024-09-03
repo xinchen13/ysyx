@@ -83,7 +83,7 @@ static void trace_and_difftest() {
         }
         difftest_step(difftest_pc, dnpc);
         // skip device inst
-        if ((uint32_t)dut->rootp->xcore__DOT__alu_result == (0xa00003f8)) {
+        if ((uint32_t)dut->rootp->xcore__DOT__wb_alu_result == (0xa00003f8)) {
             difftest_skip_ref();
         }
     #endif
@@ -134,7 +134,7 @@ static void exec_once() {
 
     #ifdef CONFIG_DIFFTEST
         difftest_pc = this_pc;
-        retire_pc = dut->rootp->xcore__DOT__fetch_id_valid ? true : false;
+        retire_pc = dut->rootp->xcore__DOT__lsu_wb_valid ? true : false;
     #endif
 
     dut->clk ^= 1; dut->eval();  // negedge

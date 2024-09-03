@@ -1,6 +1,6 @@
 `include "../inc/defines.svh"
 
-module fetch_id (
+module lsu_wb_pipe (
     input logic clk,
     input logic rst_n,
 
@@ -10,50 +10,83 @@ module fetch_id (
     output logic o_valid,
     input logic o_ready,
 
-    // from fetch
-    input logic [`INST_ADDR_BUS] fetch_pc,
-    input logic [`INST_DATA_BUS] fetch_inst,
+    // from lsu
+    input logic [`DATA_BUS] lsu_alu_result,
+    input logic [1:0] lsu_reg_wdata_sel,
+    input logic [`DATA_BUS] lsu_csr_rdata,
+    input logic [`DATA_BUS] lsu_dmem_rdata,
+    input logic lsu_reg_wen,
+    input logic [`REG_ADDR_BUS] lsu_reg_waddr,
 
-    // to id
-    output logic [`INST_ADDR_BUS] id_pc,
-    output logic [`INST_DATA_BUS] id_inst
-
+    // to wb
+    output logic [`DATA_BUS] wb_alu_result,
+    output logic [1:0] wb_reg_wdata_sel,
+    output logic [`DATA_BUS] wb_csr_rdata,
+    output logic [`DATA_BUS] wb_dmem_rdata,
+    output logic wb_reg_wen,
+    output logic [`REG_ADDR_BUS] wb_reg_waddr
 );
 
     // data path
-    logic data_buffer_wren; // EMPTY at start, so don't load.
-    logic [`INST_ADDR_BUS] buffer_pc;
-    logic [`INST_DATA_BUS] buffer_inst;
+    logic data_buffer_wren;
+    logic [`DATA_BUS] buffer_alu_result;
+    logic [1:0] buffer_reg_wdata_sel;
+    logic [`DATA_BUS] buffer_csr_rdata;
+    logic [`DATA_BUS] buffer_dmem_rdata;
+    logic buffer_reg_wen;
+    logic [`REG_ADDR_BUS] buffer_reg_waddr;
     // buffer reg
     always @ (posedge clk) begin
         if (!rst_n) begin
-            buffer_pc <= `CPU_RESET_ADDR;
-            buffer_inst <= `INST_NOP;
+            buffer_alu_result <= `ZERO_WORD;
+            buffer_reg_wdata_sel <= 2'b0;
+            buffer_csr_rdata <= `ZERO_WORD;
+            buffer_dmem_rdata <= `ZERO_WORD;
+            buffer_reg_wen <= 1'b0;
+            buffer_reg_waddr <= 5'b0;
         end
         else if (data_buffer_wren) begin
-            buffer_pc <= fetch_pc;
-            buffer_inst <= fetch_inst;
+            buffer_alu_result <= lsu_alu_result;
+            buffer_reg_wdata_sel <= lsu_reg_wdata_sel;
+            buffer_csr_rdata <= lsu_csr_rdata;
+            buffer_dmem_rdata <= lsu_dmem_rdata;
+            buffer_reg_wen <= lsu_reg_wen;
+            buffer_reg_waddr <= lsu_reg_waddr;
         end
     end 
     logic data_out_wren; // EMPTY at start, so accept data.
     logic use_buffered_data;
-    logic [`INST_ADDR_BUS] selected_pc;
-    logic [`INST_DATA_BUS] selected_inst;
+    logic [`DATA_BUS] selected_alu_result;
+    logic [1:0] selected_reg_wdata_sel;
+    logic [`DATA_BUS] selected_csr_rdata;
+    logic [`DATA_BUS] selected_dmem_rdata;
+    logic selected_reg_wen;
+    logic [`REG_ADDR_BUS] selected_reg_waddr;
     // select data out
-    assign selected_pc = use_buffered_data ? buffer_pc : fetch_pc;
-    assign selected_inst = use_buffered_data ? buffer_inst : fetch_inst;
+    assign selected_alu_result = use_buffered_data ? buffer_alu_result : lsu_alu_result;
+    assign selected_reg_wdata_sel = use_buffered_data ? buffer_reg_wdata_sel : lsu_reg_wdata_sel;
+    assign selected_csr_rdata = use_buffered_data ? buffer_csr_rdata : lsu_csr_rdata;
+    assign selected_dmem_rdata = use_buffered_data ? buffer_dmem_rdata : lsu_dmem_rdata;
+    assign selected_reg_wen = use_buffered_data ? buffer_reg_wen : lsu_reg_wen;
+    assign selected_reg_waddr = use_buffered_data ? buffer_reg_waddr : lsu_reg_waddr;
+
     // pipeline reg
     always @ (posedge clk) begin
         if (!rst_n) begin
-            id_pc <= `CPU_RESET_ADDR;
-            id_inst <= `INST_NOP;
+            wb_alu_result <= `ZERO_WORD;
+            wb_reg_wdata_sel <= 2'b0;
+            wb_csr_rdata <= `ZERO_WORD;
+            wb_dmem_rdata <= `ZERO_WORD;
+            wb_reg_wen <= 1'b0;
+            wb_reg_waddr <= 5'b0;
         end
         else if (data_out_wren) begin
-            id_pc <= selected_pc;
-            id_inst <= selected_inst;
-        end
-        else begin
-            id_inst <= `INST_NOP; // 因为译码和执行写回间没有阻塞，因此握手失败就输出气泡
+            wb_alu_result <= selected_alu_result;
+            wb_reg_wdata_sel <= selected_reg_wdata_sel;
+            wb_csr_rdata <= selected_csr_rdata;
+            wb_dmem_rdata <= selected_dmem_rdata;
+            wb_reg_wen <= selected_reg_wen;
+            wb_reg_waddr <= selected_reg_waddr;
         end
     end
 
