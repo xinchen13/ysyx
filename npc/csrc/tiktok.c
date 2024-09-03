@@ -83,7 +83,7 @@ static void trace_and_difftest() {
         }
         difftest_step(difftest_pc, dnpc);
         // skip device inst
-        if ((uint32_t)dut->rootp->xcore__DOT__alu_result == (0xa00003f8)) {
+        if ((uint32_t)dut->rootp->xcore__DOT__wb_alu_result == (0xa00003f8)) {
             difftest_skip_ref();
         }
     #endif
