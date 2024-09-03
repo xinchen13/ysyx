@@ -73,7 +73,10 @@ module lsu (
         endcase
     end
 
-    assign rdata = masked_dmem_rdata;
+    // assign rdata = masked_dmem_rdata;
+    always @ (posedge clk) begin
+        rdata <= masked_dmem_rdata;
+    end
 
     // wmask
     always @ (*) begin
