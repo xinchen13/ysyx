@@ -29,8 +29,27 @@ module isram (
     input logic bready
 );
 
+    // logic done;
+    // assign done = 1'b1;
+
+    // assign arready = !arvalid || (done && rready);
+    // assign rvalid = arvalid & done;
+
+    // // DPI-C: pmem_read, pmem_write
+    // import "DPI-C" function int dpic_pmem_read(input int raddr);
+
+    // // sram
+    // always @ (*) begin
+    //     if (arvalid) begin
+    //         rdata = dpic_pmem_read(araddr);
+    //     end
+    //     else begin
+    //         rdata = `INST_NOP;
+    //     end
+    // end
+
     logic done;
-    assign done = 1'b1;
+    // assign done = 1'b1;
 
     assign arready = !arvalid || (done && rready);
     assign rvalid = arvalid & done;
@@ -39,12 +58,14 @@ module isram (
     import "DPI-C" function int dpic_pmem_read(input int raddr);
 
     // sram
-    always @ (*) begin
+    always @ (posedge clk) begin
         if (arvalid) begin
-            rdata = dpic_pmem_read(araddr);
+            rdata <= dpic_pmem_read(araddr);
+            done <= 1'b1;
         end
         else begin
-            rdata = `INST_NOP;
+            rdata <= `INST_NOP;
+            done <= 1'b0;
         end
     end
 
