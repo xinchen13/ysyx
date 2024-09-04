@@ -4,6 +4,7 @@
 - [lecture notes](https://ysyx.oscc.cc/docs/)
 - [learning record](https://docs.qq.com/sheet/DZXVEQ0thWGZOaU9t?tab=j1z835)
 - [notes](./docs/notes.md)
+- [references](https://drive.google.com/drive/folders/1Erw4Mbr6GKMMP08dxjcXhSXgXAQgfCtz)
 
 ## projects
 - [ysyx](https://github.com/xinchen13/ysyx.git)
