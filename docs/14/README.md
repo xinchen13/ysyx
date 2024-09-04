@@ -219,3 +219,8 @@ bready  --->               <--- bresp                wstrb   --->  |
 
 ### 避免握手的死锁和活锁
 为了避免dead lock和live lock, AXI标准规范对握手信号的行为添加了一些约束. RTFM, 整理于 [axi.md](./axi.md)
+
+### 让NPC支持AXI-Lite
+- 将IFU和LSU的访存接口改造成AXI-Lite
+- 将IFU和LSU访问的SRAM模块用AXI-Lite进行封装, 但内部还是通过DPI-C来读写数据; 虽然目前SRAM模块的访问延迟还是固定的1周期, 但需要在master和slave两端都正确地用握手来实现AXI-Lite总线协议
+- 由于IFU只会对存储器进行读操作, 不会写入存储器, 因此可以将IFU的AW, W和B三个通道的握手信号均置为0. 更好的做法是在握手信号的另一端通过`assert()`确保它们一直为0

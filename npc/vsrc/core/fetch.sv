@@ -7,35 +7,46 @@ module fetch (
     // from pc_reg
     input logic [`INST_ADDR_BUS] pc,
     input logic prev_valid,
-
     // to pc_reg
     output logic this_ready,
-
     // from id
     input logic next_ready,
-
-    // to if_id
+    // to fetch_id
     output logic [`INST_DATA_BUS] inst,
-    output logic this_valid
+    output logic this_valid,
+
+    // axi-lite interface (master)
+    // AR
+    output logic [`AXI_ADDR_BUS] araddr,
+    output logic arvalid,
+    input logic arready,
+    // R
+    input logic [`AXI_DATA_BUS] rdata,
+    input logic [`AXI_RESP_BUS] rresp,
+    input logic rvalid,
+    output logic rready,
+    // AW
+    output logic [`AXI_ADDR_BUS] awaddr,
+    output logic awvalid,
+    input logic awready,
+    // W
+    output logic [`AXI_DATA_BUS] wdata,
+    output logic [`AXI_WSTRB_BUS] wstrb,
+    output logic wvalid,
+    input logic wready,
+    // B
+    input logic [`AXI_RESP_BUS] bresp,
+    input logic bvalid,
+    output logic bready
+
 );
-    logic done;
-    assign done = 1'b1;
-
-    assign this_ready = !prev_valid || (done && next_ready);
-    assign this_valid = prev_valid & done;
-
-    // DPI-C: pmem_read, pmem_write
-    import "DPI-C" function int dpic_pmem_read(input int raddr);
-
-    // sram
-    always @ (*) begin
-        if (prev_valid) begin
-            inst = dpic_pmem_read(pc);
-        end
-        else begin
-            inst = `INST_NOP;
-        end
-    end
+    // for handshake
+    assign araddr = pc;
+    assign arvalid = prev_valid;
+    assign rready = next_ready;
+    assign this_ready = arready;
+    assign inst = rdata;
+    assign this_valid = rvalid;
 
 endmodule
 
