@@ -59,7 +59,7 @@ module isram (
     // sram
     always @ (posedge clk) begin
         if (!rst_n) begin
-            done <= 1'b0;
+            done <= 1'b1;
         end
         if (arvalid) begin
             rdata <= dpic_pmem_read(araddr);
