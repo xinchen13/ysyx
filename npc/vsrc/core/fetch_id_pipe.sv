@@ -52,9 +52,6 @@ module fetch_id_pipe (
             id_pc <= selected_pc;
             id_inst <= selected_inst;
         end
-        else begin
-            id_inst <= `INST_NOP; // 因为译码和执行写回间没有阻塞，因此握手失败就输出气泡
-        end
     end
 
 
