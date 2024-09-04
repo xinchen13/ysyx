@@ -25,6 +25,12 @@
 `define INST_DATA_BUS 31:0
 `define DATA_WIDTH 32
 `define DATA_BUS 31:0
+`define AXI_ADDR_WIDTH 32
+`define AXI_ADDR_BUS 31:0
+`define AXI_DATA_WIDTH 32
+`define AXI_DATA_BUS 31:0
+`define AXI_WSTRB_BUS 3:0
+`define AXI_RESP_BUS 1:0
 
 // alu
 `define ALU_ADD 4'b0000

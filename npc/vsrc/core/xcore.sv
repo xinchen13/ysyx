@@ -43,6 +43,16 @@ module xcore (
     logic wb_ex_ready;
     logic lsu_wb_valid;
 
+    // axi-lite interface (master: fetch)
+    logic [`AXI_ADDR_BUS] fetch_araddr;
+    logic fetch_arvalid;
+    logic fetch_arready;
+    logic [`AXI_DATA_BUS] fetch_rdata;
+    logic [`AXI_RESP_BUS] fetch_rresp;
+    logic fetch_rvalid;
+    logic fetch_rready;
+
+
     // wb
     logic [`DATA_BUS] wb_alu_result;
     logic [1:0] wb_reg_wdata_sel;
@@ -70,7 +80,46 @@ module xcore (
         .this_ready(fetch_ready),
         .next_ready(id_fetch_ready),
         .inst(fetch_inst),
-        .this_valid(fetch_valid)
+        .this_valid(fetch_valid),
+        .araddr(fetch_araddr),
+        .arvalid(fetch_arvalid),
+        .arready(fetch_arready),
+        .rdata(fetch_rdata),
+        .rresp(fetch_rresp),
+        .rvalid(fetch_rvalid),
+        .rready(fetch_rready),
+        .awaddr(),
+        .awvalid(),
+        .awready(),
+        .wdata(),
+        .wstrb(),
+        .wvalid(),
+        .wready(),
+        .bresp(),
+        .bvalid(),
+        .bready()
+    );
+
+    isram isram_u0 (
+        .clk(clk),
+        .rst_n(rst_n),
+        .araddr(fetch_araddr),
+        .arvalid(fetch_arvalid),
+        .arready(fetch_arready),
+        .rdata(fetch_rdata),
+        .rresp(fetch_rresp),
+        .rvalid(fetch_rvalid),
+        .rready(fetch_rready),
+        .awaddr(),
+        .awvalid(),
+        .awready(),
+        .wdata(),
+        .wstrb(),
+        .wvalid(),
+        .wready(),
+        .bresp(),
+        .bvalid(),
+        .bready()
     );
 
     fetch_id_pipe fetch_id_pipe_u0 (
@@ -147,6 +196,23 @@ module xcore (
         .wen(dmem_wen),
         .req(dmem_req),
         .rdata(dmem_rdata)
+        // .araddr(),
+        // .arvalid(),
+        // .arready(),
+        // .rdata(),
+        // .rresp(),
+        // .rvalid(),
+        // .rready(),
+        // .awaddr(),
+        // .awvalid(),
+        // .awready(),
+        // .wdata(),
+        // .wstrb(),
+        // .wvalid(),
+        // .wready(),
+        // .bresp(),
+        // .bvalid(),
+        // .bready()
     );
 
     lsu_wb_pipe lsu_wb_pipe_u0(
