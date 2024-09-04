@@ -23,7 +23,9 @@ Each of the five independent channels consists of a set of information signals a
 **一些需要维护的关系**:
 - A write response must always follow the last write transfer in a write transaction
 - Read data and responses must always follow the read request
-- Channel handshakes must conform to the dependencies:
 - When a Master issues a write request, it must be able to provide all write data for that transaction, without dependency on other transactions from that Master
 - When a Master has issued a write request and all write data, it must be able to accept all responses for that transaction, without dependency on other transactions from that Master
 - When a Master has issued a read request, it must be able to accept all read data for that transaction, without dependency on other transactions from that Master
+- A Master is permitted to wait for one transaction to complete before issuing another transaction request
+- A Slave is permitted to wait for one transaction to complete before accepting or issuing transfers for another transaction
+- Channel handshakes must conform to the dependencies: 具体见 AMBA AXI Protocol Specification 中 Dependencies between channel handshake signals 章节, 总结来说就是 VALID 信号不能依赖于 READY 信号
