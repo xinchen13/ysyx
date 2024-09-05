@@ -77,12 +77,12 @@ module isram (
         case (state)
             IDLE: begin
                 if (arvalid && arready) begin
-                    next_state = ADDR;  // 转移到ADDR状态，捕获地址
+                    next_state = WAIT;  // 转移到ADDR状态，捕获地址
                 end
             end
-            ADDR: begin
-                next_state = WAIT;      // 地址捕获完成，进入WAIT状态
-            end
+            // ADDR: begin
+            //     next_state = WAIT;      // 地址捕获完成，进入WAIT状态
+            // end
             WAIT: begin
                 if (sram_ack) begin
                     next_state = READ;  // SRAM读取完成，转移到READ状态
