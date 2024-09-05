@@ -12,7 +12,8 @@ module xcore (
     logic reg_wen;
     logic [1:0] reg_wdata_sel;
     logic [`DATA_BUS] reg_wdata;
-    logic [`INST_ADDR_BUS] dnpc;
+    logic [`INST_ADDR_BUS] ex_dnpc;
+    logic [`INST_ADDR_BUS] wb_dnpc;
     logic [`INST_ADDR_BUS] fetch_pc;
     logic [`INST_ADDR_BUS] id_pc;
     logic [`INST_DATA_BUS] fetch_inst;
@@ -32,7 +33,7 @@ module xcore (
     logic [`DATA_BUS] csr_rdata;
     logic [4:0] reg_rs1;
     logic fetch_valid;
-    logic dnpc_valid;
+    logic ex_valid;
     logic fetch_ready;
     logic pc_valid;
     logic id_ready;
@@ -60,15 +61,16 @@ module xcore (
     logic [`DATA_BUS] wb_dmem_rdata;
     logic wb_reg_wen;
     logic [`REG_ADDR_BUS] wb_reg_waddr;
+    logic wb_valid;
 
     pc_reg pc_reg_u0 (
         .clk(clk),
         .rst_n(rst_n),
-        .i_valid(dnpc_valid),
+        .i_valid(wb_valid),
         .i_ready(fetch_ex_ready),
         .o_valid(pc_valid),
         .o_ready(fetch_ready),
-        .dnpc(dnpc),
+        .dnpc(wb_dnpc),
         .fetch_pc(fetch_pc)
     );
 
@@ -170,8 +172,8 @@ module xcore (
         .csr_wen2(csr_wen2),
         .prev_valid(fetch_id_valid),
         .this_ready(id_ready),
-        .next_ready(fetch_ex_ready & wb_ex_ready),
-        .this_valid(dnpc_valid)
+        .next_ready(wb_ex_ready),
+        .this_valid(ex_valid)
     );
 
     ex ex_u0 (
@@ -182,7 +184,7 @@ module xcore (
         .imm_i(imm),
         .pc_adder_src2(pc_adder_src2),
         .alu_result(alu_result),
-        .dnpc(dnpc),
+        .dnpc(ex_dnpc),
         .csr_rdata(csr_rdata)
     );
 
@@ -218,7 +220,7 @@ module xcore (
     lsu_wb_pipe lsu_wb_pipe_u0(
         .clk(clk),
         .rst_n(rst_n),
-        .i_valid(dnpc_valid),
+        .i_valid(ex_valid),
         .i_ready(wb_ex_ready),
         .o_valid(lsu_wb_valid),
         .o_ready(wb_ready),
@@ -233,12 +235,16 @@ module xcore (
         .wb_csr_rdata(wb_csr_rdata),
         .wb_dmem_rdata(wb_dmem_rdata),
         .wb_reg_wen(wb_reg_wen),
-        .wb_reg_waddr(wb_reg_waddr)
+        .wb_reg_waddr(wb_reg_waddr),
+        .ex_dnpc(ex_dnpc),
+        .wb_dnpc(wb_dnpc)
     );
 
     wb wb_u0 (
         .prev_valid(lsu_wb_valid),
         .this_ready(wb_ready),
+        .next_ready(fetch_ex_ready),
+        .this_valid(wb_valid),
         .dmem_rdata(wb_dmem_rdata),
         .alu_result(wb_alu_result),
         .reg_wdata_sel(wb_reg_wdata_sel),

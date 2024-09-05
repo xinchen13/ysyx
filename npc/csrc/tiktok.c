@@ -120,7 +120,7 @@ void set_npc_state(int state, uint32_t pc, int halt_ret) {
 static void exec_once() {
     this_inst = dut->rootp->xcore__DOT__id_inst;
     this_pc = dut->rootp->xcore__DOT__id_pc;
-    dnpc = dut->rootp->xcore__DOT__dnpc;
+    dnpc = dut->rootp->xcore__DOT__ex_dnpc;
     #ifdef CONFIG_ITRACE
         itrace_inst = this_inst;
         itrace_pc = this_pc;

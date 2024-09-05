@@ -18,13 +18,17 @@ module lsu_wb_pipe (
     input logic lsu_reg_wen,
     input logic [`REG_ADDR_BUS] lsu_reg_waddr,
 
+    input logic [`INST_ADDR_BUS] ex_dnpc, 
+
     // to wb
     output logic [`DATA_BUS] wb_alu_result,
     output logic [1:0] wb_reg_wdata_sel,
     output logic [`DATA_BUS] wb_csr_rdata,
     output logic [`DATA_BUS] wb_dmem_rdata,
     output logic wb_reg_wen,
-    output logic [`REG_ADDR_BUS] wb_reg_waddr
+    output logic [`REG_ADDR_BUS] wb_reg_waddr,
+
+    output logic [`INST_ADDR_BUS] wb_dnpc
 );
 
     // data path
@@ -35,6 +39,7 @@ module lsu_wb_pipe (
     logic [`DATA_BUS] buffer_dmem_rdata;
     logic buffer_reg_wen;
     logic [`REG_ADDR_BUS] buffer_reg_waddr;
+    logic [`INST_ADDR_BUS] buffer_dnpc;
     // buffer reg
     always @ (posedge clk) begin
         if (!rst_n) begin
@@ -44,6 +49,7 @@ module lsu_wb_pipe (
             buffer_dmem_rdata <= `ZERO_WORD;
             buffer_reg_wen <= 1'b0;
             buffer_reg_waddr <= 5'b0;
+            buffer_dnpc <= `CPU_RESET_ADDR;
         end
         else if (data_buffer_wren) begin
             buffer_alu_result <= lsu_alu_result;
@@ -52,6 +58,7 @@ module lsu_wb_pipe (
             buffer_dmem_rdata <= lsu_dmem_rdata;
             buffer_reg_wen <= lsu_reg_wen;
             buffer_reg_waddr <= lsu_reg_waddr;
+            buffer_dnpc <= ex_dnpc;
         end
     end 
     logic data_out_wren; // EMPTY at start, so accept data.
@@ -62,6 +69,7 @@ module lsu_wb_pipe (
     logic [`DATA_BUS] selected_dmem_rdata;
     logic selected_reg_wen;
     logic [`REG_ADDR_BUS] selected_reg_waddr;
+    logic [`INST_ADDR_BUS] selected_dnpc;
     // select data out
     assign selected_alu_result = use_buffered_data ? buffer_alu_result : lsu_alu_result;
     assign selected_reg_wdata_sel = use_buffered_data ? buffer_reg_wdata_sel : lsu_reg_wdata_sel;
@@ -69,6 +77,7 @@ module lsu_wb_pipe (
     assign selected_dmem_rdata = use_buffered_data ? buffer_dmem_rdata : lsu_dmem_rdata;
     assign selected_reg_wen = use_buffered_data ? buffer_reg_wen : lsu_reg_wen;
     assign selected_reg_waddr = use_buffered_data ? buffer_reg_waddr : lsu_reg_waddr;
+    assign selected_dnpc = use_buffered_data ? buffer_dnpc : ex_dnpc;
 
     // pipeline reg
     always @ (posedge clk) begin
@@ -79,6 +88,7 @@ module lsu_wb_pipe (
             wb_dmem_rdata <= `ZERO_WORD;
             wb_reg_wen <= 1'b0;
             wb_reg_waddr <= 5'b0;
+            wb_dnpc <= `CPU_RESET_ADDR;
         end
         else if (data_out_wren) begin
             wb_alu_result <= selected_alu_result;
@@ -87,6 +97,7 @@ module lsu_wb_pipe (
             wb_dmem_rdata <= selected_dmem_rdata;
             wb_reg_wen <= selected_reg_wen;
             wb_reg_waddr <= selected_reg_waddr;
+            wb_dnpc <= selected_dnpc;
         end
     end
 
