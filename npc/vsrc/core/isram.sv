@@ -49,7 +49,6 @@ module isram (
     // end
 
     localparam [1:0] IDLE = 2'b00;
-    localparam [1:0] ADDR = 2'b01;
     localparam [1:0] WAIT = 2'b10;
     localparam [1:0] READ = 2'b11;
 
@@ -162,8 +161,6 @@ module isram (
             case (state)
                 IDLE: begin
                 end
-                ADDR: begin
-                end
                 WAIT: begin
                     if (sram_wait_counter == 3'b000) begin  // 模拟读取延迟
                         sram_rdata <= dpic_pmem_read(araddr);  // 从SRAM读取数据
@@ -178,6 +175,8 @@ module isram (
                     if (rvalid && rready) begin
                         sram_ack <= 1'b0; // 清除ack信号，准备下一次操作
                     end
+                end
+                default: begin
                 end
             endcase
         end
@@ -199,8 +198,6 @@ module isram (
                 IDLE: begin
                     arready = 1'b1; // 准备接收地址
                 end
-                ADDR: begin
-                end
                 WAIT: begin
                 end
                 READ: begin
@@ -208,6 +205,8 @@ module isram (
                         rvalid = 1'b1; // 读数据有效
                         rdata  = sram_rdata;  // 输出读取的数据
                     end
+                end
+                default: begin
                 end
             endcase
         end
