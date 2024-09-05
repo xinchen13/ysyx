@@ -171,7 +171,6 @@ module isram (
                     if (sram_wait_counter == 3'b000) begin  // 模拟读取延迟
                         sram_rdata <= dpic_pmem_read(araddr);  // 从SRAM读取数据
                         sram_ack   <= 1'b1;  // 读取完成信号
-                        
                     end 
                     else begin
                         sram_ack <= 1'b0;
@@ -189,9 +188,10 @@ module isram (
         end
     end
 
+    assign arready = (state == IDLE) ? 1'b1 : 1'b0;
+
     always @ (*) begin
         if (!rst_n) begin
-            arready   = 1'b1;
             rvalid    = 1'b0;
             rdata     = `INST_NOP;
             rresp     = 2'b00;
@@ -201,9 +201,6 @@ module isram (
             rdata     = `INST_NOP;
             rresp     = 2'b00;
             case (state)
-                IDLE: begin
-                    arready = 1'b1; // 准备接收地址
-                end
                 READ: begin
                     arready = 1'b0;
                     if (sram_ack) begin
@@ -212,7 +209,6 @@ module isram (
                     end
                 end
                 default: begin
-                    arready = 1'b0;
                 end
             endcase
         end
