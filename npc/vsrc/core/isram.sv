@@ -65,7 +65,7 @@ module isram (
         case (state)
             IDLE: begin
                 if (arvalid && arready) begin
-                    next_state = READ;  // 转移到ADDR状态，捕获地址
+                    next_state = READ;  // 转移到READ状态
                 end
             end
             READ: begin
@@ -92,7 +92,7 @@ module isram (
                 IDLE: begin
                     sram_wait_counter <= 3'b000; // 重置等待计数器
                     sram_ack <= 1'b0;
-                    lfsr <= {lfsr[1:0], lfsr[2] ^ lfsr[1]}; // LFSR 反馈多项式
+                    lfsr <= {lfsr[1:0], lfsr[2] ^ lfsr[1]}; // LFSR反馈多项式, 伪随机延迟
                 end
                 READ: begin
                     if (sram_wait_counter == lfsr) begin  // 模拟读取延迟
