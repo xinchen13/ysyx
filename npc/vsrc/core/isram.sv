@@ -160,11 +160,13 @@ module isram (
 
             case (state)
                 IDLE: begin
+                    sram_wait_counter <= 3'b000; // 重置等待计数器
                 end
                 WAIT: begin
-                    if (sram_wait_counter == 3'b100) begin  // 模拟读取延迟
+                    if (sram_wait_counter == 3'b000) begin  // 模拟读取延迟
                         sram_rdata <= dpic_pmem_read(araddr);  // 从SRAM读取数据
                         sram_ack   <= 1'b1;  // 读取完成信号
+                        
                     end else begin
                         sram_ack <= 1'b0;
                         sram_wait_counter <= sram_wait_counter + 1;
@@ -174,7 +176,6 @@ module isram (
                     if (rvalid && rready) begin
                         sram_ack <= 1'b0; // 清除ack信号，准备下一次操作
                     end
-                    sram_wait_counter <= 3'b000; // 重置等待计数器
                 end
                 default: begin
                 end
