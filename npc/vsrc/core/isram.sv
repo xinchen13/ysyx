@@ -174,7 +174,7 @@ module isram (
                 end
                 WAIT: begin
                     sram_en <= 1'b1;  // 保持SRAM读取使能
-                    if (sram_wait_counter == 3'b100) begin  // 模拟读取延迟
+                    if (sram_wait_counter == 3'b000) begin  // 模拟读取延迟
                         sram_rdata <= dpic_pmem_read(addr_reg);  // 从SRAM读取数据
                         sram_ack   <= 1'b1;  // 读取完成信号
                     end else begin
