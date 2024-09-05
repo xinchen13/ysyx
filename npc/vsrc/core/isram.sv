@@ -59,7 +59,7 @@ module isram (
     // sram
     logic sram_ack;                     // SRAM读取完成信号
     logic [2:0] sram_wait_counter;      // 用于模拟不确定延迟的计数器
-    logic sram_en;               // SRAM使能信号
+    // logic sram_en;               // SRAM使能信号
     logic [`AXI_DATA_BUS] sram_rdata;  // 从SRAM读取的数据
 
     // state reg
@@ -156,12 +156,12 @@ module isram (
     always @(posedge clk) begin
         if (!rst_n) begin
             addr_reg  <= `CPU_RESET_ADDR;
-            sram_en   <= 1'b0;
+            // sram_en   <= 1'b0;
             sram_ack  <= 1'b0;
             sram_wait_counter <= 3'b000;  // 初始化等待计数器
         end else begin
             // 默认信号赋值
-            sram_en <= 1'b0;
+            // sram_en <= 1'b0;
 
             case (state)
                 IDLE: begin
@@ -169,11 +169,11 @@ module isram (
                 ADDR: begin
                     // 捕获地址并启动SRAM读取
                     addr_reg  <= araddr;
-                    sram_en   <= 1'b1;  // 使能SRAM读取
+                    // sram_en   <= 1'b1;  // 使能SRAM读取
                     sram_wait_counter <= 3'b000; // 重置等待计数器
                 end
                 WAIT: begin
-                    sram_en <= 1'b1;  // 保持SRAM读取使能
+                    // sram_en <= 1'b1;  // 保持SRAM读取使能
                     if (sram_wait_counter == 3'b000) begin  // 模拟读取延迟
                         sram_rdata <= dpic_pmem_read(addr_reg);  // 从SRAM读取数据
                         sram_ack   <= 1'b1;  // 读取完成信号
