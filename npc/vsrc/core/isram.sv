@@ -104,25 +104,67 @@ module isram (
     logic [`AXI_ADDR_BUS] addr_reg;
 
     // out logic
+    // always @(posedge clk) begin
+    //     if (!rst_n) begin
+    //         arready   <= 1'b1;
+    //         rvalid    <= 1'b0;
+    //         rdata     <= `INST_NOP;
+    //         rresp     <= 2'b00; // OKAY响应
+    //         addr_reg  <= `CPU_RESET_ADDR;
+    //         sram_en   <= 1'b0;
+    //         sram_ack  <= 1'b0;
+    //         sram_wait_counter <= 3'b000;  // 初始化等待计数器
+    //     end else begin
+    //         // 默认信号赋值
+    //         arready <= 1'b0;
+    //         rvalid  <= 1'b0;
+    //         sram_en <= 1'b0;
+
+    //         case (state)
+    //             IDLE: begin
+    //                 arready <= 1'b1; // 准备接收地址
+    //             end
+    //             ADDR: begin
+    //                 // 捕获地址并启动SRAM读取
+    //                 addr_reg  <= araddr;
+    //                 sram_en   <= 1'b1;  // 使能SRAM读取
+    //                 sram_wait_counter <= 3'b000; // 重置等待计数器
+    //             end
+    //             WAIT: begin
+    //                 sram_en <= 1'b1;  // 保持SRAM读取使能
+    //                 if (sram_wait_counter == 3'b000) begin  // 模拟读取延迟
+    //                     sram_rdata <= dpic_pmem_read(addr_reg);  // 从SRAM读取数据
+    //                     sram_ack   <= 1'b1;  // 读取完成信号
+    //                 end else begin
+    //                     sram_ack <= 1'b0;
+    //                     sram_wait_counter <= sram_wait_counter + 1;
+    //                 end
+    //             end
+    //             READ: begin
+    //                 if (sram_ack) begin
+    //                     rvalid <= 1'b1; // 读数据有效
+    //                     rdata  <= sram_rdata;  // 输出读取的数据
+    //                 end
+    //                 if (rvalid && rready) begin
+    //                     sram_ack <= 1'b0; // 清除ack信号，准备下一次操作
+    //                 end
+    //             end
+    //         endcase
+    //     end
+    // end
+
     always @(posedge clk) begin
         if (!rst_n) begin
-            arready   <= 1'b1;
-            rvalid    <= 1'b0;
-            rdata     <= `INST_NOP;
-            rresp     <= 2'b00; // OKAY响应
             addr_reg  <= `CPU_RESET_ADDR;
             sram_en   <= 1'b0;
             sram_ack  <= 1'b0;
             sram_wait_counter <= 3'b000;  // 初始化等待计数器
         end else begin
             // 默认信号赋值
-            arready <= 1'b0;
-            rvalid  <= 1'b0;
             sram_en <= 1'b0;
 
             case (state)
                 IDLE: begin
-                    arready <= 1'b1; // 准备接收地址
                 end
                 ADDR: begin
                     // 捕获地址并启动SRAM读取
@@ -141,12 +183,38 @@ module isram (
                     end
                 end
                 READ: begin
-                    if (sram_ack) begin
-                        rvalid <= 1'b1; // 读数据有效
-                        rdata  <= sram_rdata;  // 输出读取的数据
-                    end
                     if (rvalid && rready) begin
                         sram_ack <= 1'b0; // 清除ack信号，准备下一次操作
+                    end
+                end
+            endcase
+        end
+    end
+
+    always @ (*) begin
+        if (!rst_n) begin
+            arready   = 1'b1;
+            rvalid    = 1'b0;
+            rdata     = `INST_NOP;
+            rresp     = 2'b00; // OKAY响应
+        end
+        else begin
+            arready = 1'b0;
+            rvalid  = 1'b0;
+            rdata     = `INST_NOP;
+            rresp     = 2'b00; // OKAY响应
+            case (state)
+                IDLE: begin
+                    arready = 1'b1; // 准备接收地址
+                end
+                ADDR: begin
+                end
+                WAIT: begin
+                end
+                READ: begin
+                    if (sram_ack) begin
+                        rvalid = 1'b1; // 读数据有效
+                        rdata  = sram_rdata;  // 输出读取的数据
                     end
                 end
             endcase
