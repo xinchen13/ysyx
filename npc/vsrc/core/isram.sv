@@ -49,21 +49,31 @@ module isram (
     // end
 
     logic done;
-    assign done = 1'b1;
+    logic read_in_progress;
 
-    assign arready = !arvalid;
+    assign arready = !arvalid || (done && rready);
     assign rvalid = arvalid & done;
 
     // DPI-C: pmem_read, pmem_write
     import "DPI-C" function int dpic_pmem_read(input int raddr);
 
     // sram
-    always @ (*) begin
+    always @ (posedge clk) begin
+        if (!rst_n) begin
+            read_in_progress <= 1'b0;
+            done <= 1'b0;
+        end
         if (arvalid) begin
-            rdata = dpic_pmem_read(araddr);
+            rdata <= dpic_pmem_read(araddr);
+            read_in_progress <= 1'b1; 
+        end
+        else if (read_in_progress) begin
+            done <= 1'b1;
+            read_in_progress <= 1'b0;
         end
         else begin
-            rdata = `INST_NOP;
+            rdata <= `INST_NOP;
+            done <= 1'b0;
         end
     end
 
