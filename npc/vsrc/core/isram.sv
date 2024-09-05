@@ -29,6 +29,16 @@ module isram (
     input logic bready
 );
 
+    logic [2:0] lfsr;
+    always @(posedge clk) begin
+        if (!rst_n) begin
+            lfsr <= 3'b001;
+        end 
+        else begin
+            lfsr <= {lfsr[1:0], lfsr[2] ^ lfsr[1]}; // LFSR 反馈多项式
+        end
+    end
+
 
     // DPI-C: pmem_read, pmem_write
     import "DPI-C" function int dpic_pmem_read(input int raddr);
@@ -92,7 +102,7 @@ module isram (
                     sram_ack <= 1'b0;
                 end
                 READ: begin
-                    if (sram_wait_counter == 3'b100) begin  // 模拟读取延迟
+                    if (sram_wait_counter == lfsr) begin  // 模拟读取延迟
                         rdata <= dpic_pmem_read(araddr);  // 从SRAM读取数据
                         sram_ack   <= 1'b1;  // 读取完成信号
                     end 
