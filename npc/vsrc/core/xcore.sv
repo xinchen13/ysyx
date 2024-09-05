@@ -171,7 +171,7 @@ module xcore (
         .csr_wen2(csr_wen2),
         .prev_valid(fetch_id_valid),
         .this_ready(id_ready),
-        .next_ready(fetch_ex_ready & wb_ex_ready),
+        .next_ready(wb_ex_ready),
         .this_valid(dnpc_valid)
     );
 
