@@ -61,7 +61,7 @@ module isram (
     always @ (posedge clk) begin
         if (!rst_n) begin
             read_in_progress <= 1'b0;
-            done <= 1'b0;
+            done <= 1'b1;
         end
         if (arvalid) begin
             rdata <= dpic_pmem_read(araddr);
@@ -72,7 +72,7 @@ module isram (
             read_in_progress <= 1'b0;
         end
         else begin
-            // rdata <= `INST_NOP;
+            rdata <= `INST_NOP;
             done <= 1'b0;
         end
     end
