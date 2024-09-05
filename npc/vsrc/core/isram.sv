@@ -51,7 +51,7 @@ module isram (
     logic done;
     assign done = 1'b1;
 
-    assign arready = !arvalid || (done && rready);
+    assign arready = !arvalid;
     assign rvalid = arvalid & done;
 
     // DPI-C: pmem_read, pmem_write
