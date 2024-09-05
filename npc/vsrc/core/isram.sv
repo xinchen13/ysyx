@@ -152,10 +152,6 @@ module isram (
     // end
 
 
-
-
-
-
     always @(posedge clk) begin
         if (!rst_n) begin
             sram_ack  <= 1'b0;
