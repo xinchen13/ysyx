@@ -39,7 +39,7 @@ module xcore (
     logic id_ready;
     logic fetch_id_valid;
     logic id_fetch_ready;
-    logic fetch_ex_ready;
+    logic fetch_wb_ready;
     logic wb_ready;
     logic wb_ex_ready;
     logic lsu_wb_valid;
@@ -67,7 +67,7 @@ module xcore (
         .clk(clk),
         .rst_n(rst_n),
         .i_valid(wb_valid),
-        .i_ready(fetch_ex_ready),
+        .i_ready(fetch_wb_ready),
         .o_valid(pc_valid),
         .o_ready(fetch_ready),
         .dnpc(wb_dnpc),
@@ -243,7 +243,7 @@ module xcore (
     wb wb_u0 (
         .prev_valid(lsu_wb_valid),
         .this_ready(wb_ready),
-        .next_ready(fetch_ex_ready),
+        .next_ready(fetch_wb_ready),
         .this_valid(wb_valid),
         .dmem_rdata(wb_dmem_rdata),
         .alu_result(wb_alu_result),
