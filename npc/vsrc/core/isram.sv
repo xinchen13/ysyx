@@ -129,9 +129,9 @@ module isram (
     // end
 
     assign arready = (state == IDLE) ? 1'b1 : 1'b0;
-    assign rdata = ((state == READ) && sram_ack) ? sram_rdata : `INST_NOP;
+    assign rdata = ((state == WAIT) && sram_ack) ? sram_rdata : `INST_NOP;
     assign rresp = 2'b00;
-    assign rvalid = ((state == READ) && sram_ack) ? 1'b1 : 1'b0;
+    assign rvalid = ((state == WAIT) && sram_ack) ? 1'b1 : 1'b0;
 
     // trans logic
     always @ (*) begin
