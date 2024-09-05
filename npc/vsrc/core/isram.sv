@@ -63,7 +63,7 @@ module isram (
             read_in_progress <= 1'b0;
             done <= 1'b1;
         end
-        if (arvalid) begin
+        if (arvalid & !read_in_progress) begin
             rdata <= dpic_pmem_read(araddr);
             read_in_progress <= 1'b1; 
         end
