@@ -60,11 +60,12 @@ module xcore (
     logic [`DATA_BUS] wb_dmem_rdata;
     logic wb_reg_wen;
     logic [`REG_ADDR_BUS] wb_reg_waddr;
+    logic wb_valid;
 
     pc_reg pc_reg_u0 (
         .clk(clk),
         .rst_n(rst_n),
-        .i_valid(dnpc_valid),
+        .i_valid(wb_valid),
         .i_ready(fetch_ex_ready),
         .o_valid(pc_valid),
         .o_ready(fetch_ready),
@@ -239,6 +240,8 @@ module xcore (
     wb wb_u0 (
         .prev_valid(lsu_wb_valid),
         .this_ready(wb_ready),
+        .next_ready(fetch_ex_ready),
+        .this_valid(wb_valid),
         .dmem_rdata(wb_dmem_rdata),
         .alu_result(wb_alu_result),
         .reg_wdata_sel(wb_reg_wdata_sel),
