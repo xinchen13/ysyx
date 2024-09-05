@@ -189,23 +189,24 @@ module isram (
     end
 
     assign arready = (state == IDLE) ? 1'b1 : 1'b0;
+    assign rdata = ((state == READ) && sram_ack) ? sram_rdata : `INST_NOP;
 
     always @ (*) begin
         if (!rst_n) begin
             rvalid    = 1'b0;
-            rdata     = `INST_NOP;
+            // rdata     = `INST_NOP;
             rresp     = 2'b00;
         end
         else begin
             rvalid    = 1'b0;
-            rdata     = `INST_NOP;
+            // rdata     = `INST_NOP;
             rresp     = 2'b00;
             case (state)
                 READ: begin
                     arready = 1'b0;
                     if (sram_ack) begin
                         rvalid = 1'b1; // 读数据有效
-                        rdata  = sram_rdata;  // 输出读取的数据
+                        // rdata  = sram_rdata;  // 输出读取的数据
                     end
                 end
                 default: begin
