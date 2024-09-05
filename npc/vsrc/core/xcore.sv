@@ -64,7 +64,7 @@ module xcore (
     pc_reg pc_reg_u0 (
         .clk(clk),
         .rst_n(rst_n),
-        .i_valid(dnpc_valid),
+        .i_valid(lsu_wb_valid),
         .i_ready(fetch_ex_ready),
         .o_valid(pc_valid),
         .o_ready(fetch_ready),

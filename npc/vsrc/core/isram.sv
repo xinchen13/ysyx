@@ -198,8 +198,8 @@ module isram (
             // addr_reg  <= `CPU_RESET_ADDR;
             sram_ack  <= 1'b0;
             sram_wait_counter <= 3'b000;  // 初始化等待计数器
-        end else begin
-
+        end 
+        else begin
             case (state)
                 IDLE: begin
                     sram_wait_counter <= 3'b000; // 重置等待计数器
@@ -209,7 +209,8 @@ module isram (
                         sram_rdata <= dpic_pmem_read(araddr);  // 从SRAM读取数据
                         sram_ack   <= 1'b1;  // 读取完成信号
                         
-                    end else begin
+                    end 
+                    else begin
                         sram_ack <= 1'b0;
                         sram_wait_counter <= sram_wait_counter + 1;
                     end
@@ -230,26 +231,25 @@ module isram (
             arready   = 1'b1;
             rvalid    = 1'b0;
             rdata     = `INST_NOP;
-            rresp     = 2'b00; // OKAY响应
+            rresp     = 2'b00;
         end
         else begin
-            arready = 1'b0;
-            rvalid  = 1'b0;
+            rvalid    = 1'b0;
             rdata     = `INST_NOP;
-            rresp     = 2'b00; // OKAY响应
+            rresp     = 2'b00;
             case (state)
                 IDLE: begin
                     arready = 1'b1; // 准备接收地址
                 end
-                WAIT: begin
-                end
                 READ: begin
+                    arready = 1'b0;
                     if (sram_ack) begin
                         rvalid = 1'b1; // 读数据有效
                         rdata  = sram_rdata;  // 输出读取的数据
                     end
                 end
                 default: begin
+                    arready = 1'b0;
                 end
             endcase
         end
