@@ -49,8 +49,7 @@ module isram (
     // end
 
     localparam [1:0] IDLE = 2'b00;
-    localparam [1:0] WAIT = 2'b01;
-    localparam [1:0] READ = 2'b10;
+    localparam [1:0] READ = 2'b01;
 
     logic [1:0] state;
     logic [1:0] next_state;
@@ -129,9 +128,9 @@ module isram (
     // end
 
     assign arready = (state == IDLE) ? 1'b1 : 1'b0;
-    assign rdata = ((state == WAIT) && sram_ack) ? sram_rdata : `INST_NOP;
+    assign rdata = ((state == READ) && sram_ack) ? sram_rdata : `INST_NOP;
     assign rresp = 2'b00;
-    assign rvalid = ((state == WAIT) && sram_ack) ? 1'b1 : 1'b0;
+    assign rvalid = ((state == READ) && sram_ack) ? 1'b1 : 1'b0;
 
     // trans logic
     always @ (*) begin
@@ -139,10 +138,10 @@ module isram (
         case (state)
             IDLE: begin
                 if (arvalid && arready) begin
-                    next_state = WAIT;  // 转移到ADDR状态，捕获地址
+                    next_state = READ;  // 转移到ADDR状态，捕获地址
                 end
             end
-            WAIT: begin
+            READ: begin
                 if (rvalid && rready) begin
                     next_state = IDLE;  // 数据传输完成，回到IDLE状态
                 end
@@ -166,7 +165,7 @@ module isram (
                     sram_wait_counter <= 3'b000; // 重置等待计数器
                     sram_ack <= 1'b0;
                 end
-                WAIT: begin
+                READ: begin
                     if (sram_wait_counter == 3'b000) begin  // 模拟读取延迟
                         sram_rdata <= dpic_pmem_read(araddr);  // 从SRAM读取数据
                         sram_ack   <= 1'b1;  // 读取完成信号
