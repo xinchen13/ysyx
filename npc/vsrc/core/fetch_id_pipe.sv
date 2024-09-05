@@ -52,9 +52,9 @@ module fetch_id_pipe (
             id_pc <= selected_pc;
             id_inst <= selected_inst;
         end
-        else begin
-            id_inst <= `INST_NOP;
-        end
+        // else begin
+        //     id_inst <= `INST_NOP;
+        // end
     end
 
 
