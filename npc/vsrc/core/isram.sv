@@ -30,15 +30,6 @@ module isram (
 );
 
     logic [2:0] lfsr;
-    always @(posedge clk) begin
-        if (!rst_n) begin
-            lfsr <= 3'b001;
-        end 
-        else begin
-            lfsr <= {lfsr[1:0], lfsr[2] ^ lfsr[1]}; // LFSR 反馈多项式
-        end
-    end
-
 
     // DPI-C: pmem_read, pmem_write
     import "DPI-C" function int dpic_pmem_read(input int raddr);
@@ -94,12 +85,14 @@ module isram (
             sram_ack  <= 1'b0;
             sram_wait_counter <= 3'b000;  // 初始化等待计数器
             rdata <= `INST_NOP;
+            lfsr <= 3'b001;
         end 
         else begin
             case (state)
                 IDLE: begin
                     sram_wait_counter <= 3'b000; // 重置等待计数器
                     sram_ack <= 1'b0;
+                    lfsr <= {lfsr[1:0], lfsr[2] ^ lfsr[1]}; // LFSR 反馈多项式
                 end
                 READ: begin
                     if (sram_wait_counter == lfsr) begin  // 模拟读取延迟
