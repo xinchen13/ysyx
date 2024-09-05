@@ -162,7 +162,7 @@ module isram (
         else begin
             case (state)
                 IDLE: begin
-                    sram_wait_counter <= 3'b101; // 重置等待计数器
+                    sram_wait_counter <= 3'b000; // 重置等待计数器
                     sram_ack <= 1'b0;
                 end
                 READ: begin
