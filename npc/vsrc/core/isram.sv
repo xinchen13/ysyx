@@ -72,7 +72,7 @@ module isram (
             read_in_progress <= 1'b0;
         end
         else begin
-            rdata <= `INST_NOP;
+            // rdata <= `INST_NOP;
             done <= 1'b0;
         end
     end
