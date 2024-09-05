@@ -102,7 +102,7 @@ module isram (
                     sram_ack <= 1'b0;
                 end
                 READ: begin
-                    if (sram_wait_counter == lfsr) begin  // 模拟读取延迟
+                    if (sram_wait_counter == 3'b000) begin  // 模拟读取延迟
                         rdata <= dpic_pmem_read(araddr);  // 从SRAM读取数据
                         sram_ack   <= 1'b1;  // 读取完成信号
                     end 
