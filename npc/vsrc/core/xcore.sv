@@ -41,8 +41,11 @@ module xcore (
     logic id_fetch_ready;
     logic fetch_wb_ready;
     logic wb_ready;
-    logic wb_ex_ready;
+    logic wb_lsu_ready;
     logic lsu_wb_valid;
+    logic [`AXI_WSTRB_BUS] wmask;
+    logic lsu_ex_ready;
+    logic lsu_valid;
 
     // axi-lite interface (master: fetch)
     logic [`AXI_ADDR_BUS] fetch_araddr;
@@ -53,7 +56,6 @@ module xcore (
     logic fetch_rvalid;
     logic fetch_rready;
 
-
     // wb
     logic [`DATA_BUS] wb_alu_result;
     logic [1:0] wb_reg_wdata_sel;
@@ -62,6 +64,25 @@ module xcore (
     logic wb_reg_wen;
     logic [`REG_ADDR_BUS] wb_reg_waddr;
     logic wb_valid;
+
+    // axi-lite interface (master: lsu)
+    logic [`AXI_ADDR_BUS] lsu_araddr;
+    logic lsu_arvalid;
+    logic lsu_arready;
+    logic [`AXI_DATA_BUS] lsu_rdata;
+    logic [`AXI_RESP_BUS] lsu_rresp;
+    logic lsu_rvalid;
+    logic lsu_rready;
+    logic [`AXI_ADDR_BUS] lsu_awaddr;
+    logic lsu_awvalid;
+    logic lsu_awready;
+    logic [`AXI_DATA_BUS] lsu_wdata;
+    logic [`AXI_WSTRB_BUS] lsu_wstrb;
+    logic lsu_wvalid;
+    logic lsu_wready;
+    logic [`AXI_RESP_BUS] lsu_bresp;
+    logic lsu_bvalid;
+    logic lsu_bready;
 
     pc_reg pc_reg_u0 (
         .clk(clk),
@@ -156,6 +177,7 @@ module xcore (
         .reg_rdata2(reg_rdata2),
         .reg_rs1(reg_rs1),
         .csr_rdata(csr_rdata),
+        .wmask(wmask),
         .alu_src1(alu_src1),
         .alu_src2(alu_src2),
         .alu_ctrl(alu_ctrl),
@@ -172,7 +194,7 @@ module xcore (
         .csr_wen2(csr_wen2),
         .prev_valid(fetch_id_valid),
         .this_ready(id_ready),
-        .next_ready(wb_ex_ready),
+        .next_ready(lsu_ex_ready),
         .this_valid(ex_valid)
     );
 
@@ -192,36 +214,63 @@ module xcore (
         .clk(clk),
         .rst_n(rst_n),
         .inst(id_inst),
+        .wmask(wmask),
         .raddr(alu_result),
         .waddr(alu_result),
-        .wdata(reg_rdata2),
+        .ex_wdata(reg_rdata2),
         .wen(dmem_wen),
         .req(dmem_req),
-        .rdata(dmem_rdata)
-        // .araddr(),
-        // .arvalid(),
-        // .arready(),
-        // .rdata(),
-        // .rresp(),
-        // .rvalid(),
-        // .rready(),
-        // .awaddr(),
-        // .awvalid(),
-        // .awready(),
-        // .wdata(),
-        // .wstrb(),
-        // .wvalid(),
-        // .wready(),
-        // .bresp(),
-        // .bvalid(),
-        // .bready()
+        .lsu_rdata(dmem_rdata),
+        .prev_valid(ex_valid),
+        .this_ready(lsu_ex_ready),
+        .next_ready(wb_lsu_ready),
+        .this_valid(lsu_valid),
+        .araddr(lsu_araddr),
+        .arvalid(lsu_arvalid),
+        .arready(lsu_arready),
+        .rdata(lsu_rdata),
+        .rresp(lsu_rresp),
+        .rvalid(lsu_rvalid),
+        .rready(lsu_rready),
+        .awaddr(lsu_awaddr),
+        .awvalid(lsu_awvalid),
+        .awready(lsu_awready),
+        .wdata(lsu_wdata),
+        .wstrb(lsu_wstrb),
+        .wvalid(lsu_wvalid),
+        .wready(lsu_wready),
+        .bresp(lsu_bresp),
+        .bvalid(lsu_bvalid),
+        .bready(lsu_bready)
+    );
+
+    dsram dsram_u0 (
+        .clk(clk),
+        .rst_n(rst_n),
+        .araddr(lsu_araddr),
+        .arvalid(lsu_arvalid),
+        .arready(lsu_arready),
+        .rdata(lsu_rdata),
+        .rresp(lsu_rresp),
+        .rvalid(lsu_rvalid),
+        .rready(lsu_rready),
+        .awaddr(lsu_awaddr),
+        .awvalid(lsu_awvalid),
+        .awready(lsu_awready),
+        .wdata(lsu_wdata),
+        .wstrb(lsu_wstrb),
+        .wvalid(lsu_wvalid),
+        .wready(lsu_wready),
+        .bresp(lsu_bresp),
+        .bvalid(lsu_bvalid),
+        .bready(lsu_bready)
     );
 
     lsu_wb_pipe lsu_wb_pipe_u0(
         .clk(clk),
         .rst_n(rst_n),
-        .i_valid(ex_valid),
-        .i_ready(wb_ex_ready),
+        .i_valid(lsu_valid),
+        .i_ready(wb_lsu_ready),
         .o_valid(lsu_wb_valid),
         .o_ready(wb_ready),
         .lsu_alu_result(alu_result),
