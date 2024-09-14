@@ -119,7 +119,7 @@ module dsram (
                     end
                 end
                 WRITE: begin
-                    if (wvalid && wready && (sram_wait_counter == lfsr)) begin
+                    if (wvalid && (sram_wait_counter == lfsr)) begin
                         dpic_pmem_write(awaddr, wdata, {
                             4'b0, wstrb[3], wstrb[2], wstrb[1], wstrb[0]
                         });
