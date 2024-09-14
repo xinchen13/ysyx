@@ -4,7 +4,6 @@ module lsu (
     input logic clk,
     input logic rst_n,
     input logic [`INST_DATA_BUS] inst,
-    input logic [`AXI_WSTRB_BUS] wmask,
     input logic [`DATA_BUS] raddr,
     input logic [`DATA_BUS] waddr,
     input logic [`DATA_BUS] ex_wdata,
@@ -88,9 +87,31 @@ module lsu (
     assign woffset = {3'b0, waddr[1:0]};
     assign wdata_offset = ex_wdata << (woffset << 3);
 
-    // wmask offset
-    logic [`AXI_WSTRB_BUS] wmask_offset;
-    assign wmask_offset = wmask << waddr[1:0];
+    // wmask
+    logic [7:0] wmask;
+    always @ (*) begin
+        case (opcode)
+            `S_TYPE_OPCODE: begin
+                case (funct3)
+                    3'b000: begin
+                        wmask = 8'b00000001 << woffset;
+                    end
+                    3'b001: begin
+                        wmask = 8'b00000011 << woffset;
+                    end
+                    3'b010: begin
+                        wmask = 8'b00001111 << woffset;
+                    end
+                    default: begin
+                        wmask = 8'b00000000;
+                    end
+                endcase
+            end
+            default: begin
+                wmask = 8'b00000000;
+            end
+        endcase
+    end
 
     // axi signals
     assign araddr = raddr;
@@ -99,10 +120,10 @@ module lsu (
     assign awaddr = waddr;
     assign awvalid = wen & prev_valid;
     assign wdata = wdata_offset;
-    assign wstrb = wmask_offset;
+    assign wstrb = wmask[3:0];
     assign wvalid = prev_valid;
     assign this_ready = arready & awready;
-    assign this_valid = bvalid | rvalid | ((~arvalid) & (~awvalid) & prev_valid);
+    assign this_valid = bvalid | rvalid | ((~arvalid) & (~awvalid) & prev_valid); // read done / write done / write back valid
     assign bready = next_ready;
 
 endmodule

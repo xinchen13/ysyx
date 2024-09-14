@@ -26,7 +26,6 @@ module id (
     input logic [`DATA_BUS] csr_rdata,
 
     // to exu (mem, wb)
-    output logic [`AXI_WSTRB_BUS] wmask,
     output logic [`DATA_BUS] alu_src1,
     output logic [`DATA_BUS] alu_src2,
     output logic [3:0] alu_ctrl,
@@ -350,31 +349,6 @@ module id (
             end
             default: begin
                 reg_wdata_sel = 2'b00;
-            end
-        endcase
-    end
-
-    // wmask
-    always @ (*) begin
-        case (opcode)
-            `S_TYPE_OPCODE: begin
-                case (funct3)
-                    3'b000: begin
-                        wmask = 4'b0001;
-                    end
-                    3'b001: begin
-                        wmask = 4'b0011;
-                    end
-                    3'b010: begin
-                        wmask = 4'b1111;
-                    end
-                    default: begin
-                        wmask = 4'b0000;
-                    end
-                endcase
-            end
-            default: begin
-                wmask = 4'b0000;
             end
         endcase
     end
