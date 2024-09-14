@@ -37,7 +37,7 @@ module dsram (
     always @ (posedge clk) begin
         if (awvalid) begin
             dpic_pmem_write(awaddr, wdata, {
-                wstrb[3], wstrb[3], wstrb[2], wstrb[2], wstrb[1], wstrb[1], wstrb[0], wstrb[0]
+                4'b0, wstrb[3], wstrb[2], wstrb[1], wstrb[0]
             });
         end
     end
