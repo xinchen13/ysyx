@@ -73,7 +73,7 @@ module dsram (
                 if (arvalid && arready) begin
                     next_state = READ;  // 转移到READ状态
                 end
-                else if (awvalid && awready) begin
+                else if (awvalid && awready && wvalid && wready) begin
                     next_state = WRITE;
                 end
             end
@@ -119,7 +119,7 @@ module dsram (
                     end
                 end
                 WRITE: begin
-                    if (wvalid && (sram_wait_counter == lfsr)) begin
+                    if (sram_wait_counter == lfsr) begin
                         dpic_pmem_write(awaddr, wdata, {
                             4'b0, wstrb[3], wstrb[2], wstrb[1], wstrb[0]
                         });
