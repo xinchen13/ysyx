@@ -43,7 +43,6 @@ module xcore (
     logic wb_ready;
     logic wb_lsu_ready;
     logic lsu_wb_valid;
-    logic [`AXI_WSTRB_BUS] wmask;
     logic lsu_ex_ready;
     logic lsu_valid;
 
@@ -177,7 +176,6 @@ module xcore (
         .reg_rdata2(reg_rdata2),
         .reg_rs1(reg_rs1),
         .csr_rdata(csr_rdata),
-        .wmask(wmask),
         .alu_src1(alu_src1),
         .alu_src2(alu_src2),
         .alu_ctrl(alu_ctrl),
@@ -214,7 +212,6 @@ module xcore (
         .clk(clk),
         .rst_n(rst_n),
         .inst(id_inst),
-        .wmask(wmask),
         .raddr(alu_result),
         .waddr(alu_result),
         .ex_wdata(reg_rdata2),
