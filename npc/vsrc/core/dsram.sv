@@ -50,11 +50,11 @@ module dsram (
         end
     end
 
-    // assign arready = rready;
-    // assign awready = bready;
-    assign arready = 1'b1;
-    assign awready = 1'b1;
+    assign arready = rready;
+    assign awready = bready;
     assign rvalid = arvalid;
     assign bvalid = awvalid;
+
+    assign wready = 1'b1;
 
 endmodule
