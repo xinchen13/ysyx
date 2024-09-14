@@ -102,7 +102,7 @@ module lsu (
     assign wstrb = wmask_offset;
     assign wvalid = prev_valid;
     assign this_ready = arready & awready;
-    assign this_valid = bvalid | rvalid;
+    assign this_valid = bvalid | rvalid | ((~arvalid) & (~awvalid) & prev_valid);
     assign bready = next_ready;
 
 endmodule
