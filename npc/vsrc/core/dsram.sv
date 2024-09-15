@@ -63,7 +63,7 @@ module dsram (
     assign bresp = 2'b00;
     assign rvalid = ((state == READ) && sram_ack) ? 1'b1 : 1'b0;
     assign bvalid = ((state == WRITE) && sram_ack) ? 1'b1 : 1'b0;
-    assign wready = (state == WRITE) ? 1'b1 : 1'b0;
+    assign wready = (state == IDLE) ? 1'b1 : 1'b0;
 
     // trans logic
     always @ (*) begin
@@ -73,7 +73,7 @@ module dsram (
                 if (arvalid && arready) begin
                     next_state = READ;  // 转移到READ状态
                 end
-                else if (awvalid && awready && wvalid && wready) begin
+                else if (awvalid && awready) begin
                     next_state = WRITE;
                 end
             end
@@ -112,6 +112,7 @@ module dsram (
                     if (sram_wait_counter == lfsr) begin  // 模拟读取延迟
                         rdata <= dpic_pmem_read(araddr);  // 从SRAM读取数据
                         sram_ack   <= 1'b1;  // 读取完成信号
+                        sram_wait_counter <= 3'b000; // 重置等待计数器
                     end 
                     else begin
                         sram_ack <= 1'b0;
@@ -119,10 +120,11 @@ module dsram (
                     end
                 end
                 WRITE: begin
-                    if (sram_wait_counter == lfsr) begin
+                    if ((sram_wait_counter == lfsr)) begin
                         dpic_pmem_write(awaddr, wdata, {
                             4'b0, wstrb[3], wstrb[2], wstrb[1], wstrb[0]
                         });
+                        sram_wait_counter <= 3'b000; // 重置等待计数器
                         sram_ack <= 1'b1;
                     end
                     else begin
