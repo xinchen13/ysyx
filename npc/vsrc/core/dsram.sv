@@ -63,7 +63,7 @@ module dsram (
     assign bresp = 2'b00;
     assign rvalid = ((state == READ) && sram_ack) ? 1'b1 : 1'b0;
     assign bvalid = ((state == WRITE) && sram_ack) ? 1'b1 : 1'b0;
-    assign wready = (state == WRITE) ? 1'b1 : 1'b0;
+    assign wready = (state == WRITE) ? 1'b0 : 1'b1;
 
     // trans logic
     always @ (*) begin
@@ -73,7 +73,7 @@ module dsram (
                 if (arvalid && arready) begin
                     next_state = READ;  // 转移到READ状态
                 end
-                else if (awvalid && awready && wvalid && wready) begin
+                else if (awvalid && awready) begin
                     next_state = WRITE;
                 end
             end
