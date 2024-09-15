@@ -63,7 +63,7 @@ module dsram (
     assign bresp = 2'b00;
     assign rvalid = ((state == READ) && sram_ack) ? 1'b1 : 1'b0;
     assign bvalid = ((state == WRITE) && sram_ack) ? 1'b1 : 1'b0;
-    assign wready = (state != WRITE);
+    assign wready = 1'b1;
 
     // trans logic
     always @ (*) begin
