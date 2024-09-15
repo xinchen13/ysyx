@@ -123,7 +123,7 @@ module lsu (
     assign wstrb = wmask[3:0];
     assign wvalid = wen & prev_valid;
     assign this_ready = arready & awready & wready;
-    assign this_valid = bvalid | rvalid | ((~bvalid) & (~rvalid) & prev_valid); // read done / write done / write back valid
+    assign this_valid = bvalid | rvalid | ((~req) & (~wen) & prev_valid); // read done / write done / write back valid
     assign bready = next_ready;
 
 endmodule
