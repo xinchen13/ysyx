@@ -122,7 +122,7 @@ module lsu (
     assign wdata = wdata_offset;
     assign wstrb = wmask[3:0];
     assign wvalid = prev_valid;
-    assign this_ready = arready & awready;
+    assign this_ready = arready & awready & wready;
     assign this_valid = bvalid | rvalid | ((~req) & (~wen) & prev_valid); // read done / write done / write back valid
     assign bready = next_ready;
 
