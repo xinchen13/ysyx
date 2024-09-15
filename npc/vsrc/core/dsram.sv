@@ -63,7 +63,7 @@ module dsram (
     assign bresp = 2'b00;
     assign rvalid = ((state == READ) && sram_ack) ? 1'b1 : 1'b0;
     assign bvalid = ((state == WRITE) && sram_ack) ? 1'b1 : 1'b0;
-    assign wready = (state == IDLE) ? 1'b1 : 1'b0;
+    assign wready = 1'b1;
 
     // trans logic
     always @ (*) begin
@@ -119,7 +119,7 @@ module dsram (
                     end
                 end
                 WRITE: begin
-                    if (sram_wait_counter == lfsr) begin
+                    if ((sram_wait_counter == lfsr) && wvalid && wready) begin
                         dpic_pmem_write(awaddr, wdata, {
                             4'b0, wstrb[3], wstrb[2], wstrb[1], wstrb[0]
                         });
