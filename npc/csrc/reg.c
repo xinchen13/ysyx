@@ -35,10 +35,10 @@ word_t isa_reg_str2val(const char *s, bool *success) {
 
 // for monitor & difftest
 void isa_reg_update() {
-    core.pc = dut->rootp->xcore__DOT__id_pc;
+    core.pc = dut->rootp->soc_top__DOT__xcore_u0__DOT__id_pc;
     int gpr_count = MUXDEF(CONFIG_RVE, 16, 32);
     for (int i = 0; i < gpr_count; i++) {
-        core.gpr[i] = dut->rootp->xcore__DOT__regfile_u0__DOT__regs[i];
+        core.gpr[i] = dut->rootp->soc_top__DOT__xcore_u0__DOT__regfile_u0__DOT__regs[i];
     }
 }
 

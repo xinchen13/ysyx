@@ -1,6 +1,6 @@
 `include "../inc/defines.svh"
 
-module dsram (
+module sram (
     input logic clk,
     input logic rst_n,
 
@@ -33,7 +33,7 @@ module dsram (
     import "DPI-C" function int dpic_pmem_read(input int raddr);
     import "DPI-C" function void dpic_pmem_write(input int waddr, input int wdata, input byte wmask);
 
-    logic [2:0] lfsr;
+    logic [2:0] lfsr;   // random delay
 
     localparam [1:0] IDLE = 2'b00;
     localparam [1:0] READ = 2'b01;
@@ -139,33 +139,3 @@ module dsram (
     end
 
 endmodule
-
-
-
-
-    // // DPI-C: pmem_read, pmem_write
-    // import "DPI-C" function int dpic_pmem_read(input int raddr);
-    // import "DPI-C" function void dpic_pmem_write(input int waddr, input int wdata, input byte wmask);
-
-    // // sram
-    // always @ (posedge clk) begin
-    //     if (awvalid) begin
-    //         dpic_pmem_write(awaddr, wdata, {
-    //             4'b0, wstrb[3], wstrb[2], wstrb[1], wstrb[0]
-    //         });
-    //     end
-    // end
-    // always @ (*) begin
-    //     if (arvalid) begin
-    //         rdata = dpic_pmem_read(araddr);
-    //     end
-    //     else begin
-    //         rdata = 0;
-    //     end
-    // end
-
-    // assign arready = rready;
-    // assign awready = bready;
-    // assign rvalid = arvalid;
-    // assign bvalid = awvalid;
-    // assign wready = 1'b1;

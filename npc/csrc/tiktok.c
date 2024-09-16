@@ -83,7 +83,7 @@ static void trace_and_difftest() {
         }
         difftest_step(difftest_pc, dnpc);
         // skip device inst
-        if ((uint32_t)dut->rootp->xcore__DOT__wb_alu_result == (0xa00003f8)) {
+        if ((uint32_t)dut->rootp->soc_top__DOT__xcore_u0__DOT__wb_alu_result == (0xa00003f8)) {
             difftest_skip_ref();
         }
     #endif
@@ -118,9 +118,9 @@ void set_npc_state(int state, uint32_t pc, int halt_ret) {
 }
 
 static void exec_once() {
-    this_inst = dut->rootp->xcore__DOT__id_inst;
-    this_pc = dut->rootp->xcore__DOT__id_pc;
-    dnpc = dut->rootp->xcore__DOT__ex_dnpc;
+    this_inst = dut->rootp->soc_top__DOT__xcore_u0__DOT__id_inst;
+    this_pc = dut->rootp->soc_top__DOT__xcore_u0__DOT__id_pc;
+    dnpc = dut->rootp->soc_top__DOT__xcore_u0__DOT__ex_dnpc;
     #ifdef CONFIG_ITRACE
         itrace_inst = this_inst;
         itrace_pc = this_pc;
@@ -134,7 +134,7 @@ static void exec_once() {
 
     #ifdef CONFIG_DIFFTEST
         difftest_pc = this_pc;
-        retire_pc = dut->rootp->xcore__DOT__lsu_wb_valid ? true : false;
+        retire_pc = dut->rootp->soc_top__DOT__xcore_u0__DOT__lsu_wb_valid ? true : false;
     #endif
 
     dut->clk ^= 1; dut->eval();  // negedge

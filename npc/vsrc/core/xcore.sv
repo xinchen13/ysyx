@@ -2,7 +2,42 @@
 
 module xcore (
     input logic clk,
-    input logic rst_n
+    input logic rst_n,
+
+    // axi-lite interface (fetch: master0)
+    // AR
+    output logic [`AXI_ADDR_BUS] fetch_araddr,
+    output logic fetch_arvalid,
+    input logic fetch_arready,
+    // R
+    input logic [`AXI_DATA_BUS] fetch_rdata,
+    input logic [`AXI_RESP_BUS] fetch_rresp,
+    input logic fetch_rvalid,
+    output logic fetch_rready,
+
+    // axi-lite interface (lsu: master1)
+    // AR
+    output logic [`AXI_ADDR_BUS] lsu_araddr,
+    output logic lsu_arvalid,
+    input logic lsu_arready,
+    // R
+    input logic [`AXI_DATA_BUS] lsu_rdata,
+    input logic [`AXI_RESP_BUS] lsu_rresp,
+    input logic lsu_rvalid,
+    output logic lsu_rready,
+    // AW
+    output logic [`AXI_ADDR_BUS] lsu_awaddr,
+    output logic lsu_awvalid,
+    input logic lsu_awready,
+    // W
+    output logic [`AXI_DATA_BUS] lsu_wdata,
+    output logic [`AXI_WSTRB_BUS] lsu_wstrb,
+    output logic lsu_wvalid,
+    input logic lsu_wready,
+    // B
+    input logic [`AXI_RESP_BUS] lsu_bresp,
+    input logic lsu_bvalid,
+    output logic lsu_bready
 );
     logic [`DATA_BUS] reg_rdata1;
     logic [`DATA_BUS] reg_rdata2;
@@ -46,15 +81,6 @@ module xcore (
     logic lsu_ex_ready;
     logic lsu_valid;
 
-    // axi-lite interface (master: fetch)
-    logic [`AXI_ADDR_BUS] fetch_araddr;
-    logic fetch_arvalid;
-    logic fetch_arready;
-    logic [`AXI_DATA_BUS] fetch_rdata;
-    logic [`AXI_RESP_BUS] fetch_rresp;
-    logic fetch_rvalid;
-    logic fetch_rready;
-
     // wb
     logic [`DATA_BUS] wb_alu_result;
     logic [1:0] wb_reg_wdata_sel;
@@ -64,24 +90,6 @@ module xcore (
     logic [`REG_ADDR_BUS] wb_reg_waddr;
     logic wb_valid;
 
-    // axi-lite interface (master: lsu)
-    logic [`AXI_ADDR_BUS] lsu_araddr;
-    logic lsu_arvalid;
-    logic lsu_arready;
-    logic [`AXI_DATA_BUS] lsu_rdata;
-    logic [`AXI_RESP_BUS] lsu_rresp;
-    logic lsu_rvalid;
-    logic lsu_rready;
-    logic [`AXI_ADDR_BUS] lsu_awaddr;
-    logic lsu_awvalid;
-    logic lsu_awready;
-    logic [`AXI_DATA_BUS] lsu_wdata;
-    logic [`AXI_WSTRB_BUS] lsu_wstrb;
-    logic lsu_wvalid;
-    logic lsu_wready;
-    logic [`AXI_RESP_BUS] lsu_bresp;
-    logic lsu_bvalid;
-    logic lsu_bready;
 
     pc_reg pc_reg_u0 (
         .clk(clk),
@@ -103,28 +111,6 @@ module xcore (
         .next_ready(id_fetch_ready),
         .inst(fetch_inst),
         .this_valid(fetch_valid),
-        .araddr(fetch_araddr),
-        .arvalid(fetch_arvalid),
-        .arready(fetch_arready),
-        .rdata(fetch_rdata),
-        .rresp(fetch_rresp),
-        .rvalid(fetch_rvalid),
-        .rready(fetch_rready),
-        .awaddr(),
-        .awvalid(),
-        .awready(),
-        .wdata(),
-        .wstrb(),
-        .wvalid(),
-        .wready(),
-        .bresp(),
-        .bvalid(),
-        .bready()
-    );
-
-    isram isram_u0 (
-        .clk(clk),
-        .rst_n(rst_n),
         .araddr(fetch_araddr),
         .arvalid(fetch_arvalid),
         .arready(fetch_arready),
@@ -222,28 +208,6 @@ module xcore (
         .this_ready(lsu_ex_ready),
         .next_ready(wb_lsu_ready),
         .this_valid(lsu_valid),
-        .araddr(lsu_araddr),
-        .arvalid(lsu_arvalid),
-        .arready(lsu_arready),
-        .rdata(lsu_rdata),
-        .rresp(lsu_rresp),
-        .rvalid(lsu_rvalid),
-        .rready(lsu_rready),
-        .awaddr(lsu_awaddr),
-        .awvalid(lsu_awvalid),
-        .awready(lsu_awready),
-        .wdata(lsu_wdata),
-        .wstrb(lsu_wstrb),
-        .wvalid(lsu_wvalid),
-        .wready(lsu_wready),
-        .bresp(lsu_bresp),
-        .bvalid(lsu_bvalid),
-        .bready(lsu_bready)
-    );
-
-    dsram dsram_u0 (
-        .clk(clk),
-        .rst_n(rst_n),
         .araddr(lsu_araddr),
         .arvalid(lsu_arvalid),
         .arready(lsu_arready),

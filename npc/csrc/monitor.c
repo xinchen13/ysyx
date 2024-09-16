@@ -13,7 +13,7 @@ static char *wave_file = NULL;
 
 extern FILE *log_fp;
 extern VerilatedVcdC* tfp;
-extern Vxcore* dut;
+extern Vsoc_top* dut;
 
 static void init_wave_dump () {
     if (wave_file != NULL) {

@@ -1,4 +1,4 @@
-TOPNAME = xcore
+TOPNAME = soc_top
 
 # dump dir/files
 NPC_BUILD_DIR = ./build
