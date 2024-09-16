@@ -82,7 +82,7 @@ module arbiter (
     logic [1:0] grant;
     logic [1:0] next_grant;
 
-    always @ (posedge clk) begin
+    always @ (negedge clk) begin
         if (!rst_n) begin
             grant <= MASTER0;
         end
