@@ -93,15 +93,27 @@ module arbiter (
 
     // lsu > fetch
     always @ (*) begin
-        if (m1_awvalid | m1_arvalid) begin
-            next_grant = MASTER1;
-        end
-        else if (m0_awvalid | m0_arvalid) begin
-            next_grant = MASTER0;
-        end
-        else begin
-            next_grant = MASTER0;
-        end   
+        case (grant) 
+            MASTER0: begin
+                if (m1_awvalid | m1_arvalid) begin
+                    next_grant = MASTER1;
+                end
+                else if (m0_arvalid) begin
+                    next_grant = MASTER0;
+                end
+            end
+            MASTER1: begin
+                if (m0_arvalid & ~(m1_awvalid | m1_arvalid)) begin
+                    next_grant = MASTER0;
+                end
+                else begin
+                    next_grant = MASTER1;
+                end
+            end
+            default: begin
+                next_grant = MASTER0;
+            end
+        endcase
     end
 
     // slave0 out
