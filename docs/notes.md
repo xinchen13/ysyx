@@ -16,3 +16,7 @@
 - 文件名(.v与.sv文件)
 - $NPC_HOME/Makefile 中的 TOPNAME 等
 - verilator 仿真 c++ 文件
+
+# emacs verilog-mode
+- 生成: `emacs --batch ${FILES} -f verilog-batch-auto`
+- 删除: `emacs --batch ${FILES} -f verilog-batch-delete-auto`

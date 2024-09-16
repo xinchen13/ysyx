@@ -160,50 +160,6 @@ dsram dsram_u0 (/*AUTOINST*/
 		.wvalid			(lsu_wvalid),		 // Templated
 		.bready			(lsu_bready));		 // Templated
 
-    // isram isram_u0 (
-    //     .clk(clk),
-    //     .rst_n(rst_n),
-    //     .araddr(fetch_araddr),
-    //     .arvalid(fetch_arvalid),
-    //     .arready(fetch_arready),
-    //     .rdata(fetch_rdata),
-    //     .rresp(fetch_rresp),
-    //     .rvalid(fetch_rvalid),
-    //     .rready(fetch_rready),
-    //     .awaddr(),
-    //     .awvalid(),
-    //     .awready(),
-    //     .wdata(),
-    //     .wstrb(),
-    //     .wvalid(),
-    //     .wready(),
-    //     .bresp(),
-    //     .bvalid(),
-    //     .bready()
-    // );
-
-    // dsram dsram_u0 (
-    //     .clk(clk),
-    //     .rst_n(rst_n),
-    //     .araddr(lsu_araddr),
-    //     .arvalid(lsu_arvalid),
-    //     .arready(lsu_arready),
-    //     .rdata(lsu_rdata),
-    //     .rresp(lsu_rresp),
-    //     .rvalid(lsu_rvalid),
-    //     .rready(lsu_rready),
-    //     .awaddr(lsu_awaddr),
-    //     .awvalid(lsu_awvalid),
-    //     .awready(lsu_awready),
-    //     .wdata(lsu_wdata),
-    //     .wstrb(lsu_wstrb),
-    //     .wvalid(lsu_wvalid),
-    //     .wready(lsu_wready),
-    //     .bresp(lsu_bresp),
-    //     .bvalid(lsu_bvalid),
-    //     .bready(lsu_bready)
-    // );
-
 endmodule
 // Local Variables:
 // verilog-library-directories:("." "./core" "./perip")
