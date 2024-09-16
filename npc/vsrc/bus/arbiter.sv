@@ -118,10 +118,10 @@ module arbiter (
 
     // slave0 out
     assign s0_araddr = (grant == MASTER0) ? m0_araddr : m1_araddr;
-    assign s0_arvalid = (grant == MASTER0) ? m0_arvalid : 1'b1;
+    assign s0_arvalid = (grant == MASTER0) ? m0_arvalid : m1_arvalid;
     assign s0_rready = (grant == MASTER0) ? m0_rready : m1_rready;
     assign s0_awaddr = (grant == MASTER0) ? 'h0 : m1_awaddr;
-    assign s0_awvalid = (grant == MASTER0) ? 'b0 : 1'b1;
+    assign s0_awvalid = (grant == MASTER0) ? 'b0 : m1_awvalid;
     assign s0_wdata = (grant == MASTER0) ? 'h0 : m1_wdata;
     assign s0_wstrb = (grant == MASTER0) ? 'b0 : m1_wstrb;
     assign s0_wvalid = (grant == MASTER0) ? 'b0 : m1_wvalid;
