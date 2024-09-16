@@ -5,17 +5,17 @@ FILE *log_fp = NULL;
 npcState npc_state;
 coreState core = {};
 VerilatedContext* contextp;
-Vxcore* dut;
+Vsoc_top* dut;
 VerilatedVcdC* tfp;
 
 int main(int argc, char** argv) {
     // ----------------------- verilator init ---------------------------------
     contextp = new VerilatedContext;
     contextp->commandArgs(argc, argv);
-    dut = new Vxcore{contextp};
+    dut = new Vsoc_top{contextp};
     tfp = new VerilatedVcdC;
     // set scope: for DPI-C
-    // const svScope scope = svGetScopeFromName("TOP.xcore");
+    // const svScope scope = svGetScopeFromName("TOP.soc_top");
     // assert(scope); // Check for nullptr if scope not found
     // svSetScope(scope);
 
