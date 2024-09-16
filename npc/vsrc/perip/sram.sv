@@ -1,6 +1,6 @@
 `include "../inc/defines.svh"
 
-module isram (
+module sram (
     input logic clk,
     input logic rst_n,
 
@@ -29,13 +29,15 @@ module isram (
     input logic bready
 );
 
-    logic [2:0] lfsr;
-
     // DPI-C: pmem_read, pmem_write
     import "DPI-C" function int dpic_pmem_read(input int raddr);
+    import "DPI-C" function void dpic_pmem_write(input int waddr, input int wdata, input byte wmask);
+
+    logic [2:0] lfsr;   // random delay
 
     localparam [1:0] IDLE = 2'b00;
     localparam [1:0] READ = 2'b01;
+    localparam [1:0] WRITE = 2'b10;
 
     logic [1:0] state;
     logic [1:0] next_state;
@@ -56,8 +58,12 @@ module isram (
 
 
     assign arready = (state == IDLE) ? 1'b1 : 1'b0;
+    assign awready = (state == IDLE) ? 1'b1 : 1'b0;
     assign rresp = 2'b00;
+    assign bresp = 2'b00;
     assign rvalid = ((state == READ) && sram_ack) ? 1'b1 : 1'b0;
+    assign bvalid = ((state == WRITE) && sram_ack) ? 1'b1 : 1'b0;
+    assign wready = (state == IDLE) ? 1'b1 : 1'b0;
 
     // trans logic
     always @ (*) begin
@@ -67,10 +73,18 @@ module isram (
                 if (arvalid && arready) begin
                     next_state = READ;  // 转移到READ状态
                 end
+                else if (awvalid && awready) begin
+                    next_state = WRITE;
+                end
             end
             READ: begin
                 if (rvalid && rready) begin
                     next_state = IDLE;  // 数据传输完成，回到IDLE状态
+                end
+            end
+            WRITE: begin
+                if (bvalid && bready) begin
+                    next_state = IDLE;
                 end
             end
             default: begin
@@ -100,6 +114,19 @@ module isram (
                         sram_ack   <= 1'b1;  // 读取完成信号
                         sram_wait_counter <= 3'b000; // 重置等待计数器
                     end 
+                    else begin
+                        sram_ack <= 1'b0;
+                        sram_wait_counter <= sram_wait_counter + 1;
+                    end
+                end
+                WRITE: begin
+                    if ((sram_wait_counter == lfsr)) begin
+                        dpic_pmem_write(awaddr, wdata, {
+                            4'b0, wstrb[3], wstrb[2], wstrb[1], wstrb[0]
+                        });
+                        sram_wait_counter <= 3'b000; // 重置等待计数器
+                        sram_ack <= 1'b1;
+                    end
                     else begin
                         sram_ack <= 1'b0;
                         sram_wait_counter <= sram_wait_counter + 1;
