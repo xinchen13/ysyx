@@ -2,28 +2,7 @@
 
 module soc_top (
     /*AUTOINPUT*/
-    // Beginning of automatic inputs (from unused autoinst inputs)
-    input logic		s1_arready,		// To xbar_u0 of xbar.v
-    input logic		s1_awready,		// To xbar_u0 of xbar.v
-    input logic [`AXI_RESP_BUS] s1_bresp,	// To xbar_u0 of xbar.v
-    input logic		s1_bvalid,		// To xbar_u0 of xbar.v
-    input logic [`AXI_DATA_BUS] s1_rdata,	// To xbar_u0 of xbar.v
-    input logic [`AXI_RESP_BUS] s1_rresp,	// To xbar_u0 of xbar.v
-    input logic		s1_rvalid,		// To xbar_u0 of xbar.v
-    input logic		s1_wready,		// To xbar_u0 of xbar.v
-    // End of automatics
     /*AUTOOUTPUT*/
-    // Beginning of automatic outputs (from unused autoinst outputs)
-    output logic [`AXI_ADDR_BUS] s1_araddr,	// From xbar_u0 of xbar.v
-    output logic	s1_arvalid,		// From xbar_u0 of xbar.v
-    output logic [`AXI_ADDR_BUS] s1_awaddr,	// From xbar_u0 of xbar.v
-    output logic	s1_awvalid,		// From xbar_u0 of xbar.v
-    output logic	s1_bready,		// From xbar_u0 of xbar.v
-    output logic	s1_rready,		// From xbar_u0 of xbar.v
-    output logic [`AXI_DATA_BUS] s1_wdata,	// From xbar_u0 of xbar.v
-    output logic [`AXI_WSTRB_BUS] s1_wstrb,	// From xbar_u0 of xbar.v
-    output logic	s1_wvalid,		// From xbar_u0 of xbar.v
-    // End of automatics
     input logic clk,
     input logic rst_n
 );
@@ -88,6 +67,23 @@ logic [`AXI_DATA_BUS]	sram_wdata;		// From xbar_u0 of xbar.v
 logic			sram_wready;		// From sram_u0 of sram.v
 logic [`AXI_WSTRB_BUS]	sram_wstrb;		// From xbar_u0 of xbar.v
 logic			sram_wvalid;		// From xbar_u0 of xbar.v
+logic [`AXI_ADDR_BUS]	uart_araddr;		// From xbar_u0 of xbar.v
+logic			uart_arready;		// From uart_u0 of uart.v
+logic			uart_arvalid;		// From xbar_u0 of xbar.v
+logic [`AXI_ADDR_BUS]	uart_awaddr;		// From xbar_u0 of xbar.v
+logic			uart_awready;		// From uart_u0 of uart.v
+logic			uart_awvalid;		// From xbar_u0 of xbar.v
+logic			uart_bready;		// From xbar_u0 of xbar.v
+logic [`AXI_RESP_BUS]	uart_bresp;		// From uart_u0 of uart.v
+logic			uart_bvalid;		// From uart_u0 of uart.v
+logic [`AXI_DATA_BUS]	uart_rdata;		// From uart_u0 of uart.v
+logic			uart_rready;		// From xbar_u0 of xbar.v
+logic [`AXI_RESP_BUS]	uart_rresp;		// From uart_u0 of uart.v
+logic			uart_rvalid;		// From uart_u0 of uart.v
+logic [`AXI_DATA_BUS]	uart_wdata;		// From xbar_u0 of xbar.v
+logic			uart_wready;		// From uart_u0 of uart.v
+logic [`AXI_WSTRB_BUS]	uart_wstrb;		// From xbar_u0 of xbar.v
+logic			uart_wvalid;		// From xbar_u0 of xbar.v
 // End of automatics
 
 xcore xcore_u0 (/*AUTOINST*/
@@ -235,6 +231,23 @@ arbiter arbiter_u0 (/*AUTOINST*/
     .s0_bresp(sram_bresp[`AXI_RESP_BUS]),
     .s0_bvalid(sram_bvalid),
     .s0_bready(sram_bready),
+    .s1_araddr(uart_araddr[`AXI_ADDR_BUS]),
+    .s1_arvalid(uart_arvalid),
+    .s1_arready(uart_arready),
+    .s1_rdata(uart_rdata[`AXI_DATA_BUS]),
+    .s1_rresp(uart_rresp[`AXI_RESP_BUS]),
+    .s1_rvalid(uart_rvalid),
+    .s1_rready(uart_rready),
+    .s1_awaddr(uart_awaddr[`AXI_ADDR_BUS]),
+    .s1_awvalid(uart_awvalid),
+    .s1_awready(uart_awready),
+    .s1_wdata(uart_wdata[`AXI_DATA_BUS]),
+    .s1_wstrb(uart_wstrb[`AXI_WSTRB_BUS]),
+    .s1_wvalid(uart_wvalid),
+    .s1_wready(uart_wready),
+    .s1_bresp(uart_bresp[`AXI_RESP_BUS]),
+    .s1_bvalid(uart_bvalid),
+    .s1_bready(uart_bready),
 );
 */
 xbar xbar_u0 (/*AUTOINST*/
@@ -256,15 +269,15 @@ xbar xbar_u0 (/*AUTOINST*/
 	      .s0_wstrb			(sram_wstrb[`AXI_WSTRB_BUS]), // Templated
 	      .s0_wvalid		(sram_wvalid),		 // Templated
 	      .s0_bready		(sram_bready),		 // Templated
-	      .s1_araddr		(s1_araddr[`AXI_ADDR_BUS]),
-	      .s1_arvalid		(s1_arvalid),
-	      .s1_rready		(s1_rready),
-	      .s1_awaddr		(s1_awaddr[`AXI_ADDR_BUS]),
-	      .s1_awvalid		(s1_awvalid),
-	      .s1_wdata			(s1_wdata[`AXI_DATA_BUS]),
-	      .s1_wstrb			(s1_wstrb[`AXI_WSTRB_BUS]),
-	      .s1_wvalid		(s1_wvalid),
-	      .s1_bready		(s1_bready),
+	      .s1_araddr		(uart_araddr[`AXI_ADDR_BUS]), // Templated
+	      .s1_arvalid		(uart_arvalid),		 // Templated
+	      .s1_rready		(uart_rready),		 // Templated
+	      .s1_awaddr		(uart_awaddr[`AXI_ADDR_BUS]), // Templated
+	      .s1_awvalid		(uart_awvalid),		 // Templated
+	      .s1_wdata			(uart_wdata[`AXI_DATA_BUS]), // Templated
+	      .s1_wstrb			(uart_wstrb[`AXI_WSTRB_BUS]), // Templated
+	      .s1_wvalid		(uart_wvalid),		 // Templated
+	      .s1_bready		(uart_bready),		 // Templated
 	      // Inputs
 	      .clk			(clk),
 	      .rst_n			(rst_n),
@@ -285,14 +298,14 @@ xbar xbar_u0 (/*AUTOINST*/
 	      .s0_wready		(sram_wready),		 // Templated
 	      .s0_bresp			(sram_bresp[`AXI_RESP_BUS]), // Templated
 	      .s0_bvalid		(sram_bvalid),		 // Templated
-	      .s1_arready		(s1_arready),
-	      .s1_rdata			(s1_rdata[`AXI_DATA_BUS]),
-	      .s1_rresp			(s1_rresp[`AXI_RESP_BUS]),
-	      .s1_rvalid		(s1_rvalid),
-	      .s1_awready		(s1_awready),
-	      .s1_wready		(s1_wready),
-	      .s1_bresp			(s1_bresp[`AXI_RESP_BUS]),
-	      .s1_bvalid		(s1_bvalid));
+	      .s1_arready		(uart_arready),		 // Templated
+	      .s1_rdata			(uart_rdata[`AXI_DATA_BUS]), // Templated
+	      .s1_rresp			(uart_rresp[`AXI_RESP_BUS]), // Templated
+	      .s1_rvalid		(uart_rvalid),		 // Templated
+	      .s1_awready		(uart_awready),		 // Templated
+	      .s1_wready		(uart_wready),		 // Templated
+	      .s1_bresp			(uart_bresp[`AXI_RESP_BUS]), // Templated
+	      .s1_bvalid		(uart_bvalid));		 // Templated
 
 
 /*sram AUTO_TEMPLATE (
@@ -337,6 +350,49 @@ sram sram_u0 (/*AUTOINST*/
 	      .wstrb			(sram_wstrb),		 // Templated
 	      .wvalid			(sram_wvalid),		 // Templated
 	      .bready			(sram_bready));		 // Templated
+
+/*uart AUTO_TEMPLATE (
+    .araddr(uart_araddr),
+    .arvalid(uart_arvalid),
+    .arready(uart_arready),
+    .rdata(uart_rdata[`AXI_DATA_BUS]),
+    .rresp(uart_rresp[`AXI_RESP_BUS]),
+    .rvalid(uart_rvalid),
+    .rready(uart_rready),
+    .awaddr(uart_awaddr),
+    .awvalid(uart_awvalid),
+    .awready(uart_awready),
+    .wdata(uart_wdata),
+    .wstrb(uart_wstrb),
+    .wvalid(uart_wvalid),
+    .wready(uart_wready),
+    .bresp(uart_bresp[`AXI_RESP_BUS]),
+    .bvalid(uart_bvalid),
+    .bready(uart_bready),
+);
+*/
+uart uart_u0 (/*AUTOINST*/
+	      // Outputs
+	      .arready			(uart_arready),		 // Templated
+	      .rdata			(uart_rdata[`AXI_DATA_BUS]), // Templated
+	      .rresp			(uart_rresp[`AXI_RESP_BUS]), // Templated
+	      .rvalid			(uart_rvalid),		 // Templated
+	      .awready			(uart_awready),		 // Templated
+	      .wready			(uart_wready),		 // Templated
+	      .bresp			(uart_bresp[`AXI_RESP_BUS]), // Templated
+	      .bvalid			(uart_bvalid),		 // Templated
+	      // Inputs
+	      .clk			(clk),
+	      .rst_n			(rst_n),
+	      .araddr			(uart_araddr),		 // Templated
+	      .arvalid			(uart_arvalid),		 // Templated
+	      .rready			(uart_rready),		 // Templated
+	      .awaddr			(uart_awaddr),		 // Templated
+	      .awvalid			(uart_awvalid),		 // Templated
+	      .wdata			(uart_wdata),		 // Templated
+	      .wstrb			(uart_wstrb),		 // Templated
+	      .wvalid			(uart_wvalid),		 // Templated
+	      .bready			(uart_bready));		 // Templated
 
 endmodule
 // Local Variables:
