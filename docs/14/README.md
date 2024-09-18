@@ -71,7 +71,7 @@ NPC仿真环境提供的`dpic_pmem_read()`没有读延迟, 收到读请求的当
 - 单周期NPC要求每个周期都完成一条指令完整的生命周期, 因此无法连接任何现实中的存储器, 只能连带两个类似寄存器堆的存储器一同评估主频
 
 综合
-- 用于综合的源文件见 [npc](./npc/), 为了顺利综合, 把写入寄存器的值引出作为输出
+- 用于综合的源文件见 [sc-npc](./sc-npc/), 为了顺利综合, 把写入寄存器的值引出作为输出
 - 命令: `make sta DESIGN=xcore SDC_FILE=npc/gcd.sdc RTL_FILES="./npc/defines.svh ./npc/alu.sv ./npc/csr_regs.sv ./npc/exu.sv ./npc/idu.sv ./npc/mem.sv ./npc/pc_reg.sv ./npc/ram.sv ./npc/regfile.sv ./npc/rom.sv ./npc/wb.sv ./npc/xcore.sv" CLK_FREQ_MHZ=50`
 - 综合出的面积是106971.634, 主频为382.639MHz
 
@@ -251,3 +251,6 @@ bready  --->               <--- bresp                wstrb   --->  |
     - 周期1/2-n: lfsr实现的写延迟, 第n周期成功写入
     - 周期n+1: bvalid 拉高, 允许后级握手
     - 因此一次写操作至少3周期
+
+### 评估NPC的主频和程序性能
+实现了AXI-Lite之后, NPC就可以外接实际的SRAM了, 我们将要评估的对象是带有一个AXI-Lite接口的NPC, 其中包含刚才实现的AXI-Lite仲裁器, 而通过DPI-C实现的AXI-Lite接口的SRAM模块则不在评估范围内
