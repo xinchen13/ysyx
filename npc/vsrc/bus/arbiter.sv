@@ -82,7 +82,7 @@ module arbiter (
     logic [1:0] grant;
     logic [1:0] next_grant;
 
-    always @ (negedge clk) begin
+    always @ (posedge clk) begin
         if (!rst_n) begin
             grant <= MASTER0;
         end
@@ -93,7 +93,7 @@ module arbiter (
 
     // lsu > fetch
     always @ (*) begin
-        case (grant)
+        case (grant) 
             MASTER0: begin
                 if (m1_awvalid | m1_arvalid) begin
                     next_grant = MASTER1;
