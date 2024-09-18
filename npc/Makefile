@@ -21,7 +21,7 @@ NPC_INC_PATH ?= ./vsrc/inc
 INCFLAGS = $(addprefix +incdir+, $(NPC_INC_PATH))
 
 # rules for verilator
-VERILATOR = verilator
+VERILATOR = ccache verilator
 VERILATOR_CFLAGS += -MMD --build -cc --trace \
 	-O3 --x-assign fast --x-initial fast --noassert	\
 	$(INCFLAGS)
