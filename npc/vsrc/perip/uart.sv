@@ -32,7 +32,6 @@ module uart (
     import "DPI-C" function void dpic_pmem_write(input int waddr, input int wdata, input byte wmask);
 
     localparam [1:0] IDLE = 2'b00;
-    localparam [1:0] RX = 2'b01;
     localparam [1:0] TX = 2'b10;
 
     logic [1:0] state;
@@ -82,7 +81,6 @@ module uart (
     always @(posedge clk) begin
         if (!rst_n) begin
             uart_ack  <= 1'b0;
-            rdata <= `INST_NOP;
         end 
         else begin
             case (state)

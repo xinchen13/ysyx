@@ -214,11 +214,11 @@ arbiter arbiter_u0 (/*AUTOINST*/
 
 
 /*xbar AUTO_TEMPLATE (
-    .s0_araddr(sram_araddr[`AXI_ADDR_BUS]),
+    .s0_araddr(sram_araddr[]),
     .s0_arvalid(sram_arvalid),
     .s0_arready(sram_arready),
-    .s0_rdata(sram_rdata[`AXI_DATA_BUS]),
-    .s0_rresp(sram_rresp[`AXI_RESP_BUS]),
+    .s0_rdata(sram_rdata[]),
+    .s0_rresp(sram_rresp[]),
     .s0_rvalid(sram_rvalid),
     .s0_rready(sram_rready),
     .s0_awaddr(sram_awaddr[`AXI_ADDR_BUS]),
@@ -309,18 +309,18 @@ xbar xbar_u0 (/*AUTOINST*/
 
 
 /*sram AUTO_TEMPLATE (
-    .araddr(sram_araddr),
+    .araddr(sram_araddr[]),
     .arvalid(sram_arvalid),
     .arready(sram_arready),
-    .rdata(sram_rdata[`AXI_DATA_BUS]),
-    .rresp(sram_rresp[`AXI_RESP_BUS]),
+    .rdata(sram_rdata[]),
+    .rresp(sram_rresp[]),
     .rvalid(sram_rvalid),
     .rready(sram_rready),
-    .awaddr(sram_awaddr),
+    .awaddr(sram_awaddr[`AXI_ADDR_BUS]),
     .awvalid(sram_awvalid),
     .awready(sram_awready),
-    .wdata(sram_wdata),
-    .wstrb(sram_wstrb),
+    .wdata(sram_wdata[`AXI_DATA_BUS]),
+    .wstrb(sram_wstrb[`AXI_WSTRB_BUS]),
     .wvalid(sram_wvalid),
     .wready(sram_wready),
     .bresp(sram_bresp[`AXI_RESP_BUS]),
@@ -341,29 +341,29 @@ sram sram_u0 (/*AUTOINST*/
 	      // Inputs
 	      .clk			(clk),
 	      .rst_n			(rst_n),
-	      .araddr			(sram_araddr),		 // Templated
+	      .araddr			(sram_araddr[`AXI_ADDR_BUS]), // Templated
 	      .arvalid			(sram_arvalid),		 // Templated
 	      .rready			(sram_rready),		 // Templated
-	      .awaddr			(sram_awaddr),		 // Templated
+	      .awaddr			(sram_awaddr[`AXI_ADDR_BUS]), // Templated
 	      .awvalid			(sram_awvalid),		 // Templated
-	      .wdata			(sram_wdata),		 // Templated
-	      .wstrb			(sram_wstrb),		 // Templated
+	      .wdata			(sram_wdata[`AXI_DATA_BUS]), // Templated
+	      .wstrb			(sram_wstrb[`AXI_WSTRB_BUS]), // Templated
 	      .wvalid			(sram_wvalid),		 // Templated
 	      .bready			(sram_bready));		 // Templated
 
 /*uart AUTO_TEMPLATE (
-    .araddr(uart_araddr),
+    .araddr(uart_araddr[`AXI_ADDR_BUS]),
     .arvalid(uart_arvalid),
     .arready(uart_arready),
     .rdata(uart_rdata[`AXI_DATA_BUS]),
     .rresp(uart_rresp[`AXI_RESP_BUS]),
     .rvalid(uart_rvalid),
     .rready(uart_rready),
-    .awaddr(uart_awaddr),
+    .awaddr(uart_awaddr[`AXI_ADDR_BUS]),
     .awvalid(uart_awvalid),
     .awready(uart_awready),
-    .wdata(uart_wdata),
-    .wstrb(uart_wstrb),
+    .wdata(uart_wdata[`AXI_DATA_BUS]),
+    .wstrb(uart_wstrb[`AXI_WSTRB_BUS]),
     .wvalid(uart_wvalid),
     .wready(uart_wready),
     .bresp(uart_bresp[`AXI_RESP_BUS]),
@@ -384,13 +384,13 @@ uart uart_u0 (/*AUTOINST*/
 	      // Inputs
 	      .clk			(clk),
 	      .rst_n			(rst_n),
-	      .araddr			(uart_araddr),		 // Templated
+	      .araddr			(uart_araddr[`AXI_ADDR_BUS]), // Templated
 	      .arvalid			(uart_arvalid),		 // Templated
 	      .rready			(uart_rready),		 // Templated
-	      .awaddr			(uart_awaddr),		 // Templated
+	      .awaddr			(uart_awaddr[`AXI_ADDR_BUS]), // Templated
 	      .awvalid			(uart_awvalid),		 // Templated
-	      .wdata			(uart_wdata),		 // Templated
-	      .wstrb			(uart_wstrb),		 // Templated
+	      .wdata			(uart_wdata[`AXI_DATA_BUS]), // Templated
+	      .wstrb			(uart_wstrb[`AXI_WSTRB_BUS]), // Templated
 	      .wvalid			(uart_wvalid),		 // Templated
 	      .bready			(uart_bready));		 // Templated
 
