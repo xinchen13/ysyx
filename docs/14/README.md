@@ -72,7 +72,7 @@ NPC仿真环境提供的`dpic_pmem_read()`没有读延迟, 收到读请求的当
 
 综合
 - 用于综合的源文件见 [sc-npc](./sc-npc/), 为了顺利综合, 把写入寄存器的值引出作为输出
-- 命令: `make sta DESIGN=xcore SDC_FILE=npc/gcd.sdc RTL_FILES="./npc/defines.svh ./npc/alu.sv ./npc/csr_regs.sv ./npc/exu.sv ./npc/idu.sv ./npc/mem.sv ./npc/pc_reg.sv ./npc/ram.sv ./npc/regfile.sv ./npc/rom.sv ./npc/wb.sv ./npc/xcore.sv" CLK_FREQ_MHZ=50`
+- 命令: `make sta DESIGN=xcore SDC_FILE=sc-npc/gcd.sdc RTL_FILES="./sc-npc/defines.svh ./sc-npc/alu.sv ./sc-npc/csr_regs.sv ./sc-npc/exu.sv ./sc-npc/idu.sv ./sc-npc/mem.sv ./sc-npc/pc_reg.sv ./sc-npc/ram.sv ./sc-npc/regfile.sv ./sc-npc/rom.sv ./sc-npc/wb.sv ./sc-npc/xcore.sv" CLK_FREQ_MHZ=50`
 - 综合出的面积是106971.634, 主频为382.639MHz
 
 估算结果并不准确, 可以说是非常乐观的
@@ -254,3 +254,42 @@ bready  --->               <--- bresp                wstrb   --->  |
 
 ### 评估NPC的主频和程序性能
 实现了AXI-Lite之后, NPC就可以外接实际的SRAM了, 我们将要评估的对象是带有一个AXI-Lite接口的NPC, 其中包含刚才实现的AXI-Lite仲裁器, 而通过DPI-C实现的AXI-Lite接口的SRAM模块则不在评估范围内
+
+- 使用 `find ./ -type f | tr '\n' ' '` 快速列出所有文件
+- 命令: `make sta DESIGN=soc_top SDC_FILE=axi-lite-soc/gcd.sdc RTL_FILES="./axi-lite-soc/inc/defines.svh ./axi-lite-soc/bus/arbiter.sv ./axi-lite-soc/core/fetch.sv ./axi-lite-soc/core/lsu.sv ./axi-lite-soc/core/pc_reg.sv ./axi-lite-soc/core/regfile.sv ./axi-lite-soc/core/lsu_wb_pipe.sv ./axi-lite-soc/core/fetch_id_pipe.sv ./axi-lite-soc/core/csr_regs.sv ./axi-lite-soc/core/alu.sv ./axi-lite-soc/core/id.sv ./axi-lite-soc/core/xcore.sv ./axi-lite-soc/core/ex.sv ./axi-lite-soc/core/wb.sv ./axi-lite-soc/soc_top.sv" CLK_FREQ_MHZ=50`
+- 综合出的主频为366.069MHz; 面积为26380.816
+- 面积大幅减小, 主要是少了例化的ram, 约减少了8w多; 时序差了一点, 猜测可能是综合单周期的时候部分组合逻辑被优化了(?)
+
+### 多个设备的系统
+到目前为止系统中还只有存储器. 显然, 真实的计算机系统中并不仅仅只有存储器, 还有其他设备. 因此需要考虑, 如何让NPC访问其他设备: 通过内存映射I/O可以指示CPU访问的设备. 之前在仿真环境中通过`dpic_pmem_read()`和`dpic_pmem_write()`, 按照访存地址来选择需要访问的设备, 从而实现内存映射I/O的功能
+
+实际上, 硬件是通过crossbar（有时也写作Xbar）模块来实现内存映射I/O. Xbar是一个总线的多路开关模块, 可以根据输入端的总线请求的地址, 将请求转发到不同的输出端, 从而传递给不同的下游模块. 这些下游模块可能是设备, 也可能是另一个Xbar. 例如, 下图中的Arbiter用于从IFU和LSU中选择一个请求转发给下游, 下游的Xbar收到请求后, 根据请求中的地址将其转发给下游设备
+
+```
++-----+      +---------+      +------+      +-----+
+|FETCH| ---> |         |      |      | ---> | UART|  [0x1000_0000, 0x1000_0fff)
++-----+      |         |      |      |      +-----+
+             | Arbiter | ---> | Xbar |
++-----+      |         |      |      |      +-----+
+| LSU | ---> |         |      |      | ---> | SRAM|  [0x8000_0000, 0x80ff_ffff)
++-----+      +---------+      +------+      +-----+
+```
+
+如果请求的地址位于串口设备UART的地址空间范围, 那么Xbar会将请求转发给UART; 如果请求的地址位于SRAM的地址空间范围, 则将请求转发给SRAM. 如果Xbar发现请求的地址不属于任何一个下游的地址空间, 例如0x0400_0000, 就会通过AXI-Lite的resp信号返回一个错误decerr, 表示地址译码错. 这里的“地址译码”表示将请求的地址转换为下游总线通道的编号, 而Xbar中的地址译码器可以看作是内存映射I/O在硬件实现中的核心模块.
+
+Arbiter和Xbar也可以合并成一个多进多出的Xbar, 视场合也称为Interconnect或总线桥. 例如一个2输入2输出的Xbar. 它可以连接多个master和多个slave, 首先通过Arbiter记录当前请求来自哪个master, 再依据该请求的地址决定将其转发给哪个slave, 如下所示:
+
+```
++-----+      +------+      +-----+
+|FETCH| ---> |      | ---> | UART|  [0x1000_0000, 0x1000_0fff)
++-----+      |      |      +-----+
+             | Xbar |
++-----+      |      |      +-----+
+| LSU | ---> |      | ---> | SRAM|  [0x8000_0000, 0x80ff_ffff)
++-----+      +------+      +-----+
+```
+
+### 实现AXI-Lite接口的UART功能
+编写一个AXI-Lite接口的slave模块, 其中包含一个设备寄存器. 当往这个设备寄存器发送写请求时, 则将写入数据的低8位作为字符, 通过`$write()`或`printf()`输出. 为了方便测试, 这个设备寄存器的地址可以设置成与之前仿真环境中串口的地址相同. 实现后, 你还需要自己编写一个Xbar模块, 来将这个具备UART功能的模块接入系统中
+
+事实上, 我们并没有完整地用RTL来实现一个UART, 因为$write()或printf()仍然需要依赖仿真环境来实现字符的输出. 但作为一个总线的练习, 这已经足够了, 毕竟UART的实现还需要考虑很多电气细节. 不过我们很快就会接入SoC, 其中包含一个真实的UART控制器. 现在通过这个练习来测试总线的实现, 将来接入SoC的时候也会更顺利
