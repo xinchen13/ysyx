@@ -31,7 +31,7 @@ module uart (
 
     // DPI-C: pmem_read, pmem_write
     import "DPI-C" function int dpic_pmem_read(input int raddr);
-    import "DPI-C" function void dpic_pmem_write(input int waddr, input int wdata, input byte wmask);
+    import "DPI-C" function void uart_out(int wdata);
 
     logic [2:0] lfsr;   // random delay
 
@@ -121,9 +121,7 @@ module uart (
                 end
                 WRITE: begin
                     if ((sram_wait_counter == lfsr)) begin
-                        dpic_pmem_write(awaddr, wdata, {
-                            4'b0, wstrb[3], wstrb[2], wstrb[1], wstrb[0]
-                        });
+                        uart_out(wdata);
                         sram_wait_counter <= 3'b000; // 重置等待计数器 (防止下周期也写入)
                         sram_ack <= 1'b1;
                     end
