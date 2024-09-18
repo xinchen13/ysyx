@@ -87,7 +87,7 @@ module arbiter (
             grant <= MASTER0;
         end
         else begin
-            grant <= {1'b0, ~grant[0]};
+            grant <= next_grant;
         end
     end
 
