@@ -124,7 +124,7 @@ module sram (
                         dpic_pmem_write(awaddr, wdata, {
                             4'b0, wstrb[3], wstrb[2], wstrb[1], wstrb[0]
                         });
-                        // sram_wait_counter <= 3'b000; // 重置等待计数器 (其实好像没什么用)
+                        sram_wait_counter <= 3'b000; // 重置等待计数器 (防止下周期也写入)
                         sram_ack <= 1'b1;
                     end
                     else begin
