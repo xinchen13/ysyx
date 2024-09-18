@@ -72,7 +72,7 @@ NPC仿真环境提供的`dpic_pmem_read()`没有读延迟, 收到读请求的当
 
 综合
 - 用于综合的源文件见 [sc-npc](./sc-npc/), 为了顺利综合, 把写入寄存器的值引出作为输出
-- 命令: `make sta DESIGN=xcore SDC_FILE=npc/gcd.sdc RTL_FILES="./npc/defines.svh ./npc/alu.sv ./npc/csr_regs.sv ./npc/exu.sv ./npc/idu.sv ./npc/mem.sv ./npc/pc_reg.sv ./npc/ram.sv ./npc/regfile.sv ./npc/rom.sv ./npc/wb.sv ./npc/xcore.sv" CLK_FREQ_MHZ=50`
+- 命令: `make sta DESIGN=xcore SDC_FILE=sc-npc/gcd.sdc RTL_FILES="./sc-npc/defines.svh ./sc-npc/alu.sv ./sc-npc/csr_regs.sv ./sc-npc/exu.sv ./sc-npc/idu.sv ./sc-npc/mem.sv ./sc-npc/pc_reg.sv ./sc-npc/ram.sv ./sc-npc/regfile.sv ./sc-npc/rom.sv ./sc-npc/wb.sv ./sc-npc/xcore.sv" CLK_FREQ_MHZ=50`
 - 综合出的面积是106971.634, 主频为382.639MHz
 
 估算结果并不准确, 可以说是非常乐观的
@@ -254,3 +254,8 @@ bready  --->               <--- bresp                wstrb   --->  |
 
 ### 评估NPC的主频和程序性能
 实现了AXI-Lite之后, NPC就可以外接实际的SRAM了, 我们将要评估的对象是带有一个AXI-Lite接口的NPC, 其中包含刚才实现的AXI-Lite仲裁器, 而通过DPI-C实现的AXI-Lite接口的SRAM模块则不在评估范围内
+
+- 使用 `find ./ -type f | tr '\n' ' '` 快速列出所有文件
+- 命令: `make sta DESIGN=soc_top SDC_FILE=axi-lite-soc/gcd.sdc RTL_FILES="./axi-lite-soc/inc/defines.svh ./axi-lite-soc/bus/arbiter.sv ./axi-lite-soc/core/fetch.sv ./axi-lite-soc/core/lsu.sv ./axi-lite-soc/core/pc_reg.sv ./axi-lite-soc/core/regfile.sv ./axi-lite-soc/core/lsu_wb_pipe.sv ./axi-lite-soc/core/fetch_id_pipe.sv ./axi-lite-soc/core/csr_regs.sv ./axi-lite-soc/core/alu.sv ./axi-lite-soc/core/id.sv ./axi-lite-soc/core/xcore.sv ./axi-lite-soc/core/ex.sv ./axi-lite-soc/core/wb.sv ./axi-lite-soc/soc_top.sv" CLK_FREQ_MHZ=50`
+- 综合出的主频为366.069MHz; 面积为26380.816
+- 面积大幅减小, 主要是少了例化的ram, 约减少了8w多; 时序差了一点, 猜测可能是综合单周期的时候部分组合逻辑被优化了(?)
