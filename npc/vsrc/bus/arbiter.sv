@@ -87,7 +87,7 @@ module arbiter (
             grant <= MASTER0;
         end
         else begin
-            grant <= next_grant;
+            grant <= {1'b0, ~grant[0]};
         end
     end
 
@@ -98,16 +98,10 @@ module arbiter (
                 if (m1_awvalid | m1_arvalid) begin
                     next_grant = MASTER1;
                 end
-                else begin
-                    next_grant = MASTER0;
-                end
             end
             MASTER1: begin
                 if (m0_arvalid & ~(m1_awvalid | m1_arvalid)) begin
                     next_grant = MASTER0;
-                end
-                else begin
-                    next_grant = MASTER1;
                 end
             end
             default: begin
