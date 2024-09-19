@@ -61,7 +61,7 @@ int dpic_pmem_read(int raddr) {
         return microseconds;
     }
     else {
-        return -1;
+        Assert(0, "wrong read: " FMT_PADDR, raddr);
     }
 }
 
