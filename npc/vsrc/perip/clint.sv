@@ -45,11 +45,11 @@ module clint (
     // read
     always @ (*) begin
         if (arvalid) begin
-            case (araddr[2])
-                1'b0: begin
+            case (araddr)
+                32'ha0000048: begin
                     rdata = mtime[31:0];
                 end
-                1'b1: begin
+                32'ha000004c: begin
                     rdata = mtime[63:32];
                 end
             endcase
