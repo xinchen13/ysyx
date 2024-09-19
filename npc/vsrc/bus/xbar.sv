@@ -74,7 +74,31 @@ module xbar (
     // B
     input logic [`AXI_RESP_BUS] s1_bresp,
     input logic s1_bvalid,
-    output logic s1_bready
+    output logic s1_bready,
+
+    // axi-lite interface (s2: clint)
+    // AR
+    output logic [`AXI_ADDR_BUS] s2_araddr,
+    output logic s2_arvalid,
+    input logic s2_arready,
+    // R
+    input logic [`AXI_DATA_BUS] s2_rdata,
+    input logic [`AXI_RESP_BUS] s2_rresp,
+    input logic s2_rvalid,
+    output logic s2_rready,
+    // AW
+    output logic [`AXI_ADDR_BUS] s2_awaddr,
+    output logic s2_awvalid,
+    input logic s2_awready,
+    // W
+    output logic [`AXI_DATA_BUS] s2_wdata,
+    output logic [`AXI_WSTRB_BUS] s2_wstrb,
+    output logic s2_wvalid,
+    input logic s2_wready,
+    // B
+    input logic [`AXI_RESP_BUS] s2_bresp,
+    input logic s2_bvalid,
+    output logic s2_bready
 );
 
     always @ (*) begin
@@ -106,6 +130,55 @@ module xbar (
             s0_wstrb = 'b0;
             s0_wvalid = 'b0;
             s0_bready = 'b0;
+
+            s2_araddr = 'b0;
+            s2_arvalid = 'b0;
+            s2_rready = 'b0;
+            s2_awaddr = 'b0;
+            s2_awvalid = 'b0;
+            s2_wdata = 'b0;
+            s2_wstrb = 'b0;
+            s2_wvalid = 'b0;
+            s2_bready = 'b0;
+        end
+        else if ((arbiter_xbar_araddr & 32'h3) == 32'ha0000048) begin
+            s2_araddr = arbiter_xbar_araddr;
+            s2_arvalid = arbiter_xbar_arvalid;
+            arbiter_xbar_arready = s2_arready;
+            arbiter_xbar_rdata = s2_rdata;
+            arbiter_xbar_rresp = s2_rresp;
+            arbiter_xbar_rvalid = s2_rvalid;
+            s2_rready = arbiter_xbar_rready;
+            s2_awaddr = arbiter_xbar_awaddr;
+            s2_awvalid = arbiter_xbar_awvalid;
+            arbiter_xbar_awready = s2_awready;
+            s2_wdata = arbiter_xbar_wdata;
+            s2_wstrb = arbiter_xbar_wstrb;
+            s2_wvalid = arbiter_xbar_wvalid;
+            arbiter_xbar_wready = s2_wready;
+            arbiter_xbar_bresp = s2_bresp;
+            arbiter_xbar_bvalid = s2_bvalid;
+            s2_bready = arbiter_xbar_bready;
+
+            s0_araddr = 'b0;
+            s0_arvalid = 'b0;
+            s0_rready = 'b0;
+            s0_awaddr = 'b0;
+            s0_awvalid = 'b0;
+            s0_wdata = 'b0;
+            s0_wstrb = 'b0;
+            s0_wvalid = 'b0;
+            s0_bready = 'b0;
+
+            s1_araddr = 'b0;
+            s1_arvalid = 'b0;
+            s1_rready = 'b0;
+            s1_awaddr = 'b0;
+            s1_awvalid = 'b0;
+            s1_wdata = 'b0;
+            s1_wstrb = 'b0;
+            s1_wvalid = 'b0;
+            s1_bready = 'b0;
         end
         else begin
             s0_araddr = arbiter_xbar_araddr;
@@ -135,6 +208,16 @@ module xbar (
             s1_wstrb = 'b0;
             s1_wvalid = 'b0;
             s1_bready = 'b0;
+
+            s2_araddr = 'b0;
+            s2_arvalid = 'b0;
+            s2_rready = 'b0;
+            s2_awaddr = 'b0;
+            s2_awvalid = 'b0;
+            s2_wdata = 'b0;
+            s2_wstrb = 'b0;
+            s2_wvalid = 'b0;
+            s2_bready = 'b0;
         end
     end
 

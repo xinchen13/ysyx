@@ -26,6 +26,23 @@ logic [`AXI_DATA_BUS]	arbiter_xbar_wdata;	// From arbiter_u0 of arbiter.v
 logic			arbiter_xbar_wready;	// From xbar_u0 of xbar.v
 logic [`AXI_WSTRB_BUS]	arbiter_xbar_wstrb;	// From arbiter_u0 of arbiter.v
 logic			arbiter_xbar_wvalid;	// From arbiter_u0 of arbiter.v
+logic [`AXI_ADDR_BUS]	clint_araddr;		// From xbar_u0 of xbar.v
+logic			clint_arready;		// From clint_u0 of clint.v
+logic			clint_arvalid;		// From xbar_u0 of xbar.v
+logic [`AXI_ADDR_BUS]	clint_awaddr;		// From xbar_u0 of xbar.v
+logic			clint_awready;		// From clint_u0 of clint.v
+logic			clint_awvalid;		// From xbar_u0 of xbar.v
+logic			clint_bready;		// From xbar_u0 of xbar.v
+logic [`AXI_RESP_BUS]	clint_bresp;		// From clint_u0 of clint.v
+logic			clint_bvalid;		// From clint_u0 of clint.v
+logic [`AXI_DATA_BUS]	clint_rdata;		// From clint_u0 of clint.v
+logic			clint_rready;		// From xbar_u0 of xbar.v
+logic [`AXI_RESP_BUS]	clint_rresp;		// From clint_u0 of clint.v
+logic			clint_rvalid;		// From clint_u0 of clint.v
+logic [`AXI_DATA_BUS]	clint_wdata;		// From xbar_u0 of xbar.v
+logic			clint_wready;		// From clint_u0 of clint.v
+logic [`AXI_WSTRB_BUS]	clint_wstrb;		// From xbar_u0 of xbar.v
+logic			clint_wvalid;		// From xbar_u0 of xbar.v
 logic [`AXI_ADDR_BUS]	fetch_araddr;		// From xcore_u0 of xcore.v
 logic			fetch_arready;		// From arbiter_u0 of arbiter.v
 logic			fetch_arvalid;		// From xcore_u0 of xcore.v
@@ -248,6 +265,23 @@ arbiter arbiter_u0 (/*AUTOINST*/
     .s1_bresp(uart_bresp[`AXI_RESP_BUS]),
     .s1_bvalid(uart_bvalid),
     .s1_bready(uart_bready),
+    .s2_araddr(clint_araddr[`AXI_ADDR_BUS]),
+    .s2_arvalid(clint_arvalid),
+    .s2_arready(clint_arready),
+    .s2_rdata(clint_rdata[`AXI_DATA_BUS]),
+    .s2_rresp(clint_rresp[`AXI_RESP_BUS]),
+    .s2_rvalid(clint_rvalid),
+    .s2_rready(clint_rready),
+    .s2_awaddr(clint_awaddr[`AXI_ADDR_BUS]),
+    .s2_awvalid(clint_awvalid),
+    .s2_awready(clint_awready),
+    .s2_wdata(clint_wdata[`AXI_DATA_BUS]),
+    .s2_wstrb(clint_wstrb[`AXI_WSTRB_BUS]),
+    .s2_wvalid(clint_wvalid),
+    .s2_wready(clint_wready),
+    .s2_bresp(clint_bresp[`AXI_RESP_BUS]),
+    .s2_bvalid(clint_bvalid),
+    .s2_bready(clint_bready),
 );
 */
 xbar xbar_u0 (/*AUTOINST*/
@@ -278,6 +312,15 @@ xbar xbar_u0 (/*AUTOINST*/
 	      .s1_wstrb			(uart_wstrb[`AXI_WSTRB_BUS]), // Templated
 	      .s1_wvalid		(uart_wvalid),		 // Templated
 	      .s1_bready		(uart_bready),		 // Templated
+	      .s2_araddr		(clint_araddr[`AXI_ADDR_BUS]), // Templated
+	      .s2_arvalid		(clint_arvalid),	 // Templated
+	      .s2_rready		(clint_rready),		 // Templated
+	      .s2_awaddr		(clint_awaddr[`AXI_ADDR_BUS]), // Templated
+	      .s2_awvalid		(clint_awvalid),	 // Templated
+	      .s2_wdata			(clint_wdata[`AXI_DATA_BUS]), // Templated
+	      .s2_wstrb			(clint_wstrb[`AXI_WSTRB_BUS]), // Templated
+	      .s2_wvalid		(clint_wvalid),		 // Templated
+	      .s2_bready		(clint_bready),		 // Templated
 	      // Inputs
 	      .clk			(clk),
 	      .rst_n			(rst_n),
@@ -305,7 +348,15 @@ xbar xbar_u0 (/*AUTOINST*/
 	      .s1_awready		(uart_awready),		 // Templated
 	      .s1_wready		(uart_wready),		 // Templated
 	      .s1_bresp			(uart_bresp[`AXI_RESP_BUS]), // Templated
-	      .s1_bvalid		(uart_bvalid));		 // Templated
+	      .s1_bvalid		(uart_bvalid),		 // Templated
+	      .s2_arready		(clint_arready),	 // Templated
+	      .s2_rdata			(clint_rdata[`AXI_DATA_BUS]), // Templated
+	      .s2_rresp			(clint_rresp[`AXI_RESP_BUS]), // Templated
+	      .s2_rvalid		(clint_rvalid),		 // Templated
+	      .s2_awready		(clint_awready),	 // Templated
+	      .s2_wready		(clint_wready),		 // Templated
+	      .s2_bresp			(clint_bresp[`AXI_RESP_BUS]), // Templated
+	      .s2_bvalid		(clint_bvalid));		 // Templated
 
 
 /*sram AUTO_TEMPLATE (
@@ -393,6 +444,49 @@ uart uart_u0 (/*AUTOINST*/
 	      .wstrb			(uart_wstrb[`AXI_WSTRB_BUS]), // Templated
 	      .wvalid			(uart_wvalid),		 // Templated
 	      .bready			(uart_bready));		 // Templated
+
+/*clint AUTO_TEMPLATE (
+    .araddr(clint_araddr[`AXI_ADDR_BUS]),
+    .arvalid(clint_arvalid),
+    .arready(clint_arready),
+    .rdata(clint_rdata[`AXI_DATA_BUS]),
+    .rresp(clint_rresp[`AXI_RESP_BUS]),
+    .rvalid(clint_rvalid),
+    .rready(clint_rready),
+    .awaddr(clint_awaddr[`AXI_ADDR_BUS]),
+    .awvalid(clint_awvalid),
+    .awready(clint_awready),
+    .wdata(clint_wdata[`AXI_DATA_BUS]),
+    .wstrb(clint_wstrb[`AXI_WSTRB_BUS]),
+    .wvalid(clint_wvalid),
+    .wready(clint_wready),
+    .bresp(clint_bresp[`AXI_RESP_BUS]),
+    .bvalid(clint_bvalid),
+    .bready(clint_bready),
+);
+*/
+clint clint_u0 (/*AUTOINST*/
+		// Outputs
+		.arready		(clint_arready),	 // Templated
+		.rdata			(clint_rdata[`AXI_DATA_BUS]), // Templated
+		.rresp			(clint_rresp[`AXI_RESP_BUS]), // Templated
+		.rvalid			(clint_rvalid),		 // Templated
+		.awready		(clint_awready),	 // Templated
+		.wready			(clint_wready),		 // Templated
+		.bresp			(clint_bresp[`AXI_RESP_BUS]), // Templated
+		.bvalid			(clint_bvalid),		 // Templated
+		// Inputs
+		.clk			(clk),
+		.rst_n			(rst_n),
+		.araddr			(clint_araddr[`AXI_ADDR_BUS]), // Templated
+		.arvalid		(clint_arvalid),	 // Templated
+		.rready			(clint_rready),		 // Templated
+		.awaddr			(clint_awaddr[`AXI_ADDR_BUS]), // Templated
+		.awvalid		(clint_awvalid),	 // Templated
+		.wdata			(clint_wdata[`AXI_DATA_BUS]), // Templated
+		.wstrb			(clint_wstrb[`AXI_WSTRB_BUS]), // Templated
+		.wvalid			(clint_wvalid),		 // Templated
+		.bready			(clint_bready));		 // Templated
 
 endmodule
 // Local Variables:
