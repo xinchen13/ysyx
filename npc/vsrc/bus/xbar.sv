@@ -141,45 +141,45 @@ module xbar (
             s2_wvalid = 'b0;
             s2_bready = 'b0;
         end
-        // else if ((arbiter_xbar_araddr & 32'hfffffffc) == 32'ha0000048) begin
-        //     s2_araddr = arbiter_xbar_araddr;
-        //     s2_arvalid = arbiter_xbar_arvalid;
-        //     arbiter_xbar_arready = s2_arready;
-        //     arbiter_xbar_rdata = s2_rdata;
-        //     arbiter_xbar_rresp = s2_rresp;
-        //     arbiter_xbar_rvalid = s2_rvalid;
-        //     s2_rready = arbiter_xbar_rready;
-        //     s2_awaddr = arbiter_xbar_awaddr;
-        //     s2_awvalid = arbiter_xbar_awvalid;
-        //     arbiter_xbar_awready = s2_awready;
-        //     s2_wdata = arbiter_xbar_wdata;
-        //     s2_wstrb = arbiter_xbar_wstrb;
-        //     s2_wvalid = arbiter_xbar_wvalid;
-        //     arbiter_xbar_wready = s2_wready;
-        //     arbiter_xbar_bresp = s2_bresp;
-        //     arbiter_xbar_bvalid = s2_bvalid;
-        //     s2_bready = arbiter_xbar_bready;
+        else if (arbiter_xbar_araddr == 32'ha0000048) begin
+            s2_araddr = arbiter_xbar_araddr;
+            s2_arvalid = arbiter_xbar_arvalid;
+            arbiter_xbar_arready = s2_arready;
+            arbiter_xbar_rdata = s2_rdata;
+            arbiter_xbar_rresp = s2_rresp;
+            arbiter_xbar_rvalid = s2_rvalid;
+            s2_rready = arbiter_xbar_rready;
+            s2_awaddr = arbiter_xbar_awaddr;
+            s2_awvalid = arbiter_xbar_awvalid;
+            arbiter_xbar_awready = s2_awready;
+            s2_wdata = arbiter_xbar_wdata;
+            s2_wstrb = arbiter_xbar_wstrb;
+            s2_wvalid = arbiter_xbar_wvalid;
+            arbiter_xbar_wready = s2_wready;
+            arbiter_xbar_bresp = s2_bresp;
+            arbiter_xbar_bvalid = s2_bvalid;
+            s2_bready = arbiter_xbar_bready;
 
-        //     s0_araddr = 'b0;
-        //     s0_arvalid = 'b0;
-        //     s0_rready = 'b0;
-        //     s0_awaddr = 'b0;
-        //     s0_awvalid = 'b0;
-        //     s0_wdata = 'b0;
-        //     s0_wstrb = 'b0;
-        //     s0_wvalid = 'b0;
-        //     s0_bready = 'b0;
+            s0_araddr = 'b0;
+            s0_arvalid = 'b0;
+            s0_rready = 'b0;
+            s0_awaddr = 'b0;
+            s0_awvalid = 'b0;
+            s0_wdata = 'b0;
+            s0_wstrb = 'b0;
+            s0_wvalid = 'b0;
+            s0_bready = 'b0;
 
-        //     s1_araddr = 'b0;
-        //     s1_arvalid = 'b0;
-        //     s1_rready = 'b0;
-        //     s1_awaddr = 'b0;
-        //     s1_awvalid = 'b0;
-        //     s1_wdata = 'b0;
-        //     s1_wstrb = 'b0;
-        //     s1_wvalid = 'b0;
-        //     s1_bready = 'b0;
-        // end
+            s1_araddr = 'b0;
+            s1_arvalid = 'b0;
+            s1_rready = 'b0;
+            s1_awaddr = 'b0;
+            s1_awvalid = 'b0;
+            s1_wdata = 'b0;
+            s1_wstrb = 'b0;
+            s1_wvalid = 'b0;
+            s1_bready = 'b0;
+        end
         else begin
             s0_araddr = arbiter_xbar_araddr;
             s0_arvalid = arbiter_xbar_arvalid;
