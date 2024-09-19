@@ -110,7 +110,7 @@ module arbiter (
         endcase
     end
 
-    // slave0 out
+    // slave out
     assign arbiter_xbar_araddr = (grant == MASTER0) ? m0_araddr : m1_araddr;
     assign arbiter_xbar_arvalid = (grant == MASTER0) ? m0_arvalid : m1_arvalid;
     assign arbiter_xbar_rready = (grant == MASTER0) ? m0_rready : m1_rready;

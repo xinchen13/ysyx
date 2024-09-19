@@ -52,6 +52,9 @@ module clint (
                 32'ha000004c: begin
                     rdata = mtime[63:32];
                 end
+                default: begin
+                    rdata = 'b0;
+                end
             endcase
         end
         else begin
