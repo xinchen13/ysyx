@@ -141,7 +141,7 @@ module xbar (
             s2_wvalid = 'b0;
             s2_bready = 'b0;
         end
-        else if (arbiter_xbar_araddr == 32'ha0000048) begin
+        else if ((arbiter_xbar_araddr & 32'hfffffffc) == 32'ha0000048) begin
             s2_araddr = arbiter_xbar_araddr;
             s2_arvalid = arbiter_xbar_arvalid;
             arbiter_xbar_arready = s2_arready;
