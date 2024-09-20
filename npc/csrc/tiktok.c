@@ -8,7 +8,7 @@
 static word_t this_inst;
 static word_t this_pc;
 static word_t dnpc;
-static int inst_count = 0;
+static int cycle_count = 0;
 
 #ifdef CONFIG_DIFFTEST
     static word_t difftest_pc;
@@ -69,7 +69,7 @@ static int inst_count = 0;
 static void trace_and_difftest() {
     // itrace
     #ifdef CONFIG_ITRACE
-    if (dut->rootp->soc_top__DOT__xcore_u0__DOT__fetch_id_valid){
+    if (dut->rootp->soc_top__DOT__xcore_u0__DOT__fetch_id_valid) {
         Log("%s", logbuf);
         write_iringbuf(logbuf);  // write log to iringbuf
         if (npc_state.state == NPC_ABORT) {
@@ -92,7 +92,7 @@ static void trace_and_difftest() {
 
     // ftracer
     #ifdef CONFIG_FTRACE
-    if (dut->rootp->soc_top__DOT__xcore_u0__DOT__fetch_id_valid){
+    if (dut->rootp->soc_top__DOT__xcore_u0__DOT__fetch_id_valid) {
         opcode = ftrace_inst & 0x7fu;
         rd = (ftrace_inst >> 7) & 0x1fu;
         rs1 = (ftrace_inst >> 15) & 0x1fu;
@@ -174,7 +174,7 @@ static void exec_once() {
 static void execute(uint64_t n) {
     for (;n > 0; n --) {
         exec_once();
-        inst_count++;
+        cycle_count++;
         trace_and_difftest();
         if (this_inst == 0x00100073 || contextp->time() > 99999999) {
             set_npc_state(NPC_END, this_pc, core.gpr[10]);
@@ -197,7 +197,7 @@ void core_exec(uint64_t n) {
 
     execute(n);
 
-    Log("total guest instructions = %d", inst_count);
+    Log("total cycle = %d", cycle_count);
 
     switch (npc_state.state) {
         case NPC_RUNNING: 
