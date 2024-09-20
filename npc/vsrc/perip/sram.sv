@@ -94,7 +94,7 @@ module sram (
     end
 
 
-    always @(posedge clk) begin
+    always @ (posedge clk) begin
         if (!rst_n) begin
             sram_ack  <= 1'b0;
             sram_wait_counter <= 3'b000;  // 初始化等待计数器
