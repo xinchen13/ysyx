@@ -43,13 +43,16 @@ module clint (
     assign rvalid = arvalid;
     assign awready = 'b0;
     assign rresp = 'b0;
+    assign wready = 'b0;
+    assign bresp = 'b0;
+    assign bvalid = 'b0;
 
     // read
     always @ (*) begin
         if (arvalid) begin
             case (araddr)
                 32'ha0000048: begin
-                    rdata = mtime[31:0]; // us: mtime / 500
+                    rdata = mtime[31:0] >> 9; // us: mtime / 500
                 end
                 32'ha000004c: begin
                     rdata = mtime[63:32];
