@@ -54,15 +54,15 @@ int dpic_pmem_read(int raddr) {
         #endif 
         return read_data;
     }
-    else if (aligned_address == 0xa0000048) {
-        struct timespec ts;
-        clock_gettime(CLOCK_THREAD_CPUTIME_ID, &ts);
-        int microseconds = ts.tv_nsec / 1000 + ts.tv_sec * 1000000;
-        return microseconds;
-    }
-    else {
-        Assert(0, "wrong read: " FMT_PADDR, raddr);
-    }
+    // else if (aligned_address == 0xa0000048) {
+    //     struct timespec ts;
+    //     clock_gettime(CLOCK_THREAD_CPUTIME_ID, &ts);
+    //     int microseconds = ts.tv_nsec / 1000 + ts.tv_sec * 1000000;
+    //     return microseconds;
+    // }
+    // else {
+    //     Assert(0, "wrong read: " FMT_PADDR, raddr);
+    // }
 }
 
 void dpic_pmem_write(int waddr, int wdata, char wmask) {
