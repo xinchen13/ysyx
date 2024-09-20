@@ -163,7 +163,7 @@ module xbar (
             s0_araddr = 'b0;
             s0_arvalid = 'b0;
             s0_rready = 'b0;
-            s0_awaddr = 32'h123;
+            s0_awaddr = 'b0;
             s0_awvalid = 'b0;
             s0_wdata = 'b0;
             s0_wstrb = 'b0;
