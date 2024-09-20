@@ -120,6 +120,8 @@ module clint (
 
     assign arready = rready;
     assign rvalid = arvalid;
+    assign awready = 'b0;
+    assign rresp = 'b0;
 
     // read
     always @ (*) begin
