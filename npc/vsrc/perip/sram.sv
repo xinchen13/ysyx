@@ -34,8 +34,6 @@ module sram (
     import "DPI-C" function void dpic_pmem_write(input int waddr, input int wdata, input byte wmask);
 
     logic [2:0] lfsr;   // random delay
-    logic [`AXI_ADDR_BUS] addr;
-    logic [`AXI_ADDR_BUS] next_addr;
 
     localparam [1:0] IDLE = 2'b00;
     localparam [1:0] READ = 2'b01;
@@ -52,11 +50,9 @@ module sram (
     always @ (posedge clk) begin
         if (!rst_n) begin
             state <= IDLE;
-            addr <= 'b0;
         end 
         else begin
             state <= next_state;
-            addr <= next_addr;
         end
     end
 
@@ -76,11 +72,9 @@ module sram (
             IDLE: begin
                 if (arvalid && arready) begin
                     next_state = READ;  // 转移到READ状态
-                    next_addr = araddr;
                 end
                 else if (awvalid && awready && wvalid && wready) begin
                     next_state = WRITE;
-                    next_addr = awaddr;
                 end
             end
             READ: begin
@@ -116,7 +110,7 @@ module sram (
                 end
                 READ: begin
                     if (sram_wait_counter == lfsr) begin  // 模拟读取延迟
-                        rdata <= dpic_pmem_read(addr);  // 从SRAM读取数据
+                        rdata <= dpic_pmem_read(araddr);  // 从SRAM读取数据
                         sram_ack   <= 1'b1;  // 读取完成信号
                         sram_wait_counter <= 3'b000; // 重置等待计数器
                     end 
@@ -127,7 +121,7 @@ module sram (
                 end
                 WRITE: begin
                     if ((sram_wait_counter == lfsr)) begin
-                        dpic_pmem_write(addr, wdata, {
+                        dpic_pmem_write(awaddr, wdata, {
                             4'b0, wstrb[3], wstrb[2], wstrb[1], wstrb[0]
                         });
                         sram_wait_counter <= 3'b000; // 重置等待计数器 (防止下周期也写入)
