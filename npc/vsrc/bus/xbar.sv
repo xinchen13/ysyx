@@ -103,7 +103,7 @@ module xbar (
 
     logic [3:0] slave_sel;
 
-    always @ (posedge clk) begin
+    always @ (*) begin
         if ((arbiter_xbar_araddr == 32'ha00003f8) || (arbiter_xbar_awaddr == 32'ha00003f8)) begin
             slave_sel = 4'd1;
         end
