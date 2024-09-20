@@ -107,7 +107,7 @@ module clint (
                     lfsr <= {lfsr[1:0], lfsr[2] ^ lfsr[1]}; // LFSR反馈多项式, 伪随机延迟
                 end
                 READ: begin
-                    if ((sram_wait_counter == lfsr) && (addr == 32'ha0000048)) begin  // 模拟读取延迟
+                    if ((sram_wait_counter == lfsr)) begin  // 模拟读取延迟
                         rdata <= mtime[31:0];  // 从SRAM读取数据
                         sram_ack   <= 1'b1;  // 读取完成信号
                         sram_wait_counter <= 3'b000; // 重置等待计数器
