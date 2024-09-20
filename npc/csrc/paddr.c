@@ -60,9 +60,9 @@ int dpic_pmem_read(int raddr) {
     //     int microseconds = ts.tv_nsec / 1000 + ts.tv_sec * 1000000;
     //     return microseconds;
     // }
-    // else {
-    //     Assert(0, "wrong read: " FMT_PADDR, raddr);
-    // }
+    else {
+        Assert(0, "wrong read: " FMT_PADDR, raddr);
+    }
 }
 
 void dpic_pmem_write(int waddr, int wdata, char wmask) {
