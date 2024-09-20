@@ -69,11 +69,13 @@ static int inst_count = 0;
 static void trace_and_difftest() {
     // itrace
     #ifdef CONFIG_ITRACE
+    if (dut->rootp->soc_top__DOT__xcore_u0__DOT__fetch_id_valid){
         Log("%s", logbuf);
         write_iringbuf(logbuf);  // write log to iringbuf
         if (npc_state.state == NPC_ABORT) {
             print_iringbuf();
         }
+    }
     #endif
 
     // difftest
