@@ -101,156 +101,141 @@ module xbar (
     output logic s2_bready
 );
 
-    always @ (*) begin
-            s0_araddr = 'b0;
-            s0_arvalid = 'b0;
-            s0_rready = 'b0;
-            s0_awaddr = 'b0;
-            s0_awvalid = 'b0;
-            s0_wdata = 'b0;
-            s0_wstrb = 'b0;
-            s0_wvalid = 'b0;
-            s0_bready = 'b0;
+    logic [3:0] slave_sel;
 
-            s1_araddr = 'b0;
-            s1_arvalid = 'b0;
-            s1_rready = 'b0;
-            s1_awaddr = 'b0;
-            s1_awvalid = 'b0;
-            s1_wdata = 'b0;
-            s1_wstrb = 'b0;
-            s1_wvalid = 'b0;
-            s1_bready = 'b0;
-
-            s2_araddr = 'b0;
-            s2_arvalid = 'b0;
-            s2_rready = 'b0;
-            s2_awaddr = 'b0;
-            s2_awvalid = 'b0;
-            s2_wdata = 'b0;
-            s2_wstrb = 'b0;
-            s2_wvalid = 'b0;
-            s2_bready = 'b0;
+    always @ (posedge clk) begin
         if ((arbiter_xbar_araddr == 32'ha00003f8) || (arbiter_xbar_awaddr == 32'ha00003f8)) begin
-            s1_araddr = arbiter_xbar_araddr;
-            s1_arvalid = arbiter_xbar_arvalid;
-            arbiter_xbar_arready = s1_arready;
-            arbiter_xbar_rdata = s1_rdata;
-            arbiter_xbar_rresp = s1_rresp;
-            arbiter_xbar_rvalid = s1_rvalid;
-            s1_rready = arbiter_xbar_rready;
-            s1_awaddr = arbiter_xbar_awaddr;
-            s1_awvalid = arbiter_xbar_awvalid;
-            arbiter_xbar_awready = s1_awready;
-            s1_wdata = arbiter_xbar_wdata;
-            s1_wstrb = arbiter_xbar_wstrb;
-            s1_wvalid = arbiter_xbar_wvalid;
-            arbiter_xbar_wready = s1_wready;
-            arbiter_xbar_bresp = s1_bresp;
-            arbiter_xbar_bvalid = s1_bvalid;
-            s1_bready = arbiter_xbar_bready;
-
-            // s0_araddr = 'b0;
-            // s0_arvalid = 'b0;
-            // s0_rready = 'b0;
-            // s0_awaddr = 'b0;
-            // s0_awvalid = 'b0;
-            // s0_wdata = 'b0;
-            // s0_wstrb = 'b0;
-            // s0_wvalid = 'b0;
-            // s0_bready = 'b0;
-
-            // s2_araddr = 'b0;
-            // s2_arvalid = 'b0;
-            // s2_rready = 'b0;
-            // s2_awaddr = 'b0;
-            // s2_awvalid = 'b0;
-            // s2_wdata = 'b0;
-            // s2_wstrb = 'b0;
-            // s2_wvalid = 'b0;
-            // s2_bready = 'b0;
+            slave_sel = 4'd1;
         end
-        else if (((arbiter_xbar_araddr == 32'ha0000048) || (arbiter_xbar_araddr == 32'ha000004c)) & arbiter_xbar_arvalid) begin
-            s2_araddr = arbiter_xbar_araddr;
-            s2_arvalid = arbiter_xbar_arvalid;
-            arbiter_xbar_arready = s2_arready;
-            arbiter_xbar_rdata = s2_rdata;
-            arbiter_xbar_rresp = s2_rresp;
-            arbiter_xbar_rvalid = s2_rvalid;
-            s2_rready = arbiter_xbar_rready;
-            s2_awaddr = arbiter_xbar_awaddr;
-            s2_awvalid = arbiter_xbar_awvalid;
-            arbiter_xbar_awready = s2_awready;
-            s2_wdata = arbiter_xbar_wdata;
-            s2_wstrb = arbiter_xbar_wstrb;
-            s2_wvalid = arbiter_xbar_wvalid;
-            arbiter_xbar_wready = s2_wready;
-            arbiter_xbar_bresp = s2_bresp;
-            arbiter_xbar_bvalid = s2_bvalid;
-            s2_bready = arbiter_xbar_bready;
-
-            // s0_araddr = 'b0;
-            // s0_arvalid = 'b0;
-            // s0_rready = 'b0;
-            // s0_awaddr = 'b0;
-            // s0_awvalid = 'b0;
-            // s0_wdata = 'b0;
-            // s0_wstrb = 'b0;
-            // s0_wvalid = 'b0;
-            // s0_bready = 'b0;
-
-            // s1_araddr = 'b0;
-            // s1_arvalid = 'b0;
-            // s1_rready = 'b0;
-            // s1_awaddr = 'b0;
-            // s1_awvalid = 'b0;
-            // s1_wdata = 'b0;
-            // s1_wstrb = 'b0;
-            // s1_wvalid = 'b0;
-            // s1_bready = 'b0;
+        else if ((arbiter_xbar_araddr == 32'ha0000048) || (arbiter_xbar_araddr == 32'ha000004c)) begin
+            slave_sel = 4'd2;
         end
         else begin
-            s0_araddr = arbiter_xbar_araddr;
-            s0_arvalid = arbiter_xbar_arvalid;
-            arbiter_xbar_arready = s0_arready;
-            arbiter_xbar_rdata = s0_rdata;
-            arbiter_xbar_rresp = s0_rresp;
-            arbiter_xbar_rvalid = s0_rvalid;
-            s0_rready = arbiter_xbar_rready;
-            s0_awaddr = arbiter_xbar_awaddr;
-            s0_awvalid = arbiter_xbar_awvalid;
-            arbiter_xbar_awready = s0_awready;
-            s0_wdata = arbiter_xbar_wdata;
-            s0_wstrb = arbiter_xbar_wstrb;
-            s0_wvalid = arbiter_xbar_wvalid;
-            arbiter_xbar_wready = s0_wready;
-            arbiter_xbar_bresp = s0_bresp;
-            arbiter_xbar_bvalid = s0_bvalid;
-            s0_bready = arbiter_xbar_bready;
-
-            // s1_araddr = 'b0;
-            // s1_arvalid = 'b0;
-            // s1_rready = 'b0;
-            // s1_awaddr = 'b0;
-            // s1_awvalid = 'b0;
-            // s1_wdata = 'b0;
-            // s1_wstrb = 'b0;
-            // s1_wvalid = 'b0;
-            // s1_bready = 'b0;
-
-            // s2_araddr = 'b0;
-            // s2_arvalid = 'b0;
-            // s2_rready = 'b0;
-            // s2_awaddr = 'b0;
-            // s2_awvalid = 'b0;
-            // s2_wdata = 'b0;
-            // s2_wstrb = 'b0;
-            // s2_wvalid = 'b0;
-            // s2_bready = 'b0;
+            slave_sel = 4'd0;
         end
+
     end
 
+    always @ (*) begin
+        case (slave_sel)
+            4'd1: begin
+                s1_araddr = arbiter_xbar_araddr;
+                s1_arvalid = arbiter_xbar_arvalid;
+                arbiter_xbar_arready = s1_arready;
+                arbiter_xbar_rdata = s1_rdata;
+                arbiter_xbar_rresp = s1_rresp;
+                arbiter_xbar_rvalid = s1_rvalid;
+                s1_rready = arbiter_xbar_rready;
+                s1_awaddr = arbiter_xbar_awaddr;
+                s1_awvalid = arbiter_xbar_awvalid;
+                arbiter_xbar_awready = s1_awready;
+                s1_wdata = arbiter_xbar_wdata;
+                s1_wstrb = arbiter_xbar_wstrb;
+                s1_wvalid = arbiter_xbar_wvalid;
+                arbiter_xbar_wready = s1_wready;
+                arbiter_xbar_bresp = s1_bresp;
+                arbiter_xbar_bvalid = s1_bvalid;
+                s1_bready = arbiter_xbar_bready;
 
+                s0_araddr = 'b0;
+                s0_arvalid = 'b0;
+                s0_rready = 'b0;
+                s0_awaddr = 'b0;
+                s0_awvalid = 'b0;
+                s0_wdata = 'b0;
+                s0_wstrb = 'b0;
+                s0_wvalid = 'b0;
+                s0_bready = 'b0;
 
+                s2_araddr = 'b0;
+                s2_arvalid = 'b0;
+                s2_rready = 'b0;
+                s2_awaddr = 'b0;
+                s2_awvalid = 'b0;
+                s2_wdata = 'b0;
+                s2_wstrb = 'b0;
+                s2_wvalid = 'b0;
+                s2_bready = 'b0;
+            end
+            4'd2: begin
+                s2_araddr = arbiter_xbar_araddr;
+                s2_arvalid = arbiter_xbar_arvalid;
+                arbiter_xbar_arready = s2_arready;
+                arbiter_xbar_rdata = s2_rdata;
+                arbiter_xbar_rresp = s2_rresp;
+                arbiter_xbar_rvalid = s2_rvalid;
+                s2_rready = arbiter_xbar_rready;
+                s2_awaddr = arbiter_xbar_awaddr;
+                s2_awvalid = arbiter_xbar_awvalid;
+                arbiter_xbar_awready = s2_awready;
+                s2_wdata = arbiter_xbar_wdata;
+                s2_wstrb = arbiter_xbar_wstrb;
+                s2_wvalid = arbiter_xbar_wvalid;
+                arbiter_xbar_wready = s2_wready;
+                arbiter_xbar_bresp = s2_bresp;
+                arbiter_xbar_bvalid = s2_bvalid;
+                s2_bready = arbiter_xbar_bready;
+
+                s0_araddr = 'b0;
+                s0_arvalid = 'b0;
+                s0_rready = 'b0;
+                s0_awaddr = 'b0;
+                s0_awvalid = 'b0;
+                s0_wdata = 'b0;
+                s0_wstrb = 'b0;
+                s0_wvalid = 'b0;
+                s0_bready = 'b0;
+
+                s1_araddr = 'b0;
+                s1_arvalid = 'b0;
+                s1_rready = 'b0;
+                s1_awaddr = 'b0;
+                s1_awvalid = 'b0;
+                s1_wdata = 'b0;
+                s1_wstrb = 'b0;
+                s1_wvalid = 'b0;
+                s1_bready = 'b0;
+            end
+            default: begin
+                s0_araddr = arbiter_xbar_araddr;
+                s0_arvalid = arbiter_xbar_arvalid;
+                arbiter_xbar_arready = s0_arready;
+                arbiter_xbar_rdata = s0_rdata;
+                arbiter_xbar_rresp = s0_rresp;
+                arbiter_xbar_rvalid = s0_rvalid;
+                s0_rready = arbiter_xbar_rready;
+                s0_awaddr = arbiter_xbar_awaddr;
+                s0_awvalid = arbiter_xbar_awvalid;
+                arbiter_xbar_awready = s0_awready;
+                s0_wdata = arbiter_xbar_wdata;
+                s0_wstrb = arbiter_xbar_wstrb;
+                s0_wvalid = arbiter_xbar_wvalid;
+                arbiter_xbar_wready = s0_wready;
+                arbiter_xbar_bresp = s0_bresp;
+                arbiter_xbar_bvalid = s0_bvalid;
+                s0_bready = arbiter_xbar_bready;
+
+                s1_araddr = 'b0;
+                s1_arvalid = 'b0;
+                s1_rready = 'b0;
+                s1_awaddr = 'b0;
+                s1_awvalid = 'b0;
+                s1_wdata = 'b0;
+                s1_wstrb = 'b0;
+                s1_wvalid = 'b0;
+                s1_bready = 'b0;
+
+                s2_araddr = 'b0;
+                s2_arvalid = 'b0;
+                s2_rready = 'b0;
+                s2_awaddr = 'b0;
+                s2_awvalid = 'b0;
+                s2_wdata = 'b0;
+                s2_wstrb = 'b0;
+                s2_wvalid = 'b0;
+                s2_bready = 'b0;
+            end
+        endcase
+    end
 
 endmodule
