@@ -126,7 +126,7 @@ module clint (
         if (arvalid) begin
             case (araddr)
                 32'ha0000048: begin
-                    rdata = mtime[31:0] >> 9; // mtime / 500
+                    rdata = mtime[31:0] >> 9; // us: mtime / 500
                 end
                 32'ha000004c: begin
                     rdata = mtime[63:32];
