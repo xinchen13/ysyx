@@ -46,6 +46,8 @@ module clint (
 
     logic [1:0] state;
     logic [1:0] next_state;
+    logic [`AXI_ADDR_BUS] addr;
+    logic [`AXI_ADDR_BUS] next_addr;
 
     // sram
     logic sram_ack;                     // SRAM读取完成信号
@@ -55,9 +57,11 @@ module clint (
     always @ (posedge clk) begin
         if (!rst_n) begin
             state <= IDLE;
+            addr <= 'b0;
         end 
         else begin
             state <= next_state;
+            addr <= next_addr;
         end
     end
 
@@ -73,6 +77,7 @@ module clint (
             IDLE: begin
                 if (arvalid && arready) begin
                     next_state = READ;  // 转移到READ状态
+                    next_addr = araddr; 
                 end
             end
             READ: begin
@@ -102,7 +107,7 @@ module clint (
                     lfsr <= {lfsr[1:0], lfsr[2] ^ lfsr[1]}; // LFSR反馈多项式, 伪随机延迟
                 end
                 READ: begin
-                    if (sram_wait_counter == lfsr) begin  // 模拟读取延迟
+                    if ((sram_wait_counter == lfsr) && (addr == 32'ha0000048)) begin  // 模拟读取延迟
                         rdata <= mtime[31:0];  // 从SRAM读取数据
                         sram_ack   <= 1'b1;  // 读取完成信号
                         sram_wait_counter <= 3'b000; // 重置等待计数器
