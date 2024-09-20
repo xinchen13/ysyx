@@ -92,6 +92,7 @@ static void trace_and_difftest() {
 
     // ftracer
     #ifdef CONFIG_FTRACE
+    if (dut->rootp->soc_top__DOT__xcore_u0__DOT__fetch_id_valid){
         opcode = ftrace_inst & 0x7fu;
         rd = (ftrace_inst >> 7) & 0x1fu;
         rs1 = (ftrace_inst >> 15) & 0x1fu;
@@ -103,6 +104,7 @@ static void trace_and_difftest() {
             ftrace_call(ftrace_pc, ftrace_dnpc, func_call_depth);
             func_call_depth += 2;
         }
+    }
     #endif
 
     // enable check watchpoints
