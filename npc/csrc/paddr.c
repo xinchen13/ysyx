@@ -62,6 +62,9 @@ int dpic_pmem_read(int raddr) {
     //     return microseconds;
     // }
     else {
+        printf("raddr(alu out) = 0x%x\n", dut->rootp->soc_top__DOT__xcore_u0__DOT__wb_alu_result);
+        printf("raddr(arbiter out) = 0x%x\n", dut->rootp->soc_top__DOT__arbiter_xbar_araddr);
+        isa_reg_display();
         Assert(0, "wrong read: " FMT_PADDR, raddr);
     }
 }
