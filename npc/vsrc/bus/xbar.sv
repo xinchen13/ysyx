@@ -113,7 +113,6 @@ module xbar (
         else begin
             slave_sel = 4'd0;
         end
-
     end
 
     always @ (*) begin
