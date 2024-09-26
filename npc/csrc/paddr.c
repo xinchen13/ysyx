@@ -88,6 +88,8 @@ void dpic_pmem_write(int waddr, int wdata, char wmask) {
     else {
         printf("waddr(alu out) = 0x%x\n", dut->rootp->soc_top__DOT__xcore_u0__DOT__wb_alu_result);
         printf("waddr(arbiter out) = 0x%x\n", dut->rootp->soc_top__DOT__arbiter_xbar_awaddr);
+        printf("bus grant = 0x%x\n", dut->rootp->soc_top__DOT__arbiter_u0__DOT__grant);
+        
         isa_reg_display();
         Assert(0, "wrong write: " FMT_PADDR, waddr);
     }
