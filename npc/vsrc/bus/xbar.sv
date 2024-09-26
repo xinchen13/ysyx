@@ -103,15 +103,18 @@ module xbar (
 
     logic [3:0] slave_sel;
 
-    always @ (*) begin
-        if ((arbiter_xbar_araddr == 32'ha00003f8) || (arbiter_xbar_awaddr == 32'ha00003f8)) begin
-            slave_sel = 4'd1;
+    always @ (posedge clk) begin
+        if (!rst_n) begin
+            slave_sel <= 4'd0;
+        end
+        else if ((arbiter_xbar_araddr == 32'ha00003f8) || (arbiter_xbar_awaddr == 32'ha00003f8)) begin
+            slave_sel <= 4'd1;
         end
         else if (((arbiter_xbar_araddr == 32'ha0000048) || (arbiter_xbar_araddr == 32'ha000004c)) & arbiter_xbar_arvalid) begin
-            slave_sel = 4'd2;
+            slave_sel <= 4'd2;
         end
         else begin
-            slave_sel = 4'd0;
+            slave_sel <= 4'd0;
         end
 
     end
