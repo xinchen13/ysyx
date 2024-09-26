@@ -1,6 +1,7 @@
 #include "paddr.h"
 #include "common.h"
 #include "host.h"
+#include "reg.h"
 
 static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 
@@ -85,6 +86,7 @@ void dpic_pmem_write(int waddr, int wdata, char wmask) {
     //     putchar(wdata);
     // }
     else {
+        isa_reg_display();
         Assert(0, "wrong write: " FMT_PADDR, waddr);
     }
 }
