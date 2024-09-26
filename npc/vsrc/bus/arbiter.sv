@@ -114,9 +114,9 @@ module arbiter (
     assign arbiter_xbar_araddr = (grant == MASTER0) ? m0_araddr : m1_araddr;
     assign arbiter_xbar_arvalid = (grant == MASTER0) ? m0_arvalid : m1_arvalid;
     assign arbiter_xbar_rready = (grant == MASTER0) ? m0_rready : m1_rready;
-    assign arbiter_xbar_awaddr = (grant == MASTER0) ? 'h0 : m1_awaddr;
+    assign arbiter_xbar_awaddr = (grant == MASTER0) ? 'b0 : m1_awaddr;
     assign arbiter_xbar_awvalid = (grant == MASTER0) ? 'b0 : m1_awvalid;
-    assign arbiter_xbar_wdata = (grant == MASTER0) ? 'h0 : m1_wdata;
+    assign arbiter_xbar_wdata = (grant == MASTER0) ? 'b0 : m1_wdata;
     assign arbiter_xbar_wstrb = (grant == MASTER0) ? 'b0 : m1_wstrb;
     assign arbiter_xbar_wvalid = (grant == MASTER0) ? 'b0 : m1_wvalid;
     assign arbiter_xbar_bready = (grant == MASTER0) ? 'b0 : m1_bready;
