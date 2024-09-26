@@ -93,10 +93,10 @@ module arbiter (
 
     // lsu > fetch
     always @ (*) begin
-        if (m1_awvalid | m1_arvalid) begin
+        if ((m1_awvalid | m1_arvalid) & arbiter_xbar_arready) begin
             next_grant = MASTER1;
         end
-        else if (m0_arvalid) begin
+        else if (m0_arvalid & arbiter_xbar_arready) begin
             next_grant = MASTER0;
         end
         else begin
