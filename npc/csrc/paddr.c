@@ -86,6 +86,7 @@ void dpic_pmem_write(int waddr, int wdata, char wmask) {
     //     putchar(wdata);
     // }
     else {
+        printf("waddr = %x\n", dut->rootp->soc_top__DOT__xcore_u0__DOT__wb_alu_result);
         isa_reg_display();
         Assert(0, "wrong write: " FMT_PADDR, waddr);
     }
