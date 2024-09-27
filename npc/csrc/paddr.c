@@ -62,6 +62,8 @@ int dpic_pmem_read(int raddr) {
     //     return microseconds;
     // }
     else {
+        printf("rdata(last) = 0x%x\n", dut->rootp->soc_top__DOT__xcore_u0__DOT__wb_alu_result);
+        printf("raddr(last) = 0x%x\n", dut->rootp->soc_top__DOT__xcore_u0__DOT__wb_dmem_rdata);
         printf("raddr(alu out) = 0x%x\n", dut->rootp->soc_top__DOT__xcore_u0__DOT__alu_result);
         printf("raddr(arbiter out) = 0x%x\n", dut->rootp->soc_top__DOT__arbiter_xbar_araddr);
         isa_reg_display();
