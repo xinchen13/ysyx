@@ -76,11 +76,12 @@ module arbiter (
     output logic m1_bvalid,
     input logic m1_bready
 );
-    localparam [1:0] MASTER0 = 2'b00;
-    localparam [1:0] MASTER1 = 2'b01;
+    localparam [2:0] MASTER0 = 3'b001;
+    localparam [2:0] MASTER1 = 3'b010;
+    // localparam [2:0] IDLE = 3'b000;
 
-    logic [1:0] grant;
-    logic [1:0] next_grant;
+    logic [2:0] grant;
+    logic [2:0] next_grant;
 
     always @ (posedge clk) begin
         if (!rst_n) begin
@@ -128,15 +129,24 @@ module arbiter (
     end
 
     // slave out
-    assign arbiter_xbar_araddr = (grant == MASTER0) ? m0_araddr : m1_araddr;
-    assign arbiter_xbar_arvalid = (grant == MASTER0) ? m0_arvalid : m1_arvalid;
-    assign arbiter_xbar_rready = (grant == MASTER0) ? m0_rready : m1_rready;
-    assign arbiter_xbar_awaddr = (grant == MASTER0) ? 'b0 : m1_awaddr;
-    assign arbiter_xbar_awvalid = (grant == MASTER0) ? 'b0 : m1_awvalid;
-    assign arbiter_xbar_wdata = (grant == MASTER0) ? 'b0 : m1_wdata;
-    assign arbiter_xbar_wstrb = (grant == MASTER0) ? 'b0 : m1_wstrb;
-    assign arbiter_xbar_wvalid = (grant == MASTER0) ? 'b0 : m1_wvalid;
-    assign arbiter_xbar_bready = (grant == MASTER0) ? 'b0 : m1_bready;
+    assign arbiter_xbar_araddr = (grant == MASTER0) ? m0_araddr : 
+    ((grant == MASTER1) ? m1_araddr : 'b0);
+    assign arbiter_xbar_arvalid = (grant == MASTER0) ? m0_arvalid : 
+    ((grant == MASTER1) ? m1_arvalid : 'b0);
+    assign arbiter_xbar_rready = (grant == MASTER0) ? m0_rready : 
+    ((grant == MASTER1) ? m1_rready : 'b0);
+    assign arbiter_xbar_awaddr = (grant == MASTER0) ? 'b0 : 
+    ((grant == MASTER1) ? m1_awaddr : 'b0);
+    assign arbiter_xbar_awvalid = (grant == MASTER0) ? 'b0 : 
+    ((grant == MASTER1) ? m1_awvalid : 'b0);
+    assign arbiter_xbar_wdata = (grant == MASTER0) ? 'b0 : 
+    ((grant == MASTER1) ? m1_wdata : 'b0);
+    assign arbiter_xbar_wstrb = (grant == MASTER0) ? 'b0 : 
+    ((grant == MASTER1) ? m1_wstrb : 'b0);
+    assign arbiter_xbar_wvalid = (grant == MASTER0) ? 'b0 : 
+    ((grant == MASTER1) ? m1_wvalid : 'b0);
+    assign arbiter_xbar_bready = (grant == MASTER0) ? 'b0 : 
+    ((grant == MASTER1) ? m1_bready : 'b0);
 
     // master0 out
     assign m0_arready = (grant == MASTER0) ? arbiter_xbar_arready : 'b0;
