@@ -85,7 +85,7 @@ module arbiter (
 
     always @ (posedge clk) begin
         if (!rst_n) begin
-            grant <= MASTER0;
+            grant <= IDLE;
         end
         else begin
             grant <= next_grant;
@@ -101,7 +101,7 @@ module arbiter (
             next_grant = MASTER0;
         end
         else begin
-            next_grant = IDLE;
+            next_grant = grant;
         end
     end
     // always @ (*) begin
