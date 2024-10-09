@@ -74,7 +74,7 @@ module sram (
         next_state = state;
         case (state)
             IDLE: begin
-                if (arvalid && arready && (araddr >= 32'h80000000) && (araddr <= 32'h88000000)) begin
+                if (arvalid && arready ) begin
                     next_state = READ;  // 转移到READ状态
                     next_addr = araddr;
                 end
