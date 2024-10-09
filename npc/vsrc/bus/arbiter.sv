@@ -76,15 +76,16 @@ module arbiter (
     output logic m1_bvalid,
     input logic m1_bready
 );
-    localparam [1:0] MASTER0 = 2'b00;
-    localparam [1:0] MASTER1 = 2'b01;
+    localparam [2:0] MASTER0 = 3'b001;
+    localparam [2:0] MASTER1 = 3'b010;
+    localparam [2:0] IDLE = 3'b000;
 
-    logic [1:0] grant;
-    logic [1:0] next_grant;
+    logic [2:0] grant;
+    logic [2:0] next_grant;
 
     always @ (posedge clk) begin
         if (!rst_n) begin
-            grant <= MASTER0;
+            grant <= IDLE;
         end
         else begin
             grant <= next_grant;
@@ -100,7 +101,7 @@ module arbiter (
             next_grant = MASTER0;
         end
         else begin
-            next_grant = grant;
+            next_grant = IDLE;
         end
     end
     // always @ (*) begin
