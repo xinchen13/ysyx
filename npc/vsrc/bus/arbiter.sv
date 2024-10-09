@@ -101,7 +101,7 @@ module arbiter (
             next_grant = MASTER0;
         end
         else begin
-            next_grant = IDLE;
+            next_grant = grant;
         end
     end
     // always @ (*) begin
