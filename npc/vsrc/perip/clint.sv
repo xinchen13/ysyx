@@ -50,17 +50,18 @@ module clint (
     // read
     always @ (*) begin
         if (arvalid) begin
-            case (araddr)
-                32'ha0000048: begin
-                    rdata = mtime[31:0] >> 9; // us: mtime / 500
-                end
-                32'ha000004c: begin
-                    rdata = mtime[63:32];
-                end
-                default: begin
-                    rdata = 'b0;
-                end
-            endcase
+            rdata = mtime[31:0] >> 9; // us: mtime / 500
+            // case (araddr)
+            //     32'ha0000048: begin
+            //         rdata = mtime[31:0] >> 9; // us: mtime / 500
+            //     end
+            //     32'ha000004c: begin
+            //         rdata = mtime[63:32];
+            //     end
+            //     default: begin
+            //         rdata = 'b0;
+            //     end
+            // endcase
         end
         else begin
             rdata = 'b0;

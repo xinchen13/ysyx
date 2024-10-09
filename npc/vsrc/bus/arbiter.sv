@@ -78,7 +78,7 @@ module arbiter (
 );
     localparam [2:0] MASTER0 = 3'b001;
     localparam [2:0] MASTER1 = 3'b010;
-    localparam [2:0] IDLE = 3'b000;
+    // localparam [2:0] IDLE = 3'b000;
 
     logic [2:0] grant;
     logic [2:0] next_grant;
