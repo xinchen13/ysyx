@@ -1,6 +1,5 @@
 module skidbuffer #(
 	parameter	[0:0]	OPT_LOWPOWER = 0,
-	parameter	[0:0]	OPT_OUTREG = 1,
 	parameter		DW = 8
 ) (
 	input	wire				i_clk, i_reset,
@@ -48,10 +47,8 @@ module skidbuffer #(
 	always @ (*) begin
 		if (r_valid)
 			o_data = r_data;
-		else if (!OPT_LOWPOWER || i_valid)
-			o_data = i_data;
 		else
-			o_data = 0;
+			o_data = i_data;
 	end
 
 
