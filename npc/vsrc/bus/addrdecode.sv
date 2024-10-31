@@ -40,24 +40,23 @@ module addrdecode #(
                 && (ACCESS_ALLOWED[iM]);
     end
 
-
 	// request
-	generate if (NS == 1)
-	begin : SINGLE_SLAVE
-		assign request[0] = i_valid;
-	end 
-    else begin : GENERAL_CASE
-		reg	[NS-1:0]	r_request;
-		always @(*)
-		begin
-			for(iM=0; iM<NS; iM=iM+1)
-				r_request[iM] = i_valid && prerequest[iM];
-			if ((NS > 1 && |prerequest[NS-1:1]))
-				r_request[0] = 1'b0;
-		end
-
-		assign	request[NS-1:0] = r_request;
-	end endgenerate
+	generate 
+        if (NS == 1) begin : SINGLE_SLAVE
+            assign request[0] = i_valid;
+        end 
+        else begin : GENERAL_CASE
+            reg	[NS-1:0]	r_request;
+            always @ (*)
+                begin
+                    for(iM=0; iM<NS; iM=iM+1)
+                        r_request[iM] = i_valid && prerequest[iM];
+                    if ((NS > 1 && |prerequest[NS-1:1]))
+                        r_request[0] = 1'b0;
+                end
+            assign	request[NS-1:0] = r_request;
+        end 
+    endgenerate
 
     assign request[NS] = 1'b0;
 
