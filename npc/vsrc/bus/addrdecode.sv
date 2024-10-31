@@ -207,8 +207,8 @@ module addrdecode #(
 		end
 
 		// Make Verilator happy
-		// wire	unused;
-		// assign	unused = &{ 1'b0, i_reset };
+		wire	unused;
+		assign	unused = &{ 1'b0, i_reset };
 
 	end endgenerate
 endmodule
