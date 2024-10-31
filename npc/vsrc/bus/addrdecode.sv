@@ -1,69 +1,3 @@
-////////////////////////////////////////////////////////////////////////////////
-//
-// Filename: 	addrdecode.v
-// {{{
-// Project:	WB2AXIPSP: bus bridges and other odds and ends
-//
-// Purpose:	Supports bus crossbars by answering the question, which slave
-//		does the current address need to be routed to?  Requests are
-//	pipelined using valid/!stall handshaking.  For those familiar with
-//	AXI, READY=!STALL.  The outgoing stream is identical to the incoming
-//	one, save for the (new) o_decode field.  This is a bitmask containing
-//	one bit for each slave that the request might be routed to, and one
-//	extra bit to indicate no slaves matched.
-//
-//	The keys to the operation of this module are found in the two
-//	parameters, SLAVE_ADDR and SLAVE_MASK.
-//
-//	SLAVE_ADDR specifies the address of the slave in question.  It's a large
-//		array, with one address (i.e. one set of AW bits) for each
-//		potential slave address region.
-//
-//	SLAVE_MASK specifies which of the bits in SLAVE_ADDR need to match in
-//		order to route a request to a that slave.
-//
-//	It's important to guarantee that no two slaves will ever map to the
-//	same address, and likewise any given slave may only map to a single
-//	address region.
-//
-//	Incidentally, the algorithm forces all slaves to have an address
-//	aligned with their memory size.  Hence a 2GB memory must have an
-//	address (range) of either 0-2GB, 2GB-4GB, 4GB-6GB, etc.  However, a
-//	second slave having only 8kB of memory may be placed at 0-8kB,
-//	8-16kB, 16-24kB, etc.  For logic minimization purposes, it is often to
-//	the advantage of the bus compositor to minimize the number of mask
-//	bits, and hence 8kB slaves may be aliased to many places in memory.
-//	Bus composition and address assignment, however, are both outside of
-//	the scope of the operation of this module.
-//	
-//
-// Creator:	Dan Gisselquist, Ph.D.
-//		Gisselquist Technology, LLC
-//
-////////////////////////////////////////////////////////////////////////////////
-// }}}
-// Copyright (C) 2019-2024, Gisselquist Technology, LLC
-// {{{
-// This file is part of the WB2AXIP project.
-//
-// The WB2AXIP project contains free software and gateware, licensed under the
-// Apache License, Version 2.0 (the "License").  You may not use this project,
-// or this file, except in compliance with the License.  You may obtain a copy
-// of the License at
-//
-//	http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
-// License for the specific language governing permissions and limitations
-// under the License.
-//
-////////////////////////////////////////////////////////////////////////////////
-//
-//
-`default_nettype	none
-// }}}
 module	addrdecode #(
 		// {{{
 		parameter	NS=8,
@@ -456,6 +390,3 @@ module	addrdecode #(
 `endif	// FORMAL
 // }}}
 endmodule
-`ifndef	YOSYS
-`default_nettype wire
-`endif

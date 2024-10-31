@@ -180,10 +180,10 @@ xcore xcore_u0 (/*AUTOINST*/
 );
 */
 axi_lite_xbar #(
-    .C_AXI_DATA_WIDTH(DW),        // 数据宽度
-    .C_AXI_ADDR_WIDTH(AW),        // 地址宽度
-    .NM(NM),                       // 主接口数量
-    .NS(NS),                       // 从接口数量
+    .C_AXI_DATA_WIDTH(DW),
+    .C_AXI_ADDR_WIDTH(AW),
+    .NM(NM),
+    .NS(NS),
     .SLAVE_ADDR({
 		32'ha0000048,
 		32'ha00003f8,
@@ -191,9 +191,9 @@ axi_lite_xbar #(
     }),
     .SLAVE_MASK({ {(2){ 32'hffffffff }},
 				{(1){ 4'b1111, {(28){1'b0}} }} }),
-    .OPT_LOWPOWER(1'b0),          // 低功耗选项
-    .OPT_LINGER(4),               // 等待周期数
-    .LGMAXBURST(2)                // 最大突发请求数
+    .OPT_LOWPOWER(1'b0),
+    .OPT_LINGER(4),
+    .LGMAXBURST(2)
 ) axi_lite_xbar_u0 (/*AUTOINST*/
 		    // Outputs
 		    .S_AXI_AWREADY	({ 	     		lsu_awready }), // Templated
