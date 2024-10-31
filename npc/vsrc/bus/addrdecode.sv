@@ -1,19 +1,19 @@
 module addrdecode #(
-		parameter	NS = 8,
-		parameter	AW = 32, DW=32+32/8+1+1,
-		parameter	[NS*AW-1:0]	SLAVE_ADDR = {
-				{ 3'b111,  {(AW-3){1'b0}} },
-				{ 3'b110,  {(AW-3){1'b0}} },
-				{ 3'b101,  {(AW-3){1'b0}} },
-				{ 3'b100,  {(AW-3){1'b0}} },
-				{ 3'b011,  {(AW-3){1'b0}} },
-				{ 3'b010,  {(AW-3){1'b0}} },
-				{ 4'b0010, {(AW-4){1'b0}} },
-				{ 4'b0000, {(AW-4){1'b0}} }},
-		parameter	[NS*AW-1:0]	SLAVE_MASK = (NS <= 1) ? 0
-			: { {(NS-2){ 3'b111, {(AW-3){1'b0}} }},
-				{(2){ 4'b1111, {(AW-4){1'b0}} }} },
-		parameter	[NS-1:0]	ACCESS_ALLOWED = -1
+    parameter	NS = 8,
+    parameter	AW = 32, DW=32+32/8+1+1,
+    parameter	[NS*AW-1:0]	SLAVE_ADDR = {
+            { 3'b111,  {(AW-3){1'b0}} },
+            { 3'b110,  {(AW-3){1'b0}} },
+            { 3'b101,  {(AW-3){1'b0}} },
+            { 3'b100,  {(AW-3){1'b0}} },
+            { 3'b011,  {(AW-3){1'b0}} },
+            { 3'b010,  {(AW-3){1'b0}} },
+            { 4'b0010, {(AW-4){1'b0}} },
+            { 4'b0000, {(AW-4){1'b0}} }},
+    parameter	[NS*AW-1:0]	SLAVE_MASK = (NS <= 1) ? 0
+        : { {(NS-2){ 3'b111, {(AW-3){1'b0}} }},
+            {(2){ 4'b1111, {(AW-4){1'b0}} }} },
+    parameter	[NS-1:0]	ACCESS_ALLOWED = -1
 ) (
 
     input	wire			    i_clk, i_reset,
@@ -60,16 +60,12 @@ module addrdecode #(
 
     assign request[NS] = 1'b0;
 
-	generate
-	begin : GEN_COMBINATORIAL_OUTPUTS
-		always @(*)
-		begin
-			o_valid = i_valid;
-			o_stall = i_stall;
-			o_addr  = i_addr;
-			o_data  = i_data;
-			o_decode = request;
-		end
-	end endgenerate
+	always @ (*) begin
+        o_valid = i_valid;
+        o_stall = i_stall;
+        o_addr  = i_addr;
+        o_data  = i_data;
+        o_decode = request;
+	end
 
 endmodule
