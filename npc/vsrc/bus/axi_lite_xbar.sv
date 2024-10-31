@@ -1,100 +1,94 @@
+module axi_lite_xbar #(
+	parameter integer C_AXI_DATA_WIDTH = 32,
+	parameter integer C_AXI_ADDR_WIDTH = 32,
+	localparam	AW = C_AXI_ADDR_WIDTH,
+	localparam	DW = C_AXI_DATA_WIDTH,
+	parameter	NM = 2,
+	parameter	NS = 3,
+	parameter	[NS*AW-1:0]	SLAVE_ADDR = {
+		3'b111,  {(AW-3){1'b0}},
+		3'b110,  {(AW-3){1'b0}},
+		3'b101,  {(AW-3){1'b0}},
+		3'b100,  {(AW-3){1'b0}},
+		3'b011,  {(AW-3){1'b0}},
+		3'b010,  {(AW-3){1'b0}},
+		4'b0001, {(AW-4){1'b0}},
+		4'b0000, {(AW-4){1'b0}} 
+	},
+	parameter	[NS*AW-1:0]	SLAVE_MASK =
+		(NS <= 1) ? { 4'b1111, {(AW-4){1'b0}} }
+		: { {(NS-2){ 3'b111, {(AW-3){1'b0}} }},
+			{(2){ 4'b1111, {(AW-4){1'b0}} }} },
 
-module	axi_lite_xbar #(
-		parameter integer C_AXI_DATA_WIDTH = 32,
-		parameter integer C_AXI_ADDR_WIDTH = 32,
-		localparam	AW = C_AXI_ADDR_WIDTH,
-		localparam	DW = C_AXI_DATA_WIDTH,
-		parameter	NM = 2,
-		parameter	NS = 3,
-		parameter	[NS*AW-1:0]	SLAVE_ADDR = {
-			3'b111,  {(AW-3){1'b0}},
-			3'b110,  {(AW-3){1'b0}},
-			3'b101,  {(AW-3){1'b0}},
-			3'b100,  {(AW-3){1'b0}},
-			3'b011,  {(AW-3){1'b0}},
-			3'b010,  {(AW-3){1'b0}},
-			4'b0001, {(AW-4){1'b0}},
-			4'b0000, {(AW-4){1'b0}} 
-		},
-		parameter	[NS*AW-1:0]	SLAVE_MASK =
-			(NS <= 1) ? { 4'b1111, {(AW-4){1'b0}} }
-			: { {(NS-2){ 3'b111, {(AW-3){1'b0}} }},
-				{(2){ 4'b1111, {(AW-4){1'b0}} }} },
+	parameter [0:0]	OPT_LOWPOWER = 1,
+	parameter	OPT_LINGER = 4,
+	parameter	LGMAXBURST = 5
+) (
+	input	wire	S_AXI_ACLK,
+	input	wire	S_AXI_ARESETN,
+	// Incoming AXI4-lite slave port(s)
+	input	wire	[NM-1:0]			S_AXI_AWVALID,
+	output	wire	[NM-1:0]			S_AXI_AWREADY,
+	input	wire	[NM*C_AXI_ADDR_WIDTH-1:0]	S_AXI_AWADDR,
+	input	wire	[NM*3-1:0]			S_AXI_AWPROT,
 
-		parameter [0:0]	OPT_LOWPOWER = 1,
-		parameter	OPT_LINGER = 4,
-		parameter	LGMAXBURST = 5
-	) (
-		input	wire	S_AXI_ACLK,
-		input	wire	S_AXI_ARESETN,
-		// Incoming AXI4-lite slave port(s)
-		input	wire	[NM-1:0]			S_AXI_AWVALID,
-		output	wire	[NM-1:0]			S_AXI_AWREADY,
-		input	wire	[NM*C_AXI_ADDR_WIDTH-1:0]	S_AXI_AWADDR,
-		input	wire	[NM*3-1:0]			S_AXI_AWPROT,
+	input	wire	[NM-1:0]			S_AXI_WVALID,
+	output	wire	[NM-1:0]			S_AXI_WREADY,
+	input	wire	[NM*C_AXI_DATA_WIDTH-1:0]	S_AXI_WDATA,
+	input	wire	[NM*C_AXI_DATA_WIDTH/8-1:0]	S_AXI_WSTRB,
 
-		input	wire	[NM-1:0]			S_AXI_WVALID,
-		output	wire	[NM-1:0]			S_AXI_WREADY,
-		input	wire	[NM*C_AXI_DATA_WIDTH-1:0]	S_AXI_WDATA,
-		input	wire	[NM*C_AXI_DATA_WIDTH/8-1:0]	S_AXI_WSTRB,
+	output	wire	[NM-1:0]			S_AXI_BVALID,
+	input	wire	[NM-1:0]			S_AXI_BREADY,
+	output	wire	[NM*2-1:0]			S_AXI_BRESP,
 
-		output	wire	[NM-1:0]			S_AXI_BVALID,
-		input	wire	[NM-1:0]			S_AXI_BREADY,
-		output	wire	[NM*2-1:0]			S_AXI_BRESP,
+	input	wire	[NM-1:0]			S_AXI_ARVALID,
+	output	wire	[NM-1:0]			S_AXI_ARREADY,
+	input	wire	[NM*C_AXI_ADDR_WIDTH-1:0]	S_AXI_ARADDR,
+	input	wire	[NM*3-1:0]			S_AXI_ARPROT,
 
-		input	wire	[NM-1:0]			S_AXI_ARVALID,
-		output	wire	[NM-1:0]			S_AXI_ARREADY,
-		input	wire	[NM*C_AXI_ADDR_WIDTH-1:0]	S_AXI_ARADDR,
-		input	wire	[NM*3-1:0]			S_AXI_ARPROT,
+	output	wire	[NM-1:0]			S_AXI_RVALID,
+	input	wire	[NM-1:0]			S_AXI_RREADY,
+	output	wire	[NM*C_AXI_DATA_WIDTH-1:0]	S_AXI_RDATA,
+	output	wire	[NM*2-1:0]			S_AXI_RRESP,
 
-		output	wire	[NM-1:0]			S_AXI_RVALID,
-		input	wire	[NM-1:0]			S_AXI_RREADY,
-		output	wire	[NM*C_AXI_DATA_WIDTH-1:0]	S_AXI_RDATA,
-		output	wire	[NM*2-1:0]			S_AXI_RRESP,
+	// Outgoing AXI4-lite master port(s)
+	output	wire	[NS*C_AXI_ADDR_WIDTH-1:0]	M_AXI_AWADDR,
+	output	wire	[NS*3-1:0]			M_AXI_AWPROT,
+	output	wire	[NS-1:0]			M_AXI_AWVALID,
+	input	wire	[NS-1:0]			M_AXI_AWREADY,
 
-		// Outgoing AXI4-lite master port(s)
-		output	wire	[NS*C_AXI_ADDR_WIDTH-1:0]	M_AXI_AWADDR,
-		output	wire	[NS*3-1:0]			M_AXI_AWPROT,
-		output	wire	[NS-1:0]			M_AXI_AWVALID,
-		input	wire	[NS-1:0]			M_AXI_AWREADY,
+	output	wire	[NS*C_AXI_DATA_WIDTH-1:0]	M_AXI_WDATA,
+	output	wire	[NS*C_AXI_DATA_WIDTH/8-1:0]	M_AXI_WSTRB,
+	output	wire	[NS-1:0]			M_AXI_WVALID,
+	input	wire	[NS-1:0]			M_AXI_WREADY,
 
-		output	wire	[NS*C_AXI_DATA_WIDTH-1:0]	M_AXI_WDATA,
-		output	wire	[NS*C_AXI_DATA_WIDTH/8-1:0]	M_AXI_WSTRB,
-		output	wire	[NS-1:0]			M_AXI_WVALID,
-		input	wire	[NS-1:0]			M_AXI_WREADY,
+	input	wire	[NS*2-1:0]			M_AXI_BRESP,
+	input	wire	[NS-1:0]			M_AXI_BVALID,
+	output	wire	[NS-1:0]			M_AXI_BREADY,
 
-		input	wire	[NS*2-1:0]			M_AXI_BRESP,
-		input	wire	[NS-1:0]			M_AXI_BVALID,
-		output	wire	[NS-1:0]			M_AXI_BREADY,
+	output	wire	[NS*C_AXI_ADDR_WIDTH-1:0]	M_AXI_ARADDR,
+	output	wire	[NS*3-1:0]			M_AXI_ARPROT,
+	output	wire	[NS-1:0]			M_AXI_ARVALID,
+	input	wire	[NS-1:0]			M_AXI_ARREADY,
 
-		output	wire	[NS*C_AXI_ADDR_WIDTH-1:0]	M_AXI_ARADDR,
-		output	wire	[NS*3-1:0]			M_AXI_ARPROT,
-		output	wire	[NS-1:0]			M_AXI_ARVALID,
-		input	wire	[NS-1:0]			M_AXI_ARREADY,
+	input	wire	[NS*C_AXI_DATA_WIDTH-1:0]	M_AXI_RDATA,
+	input	wire	[NS*2-1:0]			M_AXI_RRESP,
+	input	wire	[NS-1:0]			M_AXI_RVALID,
+	output	wire	[NS-1:0]			M_AXI_RREADY
+);
 
-		input	wire	[NS*C_AXI_DATA_WIDTH-1:0]	M_AXI_RDATA,
-		input	wire	[NS*2-1:0]			M_AXI_RRESP,
-		input	wire	[NS-1:0]			M_AXI_RVALID,
-		output	wire	[NS-1:0]			M_AXI_RREADY
-	);
-	//
-	// Local parameters, derived from those above
-	// {{{
 	localparam	LGLINGER = (OPT_LINGER>1) ? $clog2(OPT_LINGER+1) : 1;
-	//
 	localparam	LGNM = (NM>1) ? $clog2(NM) : 1;
 	localparam	LGNS = (NS>1) ? $clog2(NS+1) : 1;
-	//
 	// In order to use indexes, and hence fully balanced mux trees, it helps
 	// to make certain that we have a power of two based lookup.  NMFULL
 	// is the number of masters in this lookup, with potentially some
 	// unused extra ones.  NSFULL is defined similarly.
 	localparam	NMFULL = (NM>1) ? (1<<LGNM) : 1;
 	localparam	NSFULL = (NS>1) ? (1<<LGNS) : 2;
-	//
 	localparam [1:0] INTERCONNECT_ERROR = 2'b11;
-	localparam [0:0]	OPT_SKID_INPUT = 0;
-	localparam [0:0]	OPT_BUFFER_DECODER = 1;
+	localparam [0:0] OPT_SKID_INPUT = 0;
+	localparam [0:0] OPT_BUFFER_DECODER = 1;
 
 	genvar	N,M;
 	integer	iN, iM;
