@@ -27,7 +27,12 @@ module addrdecode #(
 		// If OPT_REGISTERED is set, address decoding will take an extra
 		// clock, and will register the results of the decoding
 		// operation.
-		parameter [0:0]	OPT_REGISTERED = 0
+		parameter [0:0]	OPT_REGISTERED = 0,
+		//
+		// If OPT_LOWPOWER is set, then whenever the output is not
+		// valid, any respective data linse will also be forced to zero
+		// in an effort to minimize power.
+		parameter [0:0]	OPT_LOWPOWER = 0
 	) (
 		// {{{
 		input	wire			i_clk, i_reset,
@@ -160,16 +165,16 @@ module addrdecode #(
 		initial	o_addr   = 0;
 		initial	o_data   = 0;
 		always @(posedge i_clk)
-		if (i_reset)
+		if (i_reset && OPT_LOWPOWER)
 		begin
 			o_addr   <= 0;
 			o_data   <= 0;
 		end else if ((!o_valid || !i_stall)
-				 && (i_valid))
+				 && (i_valid || !OPT_LOWPOWER))
 		begin
 			o_addr   <= i_addr;
 			o_data   <= i_data;
-		end else if (!i_stall)
+		end else if (OPT_LOWPOWER && !i_stall)
 		begin
 			o_addr   <= 0;
 			o_data   <= 0;
@@ -183,9 +188,9 @@ module addrdecode #(
 		if (i_reset)
 			o_decode <= 0;
 		else if ((!o_valid || !i_stall)
-				 && (i_valid))
+				 && (i_valid || !OPT_LOWPOWER))
 			o_decode <= request;
-		else if (!i_stall)
+		else if (OPT_LOWPOWER && !i_stall)
 			o_decode <= 0;
 		// }}}
 
@@ -287,7 +292,7 @@ module addrdecode #(
 
 	// LOWPOWER check
 	// {{{
-	generate if (OPT_REGISTERED)
+	generate if (OPT_LOWPOWER && OPT_REGISTERED)
 	begin
 		always @(*)
 		if (!o_valid)
