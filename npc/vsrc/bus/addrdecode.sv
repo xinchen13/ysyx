@@ -147,59 +147,8 @@ module addrdecode #(
 
 	// o_valid, o_addr, o_data, o_decode, o_stall
 	// {{{
-	generate if (OPT_REGISTERED)
-	begin : GEN_REG_OUTPUTS
-
-		// o_valid
-		// {{{
-		initial	o_valid = 0;
-		always @(posedge i_clk)
-		if (i_reset)
-			o_valid <= 0;
-		else if (!o_stall)
-			o_valid <= i_valid;
-		// }}}
-
-		// o_addr, o_data
-		// {{{
-		initial	o_addr   = 0;
-		initial	o_data   = 0;
-		always @(posedge i_clk)
-		if (i_reset && OPT_LOWPOWER)
-		begin
-			o_addr   <= 0;
-			o_data   <= 0;
-		end else if ((!o_valid || !i_stall)
-				 && (i_valid || !OPT_LOWPOWER))
-		begin
-			o_addr   <= i_addr;
-			o_data   <= i_data;
-		end else if (OPT_LOWPOWER && !i_stall)
-		begin
-			o_addr   <= 0;
-			o_data   <= 0;
-		end
-		// }}}
-
-		// o_decode
-		// {{{
-		initial	o_decode = 0;
-		always @(posedge i_clk)
-		if (i_reset)
-			o_decode <= 0;
-		else if ((!o_valid || !i_stall)
-				 && (i_valid || !OPT_LOWPOWER))
-			o_decode <= request;
-		else if (OPT_LOWPOWER && !i_stall)
-			o_decode <= 0;
-		// }}}
-
-		// o_stall
-		// {{{
-		always @(*)
-			o_stall = (o_valid && i_stall);
-		// }}}
-	end else begin : GEN_COMBINATORIAL_OUTPUTS
+	generate
+	begin : GEN_COMBINATORIAL_OUTPUTS
 
 		always @(*)
 		begin
