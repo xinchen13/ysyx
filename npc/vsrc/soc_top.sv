@@ -189,8 +189,11 @@ axi_lite_xbar #(
 		32'ha00003f8,
         4'b1000, {(32-4){1'b0}} 
     }),
-    .SLAVE_MASK({ {(2){ 32'hffffffff }},
-				{(1){ 4'b1111, {(28){1'b0}} }} }),
+    .SLAVE_MASK({
+        {(1){ 32'hfffffff8 }},
+        {(1){ 32'hffffffff }},
+        {(1){ 4'b1111, {(28){1'b0}} }} 
+    }),
     .OPT_LOWPOWER(1'b0),
     .OPT_LINGER(4),
     .LGMAXBURST(2)
