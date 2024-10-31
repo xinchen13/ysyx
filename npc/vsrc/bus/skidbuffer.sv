@@ -30,26 +30,14 @@ module skidbuffer #(
 	always @ (posedge i_clk) begin
 		if (i_reset)
 			r_data <= 0;
-		else if (OPT_LOWPOWER && (!o_valid || i_ready))
-			r_data <= 0;
 		else if ((!OPT_LOWPOWER || i_valid) && o_ready)
 			r_data <= i_data;
 	end
 
-	// o_ready
 	assign o_ready = !r_valid;
 
 	// Outputs are combinatorially determined from inputs
-	// o_valid
-	assign	o_valid = !i_reset && (i_valid || r_valid);
-
-	// o_data
-	always @ (*) begin
-		if (r_valid)
-			o_data = r_data;
-		else
-			o_data = i_data;
-	end
-
+	assign o_valid = !i_reset && (i_valid || r_valid);
+	assign o_data = r_valid ? r_data : i_data;
 
 endmodule
