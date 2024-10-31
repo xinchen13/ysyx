@@ -214,17 +214,23 @@ module axi_lite_xbar #(
 
 		// write address decoding
 		addrdecode #(
-			.AW(AW), .DW(3), .NS(NS),
+			.AW(AW),
+			.DW(3),
+			.NS(NS),
 			.SLAVE_ADDR(SLAVE_ADDR),
 			.SLAVE_MASK(SLAVE_MASK)
 		) wraddr(
-			.i_clk(S_AXI_ACLK), .i_reset(!S_AXI_ARESETN),
-			.i_valid(skd_awvalid[N]), .o_stall(skd_awstall[N]),
-				.i_addr(skd_awaddr[N]), .i_data(skd_awprot[N]),
+			.i_clk(S_AXI_ACLK),
+			.i_reset(!S_AXI_ARESETN),
+			.i_valid(skd_awvalid[N]),
+			.o_stall(skd_awstall[N]),
+			.i_addr(skd_awaddr[N]),
+			.i_data(skd_awprot[N]),
 			.o_valid(dcd_awvalid[N]),
-				.i_stall(!dcd_awvalid[N]||!slave_awaccepts[N]),
-				.o_decode(wdecode), .o_addr(m_awaddr[N]),
-				.o_data(m_awprot[N])
+			.i_stall(!dcd_awvalid[N]||!slave_awaccepts[N]),
+			.o_decode(wdecode),
+			.o_addr(m_awaddr[N]),
+			.o_data(m_awprot[N])
 		);
 
 		// wskid
@@ -314,16 +320,23 @@ module axi_lite_xbar #(
 
 		// Read address decoding
 		addrdecode #(
-			.AW(AW), .DW(3), .NS(NS),
-			.SLAVE_ADDR(SLAVE_ADDR), .SLAVE_MASK(SLAVE_MASK)
-		) rdaddr(
-			.i_clk(S_AXI_ACLK), .i_reset(!S_AXI_ARESETN),
-			.i_valid(skd_arvalid[N]), .o_stall(skd_arstall[N]),
-				.i_addr(skd_araddr[N]), .i_data(skd_arprot[N]),
+			.AW(AW),
+			.DW(3),
+			.NS(NS),
+			.SLAVE_ADDR(SLAVE_ADDR),
+			.SLAVE_MASK(SLAVE_MASK)
+		) rdaddr (
+			.i_clk(S_AXI_ACLK),
+			.i_reset(!S_AXI_ARESETN),
+			.i_valid(skd_arvalid[N]),
+			.o_stall(skd_arstall[N]),
+			.i_addr(skd_araddr[N]),
+			.i_data(skd_arprot[N]),
 			.o_valid(dcd_arvalid[N]),
-				.i_stall(!m_arvalid[N] || !slave_raccepts[N]),
-				.o_decode(rdecode), .o_addr(m_araddr[N]),
-				.o_data(m_arprot[N])
+			.i_stall(!m_arvalid[N] || !slave_raccepts[N]),
+			.o_decode(rdecode),
+			.o_addr(m_araddr[N]),
+			.o_data(m_arprot[N])
 		);
 
 		// r_marvalid -> m_arvalid[N]
