@@ -30,7 +30,7 @@ module skidbuffer #(
 	always @ (posedge i_clk) begin
 		if (i_reset)
 			r_data <= 0;
-		else if ((!OPT_LOWPOWER || i_valid) && o_ready)
+		else if (i_valid && o_ready)
 			r_data <= i_data;
 	end
 
