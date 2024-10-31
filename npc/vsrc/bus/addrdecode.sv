@@ -207,8 +207,19 @@ module addrdecode #(
 		end
 
 		// Make Verilator happy
+		// {{{
+		// verilator lint_off UNUSED
 		wire	unused;
-		assign	unused = &{ 1'b0, i_reset };
-
+		assign	unused = &{ 1'b0,
+`ifdef	VERILATOR
+				// Can't declare the clock as unused for formal,
+				// lest it not be recognized as *the* clock
+				i_clk,
+`endif
+				i_reset };
+		// verilator lint_on UNUSED
+		// }}}
 	end endgenerate
+	// }}}
+
 endmodule
