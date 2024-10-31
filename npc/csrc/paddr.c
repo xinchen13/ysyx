@@ -62,10 +62,10 @@ int dpic_pmem_read(int raddr) {
     //     return microseconds;
     // }
     else {
-        printf("rdata(last) = 0x%x\n", dut->rootp->soc_top__DOT__xcore_u0__DOT__wb_alu_result);
-        printf("raddr(last) = 0x%x\n", dut->rootp->soc_top__DOT__xcore_u0__DOT__wb_dmem_rdata);
-        printf("raddr(alu out) = 0x%x\n", dut->rootp->soc_top__DOT__xcore_u0__DOT__alu_result);
-        printf("raddr(arbiter out) = 0x%x\n", dut->rootp->soc_top__DOT__arbiter_xbar_araddr);
+        // printf("rdata(last) = 0x%x\n", dut->rootp->soc_top__DOT__xcore_u0__DOT__wb_alu_result);
+        // printf("raddr(last) = 0x%x\n", dut->rootp->soc_top__DOT__xcore_u0__DOT__wb_dmem_rdata);
+        // printf("raddr(alu out) = 0x%x\n", dut->rootp->soc_top__DOT__xcore_u0__DOT__alu_result);
+        // printf("raddr(arbiter out) = 0x%x\n", dut->rootp->soc_top__DOT__arbiter_xbar_araddr);
         isa_reg_display();
         Assert(0, "wrong read: " FMT_PADDR, raddr);
     }
@@ -91,10 +91,10 @@ void dpic_pmem_write(int waddr, int wdata, char wmask) {
     //     putchar(wdata);
     // }
     else {
-        printf("waddr(alu out) = 0x%x\n", dut->rootp->soc_top__DOT__xcore_u0__DOT__wb_alu_result);
-        printf("waddr(arbiter out) = 0x%x\n", dut->rootp->soc_top__DOT__arbiter_xbar_awaddr);
-        printf("bus grant = 0x%x\n", dut->rootp->soc_top__DOT__arbiter_u0__DOT__grant);
-        printf("lsu awvalid = 0x%x\n", dut->rootp->soc_top__DOT__arbiter_xbar_awvalid);
+        // printf("waddr(alu out) = 0x%x\n", dut->rootp->soc_top__DOT__xcore_u0__DOT__wb_alu_result);
+        // printf("waddr(arbiter out) = 0x%x\n", dut->rootp->soc_top__DOT__arbiter_xbar_awaddr);
+        // printf("bus grant = 0x%x\n", dut->rootp->soc_top__DOT__arbiter_u0__DOT__grant);
+        // printf("lsu awvalid = 0x%x\n", dut->rootp->soc_top__DOT__arbiter_xbar_awvalid);
         isa_reg_display();
         Assert(0, "wrong write: " FMT_PADDR, waddr);
     }
