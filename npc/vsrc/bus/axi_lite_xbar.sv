@@ -87,7 +87,6 @@ module axi_lite_xbar #(
 	localparam	NMFULL = (NM>1) ? (1<<LGNM) : 1;
 	localparam	NSFULL = (NS>1) ? (1<<LGNS) : 2;
 	localparam [1:0] INTERCONNECT_ERROR = 2'b11;
-	localparam [0:0] OPT_SKID_INPUT = 0;
 
 	genvar	N,M;
 	integer	iN, iM;
@@ -202,7 +201,7 @@ module axi_lite_xbar #(
 
 		// awskid
 		skidbuffer #(
-			.DW(AW+3), .OPT_OUTREG(OPT_SKID_INPUT)
+			.DW(AW+3)
 		) awskid(
 			.i_clk(S_AXI_ACLK), .i_reset(!S_AXI_ARESETN),
 			.i_valid(S_AXI_AWVALID[N]), .o_ready(S_AXI_AWREADY[N]),
@@ -236,7 +235,7 @@ module axi_lite_xbar #(
 		// wskid
 
 		skidbuffer #(
-			.DW(DW+DW/8), .OPT_OUTREG(OPT_SKID_INPUT)
+			.DW(DW+DW/8)
 		) wskid (
 			.i_clk(S_AXI_ACLK), .i_reset(!S_AXI_ARESETN),
 			.i_valid(S_AXI_WVALID[N]), .o_ready(S_AXI_WREADY[N]),
@@ -309,7 +308,7 @@ module axi_lite_xbar #(
 
 		// arskid
 		skidbuffer #(
-			.DW(AW+3), .OPT_OUTREG(OPT_SKID_INPUT)
+			.DW(AW+3)
 		) arskid(
 			.i_clk(S_AXI_ACLK), .i_reset(!S_AXI_ARESETN),
 			.i_valid(S_AXI_ARVALID[N]), .o_ready(S_AXI_ARREADY[N]),

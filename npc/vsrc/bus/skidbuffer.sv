@@ -14,23 +14,24 @@ module skidbuffer #(
 
 	wire	[DW-1:0]	w_data;
 
-	// We'll start with skid buffer itself
-	reg			r_valid;
-	reg	[DW-1:0]	r_data;
+	// real skid buffer
+	reg					r_valid;
+	reg		[DW-1:0]	r_data;
 
 	// r_valid
-	always @(posedge i_clk)
-	if (i_reset)
-		r_valid <= 0;
-	else if ((i_valid && o_ready) && (o_valid && !i_ready))
-		// We have incoming data, but the output is stalled
-		r_valid <= 1;
-	else if (i_ready)
-		r_valid <= 0;
+	always @ (posedge i_clk) begin
+		if (i_reset)
+			r_valid <= 0;
+		else if ((i_valid && o_ready) && (o_valid && !i_ready))
+			// We have incoming data, but the output is stalled
+			r_valid <= 1;
+		else if (i_ready)
+			r_valid <= 0;
+	end
 
 	// r_data
-	always @(posedge i_clk)
-	if (OPT_LOWPOWER && i_reset)
+	always @ (posedge i_clk)
+	if (i_reset)
 		r_data <= 0;
 	else if (OPT_LOWPOWER && (!o_valid || i_ready))
 		r_data <= 0;
@@ -43,48 +44,19 @@ module skidbuffer #(
 	assign o_ready = !r_valid;
 
 	// And then move on to the output port
-	if (!OPT_OUTREG)
-	begin : NET_OUTPUT
-		// Outputs are combinatorially determined from inputs
-		// o_valid
-		assign	o_valid = !i_reset && (i_valid || r_valid);
 
-		// o_data
-		always @(*)
-		if (r_valid)
-			o_data = r_data;
-		else if (!OPT_LOWPOWER || i_valid)
-			o_data = i_data;
-		else
-			o_data = 0;
-	end else begin : REG_OUTPUT
-		// Register our outputs
-		// o_valid
-		reg	ro_valid;
+	// Outputs are combinatorially determined from inputs
+	// o_valid
+	assign	o_valid = !i_reset && (i_valid || r_valid);
 
-		always @(posedge i_clk)
-		if (i_reset)
-			ro_valid <= 0;
-		else if (!o_valid || i_ready)
-			ro_valid <= (i_valid || r_valid);
+	// o_data
+	always @(*)
+	if (r_valid)
+		o_data = r_data;
+	else if (!OPT_LOWPOWER || i_valid)
+		o_data = i_data;
+	else
+		o_data = 0;
 
-		assign	o_valid = ro_valid;
-
-
-		// o_data
-		always @(posedge i_clk)
-		if (OPT_LOWPOWER && i_reset)
-			o_data <= 0;
-		else if (!o_valid || i_ready)
-		begin
-
-			if (r_valid)
-				o_data <= r_data;
-			else if (!OPT_LOWPOWER || i_valid)
-				o_data <= i_data;
-			else
-				o_data <= 0;
-		end
-	end
 
 endmodule
