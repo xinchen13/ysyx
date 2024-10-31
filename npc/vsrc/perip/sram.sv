@@ -68,7 +68,7 @@ module sram (
     assign bresp = 2'b00;
     assign rvalid = ((state == READ) && sram_ack) ? 1'b1 : 1'b0;
     assign bvalid = ((state == WRITE) && sram_ack) ? 1'b1 : 1'b0;
-    assign wready = (state == IDLE) ? 1'b1 : 1'b0;
+    assign wready = (state == IDLE || state == AWRITE) ? 1'b1 : 1'b0;
 
     // trans logic
     always @ (*) begin
