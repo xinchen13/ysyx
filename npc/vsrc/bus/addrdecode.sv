@@ -29,18 +29,9 @@ module addrdecode #(
 );
 
 	wire	[NS:0]		    request;
-	reg	    [NS-1:0]	    prerequest;
 	integer			        iM;
 
-	// prerequest
-	always @ (*) begin
-        for(iM=0; iM<NS; iM=iM+1)
-            prerequest[iM] = (((i_addr ^ SLAVE_ADDR[iM*AW +: AW])
-                & SLAVE_MASK[iM*AW +: AW]) == 0)
-                && (ACCESS_ALLOWED[iM]);
-    end
-
-	// request
+	// generate request vector
 	generate 
         if (NS == 1) begin : SINGLE_SLAVE
             assign request[0] = i_valid;
@@ -49,10 +40,11 @@ module addrdecode #(
             reg	[NS-1:0]	r_request;
             always @ (*)
                 begin
-                    for(iM=0; iM<NS; iM=iM+1)
-                        r_request[iM] = i_valid && prerequest[iM];
-                    if ((NS > 1 && |prerequest[NS-1:1]))
-                        r_request[0] = 1'b0;
+                    for(iM=0; iM<NS; iM=iM+1) begin
+                        r_request[iM] = i_valid && 
+                        (((i_addr ^ SLAVE_ADDR[iM*AW +: AW]) & SLAVE_MASK[iM*AW +: AW]) == 0) &&
+                        (ACCESS_ALLOWED[iM]);
+                    end
                 end
             assign	request[NS-1:0] = r_request;
         end 
