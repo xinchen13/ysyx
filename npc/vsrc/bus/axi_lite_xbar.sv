@@ -92,9 +92,7 @@ module axi_lite_xbar #(
 
 	genvar	N,M;
 	integer	iN, iM;
-	// }}}
 
-	// {{{
 	reg	[NSFULL-1:0]	wrequest		[0:NM-1];
 	reg	[NSFULL-1:0]	rrequest		[0:NM-1];
 	reg	[NSFULL-1:0]	wrequested		[0:NM];
@@ -106,15 +104,14 @@ module axi_lite_xbar #(
 	reg	[NS-1:0]	mwgrant;
 	reg	[NS-1:0]	mrgrant;
 
-	// verilator lint_off UNUSED
 	wire	[LGMAXBURST-1:0]	w_sawpending	[0:NM-1];
 	wire	[LGMAXBURST-1:0]	w_srpending	[0:NM-1];
-	// verilator lint_on  UNUSED
+
 	reg	[NM-1:0]		swfull;
 	reg	[NM-1:0]		srfull;
 	reg	[NM-1:0]		swempty;
 	reg	[NM-1:0]		srempty;
-	//
+
 	wire	[LGNS-1:0]		swindex	[0:NMFULL-1];
 	wire	[LGNS-1:0]		srindex	[0:NMFULL-1];
 	wire	[LGNM-1:0]		mwindex	[0:NSFULL-1];
@@ -133,7 +130,6 @@ module axi_lite_xbar #(
 
 	wire	[C_AXI_ADDR_WIDTH-1:0]		m_araddr	[0:NMFULL-1];
 	wire	[2:0]				m_arprot	[0:NMFULL-1];
-	//
 
 	wire	[NM-1:0]	skd_awvalid, skd_awstall, skd_wvalid;
 	wire	[NM-1:0]	skd_arvalid, skd_arstall;
@@ -153,13 +149,9 @@ module axi_lite_xbar #(
 	reg	[1:0]		m_axi_bresp	[0:NSFULL-1];
 
 	reg	[NSFULL-1:0]	m_axi_arvalid;
-	// Verilator lint_off UNUSED
 	reg	[NSFULL-1:0]	m_axi_arready;
-	// Verilator lint_on  UNUSED
 	reg	[NSFULL-1:0]	m_axi_rvalid;
-	// Verilator lint_off UNUSED
 	reg	[NSFULL-1:0]	m_axi_rready;
-	// Verilator lint_on  UNUSED
 
 	reg	[NM-1:0]	r_rvalid;
 	reg	[1:0]		r_rresp		[0:NM-1];
@@ -171,10 +163,7 @@ module axi_lite_xbar #(
 	reg	[NM-1:0]	slave_awaccepts;
 	reg	[NM-1:0]	slave_waccepts;
 	reg	[NM-1:0]	slave_raccepts;
-	// }}}
 
-	// m_axi_[aw|w|b]*
-	// {{{
 	always @(*)
 	begin
 		m_axi_awvalid = -1;
@@ -205,42 +194,32 @@ module axi_lite_xbar #(
 		end
 
 	end
-	// }}}
 
 	generate for(N=0; N<NM; N=N+1)
 	begin : DECODE_WRITE_REQUEST
-		// {{{
+
 		wire	[NS:0]		wdecode;
 		reg	r_mawvalid, r_mwvalid;
 
 		// awskid
-		// {{{
 		skidbuffer #(
-			// {{{
 			.DW(AW+3), .OPT_OUTREG(OPT_SKID_INPUT)
-			// }}}
 		) awskid(
-			// {{{
 			.i_clk(S_AXI_ACLK), .i_reset(!S_AXI_ARESETN),
 			.i_valid(S_AXI_AWVALID[N]), .o_ready(S_AXI_AWREADY[N]),
 			.i_data({ S_AXI_AWADDR[N*AW +: AW], S_AXI_AWPROT[N*3 +: 3] }),
 			.o_valid(skd_awvalid[N]), .i_ready(!skd_awstall[N]),
 				.o_data({ skd_awaddr[N], skd_awprot[N] })
-			// }}}
+
 		);
-		// }}}
 
 		// write address decoding
-		// {{{
 		addrdecode #(
-			// {{{
 			.AW(AW), .DW(3), .NS(NS),
 			.SLAVE_ADDR(SLAVE_ADDR),
 			.SLAVE_MASK(SLAVE_MASK),
 			.OPT_REGISTERED(OPT_BUFFER_DECODER)
-			// }}}
 		) wraddr(
-			// {{{
 			.i_clk(S_AXI_ACLK), .i_reset(!S_AXI_ARESETN),
 			.i_valid(skd_awvalid[N]), .o_stall(skd_awstall[N]),
 				.i_addr(skd_awaddr[N]), .i_data(skd_awprot[N]),
@@ -248,18 +227,13 @@ module axi_lite_xbar #(
 				.i_stall(!dcd_awvalid[N]||!slave_awaccepts[N]),
 				.o_decode(wdecode), .o_addr(m_awaddr[N]),
 				.o_data(m_awprot[N])
-			// }}}
 		);
-		// }}}
 
 		// wskid
-		// {{{
+
 		skidbuffer #(
-			// {{{
 			.DW(DW+DW/8), .OPT_OUTREG(OPT_SKID_INPUT)
-			// }}}
 		) wskid (
-			// {{{
 			.i_clk(S_AXI_ACLK), .i_reset(!S_AXI_ARESETN),
 			.i_valid(S_AXI_WVALID[N]), .o_ready(S_AXI_WREADY[N]),
 				.i_data({ S_AXI_WDATA[N*DW +: DW],
@@ -267,12 +241,9 @@ module axi_lite_xbar #(
 			.o_valid(skd_wvalid[N]),
 				.i_ready(m_wvalid[N] && slave_waccepts[N]),
 				.o_data({ m_wdata[N], m_wstrb[N] })
-			// }}}
 		);
-		// }}}
 
 		// slave_awaccepts
-		// {{{
 		always @(*)
 		begin
 			slave_awaccepts[N] = 1'b1;
@@ -287,10 +258,8 @@ module axi_lite_xbar #(
 			// ERRORs are always accepted
 			//	back pressure is handled in the write side
 		end
-		// }}}
 
 		// slave_waccepts
-		// {{{
 		always @(*)
 		begin
 			slave_waccepts[N] = 1'b1;
@@ -304,10 +273,8 @@ module axi_lite_xbar #(
 			if (wgrant[N][NS]&&(S_AXI_BVALID[N]&& !S_AXI_BREADY[N]))
 				slave_waccepts[N] = 1'b0;
 		end
-		// }}}
 
 		// r_mawvalid, r_mwvalid
-		// {{{
 		always @(*)
 		begin
 			r_mawvalid= dcd_awvalid[N] && !swfull[N];
@@ -319,9 +286,7 @@ module axi_lite_xbar #(
 
 		assign	m_awvalid[N] = r_mawvalid;
 		assign	m_wvalid[N] = r_mwvalid;
-		// }}}
 
-		// }}}
 	end for (N=NM; N<NMFULL; N=N+1)
 	begin : UNUSED_WSKID_BUFFERS
 		// {{{
@@ -335,37 +300,26 @@ module axi_lite_xbar #(
 
 	generate for(N=0; N<NM; N=N+1)
 	begin : DECODE_READ_REQUEST
-		// {{{
 		wire	[NS:0]		rdecode;
 		reg	r_marvalid;
 
 		// arskid
-		// {{{
 		skidbuffer #(
-			// {{{
 			.DW(AW+3), .OPT_OUTREG(OPT_SKID_INPUT)
-			// }}}
 		) arskid(
-			// {{{
 			.i_clk(S_AXI_ACLK), .i_reset(!S_AXI_ARESETN),
 			.i_valid(S_AXI_ARVALID[N]), .o_ready(S_AXI_ARREADY[N]),
 			.i_data({ S_AXI_ARADDR[N*AW +: AW], S_AXI_ARPROT[N*3 +: 3] }),
 			.o_valid(skd_arvalid[N]), .i_ready(!skd_arstall[N]),
 				.o_data({ skd_araddr[N], skd_arprot[N] })
-			// }}}
 		);
-		// }}}
 
 		// Read address decoding
-		// {{{
 		addrdecode #(
-			// {{{
 			.AW(AW), .DW(3), .NS(NS),
 			.SLAVE_ADDR(SLAVE_ADDR), .SLAVE_MASK(SLAVE_MASK),
 			.OPT_REGISTERED(OPT_BUFFER_DECODER)
-			// }}}
 		) rdaddr(
-			// {{{
 			.i_clk(S_AXI_ACLK), .i_reset(!S_AXI_ARESETN),
 			.i_valid(skd_arvalid[N]), .o_stall(skd_arstall[N]),
 				.i_addr(skd_araddr[N]), .i_data(skd_arprot[N]),
@@ -373,12 +327,9 @@ module axi_lite_xbar #(
 				.i_stall(!m_arvalid[N] || !slave_raccepts[N]),
 				.o_decode(rdecode), .o_addr(m_araddr[N]),
 				.o_data(m_arprot[N])
-			// }}}
 		);
-		// }}}
 
 		// r_marvalid -> m_arvalid[N]
-		// {{{
 		always @(*)
 		begin
 			r_marvalid = dcd_arvalid[N] && !srfull[N];
@@ -388,10 +339,8 @@ module axi_lite_xbar #(
 		end
 
 		assign	m_arvalid[N] = r_marvalid;
-		// }}}
 
 		// slave_raccepts
-		// {{{
 		always @(*)
 		begin
 			slave_raccepts[N] = 1'b1;
@@ -399,10 +348,8 @@ module axi_lite_xbar #(
 				slave_raccepts[N] = 1'b0;
 			if (srfull[N])
 				slave_raccepts[N] = 1'b0;
-			// verilator lint_off  WIDTH
 			if (!rrequest[N][srindex[N]])
 				slave_raccepts[N] = 1'b0;
-			// verilator lint_on  WIDTH
 			if (!rgrant[N][NS])
 			begin
 				if (m_axi_arvalid[srindex[N]] && !m_axi_arready[srindex[N]])
@@ -410,20 +357,15 @@ module axi_lite_xbar #(
 			end else if (S_AXI_RVALID[N] && !S_AXI_RREADY[N])
 				slave_raccepts[N] = 1'b0;
 		end
-		// }}}
 
-		// }}}
 	end for (N=NM; N<NMFULL; N=N+1)
 	begin : UNUSED_RSKID_BUFFERS
-		// {{{
 		assign	m_arvalid[N] = 0;
 		assign	m_araddr[N] = 0;
 		assign	m_arprot[N] = 0;
-		// }}}
 	end endgenerate
 
 	// wrequested
-	// {{{
 	always @(*)
 	begin : DECONFLICT_WRITE_REQUESTS
 
@@ -458,10 +400,8 @@ module axi_lite_xbar #(
 			wrequested[NM][iM] = wrequest[NM-1][iM] || wrequested[NM-1][iM];
 		end
 	end
-	// }}}
 
 	// rrequested
-	// {{{
 	always @(*)
 	begin : DECONFLICT_READ_REQUESTS
 
@@ -491,13 +431,10 @@ module axi_lite_xbar #(
 			rrequested[NM][iM] = rrequest[NM-1][iM] || rrequested[NM-1][iM];
 		end
 	end
-	// }}}
 
 	// mwgrant, mrgrant
-	// {{{
 	generate for(M=0; M<NS; M=M+1)
 	begin : GEN_GRANT
-		// {{{
 		initial	mwgrant[M] = 0;
 		always @(*)
 		begin
@@ -514,24 +451,18 @@ module axi_lite_xbar #(
 			if (rgrant[iN][M])
 				mrgrant[M] = 1;
 		end
-		// }}}
 	end endgenerate
-	// }}}
 
 	generate for(N=0; N<NM; N=N+1)
 	begin : ARBITRATE_WRITE_REQUESTS
-		// {{{
 		// Declarations
-		// {{{
 		reg			stay_on_channel;
 		reg			requested_channel_is_available;
 		reg			leave_channel;
 		reg	[LGNS-1:0]	requested_index;
 		wire			linger;
-		// }}}
 
 		// stay_on_channel
-		// {{{
 		always @(*)
 		begin
 			stay_on_channel = |(wrequest[N][NS:0] & wgrant[N]);
@@ -539,10 +470,8 @@ module axi_lite_xbar #(
 			if (swgrant[N] && !swempty[N])
 				stay_on_channel = 1;
 		end
-		// }}}
 
 		// requested_channel_is_available
-		// {{{
 		always @(*)
 		begin
 			requested_channel_is_available =
@@ -554,15 +483,11 @@ module axi_lite_xbar #(
 			if (NM < 2)
 				requested_channel_is_available = m_awvalid[N];
 		end
-		// }}}
 
 		if (OPT_LINGER == 0)
 		begin : NO_LINGER
-			// {{{
 			assign	linger = 0;
-			// }}}
 		end else begin : WRITE_LINGER
-			// {{{
 			reg [LGLINGER-1:0]	linger_counter;
 			reg			r_linger;
 
@@ -588,7 +513,6 @@ module axi_lite_xbar #(
 		end
 
 		// leave_channel
-		// {{{
 		always @(*)
 		begin
 			leave_channel = 0;
@@ -603,10 +527,8 @@ module axi_lite_xbar #(
 				// to any other channel
 				leave_channel = 1;
 		end
-		// }}}
 
 		// wgrant, swgrant
-		// {{{
 		initial	wgrant[N]  = 0;
 		initial	swgrant[N] = 0;
 		always @(posedge S_AXI_ACLK)
@@ -627,10 +549,8 @@ module axi_lite_xbar #(
 				wgrant[N]  <= 0;
 			end
 		end
-		// }}}
 
 		// requested_index
-		// {{{
 		always @(wrequest[N])
 		begin
 			requested_index = 0;
@@ -638,10 +558,8 @@ module axi_lite_xbar #(
 			if (wrequest[N][iM])
 				requested_index= requested_index | iM[LGNS-1:0];
 		end
-		// }}}
 
 		// Now for swindex
-		// {{{
 		reg	[LGNS-1:0]	r_swindex;
 
 		initial	r_swindex = 0;
@@ -650,29 +568,22 @@ module axi_lite_xbar #(
 			r_swindex <= requested_index;
 
 		assign	swindex[N] = r_swindex;
-		// }}}
-		// }}}
+
 	end for (N=NM; N<NMFULL; N=N+1)
 	begin : EMPTY_WRITE_REQUEST
-		// {{{
 		assign	swindex[N] = 0;
-		// }}}
 	end endgenerate
 
 	generate for(N=0; N<NM; N=N+1)
 	begin : ARBITRATE_READ_REQUESTS
-		// {{{
 		// Declarations
-		// {{{
 		reg			stay_on_channel;
 		reg			requested_channel_is_available;
 		reg			leave_channel;
 		reg	[LGNS-1:0]	requested_index;
 		wire			linger;
-		// }}}
 
 		// stay_on_channel
-		// {{{
 		always @(*)
 		begin
 			stay_on_channel = |(rrequest[N][NS:0] & rgrant[N]);
@@ -680,10 +591,8 @@ module axi_lite_xbar #(
 			if (srgrant[N] && !srempty[N])
 				stay_on_channel = 1;
 		end
-		// }}}
 
 		// requested_channel_is_available
-		// {{{
 		always @(*)
 		begin
 			requested_channel_is_available =
@@ -695,15 +604,11 @@ module axi_lite_xbar #(
 			if (NM < 2)
 				requested_channel_is_available = m_arvalid[N];
 		end
-		// }}}
 
 		if (OPT_LINGER == 0)
 		begin : NO_LINGER
-			// {{{
 			assign	linger = 0;
-			// }}}
 		end else begin : READ_LINGER
-			// {{{
 			reg [LGLINGER-1:0]	linger_counter;
 			reg			r_linger;
 
@@ -729,7 +634,6 @@ module axi_lite_xbar #(
 		end
 
 		// leave_channel
-		// {{{
 		always @(*)
 		begin
 			leave_channel = 0;
@@ -744,7 +648,6 @@ module axi_lite_xbar #(
 				// to any other channel
 				leave_channel = 1;
 		end
-		// }}}
 
 		// rgrant, srgrant
 		// {{{
