@@ -221,5 +221,158 @@ module addrdecode #(
 		// }}}
 	end endgenerate
 	// }}}
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+//
+// Formal properties
+// {{{
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+`ifdef	FORMAL
+	reg	f_past_valid;
+	initial	f_past_valid = 0;
+	always @(posedge i_clk)
+		f_past_valid <= 1;
 
+	reg	[AW+DW-1:0]	f_idata;
+	always @(*)
+		f_idata = { i_addr, i_data };
+
+`ifdef	ADDRDECODE
+	always @(posedge i_clk)
+	if (!f_past_valid)
+		assume(i_reset);
+`else
+	always @(posedge i_clk)
+	if (!f_past_valid)
+		assert(i_reset);
+
+`endif	// ADDRDECODE
+	always @(posedge i_clk)
+	if (OPT_REGISTERED && (!f_past_valid || $past(i_reset)))
+	begin
+		assert(!o_valid);
+		assert(o_decode == 0);
+	end else if ($past(o_valid && i_stall) && OPT_REGISTERED)
+	begin
+		assert($stable(o_addr));
+		assert($stable(o_decode));
+		assert($stable(o_data));
+	end
+
+	// If the output is ever valid, there must be at least one
+	// decoded output
+	always @(*)
+		assert(o_valid == (o_decode != 0));
+
+	always @(*)
+	for(iM=0; iM<NS; iM=iM+1)
+	if (o_decode[iM])
+	begin
+		// The address must match
+		assert((((o_addr ^ SLAVE_ADDR[iM*AW +: AW])
+				& SLAVE_MASK[iM*AW +: AW])==0)
+			&& ACCESS_ALLOWED[iM]);
+		//
+		// And nothing else must match
+		assert(o_decode == (1<<iM));
+	end
+
+	always @(*)
+	for(iM=0; iM<NS; iM=iM+1)
+	if (!ACCESS_ALLOWED[iM])
+		assert(!o_decode[iM]);
+
+	// LOWPOWER check
+	// {{{
+	generate if (OPT_REGISTERED)
+	begin
+		always @(*)
+		if (!o_valid)
+		begin
+			assert(o_addr   == 0);
+			assert(o_decode == 0);
+			assert(o_data   == 0);
+		end
+	end endgenerate
+	// }}}
+
+	//
+	// The output decoded value may only ever have one value high,
+	// never more--i.e. $onehot0
+	// {{{
+`ifdef	VERIFIC
+	always @(*)
+		assert($onehot0(request));
+`else
+	reg	onehot_request;
+	always @(*)
+	begin
+		onehot_request = 0;
+		for(iM=0; iM<NS+1; iM=iM+1)
+		if ((request ^ (1<<iM))==0)
+			onehot_request = 1;
+	end
+
+	always @(*)
+	if (request != 0)
+		assert(onehot_request);
+`endif
+	// }}}
+
+	////////////////////////////////////////////////////////////////////////
+	//
+	// Cover properties
+	// {{{
+	////////////////////////////////////////////////////////////////////////
+	//
+	//
+
+	//
+	// Make sure all addresses are reachable
+	//
+	reg	[NS:0]	f_reached;
+
+	always @(posedge i_clk)
+		cover(i_valid);
+
+	always @(posedge i_clk)
+		cover(o_valid);
+
+	always @(posedge i_clk)
+		cover(o_valid && !i_stall);
+
+	initial	f_reached = 0;
+	always @(posedge i_clk)
+	if (i_reset)
+		f_reached = 0;
+	else if (o_valid)
+		f_reached = f_reached | o_decode;
+
+	generate if (!OPT_NONESEL && ACCESS_ALLOWED[0]
+			&& SLAVE_MASK == 0 && NS == 1)
+	begin
+
+		always @(*)
+			cover(f_reached[0]);
+
+		always @(posedge i_clk)
+		if (f_past_valid && $stable(o_valid))
+			assert($stable(o_decode));
+
+	end else begin
+
+		always @(*)
+			cover(&f_reached);
+
+		always @(posedge i_clk)
+		if (f_past_valid && $stable(o_valid))
+			cover($changed(o_decode));
+
+	end endgenerate
+	// }}}
+`endif	// FORMAL
+// }}}
 endmodule
