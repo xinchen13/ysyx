@@ -28,6 +28,20 @@ module clint (
     output logic bvalid,
     input logic bready
 );
+
+
+    localparam [2:0] IDLE =     3'b000;
+    localparam [2:0] READ =     3'b001;
+    localparam [2:0] AWRITE =   3'b010;
+    localparam [2:0] WRITE =    3'b011;
+
+    logic [2:0] state;
+    logic [2:0] next_state;
+
+    // sram
+    logic sram_ack;                     // SRAM读取完成信号
+
+
     // mtime register
     logic [63:0] mtime;
     always @ (posedge clk) begin
@@ -39,33 +53,101 @@ module clint (
         end
     end
 
-    assign arready = rready;
-    assign rvalid = arvalid;
-    assign awready = 'b0;
-    assign rresp = 'b0;
-    assign wready = 'b0;
-    assign bresp = 'b0;
-    assign bvalid = 'b0;
+    // state reg
+    always @ (posedge clk) begin
+        if (!rst_n) begin
+            state <= IDLE;
+            addr <= 'b0;
+        end 
+        else begin
+            state <= next_state;
+            addr <= next_addr;
+        end
+    end
 
-    // read
+    logic [`AXI_ADDR_BUS] next_addr;
+    logic [`AXI_ADDR_BUS] addr;
+
+    assign arready = (state == IDLE) ? 1'b1 : 1'b0;
+    assign awready = (state == IDLE) ? 1'b1 : 1'b0;
+    assign rresp = 2'b00;
+    assign bresp = 2'b00;
+    assign rvalid = ((state == READ) && sram_ack) ? 1'b1 : 1'b0;
+    assign bvalid = ((state == WRITE) && sram_ack) ? 1'b1 : 1'b0;
+    assign wready = (state == IDLE || state == AWRITE) ? 1'b1 : 1'b0;
+
+    // trans logic
     always @ (*) begin
-        if (arvalid) begin
-            case (araddr)
-                32'ha0000048: begin
-                    rdata = mtime[31:0] >> 9; // us: mtime / 500
+        next_state = state;
+        case (state)
+            IDLE: begin
+                next_addr = addr;
+                if (arvalid && arready) begin
+                    next_state = READ;  // 转移到READ状态
+                    next_addr = araddr;
                 end
-                32'ha000004c: begin
-                    rdata = mtime[63:32];
+                else if (awvalid && awready) begin
+                    next_state = AWRITE;
+                    next_addr = awaddr;
                 end
+            end
+            READ: begin
+                next_addr = addr;
+                if (rvalid && rready) begin
+                    next_state = IDLE;  // 数据传输完成，回到IDLE状态
+                end
+            end
+            AWRITE: begin
+                next_addr = addr;
+                if (wvalid && wready) begin
+                    next_state = WRITE;
+                end
+            end
+            WRITE: begin
+                next_addr = addr;
+                if (bvalid && bready) begin
+                    next_state = IDLE;
+                end
+            end
+            default: begin
+                next_state = IDLE;
+                next_addr = addr;
+            end
+        endcase
+    end
+
+
+    always @ (posedge clk) begin
+        if (!rst_n) begin
+            sram_ack  <= 1'b0;
+            rdata <= 'b0;
+        end 
+        else begin
+            case (state)
+                IDLE: begin
+                    sram_ack <= 1'b0;
+                end
+                READ: begin
+                    case (araddr)
+                        32'ha0000048: begin
+                            rdata <= mtime[31:0] >> 9; // us: mtime / 500
+                        end
+                        32'ha000004c: begin
+                            rdata <= mtime[63:32];
+                        end
+                        default: begin
+                            rdata <= 'b0;
+                        end
+                    endcase
+                    sram_ack   <= 1'b1;  // 读取完成信号
+                end
+                WRITE: begin
+                        sram_ack <= 1'b1;
+                    end
                 default: begin
-                    rdata = 'b0;
                 end
             endcase
         end
-        else begin
-            rdata = 'b0;
-        end
     end
-    
 
 endmodule
