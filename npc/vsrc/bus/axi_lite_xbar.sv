@@ -88,7 +88,6 @@ module axi_lite_xbar #(
 	localparam	NSFULL = (NS>1) ? (1<<LGNS) : 2;
 	localparam [1:0] INTERCONNECT_ERROR = 2'b11;
 	localparam [0:0] OPT_SKID_INPUT = 0;
-	localparam [0:0] OPT_BUFFER_DECODER = 1;
 
 	genvar	N,M;
 	integer	iN, iM;
@@ -217,8 +216,7 @@ module axi_lite_xbar #(
 		addrdecode #(
 			.AW(AW), .DW(3), .NS(NS),
 			.SLAVE_ADDR(SLAVE_ADDR),
-			.SLAVE_MASK(SLAVE_MASK),
-			.OPT_REGISTERED(OPT_BUFFER_DECODER)
+			.SLAVE_MASK(SLAVE_MASK)
 		) wraddr(
 			.i_clk(S_AXI_ACLK), .i_reset(!S_AXI_ARESETN),
 			.i_valid(skd_awvalid[N]), .o_stall(skd_awstall[N]),
@@ -317,8 +315,7 @@ module axi_lite_xbar #(
 		// Read address decoding
 		addrdecode #(
 			.AW(AW), .DW(3), .NS(NS),
-			.SLAVE_ADDR(SLAVE_ADDR), .SLAVE_MASK(SLAVE_MASK),
-			.OPT_REGISTERED(OPT_BUFFER_DECODER)
+			.SLAVE_ADDR(SLAVE_ADDR), .SLAVE_MASK(SLAVE_MASK)
 		) rdaddr(
 			.i_clk(S_AXI_ACLK), .i_reset(!S_AXI_ARESETN),
 			.i_valid(skd_arvalid[N]), .o_stall(skd_arstall[N]),
