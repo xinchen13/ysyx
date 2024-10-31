@@ -35,12 +35,13 @@ module sram (
 
     logic [2:0] lfsr;   // random delay
 
-    localparam [1:0] IDLE = 2'b00;
-    localparam [1:0] READ = 2'b01;
-    localparam [1:0] WRITE = 2'b10;
+    localparam [2:0] IDLE =     3'b000;
+    localparam [2:0] READ =     3'b001;
+    localparam [2:0] AWRITE =   3'b010;
+    localparam [2:0] WRITE =    3'b011;
 
-    logic [1:0] state;
-    logic [1:0] next_state;
+    logic [2:0] state;
+    logic [2:0] next_state;
 
     // sram
     logic sram_ack;                     // SRAM读取完成信号
@@ -74,12 +75,13 @@ module sram (
         next_state = state;
         case (state)
             IDLE: begin
-                if (arvalid && arready && (araddr >= 32'h80000000) && (araddr <= 32'h88000000)) begin
+                next_addr = addr;
+                if (arvalid && arready) begin
                     next_state = READ;  // 转移到READ状态
                     next_addr = araddr;
                 end
-                else if (awvalid && awready && wvalid && wready&& (awaddr >= 32'h80000000) && (awaddr <= 32'h88000000)) begin
-                    next_state = WRITE;
+                else if (awvalid && awready) begin
+                    next_state = AWRITE;
                     next_addr = awaddr;
                 end
             end
@@ -87,6 +89,12 @@ module sram (
                 next_addr = addr;
                 if (rvalid && rready) begin
                     next_state = IDLE;  // 数据传输完成，回到IDLE状态
+                end
+            end
+            AWRITE: begin
+                next_addr = addr;
+                if (wvalid && wready) begin
+                    next_state = WRITE;
                 end
             end
             WRITE: begin
@@ -97,6 +105,7 @@ module sram (
             end
             default: begin
                 next_state = IDLE;
+                next_addr = addr;
             end
         endcase
     end
