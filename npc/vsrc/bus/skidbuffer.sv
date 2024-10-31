@@ -2,8 +2,7 @@ module skidbuffer #(
 	parameter	[0:0]	OPT_LOWPOWER = 0,
 	parameter	[0:0]	OPT_OUTREG = 1,
 	parameter	[0:0]	OPT_PASSTHROUGH = 0,
-	parameter		DW = 8,
-	parameter	[0:0]	OPT_INITIAL = 1'b1
+	parameter		DW = 8
 ) (
 	input	wire			i_clk, i_reset,
 	input	wire			i_valid,
@@ -34,7 +33,6 @@ module skidbuffer #(
 		reg	[DW-1:0]	r_data;
 
 		// r_valid
-		initial if (OPT_INITIAL) r_valid = 0;
 		always @(posedge i_clk)
 		if (i_reset)
 			r_valid <= 0;
@@ -45,7 +43,6 @@ module skidbuffer #(
 			r_valid <= 0;
 
 		// r_data
-		initial if (OPT_INITIAL) r_data = 0;
 		always @(posedge i_clk)
 		if (OPT_LOWPOWER && i_reset)
 			r_data <= 0;
@@ -79,7 +76,6 @@ module skidbuffer #(
 			// o_valid
 			reg	ro_valid;
 
-			initial if (OPT_INITIAL) ro_valid = 0;
 			always @(posedge i_clk)
 			if (i_reset)
 				ro_valid <= 0;
@@ -90,7 +86,6 @@ module skidbuffer #(
 
 
 			// o_data
-			initial if (OPT_INITIAL) o_data = 0;
 			always @(posedge i_clk)
 			if (OPT_LOWPOWER && i_reset)
 				o_data <= 0;
