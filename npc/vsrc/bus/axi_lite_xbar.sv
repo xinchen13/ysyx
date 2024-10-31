@@ -114,9 +114,9 @@ module	axi_lite_xbar #(
 
 	// verilator lint_off UNUSED
 	wire	[LGMAXBURST-1:0]	w_sawpending	[0:NM-1];
-`ifdef	FORMAL
-	wire	[LGMAXBURST-1:0]	w_swpending	[0:NM-1];
-`endif
+// `ifdef	FORMAL
+// 	wire	[LGMAXBURST-1:0]	w_swpending	[0:NM-1];
+// `endif
 	wire	[LGMAXBURST-1:0]	w_srpending	[0:NM-1];
 	// verilator lint_on  UNUSED
 	reg	[NM-1:0]		swfull;
