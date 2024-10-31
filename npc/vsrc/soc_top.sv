@@ -194,7 +194,7 @@ axi_lite_xbar #(
         {(1){ 32'hffffffff }},
         {(1){ 4'b1111, {(28){1'b0}} }} 
     }),
-    .OPT_LOWPOWER(1'b1),
+    .OPT_LOWPOWER(1'b0),
     .OPT_LINGER(4),
     .LGMAXBURST(2)
 ) axi_lite_xbar_u0 (/*AUTOINST*/
