@@ -1,5 +1,4 @@
 module skidbuffer #(
-	parameter	[0:0]	OPT_LOWPOWER = 0,
 	parameter		DW = 8
 ) (
 	input	wire				i_clk, i_reset,
