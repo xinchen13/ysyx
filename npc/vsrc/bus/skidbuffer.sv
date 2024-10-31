@@ -33,7 +33,7 @@ module skidbuffer #(
 			r_data <= 0;
 		else if (OPT_LOWPOWER && (!o_valid || i_ready))
 			r_data <= 0;
-		else if ((!OPT_LOWPOWER || !OPT_OUTREG || i_valid) && o_ready)
+		else if ((!OPT_LOWPOWER || i_valid) && o_ready)
 			r_data <= i_data;
 	end
 
@@ -45,7 +45,7 @@ module skidbuffer #(
 	assign	o_valid = !i_reset && (i_valid || r_valid);
 
 	// o_data
-	always @(*) begin
+	always @ (*) begin
 		if (r_valid)
 			o_data = r_data;
 		else if (!OPT_LOWPOWER || i_valid)
