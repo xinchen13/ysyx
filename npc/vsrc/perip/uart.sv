@@ -74,8 +74,8 @@ module uart (
                 if (arvalid && arready) begin
                     next_state = READ;  // 转移到READ状态
                 end
-                else if (awvalid && awready && wvalid && wready) begin
-                    next_state = WRITE;
+                else if (awvalid && awready) begin
+                    next_state = AWRITE;
                 end
             end
             READ: begin
