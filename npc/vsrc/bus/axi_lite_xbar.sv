@@ -3,7 +3,7 @@ module axi_lite_xbar #(
 	parameter integer C_AXI_ADDR_WIDTH = 32,
 	localparam	AW = C_AXI_ADDR_WIDTH,
 	localparam	DW = C_AXI_DATA_WIDTH,
-	parameter	NM = 2,
+	parameter	NM = 3,
 	parameter	NS = 3,
 	parameter	[NS*AW-1:0]	SLAVE_ADDR = {
 		3'b111,  {(AW-3){1'b0}},
