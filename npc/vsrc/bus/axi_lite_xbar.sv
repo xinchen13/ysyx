@@ -163,6 +163,12 @@ module axi_lite_xbar #(
 	reg	[NM-1:0]	slave_raccepts;
 
 	always @ (*) begin
+		m_axi_awvalid = -1;
+		m_axi_awready = -1;
+		m_axi_wvalid = -1;
+		m_axi_wready = -1;
+		m_axi_bvalid = 0;
+
 		m_axi_awvalid[NS-1:0] = M_AXI_AWVALID;
 		m_axi_awready[NS-1:0] = M_AXI_AWREADY;
 		m_axi_wvalid[NS-1:0]  = M_AXI_WVALID;
@@ -284,93 +290,86 @@ module axi_lite_xbar #(
 		end
 	endgenerate
 
-	generate for(N=0; N<NM; N=N+1)
-	begin : DECODE_READ_REQUEST
-		wire	[NS:0]		rdecode;
-		reg	r_marvalid;
+	generate 
+		for (N=0; N<NM; N=N+1) begin : DECODE_READ_REQUEST
+			wire [NS:0] rdecode;
+			reg	r_marvalid;
 
-		// arskid
-		skidbuffer #(
-			.DW(AW+3)
-		) arskid(
-			.i_clk(S_AXI_ACLK), .i_reset(!S_AXI_ARESETN),
-			.i_valid(S_AXI_ARVALID[N]), .o_ready(S_AXI_ARREADY[N]),
-			.i_data({ S_AXI_ARADDR[N*AW +: AW], S_AXI_ARPROT[N*3 +: 3] }),
-			.o_valid(skd_arvalid[N]), .i_ready(!skd_arstall[N]),
+			// arskid
+			skidbuffer #(
+				.DW(AW+3)
+			) arskid(
+				.i_clk(S_AXI_ACLK),
+				.i_reset(!S_AXI_ARESETN),
+				.i_valid(S_AXI_ARVALID[N]),
+				.o_ready(S_AXI_ARREADY[N]),
+				.i_data({ S_AXI_ARADDR[N*AW +: AW], S_AXI_ARPROT[N*3 +: 3] }),
+				.o_valid(skd_arvalid[N]),
+				.i_ready(!skd_arstall[N]),
 				.o_data({ skd_araddr[N], skd_arprot[N] })
-		);
+			);
 
-		// Read address decoding
-		addrdecode #(
-			.AW(AW),
-			.DW(3),
-			.NS(NS),
-			.SLAVE_ADDR(SLAVE_ADDR),
-			.SLAVE_MASK(SLAVE_MASK)
-		) rdaddr (
-			.i_clk(S_AXI_ACLK),
-			.i_reset(!S_AXI_ARESETN),
-			.i_valid(skd_arvalid[N]),
-			.o_stall(skd_arstall[N]),
-			.i_addr(skd_araddr[N]),
-			.i_data(skd_arprot[N]),
-			.o_valid(dcd_arvalid[N]),
-			.i_stall(!m_arvalid[N] || !slave_raccepts[N]),
-			.o_decode(rdecode),
-			.o_addr(m_araddr[N]),
-			.o_data(m_arprot[N])
-		);
+			// Read address decoding
+			addrdecode #(
+				.AW(AW),
+				.DW(3),
+				.NS(NS),
+				.SLAVE_ADDR(SLAVE_ADDR),
+				.SLAVE_MASK(SLAVE_MASK)
+			) rdaddr (
+				.i_clk(S_AXI_ACLK),
+				.i_reset(!S_AXI_ARESETN),
+				.i_valid(skd_arvalid[N]),
+				.o_stall(skd_arstall[N]),
+				.i_addr(skd_araddr[N]),
+				.i_data(skd_arprot[N]),
+				.o_valid(dcd_arvalid[N]),
+				.i_stall(!m_arvalid[N] || !slave_raccepts[N]),
+				.o_decode(rdecode),
+				.o_addr(m_araddr[N]),
+				.o_data(m_arprot[N])
+			);
 
-		// r_marvalid -> m_arvalid[N]
-		always @(*)
-		begin
-			r_marvalid = dcd_arvalid[N] && !srfull[N];
-			rrequest[N] = 0;
-			if (!srfull[N])
-				rrequest[N][NS:0] = rdecode;
-		end
+			// r_marvalid -> m_arvalid[N]
+			always @ (*) begin
+				r_marvalid = dcd_arvalid[N] && !srfull[N];
+				rrequest[N] = 0;
+				if (!srfull[N])
+					rrequest[N][NS:0] = rdecode;
+			end
+			assign	m_arvalid[N] = r_marvalid;
 
-		assign	m_arvalid[N] = r_marvalid;
-
-		// slave_raccepts
-		always @(*)
-		begin
-			slave_raccepts[N] = 1'b1;
-			if (!srgrant[N])
-				slave_raccepts[N] = 1'b0;
-			if (srfull[N])
-				slave_raccepts[N] = 1'b0;
-			if (!rrequest[N][srindex[N]])
-				slave_raccepts[N] = 1'b0;
-			if (!rgrant[N][NS])
-			begin
-				if (m_axi_arvalid[srindex[N]] && !m_axi_arready[srindex[N]])
+			// slave_raccepts
+			always @ (*) begin
+				slave_raccepts[N] = 1'b1;
+				if (!srgrant[N])
 					slave_raccepts[N] = 1'b0;
-			end else if (S_AXI_RVALID[N] && !S_AXI_RREADY[N])
-				slave_raccepts[N] = 1'b0;
-		end
-
-	end for (N=NM; N<NMFULL; N=N+1)
-	begin : UNUSED_RSKID_BUFFERS
-		assign	m_arvalid[N] = 0;
-		assign	m_araddr[N] = 0;
-		assign	m_arprot[N] = 0;
-	end endgenerate
+				if (srfull[N])
+					slave_raccepts[N] = 1'b0;
+				if (!rrequest[N][srindex[N]])
+					slave_raccepts[N] = 1'b0;
+				if (!rgrant[N][NS])
+				begin
+					if (m_axi_arvalid[srindex[N]] && !m_axi_arready[srindex[N]])
+						slave_raccepts[N] = 1'b0;
+				end else if (S_AXI_RVALID[N] && !S_AXI_RREADY[N])
+					slave_raccepts[N] = 1'b0;
+			end
+		end 
+		
+		for (N=NM; N<NMFULL; N=N+1) begin : UNUSED_RSKID_BUFFERS
+			assign	m_arvalid[N] = 0;
+			assign	m_araddr[N] = 0;
+			assign	m_arprot[N] = 0;
+		end 
+	endgenerate
 
 	// wrequested
-	always @(*)
-	begin : DECONFLICT_WRITE_REQUESTS
+	always @ (*) begin : DECONFLICT_WRITE_REQUESTS
 
 		for(iN=1; iN<NM ; iN=iN+1)
 			wrequested[iN] = 0;
 
-		// Vivado may complain about too many bits for wrequested.
-		// This is (currrently) expected.  swindex is used to index
-		// into wrequested, and swindex has LGNS bits, where LGNS
-		// is $clog2(NS+1) rather than $clog2(NS).  The extra bits
-		// are defined to be zeros, but the point is there are defined.
-		// Therefore, no matter what swindex is, it will always
-		// reference something valid.
 		wrequested[NM] = 0;
 
 		for(iM=0; iM<NS; iM=iM+1)
@@ -425,25 +424,23 @@ module axi_lite_xbar #(
 	end
 
 	// mwgrant, mrgrant
-	generate for(M=0; M<NS; M=M+1)
-	begin : GEN_GRANT
-		initial	mwgrant[M] = 0;
-		always @(*)
-		begin
-			mwgrant[M] = 0;
-			for(iN=0; iN<NM; iN=iN+1)
-			if (wgrant[iN][M])
-				mwgrant[M] = 1;
-		end
+	generate 
+		for (M=0; M<NS; M=M+1) begin : GEN_GRANT
+			always @ (*) begin
+				mwgrant[M] = 0;
+				for (iN=0; iN<NM; iN=iN+1)
+					if (wgrant[iN][M])
+						mwgrant[M] = 1;
+			end
 
-		always @(*)
-		begin
-			mrgrant[M] = 0;
-			for(iN=0; iN<NM; iN=iN+1)
-			if (rgrant[iN][M])
-				mrgrant[M] = 1;
-		end
-	end endgenerate
+			always @ (*) begin
+				mrgrant[M] = 0;
+				for(iN=0; iN<NM; iN=iN+1)
+					if (rgrant[iN][M])
+						mrgrant[M] = 1;
+			end
+		end 
+	endgenerate
 
 	generate for(N=0; N<NM; N=N+1)
 	begin : ARBITRATE_WRITE_REQUESTS
@@ -521,8 +518,6 @@ module axi_lite_xbar #(
 		end
 
 		// wgrant, swgrant
-		initial	wgrant[N]  = 0;
-		initial	swgrant[N] = 0;
 		always @(posedge S_AXI_ACLK)
 		if (!S_AXI_ARESETN)
 		begin
@@ -795,17 +790,14 @@ module axi_lite_xbar #(
 		assign	mbstall = (S_AXI_BVALID[mwindex[M]] && !S_AXI_BREADY[mwindex[M]]);
 
 		// axi_awvalid
-		// {{{
-		initial	axi_awvalid = 0;
-		always @(posedge S_AXI_ACLK)
-		if (!S_AXI_ARESETN || !mwgrant[M])
-			axi_awvalid <= 0;
-		else if (!sawstall)
-		begin
-			axi_awvalid <= m_awvalid[mwindex[M]]
-				&&(slave_awaccepts[mwindex[M]]);
+		always @ (posedge S_AXI_ACLK) begin
+			if (!S_AXI_ARESETN || !mwgrant[M])
+				axi_awvalid <= 0;
+			else if (!sawstall) begin
+				axi_awvalid <= m_awvalid[mwindex[M]]
+					&&(slave_awaccepts[mwindex[M]]);
+			end
 		end
-		// }}}
 
 		// axi_awaddr, axi_awprot
 		// {{{
