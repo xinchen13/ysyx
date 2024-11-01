@@ -181,113 +181,108 @@ module axi_lite_xbar #(
 		end
 	end
 
-	generate for(N=0; N<NM; N=N+1)
-	begin : DECODE_WRITE_REQUEST
+	generate 
+		for (N=0; N<NM; N=N+1) begin : DECODE_WRITE_REQUEST
 
-		wire	[NS:0]		wdecode;
-		reg	r_mawvalid, r_mwvalid;
+			wire [NS:0] wdecode;
+			reg	r_mawvalid, r_mwvalid;
 
-		// awskid
-		skidbuffer #(
-			.DW(AW+3)
-		) awskid(
-			.i_clk(S_AXI_ACLK), .i_reset(!S_AXI_ARESETN),
-			.i_valid(S_AXI_AWVALID[N]), .o_ready(S_AXI_AWREADY[N]),
-			.i_data({ S_AXI_AWADDR[N*AW +: AW], S_AXI_AWPROT[N*3 +: 3] }),
-			.o_valid(skd_awvalid[N]), .i_ready(!skd_awstall[N]),
-				.o_data({ skd_awaddr[N], skd_awprot[N] })
+			// awskid
+			skidbuffer #(
+				.DW(AW+3)
+			) awskid(
+				.i_clk(S_AXI_ACLK), .i_reset(!S_AXI_ARESETN),
+				.i_valid(S_AXI_AWVALID[N]), .o_ready(S_AXI_AWREADY[N]),
+				.i_data({ S_AXI_AWADDR[N*AW +: AW], S_AXI_AWPROT[N*3 +: 3] }),
+				.o_valid(skd_awvalid[N]), .i_ready(!skd_awstall[N]),
+					.o_data({ skd_awaddr[N], skd_awprot[N] })
 
-		);
+			);
 
-		// write address decoding
-		addrdecode #(
-			.AW(AW),
-			.DW(3),
-			.NS(NS),
-			.SLAVE_ADDR(SLAVE_ADDR),
-			.SLAVE_MASK(SLAVE_MASK)
-		) wraddr(
-			.i_clk(S_AXI_ACLK),
-			.i_reset(!S_AXI_ARESETN),
-			.i_valid(skd_awvalid[N]),
-			.o_stall(skd_awstall[N]),
-			.i_addr(skd_awaddr[N]),
-			.i_data(skd_awprot[N]),
-			.o_valid(dcd_awvalid[N]),
-			.i_stall(!dcd_awvalid[N]||!slave_awaccepts[N]),
-			.o_decode(wdecode),
-			.o_addr(m_awaddr[N]),
-			.o_data(m_awprot[N])
-		);
+			// write address decoding
+			addrdecode #(
+				.AW(AW),
+				.DW(3),
+				.NS(NS),
+				.SLAVE_ADDR(SLAVE_ADDR),
+				.SLAVE_MASK(SLAVE_MASK)
+			) wraddr(
+				.i_clk(S_AXI_ACLK),
+				.i_reset(!S_AXI_ARESETN),
+				.i_valid(skd_awvalid[N]),
+				.o_stall(skd_awstall[N]),
+				.i_addr(skd_awaddr[N]),
+				.i_data(skd_awprot[N]),
+				.o_valid(dcd_awvalid[N]),
+				.i_stall(!dcd_awvalid[N]||!slave_awaccepts[N]),
+				.o_decode(wdecode),
+				.o_addr(m_awaddr[N]),
+				.o_data(m_awprot[N])
+			);
 
-		// wskid
-
-		skidbuffer #(
-			.DW(DW+DW/8)
-		) wskid (
-			.i_clk(S_AXI_ACLK), .i_reset(!S_AXI_ARESETN),
-			.i_valid(S_AXI_WVALID[N]), .o_ready(S_AXI_WREADY[N]),
-				.i_data({ S_AXI_WDATA[N*DW +: DW],
-						S_AXI_WSTRB[N*DW/8 +: DW/8]}),
-			.o_valid(skd_wvalid[N]),
+			// wskid
+			skidbuffer #(
+				.DW(DW+DW/8)
+			) wskid (
+				.i_clk(S_AXI_ACLK),
+				.i_reset(!S_AXI_ARESETN),
+				.i_valid(S_AXI_WVALID[N]),
+				.o_ready(S_AXI_WREADY[N]),
+				.i_data({ S_AXI_WDATA[N*DW +: DW], S_AXI_WSTRB[N*DW/8 +: DW/8]}),
+				.o_valid(skd_wvalid[N]),
 				.i_ready(m_wvalid[N] && slave_waccepts[N]),
 				.o_data({ m_wdata[N], m_wstrb[N] })
-		);
+			);
 
-		// slave_awaccepts
-		always @(*)
-		begin
-			slave_awaccepts[N] = 1'b1;
-			if (!swgrant[N])
-				slave_awaccepts[N] = 1'b0;
-			if (swfull[N])
-				slave_awaccepts[N] = 1'b0;
-			if (!wrequest[N][swindex[N]])
-				slave_awaccepts[N] = 1'b0;
-			if (!wgrant[N][NS]&&(m_axi_awvalid[swindex[N]] && !m_axi_awready[swindex[N]]))
-				slave_awaccepts[N] = 1'b0;
-			// ERRORs are always accepted
-			//	back pressure is handled in the write side
+			// slave_awaccepts
+			always @ (*) begin
+				slave_awaccepts[N] = 1'b1;
+				if (!swgrant[N])
+					slave_awaccepts[N] = 1'b0;
+				if (swfull[N])
+					slave_awaccepts[N] = 1'b0;
+				if (!wrequest[N][swindex[N]])
+					slave_awaccepts[N] = 1'b0;
+				if (!wgrant[N][NS]&&(m_axi_awvalid[swindex[N]] && !m_axi_awready[swindex[N]]))
+					slave_awaccepts[N] = 1'b0;
+				// ERRORs are always accepted
+				//	back pressure is handled in the write side
+			end
+
+			// slave_waccepts
+			always @ (*) begin
+				slave_waccepts[N] = 1'b1;
+				if (!swgrant[N])
+					slave_waccepts[N] = 1'b0;
+				if (!wdata_expected[N])
+					slave_waccepts[N] = 1'b0;
+				if (!wgrant[N][NS] &&(m_axi_wvalid[swindex[N]]
+							&& !m_axi_wready[swindex[N]]))
+					slave_waccepts[N] = 1'b0;
+				if (wgrant[N][NS]&&(S_AXI_BVALID[N]&& !S_AXI_BREADY[N]))
+					slave_waccepts[N] = 1'b0;
+			end
+
+			// r_mawvalid, r_mwvalid
+			always @ (*) begin
+				r_mawvalid= dcd_awvalid[N] && !swfull[N];
+				r_mwvalid = skd_wvalid[N];
+				wrequest[N]= 0;
+				if (!swfull[N])
+					wrequest[N][NS:0] = wdecode;
+			end
+			assign	m_awvalid[N] = r_mawvalid;
+			assign	m_wvalid[N] = r_mwvalid;
 		end
 
-		// slave_waccepts
-		always @(*)
-		begin
-			slave_waccepts[N] = 1'b1;
-			if (!swgrant[N])
-				slave_waccepts[N] = 1'b0;
-			if (!wdata_expected[N])
-				slave_waccepts[N] = 1'b0;
-			if (!wgrant[N][NS] &&(m_axi_wvalid[swindex[N]]
-						&& !m_axi_wready[swindex[N]]))
-				slave_waccepts[N] = 1'b0;
-			if (wgrant[N][NS]&&(S_AXI_BVALID[N]&& !S_AXI_BREADY[N]))
-				slave_waccepts[N] = 1'b0;
+		for (N=NM; N<NMFULL; N=N+1) begin : UNUSED_WSKID_BUFFERS
+			assign	m_awvalid[N] = 0;
+			assign	m_awaddr[N] = 0;
+			assign	m_awprot[N] = 0;
+			assign	m_wdata[N] = 0;
+			assign	m_wstrb[N] = 0;
 		end
-
-		// r_mawvalid, r_mwvalid
-		always @(*)
-		begin
-			r_mawvalid= dcd_awvalid[N] && !swfull[N];
-			r_mwvalid = skd_wvalid[N];
-			wrequest[N]= 0;
-			if (!swfull[N])
-				wrequest[N][NS:0] = wdecode;
-		end
-
-		assign	m_awvalid[N] = r_mawvalid;
-		assign	m_wvalid[N] = r_mwvalid;
-
-	end for (N=NM; N<NMFULL; N=N+1)
-	begin : UNUSED_WSKID_BUFFERS
-		// {{{
-		assign	m_awvalid[N] = 0;
-		assign	m_awaddr[N] = 0;
-		assign	m_awprot[N] = 0;
-		assign	m_wdata[N] = 0;
-		assign	m_wstrb[N] = 0;
-		// }}}
-	end endgenerate
+	endgenerate
 
 	generate for(N=0; N<NM; N=N+1)
 	begin : DECODE_READ_REQUEST
