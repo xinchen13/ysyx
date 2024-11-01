@@ -162,35 +162,23 @@ module axi_lite_xbar #(
 	reg	[NM-1:0]	slave_waccepts;
 	reg	[NM-1:0]	slave_raccepts;
 
-	always @(*)
-	begin
-		m_axi_awvalid = -1;
-		m_axi_awready = -1;
-		m_axi_wvalid = -1;
-		m_axi_wready = -1;
-		m_axi_bvalid = 0;
-
+	always @ (*) begin
 		m_axi_awvalid[NS-1:0] = M_AXI_AWVALID;
 		m_axi_awready[NS-1:0] = M_AXI_AWREADY;
 		m_axi_wvalid[NS-1:0]  = M_AXI_WVALID;
 		m_axi_wready[NS-1:0]  = M_AXI_WREADY;
 		m_axi_bvalid[NS-1:0]  = M_AXI_BVALID;
 
-		for(iM=0; iM<NS; iM=iM+1)
-		begin
+		for (iM=0; iM<NS; iM=iM+1) begin
 			m_axi_bresp[iM] = M_AXI_BRESP[iM* 2 +:  2];
-
 			m_axi_rdata[iM] = M_AXI_RDATA[iM*DW +: DW];
 			m_axi_rresp[iM] = M_AXI_RRESP[iM* 2 +:  2];
 		end
-		for(iM=NS; iM<NSFULL; iM=iM+1)
-		begin
+		for (iM=NS; iM<NSFULL; iM=iM+1) begin
 			m_axi_bresp[iM] = INTERCONNECT_ERROR;
-
 			m_axi_rdata[iM] = 0;
 			m_axi_rresp[iM] = INTERCONNECT_ERROR;
 		end
-
 	end
 
 	generate for(N=0; N<NM; N=N+1)
