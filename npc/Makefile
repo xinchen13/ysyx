@@ -56,6 +56,8 @@ sim: $(BIN)
 wave: $(BIN)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	$(NPC_EXEC_WAVE)
+
+gtk: $(BIN)
 	@gtkwave $(WAVE_FILE)
 
 

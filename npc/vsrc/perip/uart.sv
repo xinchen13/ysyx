@@ -35,12 +35,13 @@ module uart (
 
     logic [2:0] lfsr;   // random delay
 
-    localparam [1:0] IDLE = 2'b00;
-    localparam [1:0] READ = 2'b01;
-    localparam [1:0] WRITE = 2'b10;
+    localparam [2:0] IDLE =     3'b000;
+    localparam [2:0] READ =     3'b001;
+    localparam [2:0] AWRITE =   3'b010;
+    localparam [2:0] WRITE =    3'b011;
 
-    logic [1:0] state;
-    logic [1:0] next_state;
+    logic [2:0] state;
+    logic [2:0] next_state;
 
     // sram
     logic sram_ack;                     // SRAM读取完成信号
@@ -63,7 +64,7 @@ module uart (
     assign bresp = 2'b00;
     assign rvalid = ((state == READ) && sram_ack) ? 1'b1 : 1'b0;
     assign bvalid = ((state == WRITE) && sram_ack) ? 1'b1 : 1'b0;
-    assign wready = (state == IDLE) ? 1'b1 : 1'b0;
+    assign wready = (state == IDLE || state == AWRITE) ? 1'b1 : 1'b0;
 
     // trans logic
     always @ (*) begin
@@ -73,13 +74,18 @@ module uart (
                 if (arvalid && arready) begin
                     next_state = READ;  // 转移到READ状态
                 end
-                else if (awvalid && awready && wvalid && wready) begin
-                    next_state = WRITE;
+                else if (awvalid && awready) begin
+                    next_state = AWRITE;
                 end
             end
             READ: begin
                 if (rvalid && rready) begin
                     next_state = IDLE;  // 数据传输完成，回到IDLE状态
+                end
+            end
+            AWRITE: begin
+                if (wvalid && wready) begin
+                    next_state = WRITE;
                 end
             end
             WRITE: begin

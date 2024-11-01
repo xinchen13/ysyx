@@ -9,100 +9,89 @@ module soc_top (
 
 /*AUTOWIRE*/
 // Beginning of automatic wires (for undeclared instantiated-module outputs)
-logic [`AXI_ADDR_BUS]	arbiter_xbar_araddr;	// From arbiter_u0 of arbiter.v
-logic			arbiter_xbar_arready;	// From xbar_u0 of xbar.v
-logic			arbiter_xbar_arvalid;	// From arbiter_u0 of arbiter.v
-logic [`AXI_ADDR_BUS]	arbiter_xbar_awaddr;	// From arbiter_u0 of arbiter.v
-logic			arbiter_xbar_awready;	// From xbar_u0 of xbar.v
-logic			arbiter_xbar_awvalid;	// From arbiter_u0 of arbiter.v
-logic			arbiter_xbar_bready;	// From arbiter_u0 of arbiter.v
-logic [`AXI_RESP_BUS]	arbiter_xbar_bresp;	// From xbar_u0 of xbar.v
-logic			arbiter_xbar_bvalid;	// From xbar_u0 of xbar.v
-logic [`AXI_DATA_BUS]	arbiter_xbar_rdata;	// From xbar_u0 of xbar.v
-logic			arbiter_xbar_rready;	// From arbiter_u0 of arbiter.v
-logic [`AXI_RESP_BUS]	arbiter_xbar_rresp;	// From xbar_u0 of xbar.v
-logic			arbiter_xbar_rvalid;	// From xbar_u0 of xbar.v
-logic [`AXI_DATA_BUS]	arbiter_xbar_wdata;	// From arbiter_u0 of arbiter.v
-logic			arbiter_xbar_wready;	// From xbar_u0 of xbar.v
-logic [`AXI_WSTRB_BUS]	arbiter_xbar_wstrb;	// From arbiter_u0 of arbiter.v
-logic			arbiter_xbar_wvalid;	// From arbiter_u0 of arbiter.v
-logic [`AXI_ADDR_BUS]	clint_araddr;		// From xbar_u0 of xbar.v
+wire [`AXI_ADDR_BUS]	clint_araddr;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
 logic			clint_arready;		// From clint_u0 of clint.v
-logic			clint_arvalid;		// From xbar_u0 of xbar.v
-logic [`AXI_ADDR_BUS]	clint_awaddr;		// From xbar_u0 of xbar.v
+wire			clint_arvalid;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
+wire [`AXI_ADDR_BUS]	clint_awaddr;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
 logic			clint_awready;		// From clint_u0 of clint.v
-logic			clint_awvalid;		// From xbar_u0 of xbar.v
-logic			clint_bready;		// From xbar_u0 of xbar.v
+wire			clint_awvalid;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
+wire			clint_bready;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
 logic [`AXI_RESP_BUS]	clint_bresp;		// From clint_u0 of clint.v
 logic			clint_bvalid;		// From clint_u0 of clint.v
 logic [`AXI_DATA_BUS]	clint_rdata;		// From clint_u0 of clint.v
-logic			clint_rready;		// From xbar_u0 of xbar.v
+wire			clint_rready;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
 logic [`AXI_RESP_BUS]	clint_rresp;		// From clint_u0 of clint.v
 logic			clint_rvalid;		// From clint_u0 of clint.v
-logic [`AXI_DATA_BUS]	clint_wdata;		// From xbar_u0 of xbar.v
+wire [`AXI_DATA_BUS]	clint_wdata;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
 logic			clint_wready;		// From clint_u0 of clint.v
-logic [`AXI_WSTRB_BUS]	clint_wstrb;		// From xbar_u0 of xbar.v
-logic			clint_wvalid;		// From xbar_u0 of xbar.v
+wire [`AXI_WSTRB_BUS]	clint_wstrb;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
+wire			clint_wvalid;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
 logic [`AXI_ADDR_BUS]	fetch_araddr;		// From xcore_u0 of xcore.v
-logic			fetch_arready;		// From arbiter_u0 of arbiter.v
+wire			fetch_arready;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
 logic			fetch_arvalid;		// From xcore_u0 of xcore.v
-logic [`AXI_DATA_BUS]	fetch_rdata;		// From arbiter_u0 of arbiter.v
+wire [`AXI_DATA_BUS]	fetch_rdata;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
 logic			fetch_rready;		// From xcore_u0 of xcore.v
-logic [`AXI_RESP_BUS]	fetch_rresp;		// From arbiter_u0 of arbiter.v
-logic			fetch_rvalid;		// From arbiter_u0 of arbiter.v
+wire [`AXI_RESP_BUS]	fetch_rresp;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
+wire			fetch_rvalid;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
 logic [`AXI_ADDR_BUS]	lsu_araddr;		// From xcore_u0 of xcore.v
-logic			lsu_arready;		// From arbiter_u0 of arbiter.v
+wire			lsu_arready;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
 logic			lsu_arvalid;		// From xcore_u0 of xcore.v
 logic [`AXI_ADDR_BUS]	lsu_awaddr;		// From xcore_u0 of xcore.v
-logic			lsu_awready;		// From arbiter_u0 of arbiter.v
+wire			lsu_awready;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
 logic			lsu_awvalid;		// From xcore_u0 of xcore.v
 logic			lsu_bready;		// From xcore_u0 of xcore.v
-logic [`AXI_RESP_BUS]	lsu_bresp;		// From arbiter_u0 of arbiter.v
-logic			lsu_bvalid;		// From arbiter_u0 of arbiter.v
-logic [`AXI_DATA_BUS]	lsu_rdata;		// From arbiter_u0 of arbiter.v
+wire [`AXI_RESP_BUS]	lsu_bresp;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
+wire			lsu_bvalid;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
+wire [`AXI_DATA_BUS]	lsu_rdata;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
 logic			lsu_rready;		// From xcore_u0 of xcore.v
-logic [`AXI_RESP_BUS]	lsu_rresp;		// From arbiter_u0 of arbiter.v
-logic			lsu_rvalid;		// From arbiter_u0 of arbiter.v
+wire [`AXI_RESP_BUS]	lsu_rresp;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
+wire			lsu_rvalid;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
 logic [`AXI_DATA_BUS]	lsu_wdata;		// From xcore_u0 of xcore.v
-logic			lsu_wready;		// From arbiter_u0 of arbiter.v
+wire			lsu_wready;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
 logic [`AXI_WSTRB_BUS]	lsu_wstrb;		// From xcore_u0 of xcore.v
 logic			lsu_wvalid;		// From xcore_u0 of xcore.v
-logic [`AXI_ADDR_BUS]	sram_araddr;		// From xbar_u0 of xbar.v
+wire [`AXI_ADDR_BUS]	sram_araddr;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
 logic			sram_arready;		// From sram_u0 of sram.v
-logic			sram_arvalid;		// From xbar_u0 of xbar.v
-logic [`AXI_ADDR_BUS]	sram_awaddr;		// From xbar_u0 of xbar.v
+wire			sram_arvalid;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
+wire [`AXI_ADDR_BUS]	sram_awaddr;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
 logic			sram_awready;		// From sram_u0 of sram.v
-logic			sram_awvalid;		// From xbar_u0 of xbar.v
-logic			sram_bready;		// From xbar_u0 of xbar.v
+wire			sram_awvalid;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
+wire			sram_bready;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
 logic [`AXI_RESP_BUS]	sram_bresp;		// From sram_u0 of sram.v
 logic			sram_bvalid;		// From sram_u0 of sram.v
 logic [`AXI_DATA_BUS]	sram_rdata;		// From sram_u0 of sram.v
-logic			sram_rready;		// From xbar_u0 of xbar.v
+wire			sram_rready;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
 logic [`AXI_RESP_BUS]	sram_rresp;		// From sram_u0 of sram.v
 logic			sram_rvalid;		// From sram_u0 of sram.v
-logic [`AXI_DATA_BUS]	sram_wdata;		// From xbar_u0 of xbar.v
+wire [`AXI_DATA_BUS]	sram_wdata;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
 logic			sram_wready;		// From sram_u0 of sram.v
-logic [`AXI_WSTRB_BUS]	sram_wstrb;		// From xbar_u0 of xbar.v
-logic			sram_wvalid;		// From xbar_u0 of xbar.v
-logic [`AXI_ADDR_BUS]	uart_araddr;		// From xbar_u0 of xbar.v
+wire [`AXI_WSTRB_BUS]	sram_wstrb;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
+wire			sram_wvalid;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
+wire [`AXI_ADDR_BUS]	uart_araddr;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
 logic			uart_arready;		// From uart_u0 of uart.v
-logic			uart_arvalid;		// From xbar_u0 of xbar.v
-logic [`AXI_ADDR_BUS]	uart_awaddr;		// From xbar_u0 of xbar.v
+wire			uart_arvalid;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
+wire [`AXI_ADDR_BUS]	uart_awaddr;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
 logic			uart_awready;		// From uart_u0 of uart.v
-logic			uart_awvalid;		// From xbar_u0 of xbar.v
-logic			uart_bready;		// From xbar_u0 of xbar.v
+wire			uart_awvalid;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
+wire			uart_bready;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
 logic [`AXI_RESP_BUS]	uart_bresp;		// From uart_u0 of uart.v
 logic			uart_bvalid;		// From uart_u0 of uart.v
 logic [`AXI_DATA_BUS]	uart_rdata;		// From uart_u0 of uart.v
-logic			uart_rready;		// From xbar_u0 of xbar.v
+wire			uart_rready;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
 logic [`AXI_RESP_BUS]	uart_rresp;		// From uart_u0 of uart.v
 logic			uart_rvalid;		// From uart_u0 of uart.v
-logic [`AXI_DATA_BUS]	uart_wdata;		// From xbar_u0 of xbar.v
+wire [`AXI_DATA_BUS]	uart_wdata;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
 logic			uart_wready;		// From uart_u0 of uart.v
-logic [`AXI_WSTRB_BUS]	uart_wstrb;		// From xbar_u0 of xbar.v
-logic			uart_wvalid;		// From xbar_u0 of xbar.v
+wire [`AXI_WSTRB_BUS]	uart_wstrb;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
+wire			uart_wvalid;		// From axi_lite_xbar_u0 of axi_lite_xbar.v
 // End of automatics
 
+localparam integer C_AXI_DATA_WIDTH = `AXI_DATA_WIDTH;
+localparam integer C_AXI_ADDR_WIDTH = `AXI_ADDR_WIDTH;
+localparam NM = 2;
+localparam NS = 3;
+localparam	AW = C_AXI_ADDR_WIDTH;
+localparam	DW = C_AXI_DATA_WIDTH;
 xcore xcore_u0 (/*AUTOINST*/
 		// Outputs
 		.fetch_araddr		(fetch_araddr[`AXI_ADDR_BUS]),
@@ -131,232 +120,127 @@ xcore xcore_u0 (/*AUTOINST*/
 		.lsu_awready		(lsu_awready),
 		.lsu_wready		(lsu_wready),
 		.lsu_bresp		(lsu_bresp[`AXI_RESP_BUS]),
-		.lsu_bvalid		(lsu_bvalid)); 
+		.lsu_bvalid		(lsu_bvalid));
 
 
-/*arbiter AUTO_TEMPLATE (
-    .m0_araddr(fetch_araddr),
-    .m0_arvalid(fetch_arvalid),
-    .m0_arready(fetch_arready),
-    .m0_rdata(fetch_rdata[`AXI_DATA_BUS]),
-    .m0_rresp(fetch_rresp[`AXI_RESP_BUS]),
-    .m0_rvalid(fetch_rvalid),
-    .m0_rready(fetch_rready),
-    .m0_awaddr(),
-    .m0_awvalid(),
-    .m0_awready(),
-    .m0_wdata(),
-    .m0_wstrb(),
-    .m0_wvalid(),
-    .m0_wready(),
-    .m0_bresp(),
-    .m0_bvalid(),
-    .m0_bready(),
+/* verilator lint_off WIDTHEXPAND */
+/*axi_lite_xbar AUTO_TEMPLATE (
+    .S_AXI_ACLK(clk),
+    .S_AXI_ARESETN(rst_n),
 
-    .m1_araddr(lsu_araddr),
-    .m1_arvalid(lsu_arvalid),
-    .m1_arready(lsu_arready),
-    .m1_rdata(lsu_rdata[`AXI_DATA_BUS]),
-    .m1_rresp(lsu_rresp[`AXI_RESP_BUS]),
-    .m1_rvalid(lsu_rvalid),
-    .m1_rready(lsu_rready),
-    .m1_awaddr(lsu_awaddr),
-    .m1_awvalid(lsu_awvalid),
-    .m1_awready(lsu_awready),
-    .m1_wdata(lsu_wdata[`AXI_DATA_BUS]),
-    .m1_wstrb(lsu_wstrb),
-    .m1_wvalid(lsu_wvalid),
-    .m1_wready(lsu_wready),
-    .m1_bresp(lsu_bresp[`AXI_RESP_BUS]),
-    .m1_bvalid(lsu_bvalid),
-    .m1_bready(lsu_bready),
+    // Core
+    .S_AXI_AWADDR({ 	32'b0, 			lsu_awaddr[`AXI_ADDR_BUS] }),
+    .S_AXI_AWPROT({ 	3'b000,		 	3'b000 }),
+    .S_AXI_AWVALID({ 	1'b0, 		lsu_awvalid }),
+    .S_AXI_AWREADY({ 	     		lsu_awready }),
+
+    .S_AXI_WDATA({ 		32'b0,			lsu_wdata[`AXI_DATA_BUS] }),
+    .S_AXI_WSTRB({ 		4'b0,			lsu_wstrb[`AXI_WSTRB_BUS] }),
+    .S_AXI_WVALID({ 	1'b0, 			lsu_wvalid }),
+    .S_AXI_WREADY({ 	     			lsu_wready }),
+
+    .S_AXI_BRESP({ 		    			lsu_bresp[`AXI_RESP_BUS] }),
+    .S_AXI_BVALID({ 	    	 		lsu_bvalid }),
+    .S_AXI_BREADY({ 	1'b0, 			lsu_bready }),
+
+    .S_AXI_ARADDR({ 	fetch_araddr[`AXI_ADDR_BUS], 			lsu_araddr[`AXI_ADDR_BUS] }),
+    .S_AXI_ARPROT({ 	3'b000, 			3'b000 }),
+    .S_AXI_ARVALID({ 	fetch_arvalid, 		lsu_arvalid }),
+    .S_AXI_ARREADY({ 	fetch_arready, 		lsu_arready }),
+
+    .S_AXI_RDATA({ 		fetch_rdata[`AXI_DATA_BUS], 			lsu_rdata[`AXI_DATA_BUS] }),
+    .S_AXI_RRESP({ 		fetch_rresp[`AXI_RESP_BUS], 			lsu_rresp[`AXI_RESP_BUS] }),
+    .S_AXI_RVALID({ 	fetch_rvalid, 			lsu_rvalid }),
+    .S_AXI_RREADY({ 	fetch_rready, 			lsu_rready }),
+
+    // Devices
+    .M_AXI_AWADDR({ clint_awaddr[`AXI_ADDR_BUS], 	uart_awaddr[`AXI_ADDR_BUS], 		sram_awaddr[`AXI_ADDR_BUS]  }),
+    .M_AXI_AWPROT( ),
+    .M_AXI_AWVALID({clint_awvalid,	uart_awvalid,		sram_awvalid }),
+    .M_AXI_AWREADY({clint_awready,	uart_awready,		sram_awready }),
+
+    .M_AXI_WDATA({ 	clint_wdata[`AXI_DATA_BUS], 	uart_wdata[`AXI_DATA_BUS], 		sram_wdata[`AXI_DATA_BUS]   }),
+    .M_AXI_WSTRB({  clint_wstrb[`AXI_WSTRB_BUS], 	uart_wstrb[`AXI_WSTRB_BUS], 		sram_wstrb[`AXI_WSTRB_BUS]   }),
+    .M_AXI_WVALID({ clint_wvalid,	uart_wvalid,		sram_wvalid  }),
+    .M_AXI_WREADY({ clint_wready,	uart_wready,		sram_wready  }),
+
+    .M_AXI_BRESP({  clint_bresp[`AXI_RESP_BUS], 	uart_bresp[`AXI_RESP_BUS], 		sram_bresp[`AXI_RESP_BUS]   }),
+    .M_AXI_BVALID({ clint_bvalid,	uart_bvalid,		sram_bvalid  }),
+    .M_AXI_BREADY({ clint_bready,	uart_bready,		sram_bready  }),
+
+    .M_AXI_ARADDR({ clint_araddr[`AXI_ADDR_BUS], 	uart_araddr[`AXI_ADDR_BUS], 		sram_araddr[`AXI_ADDR_BUS]    }),
+    .M_AXI_ARPROT( ),
+    .M_AXI_ARVALID({clint_arvalid,	uart_arvalid,		sram_arvalid }),
+    .M_AXI_ARREADY({clint_arready,	uart_arready,		sram_arready }),
+
+    .M_AXI_RDATA({  clint_rdata[`AXI_DATA_BUS], 	uart_rdata[`AXI_DATA_BUS], 		sram_rdata[`AXI_DATA_BUS]   }),
+    .M_AXI_RRESP({  clint_rresp[`AXI_RESP_BUS], 	uart_rresp[`AXI_RESP_BUS], 		sram_rresp[`AXI_RESP_BUS]   }),
+    .M_AXI_RVALID({ clint_rvalid,	uart_rvalid,		sram_rvalid  }),
+    .M_AXI_RREADY({ clint_rready,	uart_rready,		sram_rready  }),
 );
 */
-arbiter arbiter_u0 (/*AUTOINST*/
+axi_lite_xbar #(
+    .C_AXI_DATA_WIDTH(DW),
+    .C_AXI_ADDR_WIDTH(AW),
+    .NM(NM),
+    .NS(NS),
+    .SLAVE_ADDR({
+		32'ha0000048,
+		32'ha00003f8,
+        4'b1000, {(32-4){1'b0}} 
+    }),
+    .SLAVE_MASK({
+        {(1){ 32'hfffffff8 }},
+        {(1){ 32'hffffffff }},
+        {(1){ 4'b1111, {(28){1'b0}} }} 
+    }),
+    .OPT_LOWPOWER(1'b0),
+    .OPT_LINGER(1),
+    .LGMAXBURST(2)
+) axi_lite_xbar_u0 (/*AUTOINST*/
 		    // Outputs
-		    .arbiter_xbar_araddr(arbiter_xbar_araddr[`AXI_ADDR_BUS]),
-		    .arbiter_xbar_arvalid(arbiter_xbar_arvalid),
-		    .arbiter_xbar_rready(arbiter_xbar_rready),
-		    .arbiter_xbar_awaddr(arbiter_xbar_awaddr[`AXI_ADDR_BUS]),
-		    .arbiter_xbar_awvalid(arbiter_xbar_awvalid),
-		    .arbiter_xbar_wdata	(arbiter_xbar_wdata[`AXI_DATA_BUS]),
-		    .arbiter_xbar_wstrb	(arbiter_xbar_wstrb[`AXI_WSTRB_BUS]),
-		    .arbiter_xbar_wvalid(arbiter_xbar_wvalid),
-		    .arbiter_xbar_bready(arbiter_xbar_bready),
-		    .m0_arready		(fetch_arready),	 // Templated
-		    .m0_rdata		(fetch_rdata[`AXI_DATA_BUS]), // Templated
-		    .m0_rresp		(fetch_rresp[`AXI_RESP_BUS]), // Templated
-		    .m0_rvalid		(fetch_rvalid),		 // Templated
-		    .m0_awready		(),			 // Templated
-		    .m0_wready		(),			 // Templated
-		    .m0_bresp		(),			 // Templated
-		    .m0_bvalid		(),			 // Templated
-		    .m1_arready		(lsu_arready),		 // Templated
-		    .m1_rdata		(lsu_rdata[`AXI_DATA_BUS]), // Templated
-		    .m1_rresp		(lsu_rresp[`AXI_RESP_BUS]), // Templated
-		    .m1_rvalid		(lsu_rvalid),		 // Templated
-		    .m1_awready		(lsu_awready),		 // Templated
-		    .m1_wready		(lsu_wready),		 // Templated
-		    .m1_bresp		(lsu_bresp[`AXI_RESP_BUS]), // Templated
-		    .m1_bvalid		(lsu_bvalid),		 // Templated
+		    .S_AXI_AWREADY	({ 	     		lsu_awready }), // Templated
+		    .S_AXI_WREADY	({ 	     			lsu_wready }), // Templated
+		    .S_AXI_BVALID	({ 	    	 		lsu_bvalid }), // Templated
+		    .S_AXI_BRESP	({ 		    			lsu_bresp[`AXI_RESP_BUS] }), // Templated
+		    .S_AXI_ARREADY	({ 	fetch_arready, 		lsu_arready }), // Templated
+		    .S_AXI_RVALID	({ 	fetch_rvalid, 			lsu_rvalid }), // Templated
+		    .S_AXI_RDATA	({ 		fetch_rdata[`AXI_DATA_BUS], 			lsu_rdata[`AXI_DATA_BUS] }), // Templated
+		    .S_AXI_RRESP	({ 		fetch_rresp[`AXI_RESP_BUS], 			lsu_rresp[`AXI_RESP_BUS] }), // Templated
+		    .M_AXI_AWADDR	({ clint_awaddr[`AXI_ADDR_BUS], 	uart_awaddr[`AXI_ADDR_BUS], 		sram_awaddr[`AXI_ADDR_BUS]  }), // Templated
+		    .M_AXI_AWPROT	( ),			 // Templated
+		    .M_AXI_AWVALID	({clint_awvalid,	uart_awvalid,		sram_awvalid }), // Templated
+		    .M_AXI_WDATA	({ 	clint_wdata[`AXI_DATA_BUS], 	uart_wdata[`AXI_DATA_BUS], 		sram_wdata[`AXI_DATA_BUS]   }), // Templated
+		    .M_AXI_WSTRB	({  clint_wstrb[`AXI_WSTRB_BUS], 	uart_wstrb[`AXI_WSTRB_BUS], 		sram_wstrb[`AXI_WSTRB_BUS]   }), // Templated
+		    .M_AXI_WVALID	({ clint_wvalid,	uart_wvalid,		sram_wvalid  }), // Templated
+		    .M_AXI_BREADY	({ clint_bready,	uart_bready,		sram_bready  }), // Templated
+		    .M_AXI_ARADDR	({ clint_araddr[`AXI_ADDR_BUS], 	uart_araddr[`AXI_ADDR_BUS], 		sram_araddr[`AXI_ADDR_BUS]    }), // Templated
+		    .M_AXI_ARPROT	( ),			 // Templated
+		    .M_AXI_ARVALID	({clint_arvalid,	uart_arvalid,		sram_arvalid }), // Templated
+		    .M_AXI_RREADY	({ clint_rready,	uart_rready,		sram_rready  }), // Templated
 		    // Inputs
-		    .clk		(clk),
-		    .rst_n		(rst_n),
-		    .arbiter_xbar_arready(arbiter_xbar_arready),
-		    .arbiter_xbar_rdata	(arbiter_xbar_rdata[`AXI_DATA_BUS]),
-		    .arbiter_xbar_rresp	(arbiter_xbar_rresp[`AXI_RESP_BUS]),
-		    .arbiter_xbar_rvalid(arbiter_xbar_rvalid),
-		    .arbiter_xbar_awready(arbiter_xbar_awready),
-		    .arbiter_xbar_wready(arbiter_xbar_wready),
-		    .arbiter_xbar_bresp	(arbiter_xbar_bresp[`AXI_RESP_BUS]),
-		    .arbiter_xbar_bvalid(arbiter_xbar_bvalid),
-		    .m0_araddr		(fetch_araddr),		 // Templated
-		    .m0_arvalid		(fetch_arvalid),	 // Templated
-		    .m0_rready		(fetch_rready),		 // Templated
-		    .m0_awaddr		(),			 // Templated
-		    .m0_awvalid		(),			 // Templated
-		    .m0_wdata		(),			 // Templated
-		    .m0_wstrb		(),			 // Templated
-		    .m0_wvalid		(),			 // Templated
-		    .m0_bready		(),			 // Templated
-		    .m1_araddr		(lsu_araddr),		 // Templated
-		    .m1_arvalid		(lsu_arvalid),		 // Templated
-		    .m1_rready		(lsu_rready),		 // Templated
-		    .m1_awaddr		(lsu_awaddr),		 // Templated
-		    .m1_awvalid		(lsu_awvalid),		 // Templated
-		    .m1_wdata		(lsu_wdata[`AXI_DATA_BUS]), // Templated
-		    .m1_wstrb		(lsu_wstrb),		 // Templated
-		    .m1_wvalid		(lsu_wvalid),		 // Templated
-		    .m1_bready		(lsu_bready));		 // Templated
+		    .S_AXI_ACLK		(clk),			 // Templated
+		    .S_AXI_ARESETN	(rst_n),		 // Templated
+		    .S_AXI_AWVALID	({ 	1'b0, 		lsu_awvalid }), // Templated
+		    .S_AXI_AWADDR	({ 	32'b0, 			lsu_awaddr[`AXI_ADDR_BUS] }), // Templated
+		    .S_AXI_AWPROT	({ 	3'b000,		 	3'b000 }), // Templated
+		    .S_AXI_WVALID	({ 	1'b0, 			lsu_wvalid }), // Templated
+		    .S_AXI_WDATA	({ 		32'b0,			lsu_wdata[`AXI_DATA_BUS] }), // Templated
+		    .S_AXI_WSTRB	({ 		4'b0,			lsu_wstrb[`AXI_WSTRB_BUS] }), // Templated
+		    .S_AXI_BREADY	({ 	1'b0, 			lsu_bready }), // Templated
+		    .S_AXI_ARVALID	({ 	fetch_arvalid, 		lsu_arvalid }), // Templated
+		    .S_AXI_ARADDR	({ 	fetch_araddr[`AXI_ADDR_BUS], 			lsu_araddr[`AXI_ADDR_BUS] }), // Templated
+		    .S_AXI_ARPROT	({ 	3'b000, 			3'b000 }), // Templated
+		    .S_AXI_RREADY	({ 	fetch_rready, 			lsu_rready }), // Templated
+		    .M_AXI_AWREADY	({clint_awready,	uart_awready,		sram_awready }), // Templated
+		    .M_AXI_WREADY	({ clint_wready,	uart_wready,		sram_wready  }), // Templated
+		    .M_AXI_BRESP	({  clint_bresp[`AXI_RESP_BUS], 	uart_bresp[`AXI_RESP_BUS], 		sram_bresp[`AXI_RESP_BUS]   }), // Templated
+		    .M_AXI_BVALID	({ clint_bvalid,	uart_bvalid,		sram_bvalid  }), // Templated
+		    .M_AXI_ARREADY	({clint_arready,	uart_arready,		sram_arready }), // Templated
+		    .M_AXI_RDATA	({  clint_rdata[`AXI_DATA_BUS], 	uart_rdata[`AXI_DATA_BUS], 		sram_rdata[`AXI_DATA_BUS]   }), // Templated
+		    .M_AXI_RRESP	({  clint_rresp[`AXI_RESP_BUS], 	uart_rresp[`AXI_RESP_BUS], 		sram_rresp[`AXI_RESP_BUS]   }), // Templated
+		    .M_AXI_RVALID	({ clint_rvalid,	uart_rvalid,		sram_rvalid  })); // Templated
 
-
-/*xbar AUTO_TEMPLATE (
-    .s0_araddr(sram_araddr[]),
-    .s0_arvalid(sram_arvalid),
-    .s0_arready(sram_arready),
-    .s0_rdata(sram_rdata[]),
-    .s0_rresp(sram_rresp[]),
-    .s0_rvalid(sram_rvalid),
-    .s0_rready(sram_rready),
-    .s0_awaddr(sram_awaddr[`AXI_ADDR_BUS]),
-    .s0_awvalid(sram_awvalid),
-    .s0_awready(sram_awready),
-    .s0_wdata(sram_wdata[`AXI_DATA_BUS]),
-    .s0_wstrb(sram_wstrb[`AXI_WSTRB_BUS]),
-    .s0_wvalid(sram_wvalid),
-    .s0_wready(sram_wready),
-    .s0_bresp(sram_bresp[`AXI_RESP_BUS]),
-    .s0_bvalid(sram_bvalid),
-    .s0_bready(sram_bready),
-    .s1_araddr(uart_araddr[`AXI_ADDR_BUS]),
-    .s1_arvalid(uart_arvalid),
-    .s1_arready(uart_arready),
-    .s1_rdata(uart_rdata[`AXI_DATA_BUS]),
-    .s1_rresp(uart_rresp[`AXI_RESP_BUS]),
-    .s1_rvalid(uart_rvalid),
-    .s1_rready(uart_rready),
-    .s1_awaddr(uart_awaddr[`AXI_ADDR_BUS]),
-    .s1_awvalid(uart_awvalid),
-    .s1_awready(uart_awready),
-    .s1_wdata(uart_wdata[`AXI_DATA_BUS]),
-    .s1_wstrb(uart_wstrb[`AXI_WSTRB_BUS]),
-    .s1_wvalid(uart_wvalid),
-    .s1_wready(uart_wready),
-    .s1_bresp(uart_bresp[`AXI_RESP_BUS]),
-    .s1_bvalid(uart_bvalid),
-    .s1_bready(uart_bready),
-    .s2_araddr(clint_araddr[`AXI_ADDR_BUS]),
-    .s2_arvalid(clint_arvalid),
-    .s2_arready(clint_arready),
-    .s2_rdata(clint_rdata[`AXI_DATA_BUS]),
-    .s2_rresp(clint_rresp[`AXI_RESP_BUS]),
-    .s2_rvalid(clint_rvalid),
-    .s2_rready(clint_rready),
-    .s2_awaddr(clint_awaddr[`AXI_ADDR_BUS]),
-    .s2_awvalid(clint_awvalid),
-    .s2_awready(clint_awready),
-    .s2_wdata(clint_wdata[`AXI_DATA_BUS]),
-    .s2_wstrb(clint_wstrb[`AXI_WSTRB_BUS]),
-    .s2_wvalid(clint_wvalid),
-    .s2_wready(clint_wready),
-    .s2_bresp(clint_bresp[`AXI_RESP_BUS]),
-    .s2_bvalid(clint_bvalid),
-    .s2_bready(clint_bready),
-);
-*/
-xbar xbar_u0 (/*AUTOINST*/
-	      // Outputs
-	      .arbiter_xbar_arready	(arbiter_xbar_arready),
-	      .arbiter_xbar_rdata	(arbiter_xbar_rdata[`AXI_DATA_BUS]),
-	      .arbiter_xbar_rresp	(arbiter_xbar_rresp[`AXI_RESP_BUS]),
-	      .arbiter_xbar_rvalid	(arbiter_xbar_rvalid),
-	      .arbiter_xbar_awready	(arbiter_xbar_awready),
-	      .arbiter_xbar_wready	(arbiter_xbar_wready),
-	      .arbiter_xbar_bresp	(arbiter_xbar_bresp[`AXI_RESP_BUS]),
-	      .arbiter_xbar_bvalid	(arbiter_xbar_bvalid),
-	      .s0_araddr		(sram_araddr[`AXI_ADDR_BUS]), // Templated
-	      .s0_arvalid		(sram_arvalid),		 // Templated
-	      .s0_rready		(sram_rready),		 // Templated
-	      .s0_awaddr		(sram_awaddr[`AXI_ADDR_BUS]), // Templated
-	      .s0_awvalid		(sram_awvalid),		 // Templated
-	      .s0_wdata			(sram_wdata[`AXI_DATA_BUS]), // Templated
-	      .s0_wstrb			(sram_wstrb[`AXI_WSTRB_BUS]), // Templated
-	      .s0_wvalid		(sram_wvalid),		 // Templated
-	      .s0_bready		(sram_bready),		 // Templated
-	      .s1_araddr		(uart_araddr[`AXI_ADDR_BUS]), // Templated
-	      .s1_arvalid		(uart_arvalid),		 // Templated
-	      .s1_rready		(uart_rready),		 // Templated
-	      .s1_awaddr		(uart_awaddr[`AXI_ADDR_BUS]), // Templated
-	      .s1_awvalid		(uart_awvalid),		 // Templated
-	      .s1_wdata			(uart_wdata[`AXI_DATA_BUS]), // Templated
-	      .s1_wstrb			(uart_wstrb[`AXI_WSTRB_BUS]), // Templated
-	      .s1_wvalid		(uart_wvalid),		 // Templated
-	      .s1_bready		(uart_bready),		 // Templated
-	      .s2_araddr		(clint_araddr[`AXI_ADDR_BUS]), // Templated
-	      .s2_arvalid		(clint_arvalid),	 // Templated
-	      .s2_rready		(clint_rready),		 // Templated
-	      .s2_awaddr		(clint_awaddr[`AXI_ADDR_BUS]), // Templated
-	      .s2_awvalid		(clint_awvalid),	 // Templated
-	      .s2_wdata			(clint_wdata[`AXI_DATA_BUS]), // Templated
-	      .s2_wstrb			(clint_wstrb[`AXI_WSTRB_BUS]), // Templated
-	      .s2_wvalid		(clint_wvalid),		 // Templated
-	      .s2_bready		(clint_bready),		 // Templated
-	      // Inputs
-	      .clk			(clk),
-	      .rst_n			(rst_n),
-	      .arbiter_xbar_araddr	(arbiter_xbar_araddr[`AXI_ADDR_BUS]),
-	      .arbiter_xbar_arvalid	(arbiter_xbar_arvalid),
-	      .arbiter_xbar_rready	(arbiter_xbar_rready),
-	      .arbiter_xbar_awaddr	(arbiter_xbar_awaddr[`AXI_ADDR_BUS]),
-	      .arbiter_xbar_awvalid	(arbiter_xbar_awvalid),
-	      .arbiter_xbar_wdata	(arbiter_xbar_wdata[`AXI_DATA_BUS]),
-	      .arbiter_xbar_wstrb	(arbiter_xbar_wstrb[`AXI_WSTRB_BUS]),
-	      .arbiter_xbar_wvalid	(arbiter_xbar_wvalid),
-	      .arbiter_xbar_bready	(arbiter_xbar_bready),
-	      .s0_arready		(sram_arready),		 // Templated
-	      .s0_rdata			(sram_rdata[`AXI_DATA_BUS]), // Templated
-	      .s0_rresp			(sram_rresp[`AXI_RESP_BUS]), // Templated
-	      .s0_rvalid		(sram_rvalid),		 // Templated
-	      .s0_awready		(sram_awready),		 // Templated
-	      .s0_wready		(sram_wready),		 // Templated
-	      .s0_bresp			(sram_bresp[`AXI_RESP_BUS]), // Templated
-	      .s0_bvalid		(sram_bvalid),		 // Templated
-	      .s1_arready		(uart_arready),		 // Templated
-	      .s1_rdata			(uart_rdata[`AXI_DATA_BUS]), // Templated
-	      .s1_rresp			(uart_rresp[`AXI_RESP_BUS]), // Templated
-	      .s1_rvalid		(uart_rvalid),		 // Templated
-	      .s1_awready		(uart_awready),		 // Templated
-	      .s1_wready		(uart_wready),		 // Templated
-	      .s1_bresp			(uart_bresp[`AXI_RESP_BUS]), // Templated
-	      .s1_bvalid		(uart_bvalid),		 // Templated
-	      .s2_arready		(clint_arready),	 // Templated
-	      .s2_rdata			(clint_rdata[`AXI_DATA_BUS]), // Templated
-	      .s2_rresp			(clint_rresp[`AXI_RESP_BUS]), // Templated
-	      .s2_rvalid		(clint_rvalid),		 // Templated
-	      .s2_awready		(clint_awready),	 // Templated
-	      .s2_wready		(clint_wready),		 // Templated
-	      .s2_bresp			(clint_bresp[`AXI_RESP_BUS]), // Templated
-	      .s2_bvalid		(clint_bvalid));		 // Templated
 
 
 /*sram AUTO_TEMPLATE (
