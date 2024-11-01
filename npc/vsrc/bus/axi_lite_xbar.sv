@@ -921,9 +921,6 @@ module axi_lite_xbar #(
 		// }}}
 
 		// axi_araddr, axi_arprot
-		// {{{
-		initial	axi_araddr  = 0;
-		initial	axi_arprot  = 0;
 		always @(posedge S_AXI_ACLK)
 		if (OPT_LOWPOWER && !S_AXI_ARESETN)
 		begin
