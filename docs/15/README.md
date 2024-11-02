@@ -9,7 +9,7 @@ git clone git@github.com:OSCPU/ysyxSoC.git
 cd ysyxSoC
 ```
 
-在 `ysyxSoC` 目录下根据 mill 的文档介绍安装 java 与 mill:
+在 `ysyxSoC` 目录下根据 mill 的文档介绍安装 java 与 mill (此外, rocket-chip项目要求mill的版本不低于0.11, 亲测0.12.1不行):
 
 ```sh
 sudo apt install openjdk-8-jdk
