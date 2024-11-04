@@ -1,0 +1,127 @@
+`include "../inc/defines.svh"
+
+module cpu_top (
+    /*AUTOINPUT*/
+    /*AUTOOUTPUT*/
+    input logic clk,
+    input logic rst_n
+);
+
+/*AUTOWIRE*/
+
+localparam integer C_AXI_DATA_WIDTH = `AXI_DATA_WIDTH;
+localparam integer C_AXI_ADDR_WIDTH = `AXI_ADDR_WIDTH;
+localparam NM = 2;
+localparam NS = 3;
+localparam	AW = C_AXI_ADDR_WIDTH;
+localparam	DW = C_AXI_DATA_WIDTH;
+xcore xcore_u0 (/*AUTOINST*/);
+
+
+/* verilator lint_off WIDTHEXPAND */
+/*axi_lite_xbar AUTO_TEMPLATE (
+    .S_AXI_ACLK(clk),
+    .S_AXI_ARESETN(rst_n),
+
+    // Core
+    .S_AXI_AWADDR({ 	32'b0, 			lsu_awaddr[`AXI_ADDR_BUS] }),
+    .S_AXI_AWPROT({ 	3'b000,		 	3'b000 }),
+    .S_AXI_AWVALID({ 	1'b0, 		lsu_awvalid }),
+    .S_AXI_AWREADY({ 	     		lsu_awready }),
+
+    .S_AXI_WDATA({ 		32'b0,			lsu_wdata[`AXI_DATA_BUS] }),
+    .S_AXI_WSTRB({ 		4'b0,			lsu_wstrb[`AXI_WSTRB_BUS] }),
+    .S_AXI_WVALID({ 	1'b0, 			lsu_wvalid }),
+    .S_AXI_WREADY({ 	     			lsu_wready }),
+
+    .S_AXI_BRESP({ 		    			lsu_bresp[`AXI_RESP_BUS] }),
+    .S_AXI_BVALID({ 	    	 		lsu_bvalid }),
+    .S_AXI_BREADY({ 	1'b0, 			lsu_bready }),
+
+    .S_AXI_ARADDR({ 	fetch_araddr[`AXI_ADDR_BUS], 			lsu_araddr[`AXI_ADDR_BUS] }),
+    .S_AXI_ARPROT({ 	3'b000, 			3'b000 }),
+    .S_AXI_ARVALID({ 	fetch_arvalid, 		lsu_arvalid }),
+    .S_AXI_ARREADY({ 	fetch_arready, 		lsu_arready }),
+
+    .S_AXI_RDATA({ 		fetch_rdata[`AXI_DATA_BUS], 			lsu_rdata[`AXI_DATA_BUS] }),
+    .S_AXI_RRESP({ 		fetch_rresp[`AXI_RESP_BUS], 			lsu_rresp[`AXI_RESP_BUS] }),
+    .S_AXI_RVALID({ 	fetch_rvalid, 			lsu_rvalid }),
+    .S_AXI_RREADY({ 	fetch_rready, 			lsu_rready }),
+
+    // Devices
+    .M_AXI_AWADDR({ clint_awaddr[`AXI_ADDR_BUS], 	uart_awaddr[`AXI_ADDR_BUS], 		sram_awaddr[`AXI_ADDR_BUS]  }),
+    .M_AXI_AWPROT( ),
+    .M_AXI_AWVALID({clint_awvalid,	uart_awvalid,		sram_awvalid }),
+    .M_AXI_AWREADY({clint_awready,	uart_awready,		sram_awready }),
+
+    .M_AXI_WDATA({ 	clint_wdata[`AXI_DATA_BUS], 	uart_wdata[`AXI_DATA_BUS], 		sram_wdata[`AXI_DATA_BUS]   }),
+    .M_AXI_WSTRB({  clint_wstrb[`AXI_WSTRB_BUS], 	uart_wstrb[`AXI_WSTRB_BUS], 		sram_wstrb[`AXI_WSTRB_BUS]   }),
+    .M_AXI_WVALID({ clint_wvalid,	uart_wvalid,		sram_wvalid  }),
+    .M_AXI_WREADY({ clint_wready,	uart_wready,		sram_wready  }),
+
+    .M_AXI_BRESP({  clint_bresp[`AXI_RESP_BUS], 	uart_bresp[`AXI_RESP_BUS], 		sram_bresp[`AXI_RESP_BUS]   }),
+    .M_AXI_BVALID({ clint_bvalid,	uart_bvalid,		sram_bvalid  }),
+    .M_AXI_BREADY({ clint_bready,	uart_bready,		sram_bready  }),
+
+    .M_AXI_ARADDR({ clint_araddr[`AXI_ADDR_BUS], 	uart_araddr[`AXI_ADDR_BUS], 		sram_araddr[`AXI_ADDR_BUS]    }),
+    .M_AXI_ARPROT( ),
+    .M_AXI_ARVALID({clint_arvalid,	uart_arvalid,		sram_arvalid }),
+    .M_AXI_ARREADY({clint_arready,	uart_arready,		sram_arready }),
+
+    .M_AXI_RDATA({  clint_rdata[`AXI_DATA_BUS], 	uart_rdata[`AXI_DATA_BUS], 		sram_rdata[`AXI_DATA_BUS]   }),
+    .M_AXI_RRESP({  clint_rresp[`AXI_RESP_BUS], 	uart_rresp[`AXI_RESP_BUS], 		sram_rresp[`AXI_RESP_BUS]   }),
+    .M_AXI_RVALID({ clint_rvalid,	uart_rvalid,		sram_rvalid  }),
+    .M_AXI_RREADY({ clint_rready,	uart_rready,		sram_rready  }),
+);
+*/
+axi_lite_xbar #(
+    .C_AXI_DATA_WIDTH(DW),
+    .C_AXI_ADDR_WIDTH(AW),
+    .NM(NM),
+    .NS(NS),
+    .SLAVE_ADDR({
+		32'ha0000048,
+		32'ha00003f8,
+        4'b1000, {(32-4){1'b0}} 
+    }),
+    .SLAVE_MASK({
+        {(1){ 32'hfffffff8 }},
+        {(1){ 32'hffffffff }},
+        {(1){ 4'b1111, {(28){1'b0}} }} 
+    }),
+    .OPT_LOWPOWER(1'b0),
+    .OPT_LINGER(1),
+    .LGMAXBURST(2)
+) axi_lite_xbar_u0 (/*AUTOINST*/);
+
+/*clint AUTO_TEMPLATE (
+    .araddr(clint_araddr[`AXI_ADDR_BUS]),
+    .arvalid(clint_arvalid),
+    .arready(clint_arready),
+    .rdata(clint_rdata[`AXI_DATA_BUS]),
+    .rresp(clint_rresp[`AXI_RESP_BUS]),
+    .rvalid(clint_rvalid),
+    .rready(clint_rready),
+    .awaddr(clint_awaddr[`AXI_ADDR_BUS]),
+    .awvalid(clint_awvalid),
+    .awready(clint_awready),
+    .wdata(clint_wdata[`AXI_DATA_BUS]),
+    .wstrb(clint_wstrb[`AXI_WSTRB_BUS]),
+    .wvalid(clint_wvalid),
+    .wready(clint_wready),
+    .bresp(clint_bresp[`AXI_RESP_BUS]),
+    .bvalid(clint_bvalid),
+    .bready(clint_bready),
+);
+*/
+clint clint_u0 (/*AUTOINST*/);
+
+endmodule
+// Local Variables:
+// verilog-library-directories:("." "./core" "./bus")
+// verilog-library-extensions:(".v" ".sv")
+// verilog-auto-template-warn-unused: t
+// verilog-auto-tieoff-declaration: "assign"
+// verilog-auto-unused-ignore-regexp: "^db$"
+// verilog-auto-declare-nettype: ""
+// End:
