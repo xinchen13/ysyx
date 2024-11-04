@@ -26,3 +26,6 @@ curl -L https://github.com/com-lihaoyi/mill/releases/download/0.11.12/0.11.12 > 
 在 `ysyxSoC`目录下运行 `make dev-init` 命令, 拉取 `rocket-chip` 项目
 
 在 `ysyxSoC/` 目录下运行 `make verilog`, 生成的Verilog文件位于 `ysyxSoC/build/ysyxSoCFull.v`
+
+## 接入ysyxSoC
+- 依照 [ysyxSoC/spec/cpu-interface.md](./cpu-interface.md) 中的master总线, 将之前实现的AXI4-Lite协议扩展到完整的AXI4
