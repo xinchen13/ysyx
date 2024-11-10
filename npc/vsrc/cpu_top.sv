@@ -1,10 +1,33 @@
 `include "../inc/defines.svh"
 
 module cpu_top (
-    /*AUTOINPUT*/
-    /*AUTOOUTPUT*/
-    input logic clk,
-    input logic rst_n
+    input logic clock,
+    input logic reset,
+    input logic io_interrupt,
+
+    // master: aw
+    input   logic           io_master_awready,
+    output  logic           io_master_awvalid,
+    output  logic   [31:0]  io_master_awaddr,
+    output  logic   [3:0]   io_master_awid,
+    output  logic   [7:0]   io_master_awlen,
+    output  logic   [2:0]   io_master_awsize,
+    output  logic   [1:0]   io_master_awburst,
+
+    // master: w
+    input   logic           io_master_wready,
+    output  logic           io_master_wvalid,
+    output  logic   [31:0]  io_master_wdata,
+    output  logic   [3:0]   io_master_wstrb,
+    output  logic           io_master_wlast,
+
+    // master: b 
+    output  logic           io_master_bready,
+    input   logic           io_master_bvalid,
+    input   logic   [1:0]   io_master_bresp,
+    input   logic   [3:0]   io_master_bid,
+
+
 );
 
 /*AUTOWIRE*/
