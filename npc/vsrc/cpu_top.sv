@@ -13,21 +13,63 @@ module cpu_top (
     output  logic   [7:0]   io_master_awlen,
     output  logic   [2:0]   io_master_awsize,
     output  logic   [1:0]   io_master_awburst,
-
     // master: w
     input   logic           io_master_wready,
     output  logic           io_master_wvalid,
     output  logic   [31:0]  io_master_wdata,
     output  logic   [3:0]   io_master_wstrb,
     output  logic           io_master_wlast,
-
     // master: b 
     output  logic           io_master_bready,
     input   logic           io_master_bvalid,
     input   logic   [1:0]   io_master_bresp,
     input   logic   [3:0]   io_master_bid,
+    // master: ar
+    input   logic           io_master_arready,
+    output  logic           io_master_arvalid,
+    output	logic   [31:0]	io_master_araddr,
+    output	logic   [3:0]	io_master_arid,
+    output	logic   [7:0]	io_master_arlen,
+    output	logic   [2:0]	io_master_arsize,
+    output	logic   [1:0]	io_master_arburst,
+    // master: r
+    output	logic   	    io_master_rready,
+    input	logic   	    io_master_rvalid,
+    input	logic   [1:0]	io_master_rresp,
+    input	logic   [31:0]	io_master_rdata,
+    input	logic   	    io_master_rlast,
+    input	logic   [3:0]	io_master_rid,
 
-
+    // slave
+    output	logic   	    io_slave_awready,
+    input	logic   	    io_slave_awvalid,
+    input	logic   [31:0]	io_slave_awaddr,
+    input	logic   [3:0]	io_slave_awid,
+    input	logic   [7:0]	io_slave_awlen,
+    input	logic   [2:0]	io_slave_awsize,
+    input	logic   [1:0]	io_slave_awburst,
+    output	logic   	    io_slave_wready,
+    input	logic   	    io_slave_wvalid,
+    input	logic   [31:0]	io_slave_wdata,
+    input	logic   [3:0]	io_slave_wstrb,
+    input	logic   	    io_slave_wlast,
+    input	logic   	    io_slave_bready,
+    output	logic   	    io_slave_bvalid,
+    output	logic   [1:0]	io_slave_bresp,
+    output	logic   [3:0]	io_slave_bid,
+    output	logic   	    io_slave_arready,
+    input	logic   	    io_slave_arvalid,
+    input	logic   [31:0]	io_slave_araddr,
+    input	logic   [3:0]	io_slave_arid,
+    input	logic   [7:0]	io_slave_arlen,
+    input	logic   [2:0]	io_slave_arsize,
+    input	logic   [1:0]	io_slave_arburst,
+    input	logic   	    io_slave_rready,
+    output	logic   	    io_slave_rvalid,
+    output	logic   [1:0]	io_slave_rresp,
+    output	logic   [31:0]	io_slave_rdata,
+    output	logic   	    io_slave_rlast,
+    output	logic   [3:0]	io_slave_rid
 );
 
 /*AUTOWIRE*/
@@ -38,11 +80,30 @@ localparam NM = 2;
 localparam NS = 3;
 localparam	AW = C_AXI_ADDR_WIDTH;
 localparam	DW = C_AXI_DATA_WIDTH;
+
+// unused 
+assign io_slave_awready     = 'b0;
+assign io_slave_wready      = 'b0;
+assign io_slave_bvalid      = 'b0;
+assign io_slave_bresp       = 'b0;
+assign io_slave_bid         = 'b0;
+assign io_slave_arready     = 'b0;
+assign io_slave_rvalid      = 'b0;
+assign io_slave_rresp       = 'b0;
+assign io_slave_rdata       = 'b0;
+assign io_slave_rlast       = 'b0;
+assign io_slave_rid         = 'b0;
+
+/*xcore AUTO_TEMPLATE (
+    .clk(clock),
+    .rst_n(reset),
+);
+*/
 xcore xcore_u0 (/*AUTOINST*/);
 
 
 /* verilator lint_off WIDTHEXPAND */
-/*axi_lite_xbar AUTO_TEMPLATE (
+/*axixbar AUTO_TEMPLATE (
     .S_AXI_ACLK(clk),
     .S_AXI_ARESETN(rst_n),
 
@@ -97,7 +158,7 @@ xcore xcore_u0 (/*AUTOINST*/);
     .M_AXI_RREADY({ clint_rready,	uart_rready,		sram_rready  }),
 );
 */
-axi_lite_xbar #(
+axixbar #(
     .C_AXI_DATA_WIDTH(DW),
     .C_AXI_ADDR_WIDTH(AW),
     .NM(NM),
@@ -105,7 +166,7 @@ axi_lite_xbar #(
     .SLAVE_ADDR({
 		32'ha0000048,
 		32'ha00003f8,
-        4'b1000, {(32-4){1'b0}} 
+        8'b0000001000000000, {(32-16){1'b0}} 
     }),
     .SLAVE_MASK({
         {(1){ 32'hfffffff8 }},
@@ -115,7 +176,7 @@ axi_lite_xbar #(
     .OPT_LOWPOWER(1'b0),
     .OPT_LINGER(1),
     .LGMAXBURST(2)
-) axi_lite_xbar_u0 (/*AUTOINST*/);
+) axixbar_u0 (/*AUTOINST*/);
 
 /*clint AUTO_TEMPLATE (
     .araddr(clint_araddr[`AXI_ADDR_BUS]),
