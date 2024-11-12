@@ -1821,7 +1821,7 @@ module AXI4MROM(	// src/device/MROM.scala:45:9
     end // always @(posedge)
   `endif // not def SYNTHESIS
   always @(posedge clock) begin	// src/device/MROM.scala:45:9
-    if (reset)	// src/device/MROM.scala:45:9
+    if (~reset)	// src/device/MROM.scala:45:9
       state <= 1'h0;	// src/device/MROM.scala:45:9, :51:24
     else if (state)	// src/device/MROM.scala:51:24
       state <= ~(auto_in_rready & state);	// src/device/MROM.scala:51:24, :54:19, src/main/scala/chisel3/util/Decoupled.scala:51:35
