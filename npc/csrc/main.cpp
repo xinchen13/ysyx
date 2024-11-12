@@ -9,7 +9,9 @@ VysyxSoCFull* dut;
 VerilatedVcdC* tfp;
 
 extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
-extern "C" void mrom_read(int32_t addr, int32_t *data) { assert(0); }
+extern "C" void mrom_read(int32_t addr, int32_t *data) { 
+    *data = 0x73; 
+}
 
 int main(int argc, char** argv) {
     // ----------------------- verilator init ---------------------------------
