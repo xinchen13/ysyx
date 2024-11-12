@@ -107,7 +107,21 @@ void uart_out(int wdata) {
 void flash_read(int32_t addr, int32_t *data) { assert(0); }
 void mrom_read(int32_t addr, int32_t *data) {
     // assert(0);
-    if (addr == 0x20000000) {
-        *data = 0x100073u; 
+    // if (addr == 0x20000000) {
+    //     *data = 0x100073u; 
+    // }
+    // raddr & ~0x3u
+    int aligned_address = addr & (~0x3u);
+    if (aligned_address >= CONFIG_MBASE && aligned_address <= (CONFIG_MBASE + CONFIG_MSIZE)) {
+        int read_data = paddr_read(aligned_address, 4);
+        // memory trace
+        #ifdef CONFIG_MTRACE
+            Log(" read %d (bytes)  @addr = " FMT_WORD, 4, aligned_address);
+        #endif 
+        *data = read_data;
+    }
+    else {
+        isa_reg_display();
+        Assert(0, "wrong read: " FMT_PADDR, addr);
     }
 }
