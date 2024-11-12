@@ -44,3 +44,19 @@ extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
 extern "C" void mrom_read(int32_t addr, int32_t *data) { assert(0); }
 ```
 - 开始仿真, 观察到代码进入了仿真的主循环, 但NPC无有效输出
+
+## 最简单的SoC
+程序的存放: 使用一种非易失存储器(non-volatile memory)来存放最初的程序, 使其内容能在断电时保持, 并在上电时能让CPU马上从中取出指令. 一个最简单的解决方案就是ROM(Read-Only Memory), 每次从ROM中相同位置读出的内容都是相同的
+
+ROM的实现有很多种, 总体上都是通过某种方式来将信息(在这里也是程序)存储在ROM中, 而且这种存储方式不会受到断电的影响, 从而具备非易失的属性. 如果考虑在ysyxSoC中的易用性, 最合适的就是mask ROM(掩膜ROM), 简称MROM, 其本质是将信息"硬编码"在门电路中, 因此对NPC来说访问方式非常直接
+
+不过因为MROM的某些问题, 我们并不打算在流片的时候使用它. 但MROM作为ysyxSoC中的第一个简单的非易失存储器来存放程序, 对我们测试ysyxSoC的接入还是非常合适的. 我们已经在ysyxSoC中添加了一个AXI4接口的MROM控制器, 其地址空间是`0x2000_0000~0x2000_0fff`
+
+### 测试MROM的访问
+修改NPC:
+- NPC的复位PC值改为 `32'h20000000`
+- 修改`mrom_read()`函数，使其总是返回一条ebreak指令`0x100073u`
+- 修改 `ysyxSoCFull.v` 中的 AXI4MROM 模块，时序逻辑部分的 reset 改为低电平有效
+- NPC取到的第一条指令即是ebreak指令, 从而结束仿真
+
+因为NEMU还没有添加MROM的支持, 而NPC此时需要从MROM中取指, 故此时DiffTest机制不能正确工作. 不过目前的测试程序规模还很小, 可以先关闭DiffTest功能, 后面再回过头来处理DiffTest的问题
