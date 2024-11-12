@@ -1,4 +1,4 @@
-TOPNAME = soc_top
+TOPNAME = ysyxSoCFull
 
 # dump dir/files
 NPC_BUILD_DIR = ./build

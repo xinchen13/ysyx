@@ -6,7 +6,7 @@
 extern npcState npc_state;
 extern coreState core;
 extern VerilatedContext* contextp;
-extern Vsoc_top* dut;
+extern VysyxSoCFull* dut;
 extern VerilatedVcdC* tfp;
 
 // llvm - disasm.cc

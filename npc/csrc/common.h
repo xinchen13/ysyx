@@ -2,15 +2,15 @@
 #define __COMMON_H__
 
 // ---------------------------- configs -----------------------------
-#define CONFIG_MBASE 0x80000000
-#define CONFIG_MSIZE 0x8000000
+#define CONFIG_MBASE 0x20000000
+#define CONFIG_MSIZE 0xfff
 #define CONFIG_BATCH_MODE 1
 #define CONFIG_RVE 1
 // #define CONFIG_WATCHPOINT 1
 #define CONFIG_ITRACE 1
 #define CONFIG_FTRACE 1
 // #define CONFIG_MTRACE 1
-#define CONFIG_DIFFTEST 1
+// #define CONFIG_DIFFTEST 1
 
 #if defined(CONFIG_ITRACE) || defined(CONFIG_FTRACE) || defined(CONFIG_MTRACE)
     #define CONFIG_TRACE 1
@@ -29,11 +29,11 @@
 #include <time.h>
 #include <readline/readline.h>
 #include <readline/history.h>
-#include "Vsoc_top.h"
+#include "VysyxSoCFull.h"
 #include "verilated.h"
 #include "verilated_vcd_c.h" // for wave gen
-#include "Vsoc_top__Dpi.h"
-#include "Vsoc_top___024root.h"
+#include "VysyxSoCFull__Dpi.h"
+#include "VysyxSoCFull___024root.h"
 #include "svdpi.h"
 // ------------------------------------------------------------------
 
