@@ -29,11 +29,11 @@
 #include <time.h>
 #include <readline/readline.h>
 #include <readline/history.h>
-#include "Vsoc_top.h"
+#include "VysyxSoCFull.h"
 #include "verilated.h"
 #include "verilated_vcd_c.h" // for wave gen
-#include "Vsoc_top__Dpi.h"
-#include "Vsoc_top___024root.h"
+#include "VysyxSoCFull__Dpi.h"
+#include "VysyxSoCFull___024root.h"
 #include "svdpi.h"
 // ------------------------------------------------------------------
 

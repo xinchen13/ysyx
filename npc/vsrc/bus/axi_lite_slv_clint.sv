@@ -1,6 +1,6 @@
 `include "../inc/defines.svh"
 
-module sram (
+module axi_lite_slv_clint (
     input logic clk,
     input logic rst_n,
 
@@ -29,11 +29,6 @@ module sram (
     input logic bready
 );
 
-    // DPI-C: pmem_read, pmem_write
-    import "DPI-C" function int dpic_pmem_read(input int raddr);
-    import "DPI-C" function void dpic_pmem_write(input int waddr, input int wdata, input byte wmask);
-
-    logic [2:0] lfsr;   // random delay
 
     localparam [2:0] IDLE =     3'b000;
     localparam [2:0] READ =     3'b001;
@@ -45,7 +40,18 @@ module sram (
 
     // sram
     logic sram_ack;                     // SRAM读取完成信号
-    logic [2:0] sram_wait_counter;      // 用于模拟不确定延迟的计数器
+
+
+    // mtime register
+    logic [63:0] mtime;
+    always @ (posedge clk) begin
+        if (!rst_n) begin
+            mtime <= 'b0;
+        end
+        else begin
+            mtime <= mtime + 'b1;
+        end
+    end
 
     // state reg
     always @ (posedge clk) begin
@@ -114,41 +120,31 @@ module sram (
     always @ (posedge clk) begin
         if (!rst_n) begin
             sram_ack  <= 1'b0;
-            sram_wait_counter <= 3'b000;  // 初始化等待计数器
-            rdata <= `INST_NOP;
-            lfsr <= 3'b001;
+            rdata <= 'b0;
         end 
         else begin
             case (state)
                 IDLE: begin
-                    sram_wait_counter <= 3'b000; // 重置等待计数器
                     sram_ack <= 1'b0;
-                    lfsr <= {lfsr[1:0], lfsr[2] ^ lfsr[1]}; // LFSR反馈多项式, 伪随机延迟
                 end
                 READ: begin
-                    if (sram_wait_counter == lfsr) begin  // 模拟读取延迟
-                        rdata <= dpic_pmem_read(addr);  // 从SRAM读取数据
-                        sram_ack   <= 1'b1;  // 读取完成信号
-                        sram_wait_counter <= 3'b000; // 重置等待计数器
-                    end 
-                    else begin
-                        sram_ack <= 1'b0;
-                        sram_wait_counter <= sram_wait_counter + 1;
-                    end
+                    case (araddr)
+                        32'ha0000048: begin
+                            // rdata <= mtime[31:0] >> 9; // us: mtime / 500
+                            rdata <= mtime[31:0]; // us: mtime / 500
+                        end
+                        32'ha000004c: begin
+                            rdata <= mtime[63:32];
+                        end
+                        default: begin
+                            rdata <= 'b0;
+                        end
+                    endcase
+                    sram_ack   <= 1'b1;  // 读取完成信号
                 end
                 WRITE: begin
-                    if ((sram_wait_counter == lfsr)) begin
-                        dpic_pmem_write(addr, wdata, {
-                            4'b0, wstrb[3], wstrb[2], wstrb[1], wstrb[0]
-                        });
-                        sram_wait_counter <= 3'b000; // 重置等待计数器 (防止下周期也写入)
                         sram_ack <= 1'b1;
                     end
-                    else begin
-                        sram_ack <= 1'b0;
-                        sram_wait_counter <= sram_wait_counter + 1;
-                    end
-                end
                 default: begin
                 end
             endcase
