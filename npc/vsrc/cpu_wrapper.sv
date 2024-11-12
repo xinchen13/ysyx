@@ -1,6 +1,7 @@
 `include "../inc/defines.svh"
 
-module cpu_top (
+// core, axim, clint
+module cpu_wrapper (
     input logic clock,
     input logic reset,
     input logic io_interrupt,

@@ -103,3 +103,11 @@ void dpic_pmem_write(int waddr, int wdata, char wmask) {
 void uart_out(int wdata) {
     putchar(wdata);
 }
+
+void flash_read(int32_t addr, int32_t *data) { assert(0); }
+void mrom_read(int32_t addr, int32_t *data) {
+    // assert(0);
+    if (addr == 0x20000000) {
+        *data = 0x100073u; 
+    }
+}
