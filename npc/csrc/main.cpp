@@ -10,7 +10,7 @@ VerilatedVcdC* tfp;
 
 extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
 extern "C" void mrom_read(int32_t addr, int32_t *data) {
-    assert(0);
+    // assert(0);
     *data = 0x100073u; 
 }
 
