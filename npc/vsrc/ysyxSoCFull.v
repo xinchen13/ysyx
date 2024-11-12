@@ -1464,7 +1464,7 @@ module CPU(	// src/CPU.scala:33:9
   input         auto_master_out_rlast	// rocket-chip/dependencies/diplomacy/diplomacy/src/diplomacy/lazymodule/LazyModuleImp.scala:100:25
 );
 
-  cpu_top cpu_top_u0 (	// src/CPU.scala:38:21
+  cpu_wrapper cpu_wrapper_u0 (	// src/CPU.scala:38:21
     .clock                   (clock),
     .reset                   (reset),
     .io_interrupt            (1'h0),	// src/CPU.scala:35:23, :36:19, :38:21

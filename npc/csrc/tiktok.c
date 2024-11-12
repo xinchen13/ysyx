@@ -69,7 +69,7 @@ static int cycle_count = 0;
 static void trace_and_difftest() {
     // itrace
     #ifdef CONFIG_ITRACE
-    if (dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_top_u0__DOT__xcore_u0__DOT__fetch_id_valid) {
+    if (dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__fetch_id_valid) {
         Log("%s", logbuf);
         write_iringbuf(logbuf);  // write log to iringbuf
         if (npc_state.state == NPC_ABORT) {
@@ -92,7 +92,7 @@ static void trace_and_difftest() {
 
     // ftracer
     #ifdef CONFIG_FTRACE
-    if (dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_top_u0__DOT__xcore_u0__DOT__fetch_id_valid) {
+    if (dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__fetch_id_valid) {
         opcode = ftrace_inst & 0x7fu;
         rd = (ftrace_inst >> 7) & 0x1fu;
         rs1 = (ftrace_inst >> 15) & 0x1fu;
@@ -122,9 +122,9 @@ void set_npc_state(int state, uint32_t pc, int halt_ret) {
 }
 
 static void exec_once() {
-    this_inst = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_top_u0__DOT__xcore_u0__DOT__id_inst;
-    this_pc = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_top_u0__DOT__xcore_u0__DOT__id_pc;
-    dnpc = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_top_u0__DOT__xcore_u0__DOT__ex_dnpc;
+    this_inst = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__id_inst;
+    this_pc = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__id_pc;
+    dnpc = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__ex_dnpc;
     #ifdef CONFIG_ITRACE
         itrace_inst = this_inst;
         itrace_pc = this_pc;
@@ -138,7 +138,7 @@ static void exec_once() {
 
     #ifdef CONFIG_DIFFTEST
         difftest_pc = this_pc;
-        retire_pc = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_top_u0__DOT__xcore_u0__DOT__lsu_wb_valid ? true : false;
+        retire_pc = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__lsu_wb_valid ? true : false;
     #endif
 
     dut->clock ^= 1; dut->eval();  // negedge
