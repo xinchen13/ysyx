@@ -291,7 +291,7 @@ axixbar #(
         {(1){ 16'hffff, {(16){1'b0}} }} 
     }),
     .OPT_LOWPOWER(1'b0),
-    .OPT_LINGER(1),
+    .OPT_LINGER(4),
     .LGMAXBURST(2)
 ) axixbar_u0 (/*AUTOINST*/
 	      // Outputs
