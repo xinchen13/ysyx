@@ -8,14 +8,6 @@ VerilatedContext* contextp;
 VysyxSoCFull* dut;
 VerilatedVcdC* tfp;
 
-extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
-extern "C" void mrom_read(int32_t addr, int32_t *data) {
-    // assert(0);
-    if (addr == 0x20000000) {
-        *data = 0x100073u; 
-    }
-}
-
 int main(int argc, char** argv) {
     // ----------------------- verilator init ---------------------------------
     contextp = new VerilatedContext;
