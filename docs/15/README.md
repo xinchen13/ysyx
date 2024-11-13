@@ -29,9 +29,7 @@ curl -L https://github.com/com-lihaoyi/mill/releases/download/0.11.12/0.11.12 > 
 在 `ysyxSoC/` 目录下运行 `make verilog`, 生成的Verilog文件位于 `ysyxSoC/build/ysyxSoCFull.v`
 
 ### 后续
-- 进入 ysyxSoC 文件夹
-- `curl -L https://github.com/com-lihaoyi/mill/releases/download/0.11.12/0.11.12 > mill && chmod +x mill`
-- 运行 `make verilog`
+进入 `ysyxSoC` 目录运行 `make verilog`
 
 
 ## 接入ysyxSoC
