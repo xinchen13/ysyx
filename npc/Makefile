@@ -23,7 +23,7 @@ INCFLAGS = $(addprefix +incdir+, $(NPC_INC_PATH))
 
 # rules for verilator
 VERILATOR = verilator
-VERILATOR_CFLAGS += -MMD --build -cc --trace \
+VERILATOR_CFLAGS += -MMD --build -cc --trace --autoflush\
 	-O3 --x-assign fast --x-initial fast --noassert --timescale "1ns/1ns" --no-timing\
 	$(INCFLAGS)
 
