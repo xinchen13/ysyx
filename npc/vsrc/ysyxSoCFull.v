@@ -1466,7 +1466,7 @@ module CPU(	// src/CPU.scala:33:9
 
   cpu_wrapper cpu_wrapper_u0 (	// src/CPU.scala:38:21
     .clock                   (clock),
-    .reset                   (reset),
+    .reset                   (~reset),
     .io_interrupt            (1'h0),	// src/CPU.scala:35:23, :36:19, :38:21
     .io_master_awready      (auto_master_out_awready),
     .io_master_awvalid      (auto_master_out_awvalid),
@@ -1821,7 +1821,7 @@ module AXI4MROM(	// src/device/MROM.scala:45:9
     end // always @(posedge)
   `endif // not def SYNTHESIS
   always @(posedge clock) begin	// src/device/MROM.scala:45:9
-    if (~reset)	// src/device/MROM.scala:45:9
+    if (reset)	// src/device/MROM.scala:45:9
       state <= 1'h0;	// src/device/MROM.scala:45:9, :51:24
     else if (state)	// src/device/MROM.scala:51:24
       state <= ~(auto_in_rready & state);	// src/device/MROM.scala:51:24, :54:19, src/main/scala/chisel3/util/Decoupled.scala:51:35

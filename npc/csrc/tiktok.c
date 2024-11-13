@@ -216,13 +216,13 @@ void core_exec(uint64_t n) {
 
 void core_init() {
     dut->clock = 1;
-    dut->reset = 0;
+    dut->reset = 1;
     dut->clock ^= 1; dut->eval();
     tfp->dump(contextp->time());
     contextp->timeInc(1);
     dut->clock ^= 1; dut->eval(); // posedge
     tfp->dump(contextp->time());
     contextp->timeInc(1);
-    dut->reset = 1;
+    dut->reset = 0;
     isa_reg_update();
 }
