@@ -13,8 +13,8 @@ verilog: $(V_FILE_FINAL)
 clean:
 	-rm -rf build/
 
-dev-init:
-	git submodule update --init --recursive
-	cd rocket-chip && git apply ../patch/rocket-chip.patch
+# dev-init:
+# 	git submodule update --init --recursive
+# 	cd rocket-chip && git apply ../patch/rocket-chip.patch
 
 .PHONY: verilog clean dev-init
