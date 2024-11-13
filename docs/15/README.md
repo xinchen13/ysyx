@@ -6,6 +6,7 @@ SoC不仅仅只包含一个处理器, 还有诸多的外围设备, 以及连接�
 ysyxSoC文档: [ysyxSoC](./ysyxSoC.md)
 
 ## 获取ysyxSoC的代码并生成Verilog代码
+### 初始操作
 获取ysyxSoC的代码:
 ```sh
 git clone git@github.com:OSCPU/ysyxSoC.git
@@ -27,9 +28,15 @@ curl -L https://github.com/com-lihaoyi/mill/releases/download/0.11.12/0.11.12 > 
 
 在 `ysyxSoC/` 目录下运行 `make verilog`, 生成的Verilog文件位于 `ysyxSoC/build/ysyxSoCFull.v`
 
+### 后续
+- 进入 ysyxSoC 文件夹
+- `curl -L https://github.com/com-lihaoyi/mill/releases/download/0.11.12/0.11.12 > mill && chmod +x mill`
+- 运行 `make verilog`
+
+
 ## 接入ysyxSoC
-- 依照 [ysyxSoC/spec/cpu-interface.md](./cpu-interface.md) 中的master总线, 将之前实现的AXI4-Lite协议扩展到完整的AXI4
-- 调整NPC顶层接口, 使其与 [cpu-interface](./cpu-interface.md) 中的接口命名规范完全一致, 包括信号方向, 命名和数据位宽
+- 依照 [ysyxSoC/spec/cpu-interface.md](../../ysyxSoC/spec/cpu-interface.md) 中的master总线, 将之前实现的AXI4-Lite协议扩展到完整的AXI4
+- 调整NPC顶层接口, 使其与 [ysyxSoC/spec/cpu-interface.md](../../ysyxSoC/spec/cpu-interface.md) 中的接口命名规范完全一致, 包括信号方向, 命名和数据位宽
   - 对于不使用的顶层输出端口, 需要将其赋值为常数0
   - 对于不使用的顶层输入端口, 悬空即可
   - 由于core有两个master，需要自己实现一层 axim, 作为仲裁逻辑，同时挂载clint与ysyxSoCFull模块作为slave
