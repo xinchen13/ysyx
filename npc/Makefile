@@ -8,10 +8,10 @@ BIN = $(NPC_BUILD_DIR)/$(TOPNAME)
 WAVE_FILE = $(NPC_BUILD_DIR)/wave.vcd
 
 # argv
-# IMG ?= --img\=./default/dummy-riscv32e-npc.bin
-IMG ?= --img\=../docs/15/char-test/char-test.bin
+IMG ?= --img\=./default/dummy-riscv32e-ysyxsoc.bin
+# IMG ?= --img\=../docs/15/char-test/char-test.bin
 LOG = --log\=$(NPC_BUILD_DIR)/npc.log
-ELF ?= --elf\=./default/dummy-riscv32e-npc.elf
+ELF ?= --elf\=./default/dummy-riscv32e-ysyxsoc.elf
 DIF ?= --diff\=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 WAV ?= --wave\=$(WAVE_FILE)
 

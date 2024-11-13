@@ -4,30 +4,29 @@
 extern char _heap_start;
 int main(const char *args);
 
-extern char _pmem_start;
-#define PMEM_SIZE (128 * 1024 * 1024)
-#define PMEM_END  ((uintptr_t)&_pmem_start + PMEM_SIZE)
+#define HEAP_SIZE 0x1fff
+#define HEAP_END  ((uintptr_t)&_heap_start + HEAP_SIZE)
 
-Area heap = RANGE(&_heap_start, PMEM_END);
+Area heap = RANGE(&_heap_start, HEAP_END);
 #ifndef MAINARGS
 #define MAINARGS ""
 #endif
 static const char mainargs[] = MAINARGS;
 
 // ------- simulate serial port -------
-#define DEVICE_BASE    0xa0000000
-#define SERIAL_PORT    (DEVICE_BASE + 0x00003f8)
+#define UART_BASE       0x10000000
+#define TX_REG          (UART_BASE + 0x0)
 static inline void outb(uintptr_t addr, uint8_t  data) { *(volatile uint8_t  *)addr = data; }
 // ------------------------------------
 
 void putch(char ch) {
-    outb(SERIAL_PORT, ch);
+    outb(TX_REG, ch);
 }
 
-#define npc_trap(code) asm volatile("mv a0, %0; ebreak" : :"r"(code))
+#define ysyxsoc_trap(code) asm volatile("mv a0, %0; ebreak" : :"r"(code))
 
 void halt(int code) {
-    npc_trap(code);
+    ysyxsoc_trap(code);
     while(1);       // should not reach here
 }
 
