@@ -109,11 +109,13 @@ MROM虽然可以很好地实现程序的存放, 但它不支持写入操作. 但
 
 ### 为ysyxSoC添加AM运行时环境
 添加一个 `riscv32e-ysyxsoc` 的新AM, 并提供TRM的API:
-- 
 
+- 添加 ysyxsoc 专用的链接脚本 `$AM_HOME/scripts/ysyxsoc_linker.ld`, 在其中分配堆栈，需要分配在可写的内存区间, 因此可以分配在SRAM中, 地址为0x0f000000~0x0f001fff, 栈从高地址向低地址生长，堆从低到高
+- 在 `$AM_HOME/scripts/platform/ysyxsoc.mk` 中添加编译运行规则
+- 在 `$AM_HOME/scripts/risc32e-ysyxsoc.mk` 中补充规则
+- `main()`函数由AM上的程序提供, 但我们需要考虑整个运行时环境的入口, 即需要将程序链接到MROM的地址空间, 并保证TRM的第一条指令与NPC复位后的PC值一致, 需要修改  `$AM_HOME/scripts/platform/ysyxsoc.mk` 中的 `_pmem_start`
+- 退出程序使用 `halt()` 提供 ebreak 指令
+- `putch` 可通过ysyxSoC中的UART16550进行输出
+- 由于NPC复位后从MROM开始执行, 而MROM不支持写入操作, 因此我们需要额外注意: 程序中不能包含对全局变量的写入操作；栈区需要分配在可写的SRAM中
 
-
-
-
-
-添加后, 将cpu-tests中的dummy测试编译到riscv32e-ysyxsoc, 并尝试在ysyxSoC的仿真环境中运行它
+添加后, 将cpu-tests中的dummy测试编译到riscv32e-ysyxsoc, 并在ysyxSoC的仿真环境中运行它
