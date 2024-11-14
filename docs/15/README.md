@@ -119,3 +119,6 @@ MROM虽然可以很好地实现程序的存放, 但它不支持写入操作. 但
 - 由于NPC复位后从MROM开始执行, 而MROM不支持写入操作, 因此我们需要额外注意: 程序中不能包含对全局变量的写入操作；栈区需要分配在可写的SRAM中
 
 添加后, 将cpu-tests中的dummy测试编译到riscv32e-ysyxsoc, 并在ysyxSoC的仿真环境中运行它
+
+### 无法运行的测试 
+在ysyxSoC中运行cpu-tests中的fib, 发现运行失败
