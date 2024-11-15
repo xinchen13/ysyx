@@ -23,7 +23,6 @@ int main () {
         }
         check_ptr_8++;
     }
-    putch((char)(*check_ptr_8));
 
     return 0;
 }
