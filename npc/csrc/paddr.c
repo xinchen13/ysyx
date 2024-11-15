@@ -118,7 +118,7 @@ void mrom_read(int32_t addr, int32_t *data) {
         // memory trace
         #ifdef CONFIG_MTRACE
             Log(" read %d (bytes)  @addr = " FMT_WORD, 4, aligned_address);
-        #endif 
+        #endif
         *data = read_data;
     }
     else {

@@ -4,7 +4,7 @@
 extern char _heap_start;
 int main(const char *args);
 
-#define HEAP_SIZE 0x1fff
+#define HEAP_SIZE 0x1000
 #define HEAP_END  ((uintptr_t)&_heap_start + HEAP_SIZE)
 
 Area heap = RANGE(&_heap_start, HEAP_END);
