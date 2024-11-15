@@ -16,9 +16,11 @@ int main () {
     // check
     while ((uint32_t)check_ptr_8 < SRAM_END) {
         if (*check_ptr_8 == (uint8_t)((uint32_t)check_ptr_8)) {
-            putch('P');
+            // putch('P');
+            ;
         } else {
-            putch('F');
+            // putch('F');
+            halt(1);
         }
         check_ptr_8++;
     }
