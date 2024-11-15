@@ -1,48 +1,27 @@
 #include <am.h>
-#include <klib-macros.h>
-#include <klib.h>
 
-#define N 32
-uint8_t data[N];
-
-void reset() {
-    int i;
-    for (i = 0; i < N; i ++) {
-        data[i] = i + 1;
-    }
-}
-
-// 检查[l,r)区间中的值是否依次为val, val + 1, val + 2...
-void check_seq(int l, int r, int val) {
-    int i;
-    for (i = l; i < r; i ++) {
-        assert(data[i] == val + i - l);
-    }
-}
-
-// 检查[l,r)区间中的值是否均为val
-void check_eq(int l, int r, int val) {
-    int i;
-    for (i = l; i < r; i ++) {
-        assert(data[i] == val);
-    }
-}
-
-void test_memset() {
-    int l, r;
-    for (l = 0; l < N; l ++) {
-        for (r = l + 1; r <= N; r ++) {
-            reset();
-            uint8_t val = (l + r) / 2;
-            memset(data + l, val, r - l);
-            check_seq(0, l, 1);
-            check_eq(l, r, val);
-            check_seq(r, N, r + 1);
-        }
-    }
-}
+#define SRAM_START  0x0f000000
+#define SRAM_END    0x0f001000
 
 int main () {
-    test_memset();
+    volatile uint8_t *write_ptr_8 = (uint8_t *)SRAM_START;
+    volatile uint8_t *check_ptr_8 = (uint8_t *)SRAM_START;
+
+    // write 
+    while ((uint32_t)write_ptr_8 < SRAM_END) {
+        *write_ptr_8 = (uint32_t)write_ptr_8;
+        write_ptr_8++;
+    }
+
+    // check
+    while ((uint32_t)check_ptr_8 < SRAM_END) {
+        if (*check_ptr_8 == (uint32_t)check_ptr_8) {
+            putch('P');
+        } else {
+            putch('F');
+        }
+        check_ptr_8++;
+    }
+
     return 0;
 }
