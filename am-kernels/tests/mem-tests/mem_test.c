@@ -26,10 +26,11 @@ int main () {
         }
         check_ptr_8++;
     }
-    cnt_8_lo = (uint8_t)cnt_8;
+    
+    cnt_8_hi = (uint8_t)(cnt_8 >> 8);
     putch(cnt_8_hi);
 
-    cnt_8_hi = (uint8_t)(cnt_8 >> 8);
+    cnt_8_lo = (uint8_t)cnt_8;
     putch(cnt_8_lo);
 
     return 0;
