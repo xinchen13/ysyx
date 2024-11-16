@@ -31,7 +31,6 @@
 - [npc的设备和输入输出(npc-io)](./docs/12/)
 - [异常处理和RT-Thread(exception)](./docs/13/)
 - [总线(bus)](./docs/14/)
-- [SoC计算机系统(soc)](./docs/15/)
 
 ## Tips
 #### set environment variables

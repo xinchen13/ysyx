@@ -1,5 +1,5 @@
 
-`define CPU_RESET_ADDR 32'h20000000
+`define CPU_RESET_ADDR 32'h80000000
 `define ZERO_WORD 32'h0
 `define BYTE_BUS 7:0
 
@@ -31,7 +31,6 @@
 `define AXI_DATA_BUS 31:0
 `define AXI_WSTRB_BUS 3:0
 `define AXI_RESP_BUS 1:0
-`define AXI_ID_WIDTH 4
 
 // alu
 `define ALU_ADD 4'b0000
