@@ -40,5 +40,23 @@ int main () {
         check_ptr_16++;
     }
 
+    volatile uint32_t *write_ptr_32 = (uint32_t *)SRAM_START;
+    volatile uint32_t *check_ptr_32 = (uint32_t *)SRAM_START;
+    // write 
+    while ((uint32_t)write_ptr_32 < SRAM_END) {
+        *write_ptr_32 = (uint32_t)write_ptr_32;
+        write_ptr_32++;
+    }
+    // check
+    while ((uint32_t)check_ptr_32 < SRAM_END) {
+        if (*check_ptr_32 == (uint32_t)check_ptr_32) {
+            ;
+        } else {
+            // putch('F');
+            halt(1);
+        }
+        check_ptr_32++;
+    }
+
     return 0;
 }
