@@ -1,4 +1,4 @@
-TOPNAME = soc_top
+TOPNAME = ysyxSoCFull
 
 # dump dir/files
 NPC_BUILD_DIR = ./build
@@ -8,9 +8,10 @@ BIN = $(NPC_BUILD_DIR)/$(TOPNAME)
 WAVE_FILE = $(NPC_BUILD_DIR)/wave.vcd
 
 # argv
-IMG ?= --img\=./default/dummy-riscv32e-npc.bin
+IMG ?= --img\=./default/dummy-riscv32e-ysyxsoc.bin
+# IMG ?= --img\=../docs/15/char-test/char-test.bin
 LOG = --log\=$(NPC_BUILD_DIR)/npc.log
-ELF ?= --elf\=./default/dummy-riscv32e-npc.elf
+ELF ?= --elf\=./default/dummy-riscv32e-ysyxsoc.elf
 DIF ?= --diff\=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 WAV ?= --wave\=$(WAVE_FILE)
 
@@ -23,7 +24,7 @@ INCFLAGS = $(addprefix +incdir+, $(NPC_INC_PATH))
 # rules for verilator
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc --trace --autoflush\
-	-O3 --x-assign fast --x-initial fast --noassert --timescale "1ns/1ns"\
+	-O3 --x-assign fast --x-initial fast --noassert --timescale "1ns/1ns" --no-timing\
 	$(INCFLAGS)
 
 # rules for gcc

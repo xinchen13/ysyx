@@ -2,8 +2,8 @@
 *
 !*/
 !default/
-!dummy-riscv32e-npc.bin
-!dummy-riscv32e-npc.elf
+!dummy-riscv32e-ysyxsoc.bin
+!dummy-riscv32e-ysyxsoc.elf
 !Makefile
 !*.mk
 !*.[cSh]

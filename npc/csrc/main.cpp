@@ -5,14 +5,14 @@ FILE *log_fp = NULL;
 npcState npc_state;
 coreState core = {};
 VerilatedContext* contextp;
-Vsoc_top* dut;
+VysyxSoCFull* dut;
 VerilatedVcdC* tfp;
 
 int main(int argc, char** argv) {
     // ----------------------- verilator init ---------------------------------
     contextp = new VerilatedContext;
     contextp->commandArgs(argc, argv);
-    dut = new Vsoc_top{contextp};
+    dut = new VysyxSoCFull{contextp};
     tfp = new VerilatedVcdC;
     // set scope: for DPI-C
     // const svScope scope = svGetScopeFromName("TOP.soc_top");
