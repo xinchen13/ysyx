@@ -20,7 +20,7 @@ SECTIONS {
   _data_start = .;
   .data : {
     *(.data)
-  } AT> sram : data 
+  } : data 
   _data_end = .;
   edata = .;
   _data = .;
