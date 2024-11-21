@@ -37,5 +37,5 @@ SECTIONS {
   _stack_pointer = .;
   end = .;
   _end = .;
-  _heap_start = 0x0f000000;
+  _heap_start = ORIGIN(sram);
 }
