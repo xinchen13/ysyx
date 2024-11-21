@@ -7,10 +7,10 @@ void bootloader() {
     char *src = &_mdata;
     char *dst = &_data_start;
     /* ROM has data at end of text; copy it.  */
-    while (dst < &_data_end)
+    while (dst <= &_data_end)
         *dst++ = *src++;
     /* Zero bss.  */
-    for (dst = &_bss_start; dst< &_bss_end; dst++)
+    for (dst = &_bss_start; dst<= &_bss_end; dst++)
         *dst = 0;
 }
 // *******************************************
