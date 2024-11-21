@@ -29,7 +29,7 @@ SECTIONS {
     *(.bss*)
     *(.sbss*)
     *(.scommon)
-  }
+  } > sram AT> mrom
   _stack_top = 0x0f001000;
   . = _stack_top + 0x0fff;
   _stack_pointer = .;
