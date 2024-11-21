@@ -37,5 +37,5 @@ SECTIONS {
   _stack_pointer = .;
   end = .;
   _end = .;
-  _heap_start = _bss_end;
+  _heap_start = 0x0f0000fc;
 }
