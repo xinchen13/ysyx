@@ -17,18 +17,20 @@ SECTIONS {
   .rodata : {
     *(.rodata*)
   } > mrom AT> mrom
-  _data_start = .;
+  _mdata = .;
   .data : {
+    _data_start = .;
     *(.data)
+    _data_end = .;
   } > sram AT> mrom : data 
-  _data_end = .;
   edata = .;
   _data = .;
   .bss : {
-	_bss_start = .;
+	  _bss_start = .;
     *(.bss*)
     *(.sbss*)
     *(.scommon)
+    _bss_end = .;
   } > sram AT> mrom
   _stack_top = 0x0f001000;
   . = _stack_top + 0x0fff;
