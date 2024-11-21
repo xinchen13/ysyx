@@ -20,7 +20,7 @@ SECTIONS {
   _data_start = .;
   .data : {
     *(.data)
-  } > _data_start AT > sram : data 
+  } > mrom AT > sram : data 
   _data_end = .;
   edata = .;
   _data = .;
@@ -35,5 +35,5 @@ SECTIONS {
   _stack_pointer = .;
   end = .;
   _end = .;
-  _heap_start = 0x0f000000;
+  _heap_start = (ORIGIN(sram) + _data_end - _data_start);
 }
