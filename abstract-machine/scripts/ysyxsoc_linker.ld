@@ -11,29 +11,31 @@ SECTIONS {
   .text : {
     *(entry)
     *(.text*)
-  } : text
+  } > mrom AT> mrom : text
   etext = .;
   _etext = .;
   .rodata : {
     *(.rodata*)
-  }
-  _data_start = .;
+  } > mrom AT> mrom
+  _mdata = .;
   .data : {
+    _data_start = .;
     *(.data)
-  } : data 
-  _data_end = .;
+    _data_end = .;
+  } > sram AT> mrom : data 
   edata = .;
   _data = .;
   .bss : {
-	_bss_start = .;
+	  _bss_start = .;
     *(.bss*)
     *(.sbss*)
     *(.scommon)
-  }
+    _bss_end = .;
+  } > sram AT> mrom
   _stack_top = 0x0f001000;
-  . = _stack_top + 0x0fff;
+  . = _stack_top + 0x0ffc;
   _stack_pointer = .;
   end = .;
   _end = .;
-  _heap_start = 0x0f000000;
+  _heap_start = ORIGIN(sram);
 }

@@ -1,6 +1,20 @@
 #include <am.h>
 #include <klib-macros.h>
 
+// *************** bootloader ****************
+extern char _mdata, _data_start, _data_end, _bss_start, _bss_end;
+void bootloader() {
+    char *src = &_mdata;
+    char *dst = &_data_start;
+    /* ROM has data at end of text; copy it.  */
+    while (dst < &_data_end)
+        *dst++ = *src++;
+    /* Zero bss.  */
+    for (dst = &_bss_start; dst< &_bss_end; dst++)
+        *dst = 0;
+}
+// *******************************************
+
 extern char _heap_start;
 int main(const char *args);
 
@@ -31,6 +45,7 @@ void halt(int code) {
 }
 
 void _trm_init() {
+    bootloader();
     int ret = main(mainargs);
     halt(ret);
 }
