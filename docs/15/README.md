@@ -124,7 +124,10 @@ MROM虽然可以很好地实现程序的存放, 但它不支持写入操作. 但
 在ysyxSoC中运行cpu-tests中的fib, 发现运行失败，报错对MROM进行了写操作，应该是对全局变量fib数组元素的写操作
 
 ### 重新添加DiffTest
-tbc
+由于下一阶段都会在MROM和SRAM上运行程序，但NEMU并没有MROM和SRAM, 如果我们在DiffTest的时候跳过MROM和SRAM和访问, 将会跳过所有指令的执行, 使得DiffTest将无法起到预期的作用
+
+为了重新添加DiffTest, 需要在NEMU中添加MROM和SRAM, 并在NPC的仿真环境初始化DiffTest时, 将MROM中的内容同步到NEMU中, 然后检查在MROM中执行的每一条指令
+- 尽量不添加新的DiffTest API, 框架代码提供的DiffTest API已经足够实现上述功能
 
 ### 让NPC抛出Access Fault异常
 tbc
@@ -190,10 +193,10 @@ SECTIONS {
   } > mrom AT> mrom
   /* ... */
 }
-
+```
 
 #### 将数据段从MA复制到SA
-只需要在程序运行前调用 `memcpy()`
+只需要在程序运行前调用 `memcpy()` 
 
 
 
