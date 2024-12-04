@@ -16,6 +16,7 @@ SECTIONS {
   _etext = .;
   .rodata : {
     *(.rodata*)
+    *(.srodata*)
   } > mrom AT> mrom
   _mdata = .;
   .data : {
