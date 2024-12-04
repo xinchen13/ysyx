@@ -16,11 +16,13 @@ SECTIONS {
   _etext = .;
   .rodata : {
     *(.rodata*)
+    *(.srodata*)
   } > mrom AT> mrom
   _mdata = .;
   .data : {
     _data_start = .;
-    *(.data)
+    *(.data*)
+    *(.sdata*)
     _data_end = .;
   } > sram AT> mrom : data 
   edata = .;
