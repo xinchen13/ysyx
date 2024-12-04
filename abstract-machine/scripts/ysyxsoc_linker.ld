@@ -20,7 +20,7 @@ SECTIONS {
   _mdata = .;
   .data : {
     _data_start = .;
-    *(.data)
+    *(.data);
     _data_end = .;
   } > sram AT> mrom : data 
   edata = .;
@@ -29,7 +29,7 @@ SECTIONS {
 	  _bss_start = .;
     *(.bss*)
     *(.sbss*)
-    *(.scommon)
+    *(.scommon);
     _bss_end = .;
   } > sram AT> mrom
   _stack_top = 0x0f001000;
