@@ -21,8 +21,8 @@ void bootloader() {
 static inline void outb(uintptr_t addr, uint8_t  data) { *(volatile uint8_t  *)addr = data; }
 
 void uart_init() {
-    outb(UART_BASE  ,0x01);
-    outb(UART_BASE+1,0x00);
+    outb(UART_BASE  ,0x00);
+    outb(UART_BASE+1,0x10);
 }
 
 void putch(char ch) {
