@@ -19,6 +19,12 @@ void bootloader() {
 #define UART_BASE       0x10000000
 #define TX_REG          (UART_BASE + 0x0)
 static inline void outb(uintptr_t addr, uint8_t  data) { *(volatile uint8_t  *)addr = data; }
+
+void uart_init() {
+    outb(UART_BASE  ,0x01);
+    outb(UART_BASE+1,0x00);
+}
+
 void putch(char ch) {
     outb(TX_REG, ch);
 }
