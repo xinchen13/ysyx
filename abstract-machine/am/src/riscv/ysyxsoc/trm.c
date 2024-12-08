@@ -15,6 +15,21 @@ void bootloader() {
 }
 // *******************************************
 
+// ****************** uart *******************
+#define UART_BASE       0x10000000
+#define TX_REG          (UART_BASE + 0x0)
+static inline void outb(uintptr_t addr, uint8_t  data) { *(volatile uint8_t  *)addr = data; }
+
+void uart_init() {
+
+}
+
+void putch(char ch) {
+    outb(TX_REG, ch);
+}
+// *******************************************
+
+
 extern char _heap_start;
 int main(const char *args);
 
@@ -27,16 +42,6 @@ Area heap = RANGE(&_heap_start, HEAP_END);
 #endif
 static const char mainargs[] = MAINARGS;
 
-// ------- simulate serial port -------
-#define UART_BASE       0x10000000
-#define TX_REG          (UART_BASE + 0x0)
-static inline void outb(uintptr_t addr, uint8_t  data) { *(volatile uint8_t  *)addr = data; }
-// ------------------------------------
-
-void putch(char ch) {
-    outb(TX_REG, ch);
-}
-
 #define ysyxsoc_trap(code) asm volatile("mv a0, %0; ebreak" : :"r"(code))
 
 void halt(int code) {
@@ -45,6 +50,7 @@ void halt(int code) {
 }
 
 void _trm_init() {
+    uart_init();
     bootloader();
     int ret = main(mainargs);
     halt(ret);
