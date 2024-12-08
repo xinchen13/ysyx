@@ -123,14 +123,14 @@ MROM虽然可以很好地实现程序的存放, 但它不支持写入操作. 但
 ### 无法运行的测试 
 在ysyxSoC中运行cpu-tests中的fib, 发现运行失败，报错对MROM进行了写操作，应该是对全局变量fib数组元素的写操作
 
-### 重新添加DiffTest
+### 重新添加DiffTest (tbc)
 由于下一阶段都会在MROM和SRAM上运行程序，但NEMU并没有MROM和SRAM, 如果我们在DiffTest的时候跳过MROM和SRAM和访问, 将会跳过所有指令的执行, 使得DiffTest将无法起到预期的作用
 
 为了重新添加DiffTest, 需要在NEMU中添加MROM和SRAM, 并在NPC的仿真环境初始化DiffTest时, 将MROM中的内容同步到NEMU中, 然后检查在MROM中执行的每一条指令
 - 尽量不添加新的DiffTest API, 框架代码提供的DiffTest API已经足够实现上述功能
 
-### 让NPC抛出Access Fault异常
-tbc
+### 让NPC抛出Access Fault异常 (tbc)
+
 
 ### 内存访问测试
 可以执行dummy测试后, 我们认为NPC基本上能成功访问ysyxSoC的SRAM了. 我们知道, 访存是程序运行的基础. 为了对访存行为进行更充分的测试, 我们需要编写一个程序mem-test来测试更大范围的内存.
@@ -195,8 +195,17 @@ SECTIONS {
 }
 ```
 
+可以通过 `--print-map` 选项查看 `ld` 如何进行链接
+
 #### 将数据段从MA复制到SA
-只需要在程序运行前调用 `memcpy()` 
+- 只需要在程序运行前调用 `memcpy()`
+- 具体实现上, 在 ysyxsoc 的 `trm.c` 中新增一个 `bootloader()` 函数，使用指针加载数据、为未初始化数据赋0
+
+实现后能成功运行 `cpu-tests` 中除 `string` 外的所有测试
+
+### 通过串口输出
+
+#### 实现 `putch()`
 
 
 
