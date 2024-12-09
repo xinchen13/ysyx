@@ -116,15 +116,15 @@ MROM虽然可以很好地实现程序的存放, 但它不支持写入操作. 但
 - `main()`函数由AM上的程序提供, 但我们需要考虑整个运行时环境的入口, 即需要将程序链接到MROM的地址空间, 并保证TRM的第一条指令与NPC复位后的PC值一致, 需要修改  `$AM_HOME/scripts/platform/ysyxsoc.mk` 中的 `_pmem_start`
 - 退出程序使用 `halt()` 提供 ebreak 指令
 - `putch` 可通过ysyxSoC中的UART16550进行输出
-- 由于NPC复位后从MROM开始执行, 而MROM不支持写入操作, 因此我们需要额外注意: 程序中不能包含对全局变量的写入操作；栈区需要分配在可写的SRAM中
+- 由于NPC复位后从MROM开始执行, 而MROM不支持写入操作, 因此我们需要额外注意: 程序中不能包含对全局变量的写入操作; 栈区需要分配在可写的SRAM中
 
 添加后, 将cpu-tests中的dummy测试编译到riscv32e-ysyxsoc, 并在ysyxSoC的仿真环境中运行它
 
 ### 无法运行的测试 
-在ysyxSoC中运行cpu-tests中的fib, 发现运行失败，报错对MROM进行了写操作，应该是对全局变量fib数组元素的写操作
+在ysyxSoC中运行cpu-tests中的fib, 发现运行失败, 报错对MROM进行了写操作, 应该是对全局变量fib数组元素的写操作
 
 ### 重新添加DiffTest (tbc)
-由于下一阶段都会在MROM和SRAM上运行程序，但NEMU并没有MROM和SRAM, 如果我们在DiffTest的时候跳过MROM和SRAM和访问, 将会跳过所有指令的执行, 使得DiffTest将无法起到预期的作用
+由于下一阶段都会在MROM和SRAM上运行程序, 但NEMU并没有MROM和SRAM, 如果我们在DiffTest的时候跳过MROM和SRAM和访问, 将会跳过所有指令的执行, 使得DiffTest将无法起到预期的作用
 
 为了重新添加DiffTest, 需要在NEMU中添加MROM和SRAM, 并在NPC的仿真环境初始化DiffTest时, 将MROM中的内容同步到NEMU中, 然后检查在MROM中执行的每一条指令
 - 尽量不添加新的DiffTest API, 框架代码提供的DiffTest API已经足够实现上述功能
