@@ -30,6 +30,8 @@ void uart_init() {
     outb(DLL, 0x01);
     outb(DLH, 0x00);
     outb(LCR, 0x03);        // reset value
+    outb(UART_BASE+2,0x01); 
+    outb(UART_BASE+1,0x01);
 }
 
 void putch(char ch) {
