@@ -27,8 +27,8 @@ static inline void outb(uintptr_t addr, uint8_t  data) { *(volatile uint8_t  *)a
 
 void uart_init() {
     outb(LCR, 0x80);        // DLAB = 1
-    outb(DLL, 0x01);
-    outb(DLH, 0x00);
+    outb(DLL, 0xff);
+    outb(DLH, 0xff);
     outb(LCR, 0x03);        // reset value
 }
 
