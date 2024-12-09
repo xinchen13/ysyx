@@ -18,10 +18,16 @@ void bootloader() {
 // ****************** uart *******************
 #define UART_BASE       0x10000000
 #define TX_REG          (UART_BASE + 0x0)
+#define LCR             (UART_BASE + 0x3)
+#define DLL             (UART_BASE + 0x0)
+#define DLH             (UART_BASE + 0x1)
 static inline void outb(uintptr_t addr, uint8_t  data) { *(volatile uint8_t  *)addr = data; }
 
 void uart_init() {
-
+    outb(LCR, 0x80);        // DLAB = 1
+    outb(DLL, 0xff);
+    outb(DLH, 0x00);
+    outb(LCR, 0x03);        // reset value
 }
 
 void putch(char ch) {
