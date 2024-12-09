@@ -16,7 +16,7 @@ void bootloader() {
 // *******************************************
 
 // ****************** uart *******************
-#define UART_BASE       0x10000000
+#define UART_BASE       0x10000000L
 #define TX_REG          (UART_BASE + 0x0)
 #define LCR             (UART_BASE + 0x3)
 #define DLL             (UART_BASE + 0x0)
