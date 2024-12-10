@@ -61,8 +61,8 @@ void halt(int code) {
 }
 
 void _trm_init() {
-    uart_init();
     bootloader();
+    uart_init();
     int ret = main(mainargs);
     halt(ret);
 }
