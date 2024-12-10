@@ -27,9 +27,9 @@ static inline void outb(uintptr_t addr, uint8_t  data) { *(volatile uint8_t  *)a
 
 void uart_init() {
     outb(LCR, 0x80);        // DLAB = 1
-    outb(DLH, 0x00);        // MSB first
-    outb(DLL, 0x01);        // LSB next
-    outb(LCR, 0x03);        // reset value
+    // outb(DLH, 0x00);        // MSB first
+    // outb(DLL, 0x01);        // LSB next
+    // outb(LCR, 0x03);        // reset value
 }
 
 void putch(char ch) {
