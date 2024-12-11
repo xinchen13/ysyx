@@ -100,7 +100,6 @@ void dpic_pmem_write(int waddr, int wdata, char wmask) {
     }
 }
 
-void flash_read(int32_t addr, int32_t *data) { assert(0); }
 void mrom_read(int32_t addr, int32_t *data) {
     // execute ebreak
     // assert(0);
