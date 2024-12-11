@@ -12,7 +12,9 @@ int main(const char *args) {
   //   (*p == '%') ? putstr(args) : putch(*p);
   // }
   uint8_t init_data = inb(0x30000fff);
+  putch('\n');
   putch(init_data);
+  putch('\n');
   
   return 0;
 }
