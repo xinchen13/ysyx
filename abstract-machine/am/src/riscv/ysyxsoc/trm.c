@@ -15,6 +15,7 @@ void bootloader() {
 }
 // *******************************************
 
+
 // ****************** uart *******************
 #define UART_BASE       0x10000000L
 #define TX_REG          (UART_BASE + 0x0)
@@ -34,6 +35,7 @@ __attribute__((noinline)) void uart_init() {
 }
 
 void putch(char ch) {
+    // Round Robin
     while((inb(LSR) & 0x20) == 0x20){
         ;
     }
