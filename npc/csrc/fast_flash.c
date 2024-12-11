@@ -6,6 +6,7 @@ void init_fast_flash() {
     paddr_t i = FLASH_LEFT;
     while (i <= FLASH_RIGHT) {
         memset(flash_mem + i - FLASH_BASE, i, 1);
+        i++;
     }
     Log("flash(simulate) memory area [" FMT_PADDR ", " FMT_PADDR "]", FLASH_LEFT, FLASH_RIGHT);
 }
