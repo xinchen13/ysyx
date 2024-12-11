@@ -25,9 +25,7 @@ void init_mem();
 // DPI-C
 extern "C" int dpic_pmem_read(int raddr);
 extern "C" void dpic_pmem_write(int waddr, int wdata, char wmask);
-extern "C" void uart_out(int wdata);
 
-extern "C" void flash_read(int32_t addr, int32_t *data);
 extern "C" void mrom_read(int32_t addr, int32_t *data);
 
 #endif

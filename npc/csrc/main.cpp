@@ -1,5 +1,6 @@
 #include "common.h"
 #include "sdb.h"
+#include "fast_flash.h"
 
 FILE *log_fp = NULL;
 npcState npc_state;
@@ -22,6 +23,7 @@ int main(int argc, char** argv) {
 
     // ----------------------- initialization ---------------------------------
     init_monitor(argc, argv);
+    init_fast_flash();           // for simulation
 
 
     // ------------------- drive the DUT and monitor --------------------------
