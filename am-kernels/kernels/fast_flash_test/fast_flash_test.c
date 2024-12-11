@@ -13,6 +13,9 @@ int main(const char *args) {
   // }
   uint8_t init_data = inb(0x30000000);
   putch(init_data);
+  putch(init_data);
+  putch(init_data);
+  putch(init_data);
   
   return 0;
 }
