@@ -1,6 +1,8 @@
 #include <am.h>
 #include <klib-macros.h>
 
+static inline uint8_t inb(uintptr_t addr) { return *(volatile uint8_t  *)addr; }
+
 int main(const char *args) {
   // const char *fmt =
   //   "Hello, AbstractMachine!\n"
@@ -9,5 +11,8 @@ int main(const char *args) {
   // for (const char *p = fmt; *p; p++) {
   //   (*p == '%') ? putstr(args) : putch(*p);
   // }
-  return 1;
+  uint8_t init_data = inb(0x30000000);
+  putch(init_data);
+  
+  return 0;
 }

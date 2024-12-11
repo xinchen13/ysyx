@@ -5,7 +5,7 @@ static uint8_t flash_mem[FLASH_MSIZE] = {};
 void init_fast_flash() {
     paddr_t i = FLASH_LEFT;
     while (i <= FLASH_RIGHT) {
-        memset(flash_mem + i - FLASH_BASE, i, 1);
+        memset(flash_mem + i - FLASH_BASE, 0xff, 1);
         i++;
     }
     Log("flash(simulation) memory area [" FMT_PADDR ", " FMT_PADDR "]", FLASH_LEFT, FLASH_RIGHT);
