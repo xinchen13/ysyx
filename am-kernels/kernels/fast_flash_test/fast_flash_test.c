@@ -9,5 +9,5 @@ int main(const char *args) {
   // for (const char *p = fmt; *p; p++) {
   //   (*p == '%') ? putstr(args) : putch(*p);
   // }
-  return 0;
+  return 1;
 }
