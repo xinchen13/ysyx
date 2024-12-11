@@ -8,7 +8,7 @@ void init_fast_flash() {
         memset(flash_mem + i - FLASH_BASE, i, 1);
         i++;
     }
-    Log("flash(simulate) memory area [" FMT_PADDR ", " FMT_PADDR "]", FLASH_LEFT, FLASH_RIGHT);
+    Log("flash(simulation) memory area [" FMT_PADDR ", " FMT_PADDR "]", FLASH_LEFT, FLASH_RIGHT);
 }
 
 void flash_read(int32_t addr, int32_t *data) { 
