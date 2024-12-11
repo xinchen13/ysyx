@@ -30,6 +30,7 @@ __attribute__((noinline)) void uart_init() {
     outb(LCR, 0x80);        // DLAB = 1
     outb(DLH, 0x00);        // MSB first
     outb(DLL, 0x01);        // LSB next
+    outb(LSR, 0x01);        // test
     outb(LCR, 0x03);        // reset value
 }
 
