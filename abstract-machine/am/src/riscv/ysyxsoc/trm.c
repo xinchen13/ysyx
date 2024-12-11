@@ -19,6 +19,7 @@ void bootloader() {
 #define UART_BASE       0x10000000L
 #define TX_REG          (UART_BASE + 0x0)
 #define LCR             (UART_BASE + 0x3)
+#define FCR             (UART_BASE + 0x2)
 #define LSR             (UART_BASE + 0x5)
 #define DLL             (UART_BASE + 0x0)
 #define DLH             (UART_BASE + 0x1)
@@ -29,6 +30,7 @@ __attribute__((noinline)) void uart_init() {
     outb(LCR, 0x80);        // DLAB = 1
     outb(DLH, 0x00);        // MSB first
     outb(DLL, 0x01);        // LSB next
+    outb(FCR, 0xc4);
     outb(LCR, 0x03);        // reset value
 }
 
