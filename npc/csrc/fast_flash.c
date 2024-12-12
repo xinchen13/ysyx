@@ -1,19 +1,22 @@
 #include "fast_flash.h"
 
-static uint8_t flash_mem[FLASH_MSIZE] = {};
+static uint8_t flash_mem[FLASH_MSIZE];
 
 void init_fast_flash() {
-    paddr_t i = FLASH_LEFT;
-    while (i <= FLASH_RIGHT) {
-        memset(flash_mem + i - FLASH_BASE, 0xff, 1);
-        i++;
+    uint8_t* addr_ptr = flash_mem;
+    uint8_t  wdata = 0x30;
+    while (addr_ptr < flash_mem + FLASH_MSIZE) {
+        *addr_ptr = wdata;
+        addr_ptr++;
+        wdata = (wdata == 0x33) ? 0x30 : wdata++;
     }
+    // memset(flash_mem, rand(), FLASH_MSIZE);
     Log("flash(simulation) memory area [" FMT_PADDR ", " FMT_PADDR "]", FLASH_LEFT, FLASH_RIGHT);
 }
 
 void flash_read(int32_t addr, int32_t *data) { 
     // assert(0); 
-    uint8_t* flash_addr = flash_mem + addr - FLASH_BASE;
-    *data = *(uint8_t  *)flash_addr;
+    uint8_t flash_addr_offset = addr - FLASH_BASE;
+    *data = *(int32_t*)(flash_mem + flash_addr_offset);
 }
 

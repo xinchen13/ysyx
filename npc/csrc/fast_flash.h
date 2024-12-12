@@ -3,7 +3,7 @@
 
 #include "common.h"
 
-#define FLASH_MSIZE 0xfffffff
+#define FLASH_MSIZE 0x10000000
 #define FLASH_BASE  0x30000000
 
 #define FLASH_LEFT  ((paddr_t)FLASH_BASE)
