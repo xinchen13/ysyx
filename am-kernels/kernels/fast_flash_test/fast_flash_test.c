@@ -12,6 +12,10 @@ int main(const char *args) {
 
   uint32_t init_data[4];
   init_data[0] = inw(0x30000004);
+  init_data[1] = inw(0x30000004);
+  init_data[2] = inw(0x30000004);
+  init_data[3] = inw(0x30000004);
+  init_data[4] = inw(0x30000004);
 
 
   putch(init_data[0]);
