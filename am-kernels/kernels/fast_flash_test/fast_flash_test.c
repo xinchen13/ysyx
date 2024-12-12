@@ -16,6 +16,7 @@ int main(const char *args) {
   init_data[2] = inw(0x30000004);
   init_data[3] = inw(0x30000004);
   init_data[4] = inw(0x30000004);
+  init_data[5] = inw(0x30000004);
 
 
   putch(init_data[0]);
