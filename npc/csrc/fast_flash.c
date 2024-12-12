@@ -5,7 +5,7 @@ static uint8_t flash_mem[FLASH_MSIZE];
 void init_fast_flash() {
     uint8_t* addr_ptr = flash_mem;
     while (addr_ptr < flash_mem + FLASH_MSIZE) {
-        *addr_ptr = 0xff;
+        *addr_ptr = 0x60;
         addr_ptr++;
     }
     // memset(flash_mem, rand(), FLASH_MSIZE);
