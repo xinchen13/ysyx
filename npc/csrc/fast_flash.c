@@ -1,6 +1,6 @@
 #include "fast_flash.h"
 
-static uint8_t flash_mem[FLASH_MSIZE] = {};
+static uint8_t flash_mem[FLASH_MSIZE];
 
 void init_fast_flash() {
     uint8_t* addr_ptr = flash_mem;
