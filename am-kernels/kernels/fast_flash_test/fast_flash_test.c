@@ -16,8 +16,8 @@ int main(const char *args) {
 
   putch(init_data[0]);
   putch(init_data[0]>>8);
-  putch(init_data[0]>>8);
-  putch(init_data[0]>>8);
+  putch(init_data[0]>>16);
+  putch(init_data[0]>>24);
   putch('\n');
   
   return 0;
