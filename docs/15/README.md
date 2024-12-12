@@ -243,6 +243,8 @@ ysyxSoC包含了flash控制器, 并且将flash存储空间映射到CPU的地址�
 - 正确实现`flash_read()`函数, 使其根据参数addr返回flash中相应位置的内容
 - 在am-kernels中编写一个简单的测试程序, 从flash存储空间中读出内容, 并检查是否与仿真环境初始化时设置的内容一致
 
+#### 通过SPI总线协议访问flash颗粒
+
 
 
 
