@@ -14,7 +14,7 @@ void init_fast_flash() {
 
 void flash_read(int32_t addr, int32_t *data) { 
     // assert(0); 
-    uint8_t* flash_addr = flash_mem + addr - FLASH_BASE;
-    *data = *flash_addr;
+    uint8_t flash_addr_offset = addr - FLASH_BASE;
+    *data = flash_mem[flash_addr_offset];
 }
 
