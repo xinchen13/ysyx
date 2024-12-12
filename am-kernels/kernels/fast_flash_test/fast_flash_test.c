@@ -11,7 +11,7 @@ int main(const char *args) {
   // for (const char *p = fmt; *p; p++) {
   //   (*p == '%') ? putstr(args) : putch(*p);
   // }
-  uint8_t init_data = inb(0x30000000);
+  uint8_t init_data = inb(0x3000000f);
   putch('\n');
   putch(init_data);
   putch('\n');
