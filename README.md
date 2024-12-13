@@ -2,12 +2,11 @@
 
 ## useful links
 - [lecture notes](https://ysyx.oscc.cc/docs/)
-- [learning record](https://docs.qq.com/sheet/DZXVEQ0thWGZOaU9t?tab=j1z835)
-- [notes](./docs/notes.md)
+- [my notes](./docs/notes.md)
 - [references](https://drive.google.com/drive/folders/1Erw4Mbr6GKMMP08dxjcXhSXgXAQgfCtz)
 
 ## projects
-- [ysyx](https://github.com/xinchen13/ysyx.git)
+- [ysyx (this repo)](https://github.com/xinchen13/ysyx.git)
 - [RT-Thread compatible with AM](https://github.com/xinchen13/rt-thread-am.git)
 
 ## 『一生一芯』预学习
