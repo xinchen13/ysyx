@@ -1,22 +1,15 @@
 # 一些笔记
 
-## RV32e架构设计参考
-1. nju-projectn: https://nju-projectn.github.io/dlco-lecture-note/exp/11.html
-2. tinyriscv: https://gitee.com/liangkangnan/tinyriscv
-3. 计算机组成与设计——硬件/软件接口
-4. RISC-V开放架构设计之道-v1.0.0
-5. riscv-spec-20191213
-6. riscv-privileged-20211203
-7. riscv-card
-8. riscv abi: https://github.com/riscv-non-isa/riscv-elf-psabi-doc.git
+## optional
+- nemu 声卡
+- 优化 LiteNES
+- nemu 涉及 csrr 指令的 qemu difftest 会产生错误，原因未知
+- 修复 RT-Thread 运行时不输出最后的命令提示符的问题
+- 让核支持完整的 AXI4 协议（当前部分信号直接赋默认值了）
+- 替 AXIM 为自研的 AXIM（不是）
+- 为 ysyxSOC 重新添加 DiffTest
+- 让 NPC 抛出 Access Fault 异常
 
-# rtl规范
-在模块名前添加学号前缀; 如果使用Verilog, 需要在宏定义的标识符前添加学号前缀, 后续需要修改的地方:
-- v与sv文件中 module 名
-- 文件名(.v与.sv文件)
-- $NPC_HOME/Makefile 中的 TOPNAME 等
-- verilator 仿真 c++ 文件
-
-# emacs verilog-mode
+## emacs verilog-mode
 - 生成: `emacs --batch ${FILES} -f verilog-batch-auto`
 - 删除: `emacs --batch ${FILES} -f verilog-batch-delete-auto`
