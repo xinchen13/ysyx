@@ -20,7 +20,7 @@ static inline void outl(uintptr_t addr, uint32_t data) { *(volatile uint32_t *)a
 
 int main(const char *args) {
     // tx data
-    outb(SPI_TX_REG0, 0x30);
+    outb(SPI_TX_REG0, 0x31);
 
     // divider
     outw(SPI_DIVIDER, 0xffff);
@@ -37,6 +37,7 @@ int main(const char *args) {
 
     putch('\n');
     putch(inb(SPI_RX_REG0+1));
+    putch('\n');
     putch('\n');
     return 0;
 }
