@@ -23,7 +23,7 @@ int main(const char *args) {
     outb(SPI_TX_REG0, 0x1f);
 
     // divider
-    outw(SPI_DIVIDER, 0xffff);\
+    outw(SPI_DIVIDER, 0xffff);
 
     // set SS
     outb(SPI_SS, BITREV_NUM);
