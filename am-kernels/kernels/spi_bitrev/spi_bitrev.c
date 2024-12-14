@@ -32,7 +32,7 @@ int main(const char *args) {
     outw(SPI_CTRL, BITREV_CTRL);
 
     while ((inw(SPI_CTRL) & 0x0100) == 0x0100) {
-        putch('\n');
+        ;
     }
 
     putch('\n');
