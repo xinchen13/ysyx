@@ -9,7 +9,6 @@ module bitrev (
     localparam TX       = 3'b010;
 
     reg [7:0] rx_reg;
-    reg [7:0] tx_reg;
     reg [2:0] state;
     reg [2:0] bit_cnt;
 
@@ -17,16 +16,55 @@ module bitrev (
     initial begin
         state = IDLE;
         rx_reg = 'b0;
-        tx_reg = 'b0;
         bit_cnt = 'b0;
         miso = 'b1;
     end
 
     always @ (posedge sck) begin
         if (!ss) begin
+            case (state)
+                IDLE: begin
+                    state <= RX;
+                    bit_cnt <= 3'd1;
+                    rx_reg <= {rx_reg[6:0], mosi};
+                    miso <= 1'b1;
+                end
+                RX: begin
+                    rx_reg <= {rx_reg[6:0], mosi};
+                    if (bit_cnt == 3'd7) begin
+                        state <= TX;
+                        miso <= rx_reg[bit_cnt];
+                        bit_cnt <= bit_cnt - 1'b1;
+                    end
+                    else begin
+                        bit_cnt <= bit_cnt + 1'b1;
+                        miso <= 1'b1;
+                    end
+                end
+                TX: begin
+                    miso <= rx_reg[bit_cnt];
+                    if (bit_cnt == 3'd0) begin
+                        state <= IDLE;
+                    end
+                    else begin
+                        bit_cnt <= bit_cnt - 1'b1;
+                    end
+                end
+                default: begin
+                    miso <= 1'b1;
+                    state <= IDLE;
+                    rx_reg <= 'b0;
+                    bit_cnt <= 'b0;
+                    miso <= 'b1;
+                end
+            endcase
         end
         else begin
             miso <= 1'b1;
+            state <= IDLE;
+            rx_reg <= 'b0;
+            bit_cnt <= 'b0;
+            miso <= 'b1;
         end
     end
 
