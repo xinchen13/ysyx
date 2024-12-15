@@ -20,7 +20,7 @@ module bitrev (
         miso = 'b1;
     end
 
-    always @ (posedge sck) begin
+    always @ (posedge sck or negedge ss) begin
         if (!ss) begin
             case (state)
                 IDLE: begin
