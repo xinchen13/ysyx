@@ -25,7 +25,7 @@ module bitrev (
             case (state)
                 IDLE: begin
                     state <= RX;
-                    bit_cnt <= 3'd1;
+                    bit_cnt <= 3'd0;
                     rx_reg <= {rx_reg[6:0], mosi};
                     miso <= 1'b1;
                 end
