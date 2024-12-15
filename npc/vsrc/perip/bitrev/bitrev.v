@@ -26,15 +26,15 @@ module bitrev (
                 IDLE: begin
                     state <= RX;
                     bit_cnt <= 3'd1;
-                    rx_reg <= {mosi, rx_reg[7:1]};
+                    rx_reg <= {rx_reg[6:0], mosi};
                     miso <= 1'b1;
                 end
                 RX: begin
-                    rx_reg <= {mosi, rx_reg[7:1]};
-                    if (bit_cnt == 3'd0) begin
+                    rx_reg <= {rx_reg[6:0], mosi};
+                    if (bit_cnt == 3'd7) begin
                         state <= TX;
-                        miso <= mosi;
-                        bit_cnt <= 3'd6;
+                        miso <= rx_reg[bit_cnt];
+                        bit_cnt <= bit_cnt - 1'b1;
                     end
                     else begin
                         bit_cnt <= bit_cnt + 1'b1;
