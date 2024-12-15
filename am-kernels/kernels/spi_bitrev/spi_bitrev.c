@@ -36,7 +36,7 @@ int main(const char *args) {
     }
 
     putch('\n');
-    putch(inb(SPI_RX_REG0+2));
+    putch(inb(SPI_RX_REG0));
     putch('\n');
     putch('\n');
     return 0;
