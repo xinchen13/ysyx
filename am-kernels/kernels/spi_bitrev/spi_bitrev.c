@@ -15,7 +15,7 @@ static inline void outl(uintptr_t addr, uint32_t data) { *(volatile uint32_t *)a
 #define SPI_CTRL        (SPI_MASTER_BASE + 0x10)
 #define SPI_SS          (SPI_MASTER_BASE + 0x18)
 
-#define BITREV_NUM      0x40
+#define BITREV_NUM      0x80
 #define BITREV_CTRL     0b00100100010000
 
 int main(const char *args) {
@@ -36,7 +36,7 @@ int main(const char *args) {
     }
 
     putch('\n');
-    putch(inb(SPI_RX_REG0+1));
+    putch(inw(SPI_RX_REG0)>>8);
     putch('\n');
     putch('\n');
     return 0;
