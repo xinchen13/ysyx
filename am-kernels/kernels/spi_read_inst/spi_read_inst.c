@@ -41,8 +41,9 @@ uint32_t flash_read(uint32_t addr) {
 
 void jump_to_address() {
     asm volatile (
-        "li x1, 0x0f000400;"
-        "jr x1;"
+        "lui t1, 0x0f000;"
+        "addi t1, t1, 0x400;"
+        "jr t1;"
     );
 }
 
@@ -55,6 +56,7 @@ int main(const char *args) {
     outl(0x0f000408, flash_read(0x30000008));
     putstr("Reading 4th ins...\n");
     outl(0x0f00040c, flash_read(0x3000000c));
+    putstr("Reading 4th ins...\n");
     jump_to_address();
 
     return 0;
