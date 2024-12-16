@@ -18,7 +18,7 @@ static uint8_t flash_mem[FLASH_MSIZE];
 
 void init_fast_flash() {
     uint8_t* addr_ptr = flash_mem;
-    *(uint32_t *)(addr_ptr) = 0xffffffff;
+    *(uint32_t *)(addr_ptr) = 0x73737373;
     *(uint32_t *)(addr_ptr+0x4) = 0x04100713;
     *(uint32_t *)(addr_ptr+0x8) = 0x00e78023;
     *(uint32_t *)(addr_ptr+0xc) = 0x0000006f;
