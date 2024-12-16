@@ -31,6 +31,7 @@ int main(const char *args) {
     // set CTRL
     outl(SPI_CTRL, BITREV_CTRL);
 
+    // polling
     while ((inl(SPI_CTRL) & 0x00000100) == 0x00000100) {
         ;
     }
@@ -38,6 +39,14 @@ int main(const char *args) {
     putch('\n');
     putch(inl(SPI_RX_REG0)>>8);
     putch('\n');
+
+    outl(SPI_TX_REG0, 0x00000002);        // @: 0x40, bitrev: 0b00000010 = 0x00000002
+    outl(SPI_CTRL, BITREV_CTRL);
+    while ((inl(SPI_CTRL) & 0x00000100) == 0x00000100) {
+        ;
+    }
+    putch('\n');
+    putch(inl(SPI_RX_REG0)>>8);
     putch('\n');
     return 0;
 }

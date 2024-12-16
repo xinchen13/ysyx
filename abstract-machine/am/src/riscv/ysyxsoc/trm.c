@@ -35,7 +35,7 @@ __attribute__((noinline)) void uart_init() {
 }
 
 void putch(char ch) {
-    // Round Robin
+    // polling
     while((inb(LSR) & 0x20) == 0x20){
         ;
     }

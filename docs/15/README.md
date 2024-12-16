@@ -291,10 +291,10 @@ MISO                                                                            
 - 设置SS寄存器, 选择bitrev模块作为slave, ysyxSoC已经将bitrev作为一个SPI slave与SPI master相连, 其slave编号为7
 - 设置控制寄存器(每一个字段):
     - `CHAR_LEN` : 由于输入数据和输出数据的长度均为8位, 因此传输长度应为16位
-    - `Rx_NEG`, `Tx_NEG`和`LSB` : 由于bitrev只是一个测试模块, 并不参与最终的流片, 因此我们不规定bitrev模块的这些细节, 具体交给你来约定, 你需要在选择一种约定后, 按照这种约定来实现bitrev模块, 设置SPI的控制寄存器并编写软件, 使得三者可以按照相同的约定来进行通信
+    - `Rx_NEG`, `Tx_NEG`和`LSB` : 都采用上升沿采样, 设置为先传输也先接收LSB, 因此按手册三位设置为 3'b100
     - `IE` : 目前不使用中断功能, 设置为0
     - `ASS` : 设置为0, ss信号由ss寄存器生成
 - 轮询控制寄存器中的完成标志, 直到SPI master完成数据传输
-- 从SPI master的RX寄存器中读出slave返回的数据
+- 从SPI master的RX寄存器中读出slave返回的数据 (注意在16位的高8位)
 
 
