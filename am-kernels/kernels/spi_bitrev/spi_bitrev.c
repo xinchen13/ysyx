@@ -35,6 +35,8 @@ int main(const char *args) {
         ;
     }
 
+    outl(SPI_SS, 0x00000000);
+
     putch('\n');
     putch(inl(SPI_RX_REG0)>>9);
     putch('\n');
