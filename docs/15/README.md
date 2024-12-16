@@ -314,5 +314,16 @@ MISO                                                                            
 - 从SPI master的RX寄存器中读出slave返回的数据，返回的数据位于`RX0`寄存器
 - 实现`flash_read()`后, 通过该函数从flash存储空间中读出内容, 检查与仿真环境初始化时设置的内容一致
 
+#### 从flash中加载程序并执行
+- 将上文提到的`char-test`程序存放到flash颗粒中: 使用`objdump`得到机器码，在仿真环境中写入flash颗粒
+- 在 [spi_read_inst.c](../../am-kernels/kernels/spi_read_inst/spi_read_inst.c) 中通过`flash_read()`将char-test从flash读入到SRAM的指定地址中, 然后使用内联汇编跳转到该地址执行`char-test`
+- spi的除数寄存器设置为 `0x00000004`，大幅提高传输效率
+- spi传输完成后需要把 ss 寄存器复位，否则不能正确进行下次传输
+- 实现后 `make ARCH=riscv32e-ysyxsoc run` 正确执行 `char-tests`
 
+### 从flash中取指
+以上尝试通过软件函数来实现硬件上的取指操作, 这并不合理, 因为取指操作是一个硬件层次的行为. 因此, 我们应该尝试在硬件层次实现"从flash中取指"的功能
 
+要在硬件层次实现`flash_read()`的功能, 也就是要按照一定的顺序在硬件上访问SPI master的寄存器: 那就是用状态机实现`flash_read()`的功能! 与上文从flash中加载程序并执行的方式不同, 这种从flash颗粒中取指的方式并不需要在执行程序之前将程序读入到内存(对应上文的SRAM)中, 因此也称"就地执行"(XIP, eXecute In Place)方式
+
+为了区分正常访问SPI master的情况, 我们需要将通过XIP方式访问 flash 的功能映射到与SPI master设备寄存器不同的地址空间. 事实上, 我们可以对之前访问的flash存储空间`0x3000_0000~0x3fff_ffff`稍作调整, 将其定义为通过XIP方式访问的flash存储空间. ysyxSoC中的Xbar已经将SPI master的地址空间`0x1000_1000~0x1000_1fff`和 flash 存储空间`0x3000_0000~0x3fff_ffff`都映射到 ysyxSoC/perip/spi/rtl/spi_top_apb.v模块中的APB端口, 也即, spi_top_apb.v模块中的APB端口能接收上述两段地址空间的请求, 你可以通过检查APB的目标地址区分它们

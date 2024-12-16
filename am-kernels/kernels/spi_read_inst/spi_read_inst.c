@@ -21,9 +21,11 @@ static inline void outl(uintptr_t addr, uint32_t data) { *(volatile uint32_t *)a
 #define FLASH_CTRL      0x00000140      // 0b00000101000000
 
 uint32_t flash_read(uint32_t addr) {
+    uint32_t read_data;
+
     uint32_t tx_data = 0x03000000 | ((addr & 0x00ffffff));
     outl(SPI_TX_REG1, tx_data);
-    outl(SPI_TX_REG0, 0x0000000);
+    outl(SPI_TX_REG0, 0x00000000);
 
     // divider
     outl(SPI_DIVIDER, 0x00000004);
@@ -35,20 +37,48 @@ uint32_t flash_read(uint32_t addr) {
     while ((inl(SPI_CTRL) & 0x00000100) == 0x00000100) {
         ;
     }
-    return inl(SPI_RX_REG0);
+    // deassert ss
+    outl(SPI_SS, 0x0);
+    read_data = inl(SPI_RX_REG0);
+    return read_data;
 
 }
 
+void jump_to_address() {
+    asm volatile (
+        "lui t2, 0x0f000;"
+        "addi t2, t2, 0x400;"
+        "jr t2;"
+    );
+}
+
 int main(const char *args) {
-    uint32_t init_data;
-    putstr("Start - reading falsh\n");
-    init_data = flash_read(0x30000000);
-    putstr("End - reading falsh\n");
-    putch(init_data);
-    putch(init_data>>8);
-    putch(init_data>>16);
-    putch(init_data>>24);
-    putch('\n');
+    putstr("Reading 1st ins...\n");
+    outl(0x0f000400, flash_read(0x30000000));
+    if (inl(0x0f000400) != 0x100007b7) {
+        return 1;
+    }
+
+    putstr("Reading 2nd ins...\n");
+    outl(0x0f000404, flash_read(0x30000004));
+    if (inl(0x0f000404) != 0x04100713) {
+        return 1;
+    }
+
+    putstr("Reading 3rd ins...\n");
+    outl(0x0f000408, flash_read(0x30000008));
+    if (inl(0x0f000408) != 0x00e78023) {
+        return 1;
+    }
+
+    putstr("Reading 4th ins...\n");
+    outl(0x0f00040c, flash_read(0x3000000c));
+    if (inl(0x0f00040c) != 0x0000006f) {
+        return 1;
+    }
+
+    putstr("Let's goooo!\n");
+    jump_to_address();
 
     return 0;
 }
