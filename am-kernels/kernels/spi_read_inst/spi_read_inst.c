@@ -56,7 +56,7 @@ int main(const char *args) {
     outl(0x0f000408, flash_read(0x30000008));
     putstr("Reading 4th ins...\n");
     outl(0x0f00040c, flash_read(0x3000000c));
-    putstr("Reading 4th ins...\n");
+    putstr("Let's goooo\n");
     jump_to_address();
 
     return 0;
