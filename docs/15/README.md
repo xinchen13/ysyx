@@ -301,7 +301,21 @@ MISO                                                                            
 #### 通过SPI总线从flash中读出数据
 编写AM程序 [spi_flash_test.c](../../am-kernels/kernels/spi_flash_test/spi_flash_test.c), 在其中实现一个原型为 `uint32_t flash_read(uint32_t addr)` 的函数, 注意这个`flash_read()`函数和上文中提到的同名的DPI-C接口函数不同. 此处的`flash_read()`函数通过驱动SPI master, 读出flash颗粒中起始地址为addr的32位内容. 这个过程和上文的bitrev例子类似:
 
-- 
+- 将需要发送给flash颗粒的命令设置到SPI master的TX寄存器中, 用到了`TX0`和`TX1`两个寄存器, 先发送`0x03`的读命令，再发送24位地址，共32位，注意先发送MSB
+- 设置除数寄存器
+- 设置SS寄存器, 选择flash颗粒作为slave, 其slave编号为0
+- 设置控制寄存器:
+    - `CHAR_LEN` : 由于读命令的长度共32位, 且需要读出32位数据, 因此传输长度应为64位
+    - `Rx_NEG`和`Tx_NEG` : 默认值
+    - `LSB` : rtfsc，观察flash代码, 需要设置为1
+    - `IE` : 目前我们不使用中断功能
+    - `ASS` : 设置为0
+- 轮询控制寄存器中的完成标志, 直到SPI master完成数据传输
+- 从SPI master的RX寄存器中读出slave返回的数据，返回的数据位于`RX0`寄存器
+- 实现`flash_read()`后, 通过该函数从flash存储空间中读出内容, 检查与仿真环境初始化时设置的内容一致
 
+#### 从flash中加载程序并执行
+
+尝试将上文提到的char-test程序存放到flash颗粒中, 编写测试程序, 通过flash_read()将char-test从flash读入到SRAM的某个地址中, 然后跳转到该地址执行char-test.
 
 
