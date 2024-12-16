@@ -21,7 +21,7 @@ static inline void outl(uintptr_t addr, uint32_t data) { *(volatile uint32_t *)a
 
 uint32_t flash_read(uint32_t addr) {
     // tx data
-    uint32_t tx_data = 0x00000003 | (addr << 8);
+    uint32_t tx_data = 0x00000003 ;
     outl(SPI_TX_REG0, tx_data);
 
     // divider
