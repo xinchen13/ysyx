@@ -296,5 +296,12 @@ MISO                                                                            
     - `ASS` : 设置为0, ss信号由ss寄存器生成
 - 轮询控制寄存器中的完成标志, 直到SPI master完成数据传输
 - 从SPI master的RX寄存器中读出slave返回的数据 (注意在16位的高8位)
+- 发送倒序的 `s` 和 `@` 字符, 返回之后使用 uart 输出对比
+
+#### 通过SPI总线从flash中读出数据
+编写AM程序 [spi_flash_test.c](../../am-kernels/kernels/spi_flash_test/spi_flash_test.c), 在其中实现一个原型为 `uint32_t flash_read(uint32_t addr)` 的函数, 注意这个`flash_read()`函数和上文中提到的同名的DPI-C接口函数不同. 此处的`flash_read()`函数通过驱动SPI master, 读出flash颗粒中起始地址为addr的32位内容. 这个过程和上文的bitrev例子类似:
+
+- 
+
 
 
