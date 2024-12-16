@@ -39,16 +39,18 @@ uint32_t flash_read(uint32_t addr) {
 
 }
 
+void jump_to_address() {
+    __asm__ (
+        "jal x0, 0x0f00040c"
+    );
+}
+
 int main(const char *args) {
-    uint32_t init_data;
-    putstr("Start - reading falsh\n");
-    init_data = flash_read(0x30000000);
-    putstr("End - reading falsh\n");
-    putch(init_data);
-    putch(init_data>>8);
-    putch(init_data>>16);
-    putch(init_data>>24);
-    putch('\n');
+    outl(0x0f000400, flash_read(0x30000000));
+    outl(0x0f000404, flash_read(0x30000004));
+    outl(0x0f000408, flash_read(0x30000008));
+    outl(0x0f00040c, flash_read(0x3000000c));
+    jump_to_address();
 
     return 0;
 }
