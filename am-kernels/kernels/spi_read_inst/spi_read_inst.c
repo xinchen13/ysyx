@@ -40,8 +40,9 @@ uint32_t flash_read(uint32_t addr) {
 }
 
 void jump_to_address() {
-    __asm__ (
-        "jal x0, 0x0f00040c"
+    asm volatile (
+        "li x1, 0x0f000400;"
+        "jr x1;"
     );
 }
 
