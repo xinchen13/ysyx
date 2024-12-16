@@ -23,10 +23,10 @@ static inline void outl(uintptr_t addr, uint32_t data) { *(volatile uint32_t *)a
 uint32_t flash_read(uint32_t addr) {
     uint32_t tx_data = 0x03000000 | ((addr & 0x00ffffff));
     outl(SPI_TX_REG1, tx_data);
-    outl(SPI_TX_REG0, 0x00000000);
+    outl(SPI_TX_REG0, 0x0000000);
 
     // divider
-    outl(SPI_DIVIDER, 0x00000000);
+    outl(SPI_DIVIDER, 0x00000001);
     // set SS
     outl(SPI_SS, FLASH_NUM);
     // set CTRL
