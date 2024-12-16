@@ -16,7 +16,7 @@ static inline void outl(uintptr_t addr, uint32_t data) { *(volatile uint32_t *)a
 #define SPI_SS          (SPI_MASTER_BASE + 0x18)
 
 #define BITREV_NUM      0x00000080
-#define BITREV_CTRL     0x00000910      // 0b00100100010000
+#define BITREV_CTRL     0x00002910      // 0b00100100010000
 
 int main(const char *args) {
     // tx data
@@ -34,8 +34,6 @@ int main(const char *args) {
     while ((inl(SPI_CTRL) & 0x00000100) == 0x00000100) {
         ;
     }
-
-    outl(SPI_SS, 0x00000000);
 
     putch('\n');
     putch(inl(SPI_RX_REG0)>>9);
