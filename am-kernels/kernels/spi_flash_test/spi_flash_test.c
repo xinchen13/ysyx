@@ -10,6 +10,7 @@ static inline void outl(uintptr_t addr, uint32_t data) { *(volatile uint32_t *)a
 
 #define SPI_MASTER_BASE 0x10001000
 #define SPI_TX_REG0     (SPI_MASTER_BASE + 0x00)
+#define SPI_TX_REG1     (SPI_MASTER_BASE + 0x04)
 #define SPI_RX_REG0     (SPI_MASTER_BASE + 0x00)
 #define SPI_RX_REG1     (SPI_MASTER_BASE + 0x04)
 #define SPI_DIVIDER     (SPI_MASTER_BASE + 0x14)
@@ -17,11 +18,11 @@ static inline void outl(uintptr_t addr, uint32_t data) { *(volatile uint32_t *)a
 #define SPI_SS          (SPI_MASTER_BASE + 0x18)
 
 #define FLASH_NUM       0x00000001
-#define FLASH_CTRL      0x00000140      // 0b00000100010000
+#define FLASH_CTRL      0x00000140      // 0b00000101000000
 
 uint32_t flash_read(uint32_t addr) {
-    // tx data
     // uint32_t tx_data = 0x03000000 | ((addr & 0x00ffffff));
+    outl(SPI_TX_REG1, 0x03000000);
     outl(SPI_TX_REG0, 0x00000003);
 
     // divider
