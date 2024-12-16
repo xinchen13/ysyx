@@ -36,7 +36,7 @@ uint32_t flash_read(uint32_t addr) {
         ;
     }
 
-    return inl(SPI_RX_REG1);
+    return inl(SPI_RX_REG0);
 
 }
 
