@@ -47,9 +47,13 @@ void jump_to_address() {
 }
 
 int main(const char *args) {
+    putstr("Reading 1st ins...\n");
     outl(0x0f000400, flash_read(0x30000000));
+    putstr("Reading 2nd ins...\n");
     outl(0x0f000404, flash_read(0x30000004));
+    putstr("Reading 3rd ins...\n");
     outl(0x0f000408, flash_read(0x30000008));
+    putstr("Reading 4th ins...\n");
     outl(0x0f00040c, flash_read(0x3000000c));
     jump_to_address();
 
