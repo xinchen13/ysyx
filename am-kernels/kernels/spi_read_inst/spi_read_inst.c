@@ -56,19 +56,19 @@ int main(const char *args) {
 
     putstr("Reading 2nd ins...\n");
     outl(0x0f000404, flash_read(0x30000004));
-    if (inl(0x30000000) != 0x04100713) {
+    if (inl(0x30000004) != 0x04100713) {
         return 1;
     }
 
     putstr("Reading 3rd ins...\n");
     outl(0x0f000408, flash_read(0x30000008));
-    if (inl(0x30000000) != 0x00e78023) {
+    if (inl(0x30000008) != 0x00e78023) {
         return 1;
     }
 
     putstr("Reading 4th ins...\n");
     outl(0x0f00040c, flash_read(0x3000000c));
-    if (inl(0x30000000) != 0x0000006f) {
+    if (inl(0x3000000c) != 0x0000006f) {
         return 1;
     }
 
