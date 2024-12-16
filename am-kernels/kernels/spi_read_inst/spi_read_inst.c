@@ -37,7 +37,7 @@ uint32_t flash_read(uint32_t addr) {
     while ((inl(SPI_CTRL) & 0x00000100) == 0x00000100) {
         ;
     }
-
+    // deassert ss
     outl(SPI_SS, 0x0);
     read_data = inl(SPI_RX_REG0);
     return read_data;
