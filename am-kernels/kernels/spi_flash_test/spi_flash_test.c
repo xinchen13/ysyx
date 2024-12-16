@@ -35,14 +35,15 @@ uint32_t flash_read(uint32_t addr) {
     while ((inl(SPI_CTRL) & 0x00000100) == 0x00000100) {
         ;
     }
-
     return inl(SPI_RX_REG0);
 
 }
 
 int main(const char *args) {
     uint32_t init_data;
+    putstr("Start - reading falsh\n");
     init_data = flash_read(0x30000000);
+    putstr("End - reading falsh\n");
     putch(init_data);
     putch(init_data>>8);
     putch(init_data>>16);
