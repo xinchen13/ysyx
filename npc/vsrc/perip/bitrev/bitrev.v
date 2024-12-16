@@ -33,6 +33,8 @@ module bitrev (
                     rx_reg <= {rx_reg[6:0], mosi};
                     if (bit_cnt == 3'd7) begin
                         state <= TX;
+                        miso <= mosi;
+                        bit_cnt <= 3'd6;
                     end
                     else begin
                         bit_cnt <= bit_cnt + 1'b1;
