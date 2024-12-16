@@ -15,28 +15,28 @@ static inline void outl(uintptr_t addr, uint32_t data) { *(volatile uint32_t *)a
 #define SPI_CTRL        (SPI_MASTER_BASE + 0x10)
 #define SPI_SS          (SPI_MASTER_BASE + 0x18)
 
-#define BITREV_NUM      0x80
-#define BITREV_CTRL     0b00100100010000
+#define BITREV_NUM      0x00000080
+#define BITREV_CTRL     0x00000910      // 0b00100100010000
 
 int main(const char *args) {
     // tx data
-    outb(SPI_TX_REG0, 0x31);        // s: 0x73, bitrev: 0b11001110
+    outl(SPI_TX_REG0, 0x00000031);        // s: 0x73, bitrev: 0b11001110
 
     // divider
-    outw(SPI_DIVIDER, 0xffff);
+    outl(SPI_DIVIDER, 0x0000ffff);
 
     // set SS
-    outb(SPI_SS, BITREV_NUM);
+    outl(SPI_SS, BITREV_NUM);
 
     // set CTRL
-    outw(SPI_CTRL, BITREV_CTRL);
+    outl(SPI_CTRL, BITREV_CTRL);
 
-    while ((inw(SPI_CTRL) & 0x0100) == 0x0100) {
+    while ((inl(SPI_CTRL) & 0x00000100) == 0x00000100) {
         ;
     }
 
     putch('\n');
-    putch(inw(SPI_RX_REG0)>>8);
+    putch(inl(SPI_RX_REG0)>>8);
     putch('\n');
     putch('\n');
     return 0;
