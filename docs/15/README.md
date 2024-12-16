@@ -315,7 +315,10 @@ MISO                                                                            
 - 实现`flash_read()`后, 通过该函数从flash存储空间中读出内容, 检查与仿真环境初始化时设置的内容一致
 
 #### 从flash中加载程序并执行
-
-尝试将上文提到的char-test程序存放到flash颗粒中, 编写测试程序, 通过flash_read()将char-test从flash读入到SRAM的某个地址中, 然后跳转到该地址执行char-test.
+- 将上文提到的`char-test`程序存放到flash颗粒中: 使用`objdump`得到机器码，在仿真环境中写入flash颗粒
+- 在 [spi_read_inst.c](../../am-kernels/kernels/spi_read_inst/spi_read_inst.c) 中通过`flash_read()`将char-test从flash读入到SRAM的指定地址中, 然后使用内联汇编跳转到该地址执行`char-test`
+- spi的除数寄存器设置为 `0x00000004`，大幅提高传输效率
+- spi传输完成后需要把 ss 寄存器复位，否则不能正确进行下次传输
+- 实现后正确执行 `char-tests`
 
 
