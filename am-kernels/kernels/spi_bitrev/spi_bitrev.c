@@ -20,7 +20,7 @@ static inline void outl(uintptr_t addr, uint32_t data) { *(volatile uint32_t *)a
 
 int main(const char *args) {
     // tx data
-    outl(SPI_TX_REG0, 0x00000073);        // s: 0x73, bitrev: 0b11001110
+    outl(SPI_TX_REG0, 0x000000ce);        // s: 0x73, bitrev: 0b11001110 = 0x000000ce
 
     // divider
     outl(SPI_DIVIDER, 0x0000ffff);

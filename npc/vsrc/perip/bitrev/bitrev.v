@@ -26,14 +26,14 @@ module bitrev (
                 IDLE: begin
                     state <= RX;
                     bit_cnt <= 3'd0;
-                    rx_reg <= {rx_reg[6:0], mosi};
+                    rx_reg <= {mosi, rx_reg[7:1]};
                     miso <= 1'b1;
                 end
                 RX: begin
-                    rx_reg <= {rx_reg[6:0], mosi};
+                    rx_reg <= {mosi, rx_reg[7:1]};
                     if (bit_cnt == 3'd7) begin
                         state <= TX;
-                        miso <= rx_reg[6];
+                        miso <= mosi;
                         bit_cnt <= 3'd6;
                     end
                     else begin
