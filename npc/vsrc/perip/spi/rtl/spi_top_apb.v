@@ -1,6 +1,7 @@
 // define this macro to enable fast behavior simulation
 // for flash by skipping SPI transfers
 // `define FAST_FLASH
+// `define XIP_FLASH
 
 module spi_top_apb #(
   parameter flash_addr_start = 32'h30000000,
@@ -27,6 +28,7 @@ module spi_top_apb #(
   output                  spi_irq_out
 );
 
+// flash simulation
 `ifdef FAST_FLASH
 
 wire [31:0] data;
@@ -45,6 +47,31 @@ assign spi_irq_out= 1'b0;
 assign in_pslverr = 1'b0;
 assign in_pready  = in_penable && in_psel && !in_pwrite;
 assign in_prdata  = data[31:0];
+
+`elsif XIP_FLASH
+
+reg [2:0] state;
+
+
+spi_top u0_spi_top (
+  .wb_clk_i(clock),
+  .wb_rst_i(reset),
+  .wb_adr_i(xip_paddr[4:0]),
+  .wb_dat_i(xip_pwdata),
+  .wb_dat_o(xip_prdata),
+  .wb_sel_i(xip_pstrb),
+  .wb_we_i (xip_pwrite),
+  .wb_stb_i(xip_psel),
+  .wb_cyc_i(xip_penable),
+  .wb_ack_o(xip_pready),
+  .wb_err_o(xip_pslverr),
+  .wb_int_o(xip_spi_irq_out),
+
+  .ss_pad_o(spi_ss),
+  .sclk_pad_o(spi_sck),
+  .mosi_pad_o(spi_mosi),
+  .miso_pad_i(spi_miso)
+);
 
 `else
 
@@ -68,6 +95,6 @@ spi_top u0_spi_top (
   .miso_pad_i(spi_miso)
 );
 
-`endif // FAST_FLASH
+`endif
 
 endmodule
