@@ -1,7 +1,7 @@
 // define this macro to enable fast behavior simulation
 // for flash by skipping SPI transfers
 // `define FAST_FLASH
-// `define XIP_FLASH
+`define XIP_FLASH
 
 module spi_top_apb #(
   parameter flash_addr_start = 32'h30000000,
@@ -50,22 +50,62 @@ assign in_prdata  = data[31:0];
 
 `elsif XIP_FLASH
 
-reg [2:0] state;
+  localparam IDLE_NORMAL_SPI = 3'b000;
+
+  wire [31:0] to_spi_paddr;
+  wire        to_spi_psel;
+  wire        to_spi_penable;
+  wire [2:0]  to_spi_pprot;
+  wire        to_spi_pwrite;
+  wire [31:0] to_spi_pwdata;
+  wire [3:0]  to_spi_pstrb;
+
+  reg [2:0] state;
+
+  always @ (posedge clock) begin
+    if (reset) begin
+      state <= IDLE_NORMAL_SPI;
+      to_spi_paddr    <= in_paddr;
+      to_spi_psel     <= in_psel;
+      to_spi_penable  <= in_penable;
+      to_spi_pprot    <= in_pprot;
+      to_spi_pwrite   <= in_pwrite;
+      to_spi_pwdata   <= in_pwdata;
+      to_spi_pstrb    <= in_pstrb;
+    end
+    else if (state == IDLE_NORMAL_SPI) begin
+      if (in_paddr[31:28] == 4'h1) begin
+          to_spi_paddr    <= in_paddr;
+          to_spi_psel     <= in_psel;
+          to_spi_penable  <= in_penable;
+          to_spi_pprot    <= in_pprot;
+          to_spi_pwrite   <= in_pwrite;
+          to_spi_pwdata   <= in_pwdata;
+          to_spi_pstrb    <= in_pstrb;
+      end
+      else if (in_paddr[31:28] == 4'h3) begin
+      end
+      else begin
+      end
+
+    end
+    
+  end
 
 
 spi_top u0_spi_top (
   .wb_clk_i(clock),
   .wb_rst_i(reset),
-  .wb_adr_i(xip_paddr[4:0]),
-  .wb_dat_i(xip_pwdata),
-  .wb_dat_o(xip_prdata),
-  .wb_sel_i(xip_pstrb),
-  .wb_we_i (xip_pwrite),
-  .wb_stb_i(xip_psel),
-  .wb_cyc_i(xip_penable),
-  .wb_ack_o(xip_pready),
-  .wb_err_o(xip_pslverr),
-  .wb_int_o(xip_spi_irq_out),
+  .wb_adr_i(to_spi_paddr[4:0]),
+  .wb_dat_i(to_spi_pwdata),
+  .wb_dat_o(in_prdata),
+  .wb_sel_i(to_spi_pstrb),
+  .wb_we_i (to_spi_pwrite),
+  .wb_stb_i(to_spi_psel),
+  .wb_cyc_i(to_spi_penable),
+  .wb_ack_o(in_pready),
+  .wb_err_o(in_pslverr),
+  .wb_int_o(spi_irq_out),
 
   .ss_pad_o(spi_ss),
   .sclk_pad_o(spi_sck),
