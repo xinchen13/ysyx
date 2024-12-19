@@ -65,29 +65,26 @@ assign in_prdata  = data[31:0];
   always @ (posedge clock) begin
     if (reset) begin
       state <= IDLE_NORMAL_SPI;
-      to_spi_paddr    <= in_paddr;
-      to_spi_psel     <= in_psel;
-      to_spi_penable  <= in_penable;
-      to_spi_pprot    <= in_pprot;
-      to_spi_pwrite   <= in_pwrite;
-      to_spi_pwdata   <= in_pwdata;
-      to_spi_pstrb    <= in_pstrb;
+      to_spi_paddr    <= 'b0;
+      to_spi_psel     <= 'b0;
+      to_spi_penable  <= 'b0;
+      to_spi_pprot    <= 'b0;
+      to_spi_pwrite   <= 'b0;
+      to_spi_pwdata   <= 'b0;
+      to_spi_pstrb    <= 'b0;
     end
-    else if (state == IDLE_NORMAL_SPI) begin
-      if (in_paddr[31:28] == 4'h1) begin
-          to_spi_paddr    <= in_paddr;
-          to_spi_psel     <= in_psel;
-          to_spi_penable  <= in_penable;
-          to_spi_pprot    <= in_pprot;
-          to_spi_pwrite   <= in_pwrite;
-          to_spi_pwdata   <= in_pwdata;
-          to_spi_pstrb    <= in_pstrb;
-      end
-      else if (in_paddr[31:28] == 4'h3) begin
+    else if (state == IDLE_NORMAL_SPI ) begin
+      if ((in_paddr[31:28] == 4'h3) && in_psel && !in_penable) begin
       end
       else begin
+        to_spi_paddr    <= in_paddr;
+        to_spi_psel     <= in_psel;
+        to_spi_penable  <= in_penable;
+        to_spi_pprot    <= in_pprot;
+        to_spi_pwrite   <= in_pwrite;
+        to_spi_pwdata   <= in_pwdata;
+        to_spi_pstrb    <= in_pstrb;
       end
-
     end
     
   end
