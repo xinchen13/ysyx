@@ -40,7 +40,7 @@ void putch(char ch) {
     //     ;
     // }
     outb(TX_REG, ch);
-    while((inb(LSR) & 0x40) == 0x00){
+    while((inb(LSR) & 0x40) == 0x40){
         ;
     }
 }
