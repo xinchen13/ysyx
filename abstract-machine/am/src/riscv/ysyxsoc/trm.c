@@ -28,7 +28,7 @@ static inline uint8_t inb(uintptr_t addr) { return *(volatile uint8_t  *)addr; }
 static inline void outb(uintptr_t addr, uint8_t  data) { *(volatile uint8_t  *)addr = data; }
 
 __attribute__((noinline)) void uart_init() {
-    outb(LCR, 0x80);        // DLAB = 1
+    outb(LCR, 0x83);        // DLAB = 1
     outb(DLH, 0x00);        // MSB first
     outb(DLL, 0x01);        // LSB next
     outb(LCR, 0x03);        // reset value
@@ -36,10 +36,13 @@ __attribute__((noinline)) void uart_init() {
 
 void putch(char ch) {
     // polling
-    while((inb(LSR) & 0x20) == 0x20){
+    while((inb(LSR) & 0x42) == 0x42){
         ;
     }
     outb(TX_REG, ch);
+    while((inb(LSR) & 0x42) == 0x42){
+        ;
+    }
 }
 // *******************************************
 
