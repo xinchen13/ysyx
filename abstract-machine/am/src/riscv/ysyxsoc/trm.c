@@ -32,6 +32,7 @@ __attribute__((noinline)) void uart_init() {
     outb(DLH, 0x00);        // MSB first
     outb(DLL, 0x01);        // LSB next
     outb(LCR, 0x03);        // reset value
+    outb(FCR, 0xc4);
 }
 
 void putch(char ch) {
