@@ -22,6 +22,7 @@ void init_fast_flash() {
     *(uint32_t *)(addr_ptr+0x4) = 0x04100713;
     *(uint32_t *)(addr_ptr+0x8) = 0x00e78023;
     *(uint32_t *)(addr_ptr+0xc) = 0x0000006f;
+    *(uint32_t *)(addr_ptr+0x10) = 0x70717273;
 
     // memset(flash_mem, rand(), FLASH_MSIZE);
     Log("flash(simulation) memory area [" FMT_PADDR ", " FMT_PADDR "]", FLASH_LEFT, FLASH_RIGHT);
