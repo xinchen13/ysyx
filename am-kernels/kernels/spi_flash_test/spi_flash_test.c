@@ -45,9 +45,9 @@ int main(const char *args) {
     init_data_spi = flash_read(0x30000010);
     putstr("End - reading falsh (through spi)\n");
     putch((uint8_t)init_data_spi);
-    putch((uint8_t)init_data_spi>>8);
-    putch((uint8_t)init_data_spi>>16);
-    putch((uint8_t)init_data_spi>>24);
+    putch((uint8_t)(init_data_spi>>8));
+    putch((uint8_t)(init_data_spi>>16));
+    putch((uint8_t)(init_data_spi>>24));
     putch('\n');
 
     uint32_t init_data_xip;
