@@ -91,7 +91,7 @@ assign in_prdata  = data[31:0];
     else begin
       case (state)
         IDLE_NORMAL_SPI: begin
-          if (in_psel && in_penable) begin
+          if (in_psel && !in_penable) begin
             if (in_paddr >= 32'h10001000 && in_paddr <= 32'h10001fff) begin
               // Normal SPI access
               to_spi_paddr    <= in_paddr;
