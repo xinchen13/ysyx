@@ -43,7 +43,7 @@ int main(const char *args) {
     uint32_t init_data_spi;
     putstr("Start - reading falsh (through spi)\n");
     init_data_spi = flash_read(0x30000010);
-    putstr("End - reading falsh (through spi)\n");
+    // putstr("End - reading falsh (through spi)\n");
     putch(init_data_spi);
     putch(init_data_spi>>8);
     putch(init_data_spi>>16);
