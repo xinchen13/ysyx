@@ -26,7 +26,7 @@ uint32_t flash_read(uint32_t addr) {
     outl(SPI_TX_REG0, 0x0000000);
 
     // divider
-    outl(SPI_DIVIDER, 0x00000004);
+    outl(SPI_DIVIDER, 0x00000001);
     // set SS
     outl(SPI_SS, FLASH_NUM);
     // set CTRL
