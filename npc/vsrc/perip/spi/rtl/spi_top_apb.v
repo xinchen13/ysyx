@@ -100,15 +100,15 @@ assign in_prdata  = data[31:0];
               to_spi_pwrite   <= in_pwrite;
               to_spi_pwdata   <= in_pwdata;
               to_spi_pstrb    <= in_pstrb;
-              from_spi_prdata <= spi_prdata;
-              from_spi_pready <= spi_pready;
-              from_spi_pslverr<= spi_pslverr;
             end 
             else if (in_paddr >= flash_addr_start && in_paddr <= flash_addr_end) begin
               // XIP mode
               state <= XIP_INIT;
             end
           end
+          from_spi_prdata <= spi_prdata;
+          from_spi_pready <= spi_pready;
+          from_spi_pslverr<= spi_pslverr;
         end
         XIP_INIT: begin
           ;
