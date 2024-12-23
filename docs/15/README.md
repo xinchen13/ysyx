@@ -326,4 +326,18 @@ MISO                                                                            
 
 要在硬件层次实现`flash_read()`的功能, 也就是要按照一定的顺序在硬件上访问SPI master的寄存器: 那就是用状态机实现`flash_read()`的功能! 与上文从flash中加载程序并执行的方式不同, 这种从flash颗粒中取指的方式并不需要在执行程序之前将程序读入到内存(对应上文的SRAM)中, 因此也称"就地执行"(XIP, eXecute In Place)方式
 
-为了区分正常访问SPI master的情况, 我们需要将通过XIP方式访问 flash 的功能映射到与SPI master设备寄存器不同的地址空间. 事实上, 我们可以对之前访问的flash存储空间`0x3000_0000~0x3fff_ffff`稍作调整, 将其定义为通过XIP方式访问的flash存储空间. ysyxSoC中的Xbar已经将SPI master的地址空间`0x1000_1000~0x1000_1fff`和 flash 存储空间`0x3000_0000~0x3fff_ffff`都映射到 ysyxSoC/perip/spi/rtl/spi_top_apb.v模块中的APB端口, 也即, spi_top_apb.v模块中的APB端口能接收上述两段地址空间的请求, 你可以通过检查APB的目标地址区分它们
+为了区分正常访问SPI master的情况, 我们需要将通过XIP方式访问 flash 的功能映射到与SPI master设备寄存器不同的地址空间. 事实上, 我们可以对之前访问的flash存储空间`0x3000_0000~0x3fff_ffff`稍作调整, 将其定义为通过XIP方式访问的flash存储空间. ysyxSoC中的Xbar已经将SPI master的地址空间 `0x1000_1000~0x1000_1fff` 和 flash 存储空间 `0x3000_0000~0x3fff_ffff` 都映射到 `ysyxSoC/perip/spi/rtl/spi_top_apb.v` 模块中的APB端口, 也即 `spi_top_apb.v` 模块中的APB端口能接收上述两段地址空间的请求, 可以通过检查APB的目标地址区分它们
+
+#### 通过XIP方式访问flash
+实现XIP方式的过程如下:
+
+- 检查APB请求的目标地址, 若目标地址落在SPI master的地址空间, 则正常访问并回复
+- 若目标地址落在flash存储空间, 则进入XIP模式. 在XIP模式中, SPI master的输入信号由相应状态机决定
+    - 状态机依次往SPI master的设备寄存器中写入相应的值, 写入的值与`flash_read()`基本一致
+    - 状态机轮询SPI master的完成标志, 等待SPI master完成数据传输
+    - 状态机从SPI master的RX寄存器中读出flash返回的数据, 处理后通过APB返回, 并退出XIP模式
+    - 具体地, 在`ysyxSoC/perip/spi/rtl/spi_top_apb.v`中实现相应代码
+
+在通过XIP方式取指之前, 我们先测试是否能通过XIP方式完成CPU发出的读请求. 编写测试程序, 直接通过指针从flash存储空间中读出内容 并检查是否与仿真环境初始化时设置的内容一致.
+
+目前我们不考虑通过XIP方式支持flash的写入操作, 因此最好在检测到写操作时报告错误, 来帮助及时诊断问题的原因
