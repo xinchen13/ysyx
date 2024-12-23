@@ -50,17 +50,31 @@ assign in_prdata  = data[31:0];
 
 `elsif XIP_FLASH
 
-  localparam IDLE_NORMAL_SPI = 3'b000;
+  localparam IDLE_NORMAL_SPI = 4'b0000;
+  localparam XIP_INIT        = 4'b0001;  // XIP initialization
 
-  wire [31:0] to_spi_paddr;
-  wire        to_spi_psel;
-  wire        to_spi_penable;
-  wire [2:0]  to_spi_pprot;
-  wire        to_spi_pwrite;
-  wire [31:0] to_spi_pwdata;
-  wire [3:0]  to_spi_pstrb;
+  reg [31:0] to_spi_paddr;
+  reg        to_spi_psel;
+  reg        to_spi_penable;
+  reg        to_spi_pwrite;
+  reg [31:0] to_spi_pwdata;
+  reg [3:0]  to_spi_pstrb;
+  reg        from_spi_pready;
+  reg [31:0] from_spi_prdata;
+  reg        from_spi_pslverr;
 
-  reg [2:0] state;
+  wire [4:0]  spi_paddr;
+  wire        spi_psel;
+  wire        spi_penable;
+  wire        spi_pwrite;
+  wire [31:0] spi_pwdata;
+  wire [3:0]  spi_pstrb;
+  wire        spi_pready;
+  wire [31:0] spi_prdata;
+  wire        spi_pslverr;
+
+  reg [3:0] state;
+  reg [31:0] xip_addr;
 
   always @ (posedge clock) begin
     if (reset) begin
@@ -68,47 +82,75 @@ assign in_prdata  = data[31:0];
       to_spi_paddr    <= 'b0;
       to_spi_psel     <= 'b0;
       to_spi_penable  <= 'b0;
-      to_spi_pprot    <= 'b0;
       to_spi_pwrite   <= 'b0;
       to_spi_pwdata   <= 'b0;
       to_spi_pstrb    <= 'b0;
+      from_spi_prdata <= 'b0;
+      from_spi_pready <= 'b0;
+      from_spi_pslverr<= 'b0;
     end
-    else if (state == IDLE_NORMAL_SPI ) begin
-      if ((in_paddr[31:28] == 4'h3) && in_psel && !in_penable) begin
-      end
-      else begin
-        to_spi_paddr    <= in_paddr;
-        to_spi_psel     <= in_psel;
-        to_spi_penable  <= in_penable;
-        to_spi_pprot    <= in_pprot;
-        to_spi_pwrite   <= in_pwrite;
-        to_spi_pwdata   <= in_pwdata;
-        to_spi_pstrb    <= in_pstrb;
-      end
+    else begin
+      case (state)
+        IDLE_NORMAL_SPI: begin
+          if (in_psel && !in_penable) begin
+            if (in_paddr >= 32'h10001000 && in_paddr <= 32'h10001fff) begin
+              // Normal SPI access
+              to_spi_paddr    <= in_paddr;
+              to_spi_pwrite   <= in_pwrite;
+              to_spi_pwdata   <= in_pwdata;
+              to_spi_pstrb    <= in_pstrb;
+            end 
+            else if (in_paddr >= flash_addr_start && in_paddr <= flash_addr_end) begin
+              // enter XIP mode
+              state <= XIP_INIT;
+              xip_addr <= in_paddr;
+            end
+          end
+          from_spi_prdata <= spi_prdata;
+          from_spi_pready <= spi_pready;
+          from_spi_pslverr<= spi_pslverr;
+          to_spi_psel     <= in_psel;
+          to_spi_penable  <= in_penable;
+        end
+        XIP_INIT: begin
+          ;
+        end
+        default: begin
+          state <= IDLE_NORMAL_SPI;
+        end
+    endcase
     end
-    
   end
 
+assign in_prdata  = from_spi_prdata;
+assign in_pready  = from_spi_pready;
+assign in_pslverr = from_spi_pslverr;
+assign spi_paddr  = to_spi_paddr[4:0];
+assign spi_psel   = to_spi_psel;
+assign spi_penable= to_spi_penable;
+assign spi_pwrite = to_spi_pwrite;
+assign spi_pwdata = to_spi_pwdata;
+assign spi_pstrb  = to_spi_pstrb;
 
-spi_top u0_spi_top (
-  .wb_clk_i(clock),
-  .wb_rst_i(reset),
-  .wb_adr_i(to_spi_paddr[4:0]),
-  .wb_dat_i(to_spi_pwdata),
-  .wb_dat_o(in_prdata),
-  .wb_sel_i(to_spi_pstrb),
-  .wb_we_i (to_spi_pwrite),
-  .wb_stb_i(to_spi_psel),
-  .wb_cyc_i(to_spi_penable),
-  .wb_ack_o(in_pready),
-  .wb_err_o(in_pslverr),
-  .wb_int_o(spi_irq_out),
+  spi_top u0_spi_top (
+    .wb_clk_i(clock),
+    .wb_rst_i(reset),
+    .wb_adr_i(spi_paddr),
+    .wb_dat_i(spi_pwdata),
+    .wb_dat_o(spi_prdata),
+    .wb_sel_i(spi_pstrb),
+    .wb_we_i (spi_pwrite),
+    .wb_stb_i(spi_psel),
+    .wb_cyc_i(spi_penable),
+    .wb_ack_o(spi_pready),
+    .wb_err_o(spi_pslverr),
+    .wb_int_o(spi_irq_out),
 
-  .ss_pad_o(spi_ss),
-  .sclk_pad_o(spi_sck),
-  .mosi_pad_o(spi_mosi),
-  .miso_pad_i(spi_miso)
-);
+    .ss_pad_o(spi_ss),
+    .sclk_pad_o(spi_sck),
+    .mosi_pad_o(spi_mosi),
+    .miso_pad_i(spi_miso)
+  );
 
 `else
 
