@@ -32,14 +32,13 @@ __attribute__((noinline)) void uart_init() {
     outb(DLH, 0x00);        // MSB first
     outb(DLL, 0x01);        // LSB next
     outb(LCR, 0x03);        // reset value
-    outb(FCR, 0xc4);
 }
 
 void putch(char ch) {
     // polling
-    // while((inb(LSR) & 0x40) == 0x40){
-    //     ;
-    // }
+    while((inb(LSR) & 0x40) == 0x40){
+        ;
+    }
     outb(TX_REG, ch);
     while((inb(LSR) & 0x40) == 0x40){
         ;
