@@ -50,8 +50,8 @@ assign in_prdata  = data[31:0];
 
 `elsif XIP_FLASH
 
-  localparam IDLE_NORMAL_SPI = 3'b000;
-  localparam XIP_INIT        = 3'b001;  // XIP initialization
+  localparam IDLE_NORMAL_SPI = 4'b0000;
+  localparam XIP_INIT        = 4'b0001;  // XIP initialization
 
   reg [31:0] to_spi_paddr;
   reg        to_spi_psel;
@@ -73,7 +73,8 @@ assign in_prdata  = data[31:0];
   wire [31:0] spi_prdata;
   wire        spi_pslverr;
 
-  reg [2:0] state;
+  reg [3:0] state;
+  reg [31:0] xip_addr;
 
   always @ (posedge clock) begin
     if (reset) begin
@@ -100,8 +101,9 @@ assign in_prdata  = data[31:0];
               to_spi_pstrb    <= in_pstrb;
             end 
             else if (in_paddr >= flash_addr_start && in_paddr <= flash_addr_end) begin
-              // XIP mode
+              // enter XIP mode
               state <= XIP_INIT;
+              xip_addr <= in_paddr;
             end
           end
           from_spi_prdata <= spi_prdata;
