@@ -36,7 +36,7 @@ __attribute__((noinline)) void uart_init() {
 
 void putch(char ch) {
     // polling
-    while((inb(LSR) & 0x20) == 0x20){
+    while((inb(LSR) & 0x40) == 0x40){
         ;
     }
     outb(TX_REG, ch);
