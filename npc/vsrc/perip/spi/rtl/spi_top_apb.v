@@ -95,8 +95,6 @@ assign in_prdata  = data[31:0];
             if (in_paddr >= 32'h10001000 && in_paddr <= 32'h10001fff) begin
               // Normal SPI access
               to_spi_paddr    <= in_paddr;
-              to_spi_psel     <= in_psel;
-              to_spi_penable  <= in_penable;
               to_spi_pwrite   <= in_pwrite;
               to_spi_pwdata   <= in_pwdata;
               to_spi_pstrb    <= in_pstrb;
@@ -109,6 +107,8 @@ assign in_prdata  = data[31:0];
           from_spi_prdata <= spi_prdata;
           from_spi_pready <= spi_pready;
           from_spi_pslverr<= spi_pslverr;
+          to_spi_psel     <= in_psel;
+          to_spi_penable  <= in_penable;
         end
         XIP_INIT: begin
           ;
