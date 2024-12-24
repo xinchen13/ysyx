@@ -338,6 +338,9 @@ MISO                                                                            
     - 状态机从SPI master的RX寄存器中读出flash返回的数据, 处理后通过APB返回, 并退出XIP模式
     - 具体地, 在`ysyxSoC/perip/spi/rtl/spi_top_apb.v`中实现相应代码
 
-在通过XIP方式取指之前, 我们先测试是否能通过XIP方式完成CPU发出的读请求. 编写测试程序, 直接通过指针从flash存储空间中读出内容 并检查是否与仿真环境初始化时设置的内容一致.
+在通过XIP方式取指之前, 先测试是否能通过XIP方式完成CPU发出的读请求. 在[spi_flash_test.c](../../am-kernels/kernels/spi_flash_test/spi_flash_test.c)中增加测试程序, 直接通过指针从flash存储空间中读出内容 看到与仿真环境初始化时设置的内容一致.
 
-目前我们不考虑通过XIP方式支持flash的写入操作, 因此最好在检测到写操作时报告错误, 来帮助及时诊断问题的原因
+目前我们不考虑通过XIP方式支持flash的写入操作
+
+#### 通过XIP方式执行flash中的程序
+
