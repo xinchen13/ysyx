@@ -280,7 +280,7 @@ assign in_prdata  = data[31:0];
             to_spi_pwdata   <= 'b0;
             to_spi_pstrb    <= 'b0;
           end
-          else if (spi_pready & ((spi_prdata & 00000100) == 00000100)) begin
+          else if (spi_pready & ((spi_prdata & 32'h00000100) == 32'h00000100)) begin
             to_spi_psel     <= 'b0;
             to_spi_penable  <= 'b0;
             state           <= POLL_REQ;
