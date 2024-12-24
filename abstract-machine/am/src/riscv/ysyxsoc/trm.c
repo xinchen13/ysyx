@@ -36,13 +36,10 @@ __attribute__((noinline)) void uart_init() {
 
 void putch(char ch) {
     // polling
-    while((inb(LSR) & 0x42) == 0x42){
+    while((inb(LSR) & 0x20) == 0x00) {
         ;
     }
     outb(TX_REG, ch);
-    while((inb(LSR) & 0x42) == 0x42){
-        ;
-    }
 }
 // *******************************************
 
@@ -67,8 +64,8 @@ void halt(int code) {
 }
 
 void _trm_init() {
-    uart_init();
     bootloader();
+    uart_init();
     int ret = main(mainargs);
     halt(ret);
 }
