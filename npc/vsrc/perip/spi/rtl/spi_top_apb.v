@@ -50,8 +50,34 @@ assign in_prdata  = data[31:0];
 
 `elsif XIP_FLASH
 
-  localparam IDLE_NORMAL_SPI = 4'b0000;
-  localparam XIP_INIT        = 4'b0001;  // XIP initialization
+  // state machine encode
+  localparam IDLE_NORMAL_SPI  = 5'b00000;
+  localparam W_TX_REG1_REQ    = 5'b00001;
+  localparam W_TX_REG1_ACK    = 5'b00010;
+  localparam W_TX_REG0_REQ    = 5'b00011;
+  localparam W_TX_REG0_ACK    = 5'b00100;
+  localparam W_DIV_REQ        = 5'b00101;
+  localparam W_DIV_ACK        = 5'b00110;
+  localparam W_SS_REQ         = 5'b00111;
+  localparam W_SS_ACK         = 5'b01000;
+  localparam W_CTRL_REQ       = 5'b01001;
+  localparam W_CTRL_ACK       = 5'b01010;
+  localparam POLL_REQ         = 5'b01011;
+  localparam POLL_ACK         = 5'b01100;
+  localparam GET_DATA_REQ     = 5'b01101;
+  localparam GET_DATA_ACK     = 5'b01110;
+  localparam W_DE_SS_REQ      = 5'b01111;
+  localparam W_DE_SS_ACK      = 5'b10000;
+
+
+  // spi address map
+  localparam SPI_TX_REG0      = 32'h00;
+  localparam SPI_TX_REG1      = 32'h04;
+  localparam SPI_RX_REG0      = 32'h00;
+  localparam SPI_RX_REG1      = 32'h04;
+  localparam SPI_DIVIDER      = 32'h14;
+  localparam SPI_CTRL         = 32'h10;
+  localparam SPI_SS           = 32'h18;
 
   reg [31:0] to_spi_paddr;
   reg        to_spi_psel;
@@ -73,7 +99,7 @@ assign in_prdata  = data[31:0];
   wire [31:0] spi_prdata;
   wire        spi_pslverr;
 
-  reg [3:0] state;
+  reg [4:0] state;
   reg [31:0] xip_addr;
 
   always @ (posedge clock) begin
@@ -102,7 +128,7 @@ assign in_prdata  = data[31:0];
             end 
             else if (in_paddr >= flash_addr_start && in_paddr <= flash_addr_end) begin
               // enter XIP mode
-              state <= XIP_INIT;
+              state <= W_TX_REG1_REQ;
               xip_addr <= in_paddr;
             end
           end
@@ -112,8 +138,213 @@ assign in_prdata  = data[31:0];
           to_spi_psel     <= in_psel;
           to_spi_penable  <= in_penable;
         end
-        XIP_INIT: begin
-          ;
+        // write tx_reg1
+        W_TX_REG1_REQ: begin
+          to_spi_paddr    <= SPI_TX_REG1;
+          to_spi_psel     <= 'b1;
+          to_spi_penable  <= 'b0;
+          to_spi_pwrite   <= 'b1;
+          to_spi_pwdata   <=  32'h03000000 | ((xip_addr & 32'h00ffffff));
+          to_spi_pstrb    <= 'b1111;
+          state           <= W_TX_REG1_ACK;
+        end
+        W_TX_REG1_ACK: begin
+          if (!spi_pready) begin
+            to_spi_paddr    <= SPI_TX_REG1;
+            to_spi_psel     <= 'b1;
+            to_spi_penable  <= 'b1;
+            to_spi_pwrite   <= 'b1;
+            to_spi_pwdata   <= 32'h03000000 | ((xip_addr & 32'h00ffffff));
+            to_spi_pstrb    <= 'b1111;
+          end
+          else begin
+            to_spi_psel     <= 'b0;
+            to_spi_penable  <= 'b0;
+            state <= W_TX_REG0_REQ;
+          end
+        end
+        // write tx_reg0
+        W_TX_REG0_REQ: begin
+          to_spi_paddr    <= SPI_TX_REG0;
+          to_spi_psel     <= 'b1;
+          to_spi_penable  <= 'b0;
+          to_spi_pwrite   <= 'b1;
+          to_spi_pwdata   <= 'b0;
+          to_spi_pstrb    <= 'b1111;
+          state           <= W_TX_REG0_ACK;
+        end
+        W_TX_REG0_ACK: begin
+          if (!spi_pready) begin
+            to_spi_paddr    <= SPI_TX_REG0;
+            to_spi_psel     <= 'b1;
+            to_spi_penable  <= 'b1;
+            to_spi_pwrite   <= 'b1;
+            to_spi_pwdata   <= 'b0;
+            to_spi_pstrb    <= 'b1111;
+          end
+          else begin
+            to_spi_psel     <= 'b0;
+            to_spi_penable  <= 'b0;
+            state           <= W_DIV_REQ;
+          end
+        end
+        // write divider
+        W_DIV_REQ: begin
+          to_spi_paddr    <= SPI_DIVIDER;
+          to_spi_psel     <= 'b1;
+          to_spi_penable  <= 'b0;
+          to_spi_pwrite   <= 'b1;
+          to_spi_pwdata   <= 32'h00000001;
+          to_spi_pstrb    <= 'b1111;
+          state           <= W_DIV_ACK;
+        end
+        W_DIV_ACK: begin
+          if (!spi_pready) begin
+            to_spi_paddr    <= SPI_DIVIDER;
+            to_spi_psel     <= 'b1;
+            to_spi_penable  <= 'b1;
+            to_spi_pwrite   <= 'b1;
+            to_spi_pwdata   <= 32'h00000001;
+            to_spi_pstrb    <= 'b1111;
+          end
+          else begin
+            to_spi_psel     <= 'b0;
+            to_spi_penable  <= 'b0;
+            state           <= W_SS_REQ;
+          end
+        end
+        // write ss
+        W_SS_REQ: begin
+          to_spi_paddr    <= SPI_SS;
+          to_spi_psel     <= 'b1;
+          to_spi_penable  <= 'b0;
+          to_spi_pwrite   <= 'b1;
+          to_spi_pwdata   <= 32'h00000001;
+          to_spi_pstrb    <= 'b1111;
+          state           <= W_SS_ACK;
+        end
+        W_SS_ACK: begin
+          if (!spi_pready) begin
+            to_spi_paddr    <= SPI_SS;
+            to_spi_psel     <= 'b1;
+            to_spi_penable  <= 'b1;
+            to_spi_pwrite   <= 'b1;
+            to_spi_pwdata   <= 32'h00000001;
+            to_spi_pstrb    <= 'b1111;
+          end
+          else begin
+            to_spi_psel     <= 'b0;
+            to_spi_penable  <= 'b0;
+            state           <= W_CTRL_REQ;
+          end
+        end
+        // write ctrl
+        W_CTRL_REQ: begin
+          to_spi_paddr    <= SPI_CTRL;
+          to_spi_psel     <= 'b1;
+          to_spi_penable  <= 'b0;
+          to_spi_pwrite   <= 'b1;
+          to_spi_pwdata   <= 32'h00000140;
+          to_spi_pstrb    <= 'b1111;
+          state           <= W_CTRL_ACK;
+        end
+        W_CTRL_ACK: begin
+          if (!spi_pready) begin
+            to_spi_paddr    <= SPI_CTRL;
+            to_spi_psel     <= 'b1;
+            to_spi_penable  <= 'b1;
+            to_spi_pwrite   <= 'b1;
+            to_spi_pwdata   <= 32'h00000140;
+            to_spi_pstrb    <= 'b1111;
+          end
+          else begin
+            to_spi_psel     <= 'b0;
+            to_spi_penable  <= 'b0;
+            state           <= POLL_REQ;
+          end
+        end
+        // poll
+        POLL_REQ: begin
+          to_spi_paddr    <= SPI_CTRL;
+          to_spi_psel     <= 'b1;
+          to_spi_penable  <= 'b0;
+          to_spi_pwrite   <= 'b0;
+          to_spi_pwdata   <= 'b0;
+          to_spi_pstrb    <= 'b0;
+          state           <= POLL_ACK;
+        end
+        POLL_ACK: begin
+          if (!spi_pready) begin
+            to_spi_paddr    <= SPI_CTRL;
+            to_spi_psel     <= 'b1;
+            to_spi_penable  <= 'b1;
+            to_spi_pwrite   <= 'b0;
+            to_spi_pwdata   <= 'b0;
+            to_spi_pstrb    <= 'b0;
+          end
+          else if (spi_pready & ((spi_prdata & 32'h00000100) == 32'h00000100)) begin
+            to_spi_psel     <= 'b0;
+            to_spi_penable  <= 'b0;
+            state           <= POLL_REQ;
+          end
+          else begin
+            to_spi_psel     <= 'b0;
+            to_spi_penable  <= 'b0;
+            state           <= W_DE_SS_REQ;
+          end
+        end
+        // de-assert ss
+        W_DE_SS_REQ: begin
+          to_spi_paddr    <= SPI_SS;
+          to_spi_psel     <= 'b1;
+          to_spi_penable  <= 'b0;
+          to_spi_pwrite   <= 'b1;
+          to_spi_pwdata   <= 32'h00000001;
+          to_spi_pstrb    <= 'b1111;
+          state           <= W_DE_SS_ACK;
+        end
+        W_DE_SS_ACK: begin
+          if (!spi_pready) begin
+            to_spi_paddr    <= SPI_SS;
+            to_spi_psel     <= 'b1;
+            to_spi_penable  <= 'b1;
+            to_spi_pwrite   <= 'b1;
+            to_spi_pwdata   <= 32'h00000001;
+            to_spi_pstrb    <= 'b1111;
+          end
+          else begin
+            to_spi_psel     <= 'b0;
+            to_spi_penable  <= 'b0;
+            state           <= GET_DATA_REQ;
+          end
+        end
+        // get data
+        GET_DATA_REQ: begin
+          to_spi_paddr    <= SPI_RX_REG0;
+          to_spi_psel     <= 'b1;
+          to_spi_penable  <= 'b0;
+          to_spi_pwrite   <= 'b0;
+          to_spi_pwdata   <= 'b0;
+          to_spi_pstrb    <= 'b0;
+          state           <= GET_DATA_ACK;
+        end
+        GET_DATA_ACK: begin
+          if (!spi_pready) begin
+            to_spi_paddr    <= SPI_RX_REG0;
+            to_spi_psel     <= 'b1;
+            to_spi_penable  <= 'b1;
+            to_spi_pwrite   <= 'b0;
+            to_spi_pwdata   <= 'b0;
+            to_spi_pstrb    <= 'b0;
+          end
+          else begin
+            to_spi_psel     <= 'b0;
+            to_spi_penable  <= 'b0;
+            from_spi_prdata <= spi_prdata;
+            from_spi_pready <= spi_pready;
+            from_spi_pslverr<= spi_pslverr;
+            state           <= IDLE_NORMAL_SPI;
+          end
         end
         default: begin
           state <= IDLE_NORMAL_SPI;

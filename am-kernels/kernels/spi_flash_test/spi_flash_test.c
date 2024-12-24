@@ -21,6 +21,8 @@ static inline void outl(uintptr_t addr, uint32_t data) { *(volatile uint32_t *)a
 #define FLASH_CTRL      0x00000140      // 0b00000101000000
 
 uint32_t flash_read(uint32_t addr) {
+    uint32_t read_data;
+
     uint32_t tx_data = 0x03000000 | ((addr & 0x00ffffff));
     outl(SPI_TX_REG1, tx_data);
     outl(SPI_TX_REG0, 0x00000000);
@@ -35,7 +37,10 @@ uint32_t flash_read(uint32_t addr) {
     while ((inl(SPI_CTRL) & 0x00000100) == 0x00000100) {
         ;
     }
-    return inl(SPI_RX_REG0);
+    // deassert ss
+    outl(SPI_SS, 0x0);
+    read_data = inl(SPI_RX_REG0);
+    return read_data;
 
 }
 
@@ -50,14 +55,14 @@ int main(const char *args) {
     putch((uint8_t)(init_data_spi>>24));
     putch('\n');
 
-    // uint32_t init_data_xip;
+    uint32_t init_data_xip;
     putstr("Start - reading falsh (XIP)\n");
-    // init_data_xip = inl(0x30000010);
+    init_data_xip = inl(0x30000010);
     putstr("End - reading falsh (XIP)\n");
-    // putch(init_data_xip);
-    // putch(init_data_xip>>8);
-    // putch(init_data_xip>>16);
-    // putch(init_data_xip>>24);
+    putch(init_data_xip);
+    putch(init_data_xip>>8);
+    putch(init_data_xip>>16);
+    putch(init_data_xip>>24);
     putch('\n');
 
     return 0;

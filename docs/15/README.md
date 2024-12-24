@@ -216,7 +216,7 @@ SECTIONS {
 - 串口收发端的参数配置要完全一致, 才能正确发送和接收字符. 通常用形如 115200 8N1 等方式来描述一组参数配置, 它表示波特率是115200, 字符长度是8位, 不带校验位, 1位停止位.
 - 按需设置中断, 不过NPC目前不支持中断, 因此可不设置
 - 需要在TRM中添加代码(本质就是读写memory-mapped registers), 设置串口的除数寄存器. 由于ysyxSoC本质上还是一个仿真环境, 没有串口接收端, 也没有电气特性的概念, 因此目前可随意设置上述除数, 不必担心误码率的问题; 具体的初始化过程可以参考 [UART_spec.pdf](../../ysyxSoC/perip/uart16550/doc/UART_spec.pdf)
-- uart 的 rtl 也需要修改，使用 in_pstrb 与 in_paddr 得到 3 位的寄存器地址
+- uart 的 rtl 也需要修改，使用 in_pstrb 与 in_paddr 得到 3 位的寄存器地址 (update: 注意这是写地址, 读地址不需要修改)
 - hello 程序多输出了一些字符, 但仍然会出现字符丢失的情况
 
 #### 输出前轮询串口的状态寄存器
@@ -338,6 +338,6 @@ MISO                                                                            
     - 状态机从SPI master的RX寄存器中读出flash返回的数据, 处理后通过APB返回, 并退出XIP模式
     - 具体地, 在`ysyxSoC/perip/spi/rtl/spi_top_apb.v`中实现相应代码
 
-在通过XIP方式取指之前, 我们先测试是否能通过XIP方式完成CPU发出的读请求. 编写测试程序, 直接通过指针从flash存储空间中读出内容 并检查是否与仿真环境初始化时设置的内容一致.
+在通过XIP方式取指之前, 先测试是否能通过XIP方式完成CPU发出的读请求. 在[spi_flash_test.c](../../am-kernels/kernels/spi_flash_test/spi_flash_test.c)中增加测试程序, 直接通过指针从flash存储空间中读出内容 看到与仿真环境初始化时设置的内容一致.
 
-目前我们不考虑通过XIP方式支持flash的写入操作, 因此最好在检测到写操作时报告错误, 来帮助及时诊断问题的原因
+目前我们不考虑通过XIP方式支持flash的写入操作
