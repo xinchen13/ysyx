@@ -36,9 +36,9 @@ SECTIONS {
     _bss_end = .;
   } > sram AT> flash
   _stack_top = 0x0f001000;
-  . = _stack_top + 0x0ffc;
+  . = _stack_top + 0x03fc;
   _stack_pointer = .;
+  _heap_start = ALIGN(0x10);
   end = .;
   _end = .;
-  _heap_start = ORIGIN(sram);
 }
