@@ -124,13 +124,7 @@ void mrom_read(int32_t addr, int32_t *data) {
 }
 
 #ifdef CONFIG_XIP_FLASH
-void mrom_read(int32_t addr, int32_t *data) {
-    // execute ebreak
-    // assert(0);
-    // if (addr == 0x20000000) {
-    //     *data = 0x100073u; 
-    // }
-
+void flash_read(int32_t addr, int32_t *data) {
     int aligned_address = addr & (~0x3u);
     if (aligned_address >= CONFIG_MBASE && aligned_address <= (CONFIG_MBASE + CONFIG_MSIZE)) {
         int read_data = paddr_read(aligned_address, 4);
