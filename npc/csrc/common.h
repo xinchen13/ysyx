@@ -2,11 +2,11 @@
 #define __COMMON_H__
 
 // ---------------------------- configs -----------------------------
-#define CONFIG_MBASE 0x20000000
-#define CONFIG_MSIZE 0xffff
+#define CONFIG_MBASE 0x30000000u
+#define CONFIG_MSIZE 0xfffffffu
 #define CONFIG_BATCH_MODE 1
 #define CONFIG_RVE 1
-// #define CONFIG_XIP_FLASH 1
+#define CONFIG_XIP_FLASH 1
 // #define CONFIG_WATCHPOINT 1
 // #define CONFIG_ITRACE 1
 // #define CONFIG_FTRACE 1

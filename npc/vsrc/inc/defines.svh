@@ -1,5 +1,5 @@
 
-`define CPU_RESET_ADDR 32'h20000000
+`define CPU_RESET_ADDR 32'h30000000
 `define ZERO_WORD 32'h0
 `define BYTE_BUS 7:0
 
