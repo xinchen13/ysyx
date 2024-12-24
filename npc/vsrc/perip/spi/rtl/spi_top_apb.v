@@ -64,6 +64,8 @@ assign in_prdata  = data[31:0];
   localparam W_CTRL_ACK       = 4'b1010;
   localparam POLL_REQ         = 4'b1011;
   localparam POLL_ACK         = 4'b1100;
+  localparam GET_DATA_REQ     = 4'b1101;
+  localparam GET_DATA_ACK     = 4'b1110;
 
 
   // spi address map
@@ -282,6 +284,31 @@ assign in_prdata  = data[31:0];
             to_spi_psel     <= 'b0;
             to_spi_penable  <= 'b0;
             state           <= POLL_REQ;
+          end
+          else begin
+            to_spi_psel     <= 'b0;
+            to_spi_penable  <= 'b0;
+            state           <= GET_DATA_REQ;
+          end
+        end
+        // get data
+        GET_DATA_REQ: begin
+          to_spi_paddr    <= SPI_RX_REG0;
+          to_spi_psel     <= 'b1;
+          to_spi_penable  <= 'b0;
+          to_spi_pwrite   <= 'b0;
+          to_spi_pwdata   <= 'b0;
+          to_spi_pstrb    <= 'b0;
+          state           <= GET_DATA_ACK;
+        end
+        GET_DATA_ACK: begin
+          if (!spi_pready) begin
+            to_spi_paddr    <= SPI_RX_REG0;
+            to_spi_psel     <= 'b1;
+            to_spi_penable  <= 'b1;
+            to_spi_pwrite   <= 'b0;
+            to_spi_pwdata   <= 'b0;
+            to_spi_pstrb    <= 'b0;
           end
           else begin
             to_spi_psel     <= 'b0;
