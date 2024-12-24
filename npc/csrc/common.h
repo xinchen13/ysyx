@@ -3,7 +3,7 @@
 
 // ---------------------------- configs -----------------------------
 #define CONFIG_MBASE 0x30000000u
-#define CONFIG_MSIZE 0xfffffffu
+#define CONFIG_MSIZE 0xffffffu
 #define CONFIG_BATCH_MODE 1
 #define CONFIG_RVE 1
 #define CONFIG_XIP_FLASH 1
