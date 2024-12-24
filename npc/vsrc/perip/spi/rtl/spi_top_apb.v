@@ -299,7 +299,7 @@ assign in_prdata  = data[31:0];
           to_spi_psel     <= 'b1;
           to_spi_penable  <= 'b0;
           to_spi_pwrite   <= 'b1;
-          to_spi_pwdata   <= 32'h00000001;
+          to_spi_pwdata   <= 'b0;
           to_spi_pstrb    <= 'b1111;
           state           <= W_DE_SS_ACK;
         end
@@ -309,7 +309,7 @@ assign in_prdata  = data[31:0];
             to_spi_psel     <= 'b1;
             to_spi_penable  <= 'b1;
             to_spi_pwrite   <= 'b1;
-            to_spi_pwdata   <= 32'h00000001;
+            to_spi_pwdata   <= 'b0;
             to_spi_pstrb    <= 'b1111;
           end
           else begin
