@@ -29,7 +29,7 @@ static inline void outb(uintptr_t addr, uint8_t  data) { *(volatile uint8_t  *)a
 
 __attribute__((noinline)) void uart_init() {
     outb(LCR, 0x83);        // DLAB = 1
-    outb(DLH, 0x01);        // MSB first
+    outb(DLH, 0x00);        // MSB first
     outb(DLL, 0x01);        // LSB next
     outb(LCR, 0x03);        // reset value
 }
