@@ -113,7 +113,7 @@ assign in_prdata  = data[31:0];
           to_spi_penable  <= in_penable;
         end
         XIP_INIT: begin
-          ;
+          $display("XIP_INIT");
         end
         default: begin
           state <= IDLE_NORMAL_SPI;
