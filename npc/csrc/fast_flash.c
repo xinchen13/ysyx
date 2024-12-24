@@ -28,9 +28,11 @@ void init_fast_flash() {
     Log("flash(simulation) memory area [" FMT_PADDR ", " FMT_PADDR "]", FLASH_LEFT, FLASH_RIGHT);
 }
 
+#ifndef CONFIG_XIP_FLASH
 void flash_read(int32_t addr, int32_t *data) { 
     // assert(0); 
     uint8_t flash_addr_offset = addr - FLASH_BASE;
     *data = *(int32_t*)(flash_mem + flash_addr_offset);
 }
+#endif
 

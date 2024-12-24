@@ -343,7 +343,7 @@ assign in_prdata  = data[31:0];
             from_spi_prdata <= spi_prdata;
             from_spi_pready <= spi_pready;
             from_spi_pslverr<= spi_pslverr;
-            state           <= IDLE_NORMAL_SPI;
+            state           <= XIP_END;
           end
         end
         default: begin
