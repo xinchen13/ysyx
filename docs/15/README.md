@@ -343,4 +343,12 @@ MISO                                                                            
 目前我们不考虑通过XIP方式支持flash的写入操作
 
 #### 通过XIP方式执行flash中的程序
+将上文提到的 `char-test` 程序存放到flash颗粒中, 编写测试程序, 跳转到flash中执行 `char-test`: 修改 `spi_read_inst` 测试, 在 [spi_read_inst_xip.c](../../am-kernels/kernels/spi_read_inst_xip/spi_read_inst_xip.c) 中实现直接取指，测试通过
+
+#### 用flash替代MROM
+确认可以从flash中取指执行后, 我们就可以用flash完全替代MROM来存放第一个程序了: 
+- 修改PC的复位值为 `0x30000000`, 使NPC复位后从flash中取出第一条指令
+- 修改仿真环境，把程序加载进 flash
+
+因为flash的大小比之前使用的MROM大得多, 因此我们可以存放并执行更大的程序了, 尝试运行coremark等包含printf()的程序. 如果你运行microbench, 你会发现有不少子项会因为堆区大小不足而无法运行.
 
