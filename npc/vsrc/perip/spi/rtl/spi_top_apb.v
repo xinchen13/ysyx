@@ -68,7 +68,6 @@ assign in_prdata  = data[31:0];
   localparam GET_DATA_ACK     = 5'b01110;
   localparam W_DE_SS_REQ      = 5'b01111;
   localparam W_DE_SS_ACK      = 5'b10000;
-  localparam XIP_END          = 5'b10001;
 
 
   // spi address map
@@ -344,20 +343,9 @@ assign in_prdata  = data[31:0];
             from_spi_prdata <= spi_prdata;
             from_spi_pready <= spi_pready;
             from_spi_pslverr<= spi_pslverr;
-            state           <= XIP_END;
-          end
-        end
-        XIP_END: begin
-            to_spi_psel     <= 'b0;
-            to_spi_penable  <= 'b0;
-            to_spi_pwrite   <= 'b0;
-            to_spi_pwdata   <= 'b0;
-            to_spi_pstrb    <= 'b0;
-            from_spi_prdata <= spi_prdata;
-            from_spi_pready <= spi_pready;
-            from_spi_pslverr<= spi_pslverr;
             state           <= IDLE_NORMAL_SPI;
           end
+        end
         default: begin
           state <= IDLE_NORMAL_SPI;
         end
