@@ -50,14 +50,14 @@ int main(const char *args) {
     putch((uint8_t)(init_data_spi>>24));
     putch('\n');
 
-    // uint32_t init_data_xip;
+    uint32_t init_data_xip;
     putstr("Start - reading falsh (XIP)\n");
-    // init_data_xip = inl(0x30000010);
+    init_data_xip = inl(0x30000010);
     putstr("End - reading falsh (XIP)\n");
-    // putch(init_data_xip);
-    // putch(init_data_xip>>8);
-    // putch(init_data_xip>>16);
-    // putch(init_data_xip>>24);
+    putch(init_data_xip);
+    putch(init_data_xip>>8);
+    putch(init_data_xip>>16);
+    putch(init_data_xip>>24);
     putch('\n');
 
     return 0;
