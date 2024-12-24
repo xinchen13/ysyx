@@ -51,21 +51,23 @@ assign in_prdata  = data[31:0];
 `elsif XIP_FLASH
 
   // state machine encode
-  localparam IDLE_NORMAL_SPI  = 4'b0000;
-  localparam W_TX_REG1_REQ    = 4'b0001;
-  localparam W_TX_REG1_ACK    = 4'b0010;
-  localparam W_TX_REG0_REQ    = 4'b0011;
-  localparam W_TX_REG0_ACK    = 4'b0100;
-  localparam W_DIV_REQ        = 4'b0101;
-  localparam W_DIV_ACK        = 4'b0110;
-  localparam W_SS_REQ         = 4'b0111;
-  localparam W_SS_ACK         = 4'b1000;
-  localparam W_CTRL_REQ       = 4'b1001;
-  localparam W_CTRL_ACK       = 4'b1010;
-  localparam POLL_REQ         = 4'b1011;
-  localparam POLL_ACK         = 4'b1100;
-  localparam GET_DATA_REQ     = 4'b1101;
-  localparam GET_DATA_ACK     = 4'b1110;
+  localparam IDLE_NORMAL_SPI  = 5'b00000;
+  localparam W_TX_REG1_REQ    = 5'b00001;
+  localparam W_TX_REG1_ACK    = 5'b00010;
+  localparam W_TX_REG0_REQ    = 5'b00011;
+  localparam W_TX_REG0_ACK    = 5'b00100;
+  localparam W_DIV_REQ        = 5'b00101;
+  localparam W_DIV_ACK        = 5'b00110;
+  localparam W_SS_REQ         = 5'b00111;
+  localparam W_SS_ACK         = 5'b01000;
+  localparam W_CTRL_REQ       = 5'b01001;
+  localparam W_CTRL_ACK       = 5'b01010;
+  localparam POLL_REQ         = 5'b01011;
+  localparam POLL_ACK         = 5'b01100;
+  localparam GET_DATA_REQ     = 5'b01101;
+  localparam GET_DATA_ACK     = 5'b01110;
+  localparam W_DE_SS_REQ      = 5'b01111;
+  localparam W_DE_SS_ACK      = 5'b10000;
 
 
   // spi address map
@@ -97,7 +99,7 @@ assign in_prdata  = data[31:0];
   wire [31:0] spi_prdata;
   wire        spi_pslverr;
 
-  reg [3:0] state;
+  reg [4:0] state;
   reg [31:0] xip_addr;
 
   always @ (posedge clock) begin
@@ -284,6 +286,31 @@ assign in_prdata  = data[31:0];
             to_spi_psel     <= 'b0;
             to_spi_penable  <= 'b0;
             state           <= POLL_REQ;
+          end
+          else begin
+            to_spi_psel     <= 'b0;
+            to_spi_penable  <= 'b0;
+            state           <= W_DE_SS_REQ;
+          end
+        end
+        // de-assert ss
+        W_DE_SS_REQ: begin
+          to_spi_paddr    <= SPI_SS;
+          to_spi_psel     <= 'b1;
+          to_spi_penable  <= 'b0;
+          to_spi_pwrite   <= 'b1;
+          to_spi_pwdata   <= 32'h00000001;
+          to_spi_pstrb    <= 'b1111;
+          state           <= W_DE_SS_ACK;
+        end
+        W_DE_SS_ACK: begin
+          if (!spi_pready) begin
+            to_spi_paddr    <= SPI_SS;
+            to_spi_psel     <= 'b1;
+            to_spi_penable  <= 'b1;
+            to_spi_pwrite   <= 'b1;
+            to_spi_pwdata   <= 32'h00000001;
+            to_spi_pstrb    <= 'b1111;
           end
           else begin
             to_spi_psel     <= 'b0;
