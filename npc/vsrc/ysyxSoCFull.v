@@ -4159,7 +4159,7 @@ module ysyxSoCASIC(	// src/SoC.scala:59:9
   );	// src/SoC.scala:29:27
   CPU cpu (	// src/SoC.scala:30:23
     .clock                         (clock),
-    .reset                         (_cpu_reset_chain_io_q | reset),	// rocket-chip/src/main/scala/util/ShiftReg.scala:45:23, src/SoC.scala:62:64
+    .reset                         (/*_cpu_reset_chain_io_q |*/ reset),	// rocket-chip/src/main/scala/util/ShiftReg.scala:45:23, src/SoC.scala:62:64
     .auto_master_out_awready      (_axi4xbar_auto_anon_in_awready),	// rocket-chip/src/main/scala/amba/axi4/Xbar.scala:241:30
     .auto_master_out_awvalid      (_cpu_auto_master_out_awvalid),
     .auto_master_out_awid    (_cpu_auto_master_out_awid),
