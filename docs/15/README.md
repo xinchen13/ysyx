@@ -350,6 +350,19 @@ MISO                                                                            
 - 修改PC的复位值为 `0x30000000`, 使NPC复位后从flash中取出第一条指令
 - 修改仿真环境，把程序加载,使得 `flash_read()` 从 pmem 中取数据(即指令)
 - 修改编译脚本，把 mrom 的地址空间修改为 flash
+- 修改 [ysyxSoCFull.v](../../npc/vsrc/ysyxSoCFull.v), disable 了 cpu_reset_chain 给出的 `_cpu_reset_chain_io_q`, 否则会出现重复取指
 
-因为flash的大小比之前使用的MROM大得多, 因此我们可以存放并执行更大的程序了, 尝试运行coremark等包含printf()的程序. 如果你运行microbench, 你会发现有不少子项会因为堆区大小不足而无法运行.
+因为flash的大小比之前使用的MROM大得多, 因此可以存放并执行更大的程序了 (coremark等包含`printf()`的程序): 为了减少coremark的运行时间, 可以 rtfsc , 发现可以指定 ITERATION
 
+#### 通过中断等待SPI master传输完成 (tbc)
+我们的XIP实现是通过轮询的方式不断查询SPI master的传输是否完成, 事实上, SPI master还支持中断通知模式, 设置控制寄存器的IE位后, SPI master在传输结束后将会发出中断信号, XIP模式的状态机可以通过等待这个中断信号来等待SPI master传输完成. 尽管这不会带来显著的性能提升, 但在实际的系统中, 等待中断的实现可以节省能耗, 因为轮询方式发起的请求和回复并没有对系统的运行带来实际的贡献
+
+### 存储密度更大的随机存储器
+通过flash解决了MROM只能存放小程序的问题后, 我们还需要考虑数据的存放. 如果程序需要写入的数据过多, 超过SRAM能提供的8KB, 那这个程序还无法在ysyxSoC上运行. 为此, 我们需要一个更大的, 而且可以支持CPU执行store指令的存储器
+
+#### PSRAM颗粒
+有一类DRAM颗粒在内部集成了刷新的逻辑, 称为PSRAM(Pseudo Static Random Access Memory)颗粒. PSRAM控制器无需实现刷新的功能, 也无需关心PSRAM颗粒的内部结构, 因此这种颗粒使用起来与SRAM很类似: 只需给出地址, 数据和读写命令, 就可以访问颗粒中的数据. 一个例子是型号为IS66WVS4M8ALL的PSRAM颗粒, 它能提供4MB的存储空间, 更多信息可参考相关的手册.
+
+有了PSRAM, 我们就可以尝试让ysyxSoC向程序提供更大的可写内存区间. 与通过SPI协议访问flash颗粒类似, PSRAM颗粒也提供了SPI接口. 不过, 和flash不同, PSRAM一般作为系统的内存, 因此有必要提供更高效的访问方式.
+
+通过SPI总

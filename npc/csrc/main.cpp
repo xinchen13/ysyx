@@ -23,7 +23,10 @@ int main(int argc, char** argv) {
 
     // ----------------------- initialization ---------------------------------
     init_monitor(argc, argv);
-    init_fast_flash();           // for simulation
+
+    #ifndef CONFIG_XIP_FLASH
+        init_fast_flash();           // for simulation
+    #endif
 
 
     // ------------------- drive the DUT and monitor --------------------------
