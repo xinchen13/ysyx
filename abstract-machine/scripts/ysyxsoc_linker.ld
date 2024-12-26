@@ -1,5 +1,5 @@
 ENTRY(_start)
-PHDRS { text PT_LOAD; data PT_LOAD; }
+PHDRS { text PT_LOAD; data PT_LOAD; bss PT_LOAD;}
 
 MEMORY {
   mrom  : ORIGIN = 0x20000000, LENGTH = 4K
@@ -34,7 +34,7 @@ SECTIONS {
     *(.sbss*)
     *(.scommon)
     _bss_end = .;
-  } > sram AT> flash
+  } > sram AT> flash : bss
   _stack_top = 0x0f001000;
   . = _stack_top + 0x03fc;
   _stack_pointer = .;
