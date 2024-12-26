@@ -125,7 +125,7 @@ void mrom_read(int32_t addr, int32_t *data) {
 
 #ifdef CONFIG_XIP_FLASH
 void flash_read(int32_t addr, int32_t *data) {
-    int aligned_address = addr & (~0x3u);
+    uint32_t aligned_address = (addr & (~0x3u)) + CONFIG_MBASE;
     if (aligned_address >= CONFIG_MBASE && aligned_address <= (CONFIG_MBASE + CONFIG_MSIZE)) {
         int read_data = paddr_read(aligned_address, 4);
         // memory trace
