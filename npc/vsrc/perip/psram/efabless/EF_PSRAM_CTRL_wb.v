@@ -116,7 +116,9 @@ module EF_PSRAM_CTRL_wb (
 
     wire [7:0]  byte3 = dat_i[31:24];
 
-    wire [31:0] wdata = {byte3, byte2, byte1, byte0};
+    // wire [31:0] wdata = {byte3, byte2, byte1, byte0};
+
+    wire [31:0] wdata = dat_i;
 
     // /*
     wire [1:0]  waddr = (size==1 && sel_i[0]==1) ? 2'b00 :

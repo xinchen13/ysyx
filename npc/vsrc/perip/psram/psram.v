@@ -136,7 +136,7 @@ module psram(
                 8'd6: wdata[31:28]    <= din[3:0];
                 8'd7: begin
                     wdata[27:24]    <= din[3:0];
-                    psram_write({8'b0, addr}, {wdata[31:28], din[3:0], wdata[23:0]}, 32'h0f << addr[1:0]);
+                    psram_write({8'b0, addr}, {wdata[31:28], din[3:0], wdata[23:0]}, 32'h0f);
                 end
                 default: wdata        <= 32'd0;
             endcase
