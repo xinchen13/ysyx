@@ -176,7 +176,7 @@ void psram_write(int addr, int data, int wmask) {
     char *byte_ptr = (char *)wdata_ptr;
     for (int i = 0; i < 4; i++) {
         if (wmask & (1u << i)) {
-            host_write((psram+addr+i-CONFIG_PSRAM_BASE), 1, *(byte_ptr + i));
+            host_write((psram+addr+i), 1, *(byte_ptr + i));
         }
     }
 
