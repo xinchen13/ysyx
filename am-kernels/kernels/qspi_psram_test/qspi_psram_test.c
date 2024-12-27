@@ -13,8 +13,8 @@ int main(const char *args) {
     putstr("writing psram\n");
     // outb(0x80000134, 0x74);
     // outw(0x80000135, 0x7576);
-    outb(0x80000137, 0x72);
     outl(0x80000134, 0x74757677);
+    outb(0x80000137, 0x72);
     putstr("reading psram\n");
     read_data = inl(0x80000134);
     putstr("End\n");
