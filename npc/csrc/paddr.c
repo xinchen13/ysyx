@@ -4,7 +4,9 @@
 #include "reg.h"
 #include "fast_flash.h"
 
-static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
+static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {}; // pmem is flash now
+
+static uint8_t psram[CONFIG_PSRAM_SIZE] PG_ALIGN = {};   // psram
 
 
 uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
@@ -24,9 +26,14 @@ static void out_of_bound(paddr_t addr) {
         addr, PMEM_LEFT, PMEM_RIGHT, core.pc);
 }
 
+void init_psram() {
+    memset(psram, 0x73, CONFIG_PSRAM_SIZE);
+    Log("psram memory area [" FMT_PADDR ", " FMT_PADDR "]", CONFIG_PSRAM_BASE, CONFIG_PSRAM_BASE+CONFIG_PSRAM_SIZE);
+}
+
 void init_mem() {
     memset(pmem, rand(), CONFIG_MSIZE);
-    Log("physical memory area [" FMT_PADDR ", " FMT_PADDR "]", PMEM_LEFT, PMEM_RIGHT);
+    Log("flash memory area [" FMT_PADDR ", " FMT_PADDR "]", PMEM_LEFT, PMEM_RIGHT);
 }
 
 word_t paddr_read(paddr_t addr, int len) {
@@ -139,5 +146,46 @@ void flash_read(int32_t addr, int32_t *data) {
         Assert(0, "wrong read: " FMT_PADDR, addr);
     }
 }
-
 #endif
+
+int psram_read(int addr) {
+    // raddr & ~0x3u
+    uint32_t aligned_address = (addr & (~0x3u)) + CONFIG_PSRAM_BASE;
+    // Log(" read %d (bytes)  @addr = " FMT_WORD, 4, aligned_address);
+    if (aligned_address >= CONFIG_PSRAM_BASE && aligned_address <= (CONFIG_PSRAM_BASE + CONFIG_PSRAM_SIZE)) {
+        int read_data = host_read((psram + aligned_address - CONFIG_PSRAM_BASE), 4);
+        // memory trace
+        #ifdef CONFIG_MTRACE
+            Log(" read %d (bytes)  @addr = " FMT_WORD, 4, aligned_address);
+        #endif 
+        return read_data;
+    }
+
+    else {
+        isa_reg_display();
+        Assert(0, "wrong read: " FMT_PADDR, addr);
+    }
+}
+
+
+void psram_write(int addr, int data, int wmask) {
+    uint32_t aligned_address = (addr & (~0x3u)) + CONFIG_PSRAM_BASE;
+
+    if (aligned_address >= CONFIG_PSRAM_BASE && aligned_address <= (CONFIG_PSRAM_BASE + CONFIG_PSRAM_SIZE)) {
+        // memory trace
+        #ifdef CONFIG_MTRACE
+            Log("write %d (bytes)  @addr = " FMT_WORD, 4, aligned_address);
+        #endif 
+        int *wdata_ptr = &data;
+        char *byte_ptr = (char *)wdata_ptr;
+        for (int i = 0; i < 4; i++) {
+            if (wmask & (1u << i)) {
+                host_write((psram+aligned_address+i-CONFIG_PSRAM_BASE), 1, *(byte_ptr + i));
+            }
+        }
+    }
+    else {
+        isa_reg_display();
+        Assert(0, "wrong write: " FMT_PADDR, addr);
+    }
+}

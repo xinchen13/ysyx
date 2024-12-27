@@ -4,6 +4,8 @@
 // ---------------------------- configs -----------------------------
 #define CONFIG_MBASE 0x30000000u
 #define CONFIG_MSIZE 0xffffffu
+#define CONFIG_PSRAM_BASE 0x80000000u
+#define CONFIG_PSRAM_SIZE 0x00ffffffu   // 16MiB
 #define CONFIG_BATCH_MODE 1
 #define CONFIG_RVE 1
 #define CONFIG_XIP_FLASH 1
