@@ -17,10 +17,11 @@ int main(const char *args) {
     putstr("reading psram\n");
     read_data = inl(0x80000134);
     putstr("End\n");
-    putch((uint8_t)read_data);
-    putch((uint8_t)(read_data>>8));
-    putch((uint8_t)(read_data>>16));
     putch((uint8_t)(read_data>>24));
+    putch((uint8_t)(read_data>>16));
+    putch((uint8_t)(read_data>>8));
+    putch((uint8_t)read_data);
+    
     putch('\n');
 
     return 0;
