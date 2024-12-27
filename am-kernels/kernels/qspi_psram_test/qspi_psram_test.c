@@ -20,7 +20,7 @@ int main(const char *args) {
     putstr("End\n");
     putch((uint8_t)(read_data>>24));
     putch((uint8_t)(read_data>>16));
-    putch((uint8_t)(read_data>>8));
+    putch(inb(0x80000135));
     putch((uint8_t)read_data);
     
     putch('\n');
