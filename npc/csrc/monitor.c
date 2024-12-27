@@ -119,6 +119,7 @@ void init_monitor(int argc, char *argv[]) {
 
     /* Initialize memory. */
     init_mem();
+    init_psram();
 
     /* Load the image to memory. This will overwrite the built-in image. */
     long img_size = load_img();

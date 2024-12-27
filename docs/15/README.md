@@ -201,7 +201,7 @@ SECTIONS {
 - 只需要在程序运行前调用 `memcpy()`
 - 具体实现上, 在 ysyxsoc 的 `trm.c` 中新增一个 `bootloader()` 函数，使用指针加载数据、为未初始化数据赋0
 
-实现后能成功运行 `cpu-tests` 中除 `string` 外的所有测试
+实现后能成功运行 `cpu-tests` 中除 `string` 外的所有测试 (update: `string` 不能运行是因为ld script没有正确设置bss段的内存映射, 已解决)
 
 ### 通过串口输出
 
