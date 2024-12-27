@@ -150,10 +150,10 @@ void flash_read(int32_t addr, int32_t *data) {
 
 int psram_read(int addr) {
     // raddr & ~0x3u
-    int aligned_address = (addr & (~0x3u)) + CONFIG_PSRAM_BASE;
+    uint32_t aligned_address = (addr & (~0x3u)) + CONFIG_PSRAM_BASE;
     Log(" read %d (bytes)  @addr = " FMT_WORD, 4, aligned_address);
     if (aligned_address >= CONFIG_PSRAM_BASE && aligned_address <= (CONFIG_PSRAM_BASE + CONFIG_PSRAM_SIZE)) {
-        int read_data = host_read(psram + aligned_address - CONFIG_PSRAM_BASE, 4);
+        int read_data = host_read((psram + aligned_address - CONFIG_PSRAM_BASE), 4);
         // memory trace
         #ifdef CONFIG_MTRACE
             Log(" read %d (bytes)  @addr = " FMT_WORD, 4, aligned_address);
