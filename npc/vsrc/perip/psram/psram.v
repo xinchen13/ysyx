@@ -1,5 +1,5 @@
 import "DPI-C" function int psram_read(input int addr);
-import "DPI-C" function void psram_write(input int addr, input int data);
+import "DPI-C" function void psram_write(input int addr, input int data, input int wmask);
 
 // reference: ../perip/flash/flash.v
 
@@ -17,6 +17,7 @@ module psram(
     reg [7:0]  cmd;
     reg [23:0] addr;
     reg [31:0] rdata;
+    reg [31:0] wdata;
 
     reg [3:0] dout;
     wire [3:0] din = dio;
@@ -26,7 +27,7 @@ module psram(
     assign dio[2] = douten[2] ? dout[2] : 1'bz;
     assign dio[3] = douten[3] ? dout[3] : 1'bz;
     
-
+    // state machine
     always @ (posedge sck or posedge reset) begin
         if (reset) begin
             state <= cmd_t;
@@ -48,6 +49,7 @@ module psram(
         end
     end
 
+    // bit counter
     always @ (posedge sck or posedge reset) begin
         if (reset) begin 
             counter <= 8'd0;
@@ -62,6 +64,7 @@ module psram(
         end
     end
 
+    // get command
     always @ (posedge sck or posedge reset) begin
         if (reset) begin
             cmd <= 8'd0;
@@ -71,6 +74,7 @@ module psram(
         end
     end
 
+    // get address
     always @ (posedge sck or posedge reset) begin
         if (reset) begin
             addr <= 24'd0;
@@ -80,6 +84,7 @@ module psram(
         end
     end
 
+    // dpic read
     always @ (posedge sck or posedge reset) begin
         if (reset) begin
             rdata <= 32'd0;
@@ -89,6 +94,7 @@ module psram(
         end
     end
 
+    // read data
     always @ (posedge sck or posedge reset) begin
         if (reset) begin
             dout <= 4'b0;
@@ -108,6 +114,33 @@ module psram(
         end
     end
 
-
+    // write data
+    always @ (posedge sck or posedge reset) begin
+        if (reset) begin
+            wdata <= 32'd0;
+        end
+        else if ((state == write_t)) begin
+            case (counter)
+                8'd0: wdata[7:4]      <= din[3:0];
+                8'd1: begin
+                    wdata[3:0]      <= din[3:0];
+                    psram_write({8'b0, addr}, {24'b0, wdata[7:4], din[3:0]}, 32'h01);
+                end
+                8'd2: wdata[15:12]    <= din[3:0];
+                8'd3: begin
+                    wdata[11:8]     <= din[3:0];
+                    psram_write({8'b0, addr}, {16'b0, wdata[15:12], din[3:0], wdata[7:0]}, 32'h03);
+                end
+                8'd4: wdata[23:20]    <= din[3:0];
+                8'd5: wdata[19:16]    <= din[3:0];
+                8'd6: wdata[31:28]    <= din[3:0];
+                8'd7: begin
+                    wdata[27:24]    <= din[3:0];
+                    psram_write({8'b0, addr}, {wdata[31:28], din[3:0], wdata[23:0]}, 32'h0f);
+                end
+                default: wdata        <= 32'd0;
+            endcase
+        end
+    end
 
 endmodule

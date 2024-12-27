@@ -168,6 +168,24 @@ int psram_read(int addr) {
 }
 
 
-void psram_write(int addr, int data) {
-    ;
+void psram_write(int addr, int data, int wmask) {
+    uint32_t aligned_address = (addr & (~0x3u)) + CONFIG_PSRAM_BASE;
+
+    if (aligned_address >= CONFIG_PSRAM_BASE && aligned_address <= (CONFIG_PSRAM_BASE + CONFIG_PSRAM_SIZE)) {
+        // memory trace
+        #ifdef CONFIG_MTRACE
+            Log("write %d (bytes)  @addr = " FMT_WORD, 4, aligned_address);
+        #endif 
+        int *wdata_ptr = &data;
+        char *byte_ptr = (char *)wdata_ptr;
+        for (int i = 0; i < 4; i++) {
+            if (wmask & (1u << i)) {
+                paddr_write(aligned_address+i, 1, *(byte_ptr + i));
+            }
+        }
+    }
+    else {
+        isa_reg_display();
+        Assert(0, "wrong write: " FMT_PADDR, addr);
+    }
 }

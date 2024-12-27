@@ -10,9 +10,13 @@ static inline void outl(uintptr_t addr, uint32_t data) { *(volatile uint32_t *)a
 
 int main(const char *args) {
     uint32_t read_data;
-    putstr("Start - reading psram\n");
+    putstr("writing psram\n");
+    outb(0x80000134, 0x74);
+    outw(0x80000135, 0x7576);
+    outb(0x80000137, 0x77);
+    putstr("reading psram\n");
     read_data = inl(0x80000134);
-    putstr("End - reading psram\n");
+    putstr("End\n");
     putch((uint8_t)read_data);
     putch((uint8_t)(read_data>>8));
     putch((uint8_t)(read_data>>16));
