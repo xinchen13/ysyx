@@ -124,19 +124,19 @@ module psram(
                 8'd0: wdata[7:4]      <= din[3:0];
                 8'd1: begin
                     wdata[3:0]      <= din[3:0];
-                    psram_write({8'b0, addr}, {24'b0, wdata[7:4], din[3:0]}, 32'h01 << addr[1:0]);
+                    psram_write({8'b0, addr}, ({24'b0, wdata[7:4], din[3:0]}) << ({3'b0, addr[1:0]} << 3), 32'h01 << addr[1:0]);
                 end
                 8'd2: wdata[15:12]    <= din[3:0];
                 8'd3: begin
                     wdata[11:8]     <= din[3:0];
-                    psram_write({8'b0, addr}, {16'b0, wdata[15:12], din[3:0], wdata[7:0]}, 32'h03 << addr[1:0]);
+                    psram_write({8'b0, addr}, ({16'b0, wdata[15:12], din[3:0], wdata[7:0]} << ({3'b0, addr[1:0]} << 3)), 32'h03 << addr[1:0]);
                 end
                 8'd4: wdata[23:20]    <= din[3:0];
                 8'd5: wdata[19:16]    <= din[3:0];
                 8'd6: wdata[31:28]    <= din[3:0];
                 8'd7: begin
                     wdata[27:24]    <= din[3:0];
-                    psram_write({8'b0, addr}, {wdata[31:28], din[3:0], wdata[23:0]}, 32'h0f << addr[1:0]);
+                    psram_write({8'b0, addr}, {wdata[31:28], din[3:0], wdata[23:0]}, 32'h0f);
                 end
                 default: wdata        <= 32'd0;
             endcase
