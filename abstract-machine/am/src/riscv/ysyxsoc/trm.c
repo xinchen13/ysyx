@@ -22,7 +22,7 @@ void load_to_psram() {
     while (dst < &_tmp_psram_load_end) {
         *dst++ = *src++;
     }
-    jump_to_address(PSRAM_PRGM_BASE + 0xd0);
+    jump_to_address(PSRAM_PRGM_BASE + 0xd4);
 }
 
 
