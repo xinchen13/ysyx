@@ -19,8 +19,6 @@ module psram(
     reg [31:0] rdata;
     reg [31:0] wdata;
 
-    reg write_enable;
-
     reg [3:0] dout;
     wire [3:0] din = dio;
     wire [3:0] douten = (state == read_t) ? 4'b1111 : 4'b0000;
@@ -33,20 +31,12 @@ module psram(
     always @ (posedge sck or posedge reset) begin
         if (reset) begin
             state <= cmd_t;
-            write_enable <= 1'b0;
         end
         else begin
             case (state)
-                cmd_t:  begin
-                    state <= (counter == 8'd7 ) ? addr_t : state;
-                end
-                addr_t: begin
-                    state <= (counter == 8'd5) ? (cmd == 8'hEB ? wait_t : cmd == 8'h38 ? wait_t : err_t) : state;
-                    write_enable <= (cmd == 8'h38) ? 1'b1 : 1'b0;
-                end
-                wait_t: begin
-                    state <= (counter == 8'd5) ? (write_enable ? write_t : read_t) : state;
-                end
+                cmd_t:  state <= (counter == 8'd7 ) ? addr_t : state;
+                addr_t: state <= (counter == 8'd5) ? (cmd == 8'hEB ? wait_t : cmd == 8'h38 ? wait_t : err_t) : state;
+                wait_t: state <= (counter == 8'd5) ? read_t : state;
                 read_t: state <= state;
                 write_t: state <= state;
 
