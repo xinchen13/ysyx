@@ -408,5 +408,4 @@ ysyxSoC集成了PSRAM控制器的实现, 并将PSRAM存储空间映射到CPU的�
 #### 运行更大的程序
 有了PSRAM的支持, 我们就可以尝试把数据段分配在PSRAM, 从而支持运行更大的程序.
 
-在ysyxSoC上运行microbench:
-- 之前我们把数据段和堆区分配在8KB的SRAM中, 而运行microbench所需要的内存大于8KB, 因此有不少子项无法运行. 将数据段和堆区分配在4MB的PSRAM后, 应该能看到microbench可以成功运行test规模的所有测试.
+在ysyxSoC上运行microbench: 之前我们把数据段和堆区分配在8KB的SRAM中, 而运行microbench所需要的内存大于8KB, 因此有不少子项无法运行. 修改链接脚本, 将数据段和堆区分配在4MB的PSRAM, 栈区依然在8K的SRAM, microbench可以成功运行test规模的所有测试, 由于当前没有timer, 因此打印的时间没有价值
