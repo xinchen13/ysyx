@@ -390,7 +390,7 @@ ysyxSoC集成了PSRAM控制器的实现, 并将PSRAM存储空间映射到CPU的�
 # 实现PSRAM颗粒的仿真行为模型
 实现IS66WVS4M8ALL颗粒的仿真行为模型. 你只需要实现SPI Mode的`Quad IO Read`和`Quad IO Write`两种命令即可, 它们的命令编码分别为`EBh`和`38h`, PSRAM控制器也只会向PSRAM颗粒发送这两种命令. 手册中还有一个QPI Mode, 其含义与上文提到的QSPI不同, 目前可忽略
 
-- 在[perip/psram/psram.v](../../npc/vsrc/perip/psram/psram.v)中实现相应代码
+- 在[perip/psram/psram.v](../../npc/vsrc/perip/psram/psram.v)中实现相应代码(作为qspi协议的slave, 可以参考flash的实现), 
 - 端口`ce_n`的含义与SPI总线协议中的`SS`相同, 低电平有效
 - 端口`dio`声明为`inout`类型, 再配合一个用于输出使能信号, 可实现三态逻辑, 在同一时刻可用于输入或输出, 用于实现信号的半双工传输 (在ASIC流程中, 需要显式实例化标准单元库中的三态逻辑单元, 不过此处我们仅在仿真环境中测试, 因此无需调用标准单元库)
 - 存储阵列只需要实现成一个字长为`8 bit`的二维数组, 无需关心其物理组织结构, 重点关注QSPI协议的实现即可. 此外, 因为PSRAM不是非易失存储器, 无需在仿真环境初始化时设置其内容, 因此可直接在Verilog代码中定义存储阵列, 亦可通过DPI-C访问在C++代码中定义的数组, 从而方便被mtrace追踪
