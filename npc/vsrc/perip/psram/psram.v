@@ -35,7 +35,7 @@ module psram(
         else begin
             case (state)
                 cmd_t:  state <= (counter == 8'd7 ) ? addr_t : state;
-                addr_t: state <= (counter == 8'd5) ? (cmd == 8'hEB ? wait_t : cmd == 8'h38 ? wait_t : err_t) : state;
+                addr_t: state <= (counter == 8'd5) ? (cmd == 8'hEB ? wait_t : cmd == 8'h38 ? write_t : err_t) : state;
                 wait_t: state <= (counter == 8'd5) ? read_t : state;
                 read_t: state <= state;
                 write_t: state <= state;
