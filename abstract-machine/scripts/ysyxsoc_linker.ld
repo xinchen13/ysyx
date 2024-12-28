@@ -38,6 +38,7 @@ SECTIONS {
 
   _tmp_psram_load_start = ALIGN(0x10);
   _tmp_psram_load_end = _tmp_psram_load_start + 0x2000;
+  . = _tmp_psram_load_end;
   _heap_start = ALIGN(0x10);
   _heap_end = ORIGIN(psram) + LENGTH(psram);
 
