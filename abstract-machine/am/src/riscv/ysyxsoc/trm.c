@@ -1,6 +1,33 @@
 #include <am.h>
 #include <klib-macros.h>
 
+// ************** load to psram **************
+extern char _tmp_psram_load_start;
+extern char _tmp_psram_load_end;
+#define PSRAM_PRGM_BASE      (uintptr_t)&_tmp_psram_load_start
+#define FLASH_PRGM_BASE      0x30000000L
+
+void jump_to_address(uint32_t base_address) {
+    asm volatile (
+        "jr %0;"
+        :
+        : "r" (base_address)
+        :
+    );
+}
+
+void load_to_psram() {
+    char *src = (char *)FLASH_PRGM_BASE;
+    char *dst = (char *)PSRAM_PRGM_BASE;
+    while (dst < &_tmp_psram_load_end) {
+        *dst++ = *src++;
+    }
+    jump_to_address(PSRAM_PRGM_BASE);
+}
+
+
+// *******************************************
+
 // *************** bootloader ****************
 extern char _mdata, _data_start, _data_end, _bss_start, _bss_end;
 void bootloader() {
@@ -12,6 +39,7 @@ void bootloader() {
     /* Zero bss.  */
     for (dst = &_bss_start; dst< &_bss_end; dst++)
         *dst = 0;
+    load_to_psram();    // load to psram
 }
 // *******************************************
 
