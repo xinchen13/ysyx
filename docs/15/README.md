@@ -387,13 +387,20 @@ Dual SPI协议利用了这一点, 可以将基础SPI协议中的`MOSI`和`MISO`�
 
 ysyxSoC集成了PSRAM控制器的实现, 并将PSRAM存储空间映射到CPU的地址空间`0x8000_0000~0x9fff_ffff`. PSRAM控制器的代码位于`ysyxSoC/perip/psram/efabless/`目录下, 采用wishbone总线协议, 我们已经将其封装成APB总线协议 (见`ysyxSoC/perip/psram/psram_top_apb.v`), 并将其接入到ysyxSoC的APB Xbar中. PSRAM控制器会将接收到的总线事务翻译成发往PSRAM颗粒的命令. 我们选择模拟型号为IS66WVS4M8ALL的PSRAM颗粒, 它支持QSPI协议, 因此ysyxSoC集成的PSRAM控制器可以通过QSPI协议与PSRAM颗粒进行通信, 从而可以使用更高效的命令访问PSRAM. ysyxSoC已经将PSRAM颗粒与PSRAM控制器相连, 但未提供PSRAM颗粒相关的代码, 为了在ysyxSoC中使用PSRAM, 还需要实现PSRAM颗粒的仿真行为模型:
 
-# 实现PSRAM颗粒的仿真行为模型
+#### 实现PSRAM颗粒的仿真行为模型
 实现IS66WVS4M8ALL颗粒的仿真行为模型. 你只需要实现SPI Mode的`Quad IO Read`和`Quad IO Write`两种命令即可, 它们的命令编码分别为`EBh`和`38h`, PSRAM控制器也只会向PSRAM颗粒发送这两种命令. 手册中还有一个QPI Mode, 其含义与上文提到的QSPI不同, 目前可忽略
 
-- 在[perip/psram/psram.v](../../npc/vsrc/perip/psram/psram.v)中实现相应代码(作为qspi协议的slave, 可以参考flash的实现), 
+- 在[perip/psram/psram.v](../../npc/vsrc/perip/psram/psram.v)中实现相应代码(作为qspi协议的slave, 可以参考flash的实现), 注意读需要wait, 写不需要. 还需要修改qspi的master, 发送地址时加入低两位的, 作为偏置供slave移位使用 
 - 端口`ce_n`的含义与SPI总线协议中的`SS`相同, 低电平有效
 - 端口`dio`声明为`inout`类型, 再配合一个用于输出使能信号, 可实现三态逻辑, 在同一时刻可用于输入或输出, 用于实现信号的半双工传输 (在ASIC流程中, 需要显式实例化标准单元库中的三态逻辑单元, 不过此处我们仅在仿真环境中测试, 因此无需调用标准单元库)
-- 存储阵列只需要实现成一个字长为`8 bit`的二维数组, 无需关心其物理组织结构, 重点关注QSPI协议的实现即可. 此外, 因为PSRAM不是非易失存储器, 无需在仿真环境初始化时设置其内容, 因此可直接在Verilog代码中定义存储阵列, 亦可通过DPI-C访问在C++代码中定义的数组, 从而方便被mtrace追踪
+- 存储阵列只需要实现成一个字长为`8 bit`的二维数组, 无需关心其物理组织结构, 重点关注QSPI协议的实现即可. 此外, 因为PSRAM不是非易失存储器, 无需在仿真环境初始化时设置其内容, 通过DPI-C访问在C++代码中定义的数组psram, 从而方便被mtrace追踪
 - 关于尾端和时钟相位等细节, 可RTFM参考相关手册, 或RTFSC参考PSRAM控制器的代码
-- 为了正确实现PSRAM控制器和PSRAM颗粒的通信, 无需修改PSRAM控制器的代码
+- 为了正确实现PSRAM控制器和PSRAM颗粒的通信, 无需修改PSRAM控制器的代码 (反正我不流片，就改就改)
+- 使用简单的case测试: [qspi_psram_test.c](../../am-kernels/kernels/qspi_psram_test/qspi_psram_test.c)
+
+#### 实现支持QPI协议的PSRAM颗粒行为模型 (tbc)
+在QSPI之上还有一种称为QPI的协议, 它还能进一步提升命令部分的传输效率, 即命令, 地址和数据都按`4 bit`传输, 记为`(4-4-4)`. 不过为了兼容旧的SPI master, slave上电时一般处于基础SPI模式, 此时通过基础SPI协议通信. 如果slave支持QPI协议, 它将提供一个切换到QPI模式的命令, master可以复位后发送该命令将slave切换到QPI模式, 然后使用QPI协议与其通信. 注意这个功能的添加对上层软件是透明的, 上层软件无需进行任何改动, 就能提升访问PSRAM的效率:
+
+- rtfm 得到切换QPI模式的命令为 `0x35`
+- 懒得修改psram控制器了，直接让psram在复位时进入QPI模式 (当然用来流片肯定是不行的)
 - 实现后, 通过`mem-test`测试一小段PSRAM的访问(如4KB), 检查实现是否正确. 注意到目前flash已经提供了更大的存储空间来存放程序, 因此你可以在mem-test中调用`printf()`来帮助你输出调试信息, 尤其是可以输出一些和测试进度相关的信息, 从而得知测试是否正常进行中
