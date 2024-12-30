@@ -43,8 +43,10 @@ SECTIONS {
 
     /* read-only data section */
     .rodata : {
+        . = ALIGN(0x4);
         *(.rodata*)
         *(.srodata*)
+        . = ALIGN(0x4);
     } > psram AT> flash : rodata
 
     /* data section */
