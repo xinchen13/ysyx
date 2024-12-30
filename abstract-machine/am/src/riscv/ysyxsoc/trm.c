@@ -57,9 +57,9 @@ void _trm_init() {
 extern unsigned char _text_section_start, _data_section_end, _text_section_src;
 extern unsigned char _bss_start, _bss_end;
 void __attribute__((section(".ssbl"))) _ss_bootloader() {
-    unsigned char *src = &_text_section_src;
-    unsigned char *dest = &_text_section_start;
-    unsigned char *end = &_data_section_end;
+    uint32_t *src = (uint32_t *)&_text_section_src;
+    uint32_t *dest = (uint32_t *)&_text_section_start;
+    uint32_t *end = (uint32_t *)&_data_section_end;
     while (dest <= end) {
         *dest = *src;
         dest++;
