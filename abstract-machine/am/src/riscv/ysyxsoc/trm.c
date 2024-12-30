@@ -60,14 +60,14 @@ void __attribute__((section(".ssbl"))) _ss_bootloader() {
     uint32_t *src = (uint32_t *)&_text_section_src;
     uint32_t *dest = (uint32_t *)&_text_section_start;
     uint32_t *end = (uint32_t *)&_data_section_end;
-    while (dest <= end) {
+    while (dest < end) {
         *dest = *src;
         dest++;
         src++;
     }
     unsigned char *bss_src = &_bss_start;
     unsigned char *bss_end = &_bss_end;
-    while (bss_src <= bss_end) {
+    while (bss_src < bss_end) {
         *(bss_src++) = 0;
     }
     _trm_init();
@@ -79,7 +79,7 @@ void __attribute__((section(".fsbl"))) _fs_bootloader() {
     unsigned char *src = &_ssbl_section_src;
     unsigned char *dest = &_ssbl_section_start;
     unsigned char *end = &_ssbl_section_end;
-    while (dest <= end) {
+    while (dest < end) {
         *dest = *src;
         dest++;
         src++;
