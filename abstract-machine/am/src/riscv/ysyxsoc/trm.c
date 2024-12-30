@@ -1,21 +1,6 @@
 #include <am.h>
 #include <klib-macros.h>
 
-// *************** bootloader ****************
-extern char _mdata, _data_start, _data_end, _bss_start, _bss_end;
-void bootloader() {
-    char *src = &_mdata;
-    char *dst = &_data_start;
-    /* ROM has data at end of text; copy it.  */
-    while (dst < &_data_end)
-        *dst++ = *src++;
-    /* Zero bss.  */
-    for (dst = &_bss_start; dst< &_bss_end; dst++)
-        *dst = 0;
-}
-// *******************************************
-
-
 // ****************** uart *******************
 #define UART_BASE       0x10000000L
 #define TX_REG          (UART_BASE + 0x0)
@@ -62,8 +47,43 @@ void halt(int code) {
 }
 
 void _trm_init() {
-    bootloader();
     uart_init();
     int ret = main(mainargs);
     halt(ret);
 }
+
+// *************** bootloader ****************
+// ss-bootloader
+extern unsigned char _text_section_start, _data_section_end, _text_section_src;
+extern unsigned char _bss_start, _bss_end;
+void __attribute__((section(".ssbl"))) _ss_bootloader() {
+    uint32_t *src = (uint32_t *)&_text_section_src;
+    uint32_t *dest = (uint32_t *)&_text_section_start;
+    uint32_t *end = (uint32_t *)&_data_section_end;
+    while (dest <= end) {
+        *dest = *src;
+        dest++;
+        src++;
+    }
+    unsigned char *bss_src = &_bss_start;
+    unsigned char *bss_end = &_bss_end;
+    while (bss_src <= bss_end) {
+        *(bss_src++) = 0;
+    }
+    _trm_init();
+}
+
+// fs-bootloader
+extern unsigned char _ssbl_section_start, _ssbl_section_end, _ssbl_section_src;
+void __attribute__((section(".fsbl"))) _fs_bootloader() {
+    unsigned char *src = &_ssbl_section_src;
+    unsigned char *dest = &_ssbl_section_start;
+    unsigned char *end = &_ssbl_section_end;
+    while (dest <= end) {
+        *dest = *src;
+        dest++;
+        src++;
+    }
+    _ss_bootloader();
+}
+// *******************************************
