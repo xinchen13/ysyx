@@ -22,11 +22,11 @@ SECTIONS {
     /* second stage bootloader */
     _ssbl_section_src = LOADADDR(.ssbl);
     .ssbl : {
-        . = ALIGN(0x4);
         _ssbl_section_start = .;
-        *(.ssbl)
         . = ALIGN(0x4);
+        *(.ssbl)
         _ssbl_section_end = .;
+        . = ALIGN(0x4);
     } > sram AT> flash : ssbl
 
     /* text section */
