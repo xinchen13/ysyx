@@ -1,5 +1,5 @@
 ENTRY(_start)
-PHDRS { text PT_LOAD; data PT_LOAD; bss PT_LOAD;}
+PHDRS {fsbl PT_LOAD; ssbl PT_LOAD; text PT_LOAD; rodata PT_LOAD; data PT_LOAD; bss PT_LOAD;}
 
 MEMORY {
     mrom  : ORIGIN = 0x20000000, LENGTH = 4K
@@ -10,30 +10,64 @@ MEMORY {
 
 SECTIONS {
     . = ORIGIN(flash);
-    .text : {
+
+    /* first stage bootloader */
+    .fsbl : {
+        . = ALIGN(0x4);
         *(entry)
+        *(.fsbl)
+        . = ALIGN(0x4);
+    } > flash AT> flash : fsbl
+
+    /* second stage bootloader */
+    _ssbl_section_src = LOADADDR(.ssbl);
+    .ssbl : {
+        _ssbl_section_start = .;
+        . = ALIGN(0x4);
+        *(.ssbl)
+        _ssbl_section_end = .;
+        . = ALIGN(0x4);
+    } > sram AT> flash : ssbl
+
+    /* text section */
+    _text_section_src = LOADADDR(.text);
+    .text : {
+        . = ALIGN(0x4);
+        _text_section_start = .;
         *(.text*)
-    } > flash AT> flash : text
+        . = ALIGN(0x4);
+        _text_section_end = .;
+    } > psram AT> flash : text
     etext = .;
     _etext = .;
+
+    /* read-only data section */
     .rodata : {
         *(.rodata*)
         *(.srodata*)
-    } > flash AT> flash
-    _mdata = .;
+    } > psram AT> flash : rodata
+
+    /* data section */
+    _data_section_src = LOADADDR(.data);
     .data : {
-        _data_start = .;
+        . = ALIGN(0x4);
+        _data_section_start = .;
         *(.data*)
         *(.sdata*)
-        _data_end = .;
+        . = ALIGN(0x4);
+        _data_section_end = .;
     } > psram AT> flash : data 
     edata = .;
     _data = .;
+
+    /* bss section */
     .bss : {
+        . = ALIGN(0x4);
         _bss_start = .;
         *(.bss*)
         *(.sbss*)
         *(.scommon)
+        . = ALIGN(0x4);
         _bss_end = .;
     } > psram AT> flash : bss
 
