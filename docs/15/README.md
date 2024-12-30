@@ -417,6 +417,9 @@ ysyxSoC集成了PSRAM控制器的实现, 并将PSRAM存储空间映射到CPU的�
 #### 通过bootloader将程序加载到PSRAM中执行
 如果程序较大, 那么bootloader加载程序的过程也会较长, 因为bootloader本身是在flash中执行的. 同样地, 我们能否将"bootloader加载程序"的代码先加载到访问效率更高的存储器中, 然后再执行"bootloader加载程序"的功能呢? 这其实是bootloader的多级加载过程: 
 
-为了方便区分, 我们可以将整个bootloader的工作拆分成 FSBL(first stage bootloader)和SSBL(second stage bootloader)两部分. 系统上电时, FSBL, SSBL和需要运行的程序都位于flash中; 首先执行的是FSBL, 它负责将SSBL从flash加载到其他存储器, 然后跳转到SSBL执行; 然后SSBL负责将接下来需要运行的程序从flash加载到PSRAM中, 然后跳转到程序并执行. 事实上, SSBL的代码并不大, 因此我们可以让FSBL将SSBL加载到SRAM中执行, 从而让SSBL执行得更快.
+为了方便区分, 我们可以将整个bootloader的工作拆分成 `FSBL(first stage bootloader)` 和 `SSBL(second stage bootloader)` 两部分. 系统上电时, `FSBL`, `SSBL` 和需要运行的程序都位于flash中; 首先执行的是`FSBL`, 它负责将`SSBL`从flash加载到其他存储器(sram), 然后跳转到`SSBL`执行; 然后SSBL负责将接下来需要运行的程序从flash加载到PSRAM中, 然后跳转到程序并执行. 
 
+- 事实上, SSBL的代码并不大, 因此我们可以让FSBL将SSBL加载到SRAM中执行, 从而让SSBL执行得更快
+- 修改 `start.S`, 开局跳转 fsbl; fsbl 跳转 ssbl; ssbl 跳转 `_trm_init()`
+- 注意四字节对齐
 - 原来只有 flash 时运行 test 规模的 microbench 需要个 161976256 cycle; 现在只需 48355692 个cycle, 有 2/3 的提升
