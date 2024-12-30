@@ -13,29 +13,23 @@ SECTIONS {
 
     /* first stage bootloader */
     .fsbl : {
-        . = ALIGN(0x4);
         *(entry)
         *(.fsbl)
-        . = ALIGN(0x4);
     } > flash AT> flash : fsbl
 
     /* second stage bootloader */
     _ssbl_section_src = LOADADDR(.ssbl);
     .ssbl : {
         _ssbl_section_start = .;
-        . = ALIGN(0x4);
         *(.ssbl)
         _ssbl_section_end = .;
-        . = ALIGN(0x4);
     } > sram AT> flash : ssbl
 
     /* text section */
     _text_section_src = LOADADDR(.text);
     .text : {
-        . = ALIGN(0x4);
         _text_section_start = .;
         *(.text*)
-        . = ALIGN(0x4);
         _text_section_end = .;
     } > psram AT> flash : text
     etext = .;
@@ -50,11 +44,9 @@ SECTIONS {
     /* data section */
     _data_section_src = LOADADDR(.data);
     .data : {
-        . = ALIGN(0x4);
         _data_section_start = .;
         *(.data*)
         *(.sdata*)
-        . = ALIGN(0x4);
         _data_section_end = .;
     } > psram AT> flash : data 
     edata = .;
@@ -62,12 +54,10 @@ SECTIONS {
 
     /* bss section */
     .bss : {
-        . = ALIGN(0x4);
         _bss_start = .;
         *(.bss*)
         *(.sbss*)
         *(.scommon)
-        . = ALIGN(0x4);
         _bss_end = .;
     } > psram AT> flash : bss
 
