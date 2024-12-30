@@ -17,7 +17,7 @@ SECTIONS {
         *(entry)
         *(.fsbl)
         . = ALIGN(0x4);
-    } > flash : fsbl
+    } > flash AT> flash : fsbl
 
     /* second stage bootloader */
     _ssbl_section_src = LOADADDR(.ssbl);
