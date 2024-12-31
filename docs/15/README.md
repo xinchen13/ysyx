@@ -437,4 +437,4 @@ ysyxSoC集成了PSRAM控制器的实现, 并将PSRAM存储空间映射到CPU的�
 - `DQ[15:0]` : 数据
 - `DQM[1:0]` : 数据掩码, 下图中的命名采用`DQML`和`DQMH`
 
-<img src="../../figs/sdram.jpg" width="500" />
+<img src="../../figs/sdram.jpg" width="600" />
