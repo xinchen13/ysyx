@@ -423,3 +423,8 @@ ysyxSoC集成了PSRAM控制器的实现, 并将PSRAM存储空间映射到CPU的�
 - 修改 `start.S`, 开局跳转 fsbl; fsbl 跳转 ssbl; ssbl 跳转 `_trm_init()`
 - 注意四字节对齐
 - 原来只有 flash 时运行 test 规模的 microbench 需要个 161976256 cycle; 现在只需 48355692 个cycle, 有 2/3 的提升
+
+#### 在PSRAM上执行RT-Thread
+目前PSRAM的容量已经足够运行RT-Thread了. 尝试通过bootloader将RT-Thread加载到PSRAM中执行: 由于当前 bootloader 不支持 RT-Thread 中的 `.data.extra` 和 `.bss.extre` 段, 暂时不准备支持, 等加了 sdram 再考虑
+
+### 
