@@ -54,8 +54,8 @@ SECTIONS {
     .data : {
         . = ALIGN(0x4);
         _data_section_start = .;
-        *(*.data*)
-        *(*.sdata*)
+        *(.data*)
+        *(.sdata*)
         . = ALIGN(0x4);
         _data_section_end = .;
     } > psram AT> flash : data 
