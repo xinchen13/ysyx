@@ -427,4 +427,14 @@ ysyxSoC集成了PSRAM控制器的实现, 并将PSRAM存储空间映射到CPU的�
 #### 在PSRAM上执行RT-Thread
 目前PSRAM的容量已经足够运行RT-Thread了. 尝试通过bootloader将RT-Thread加载到PSRAM中执行: 由于当前 bootloader 不支持 RT-Thread 中的 `.data.extra` 和 `.bss.extre` 段, 暂时不准备支持, 等加了 sdram 再考虑
 
-### 
+#### 提升访问RAM的效率
+考虑将控制器和颗粒之间的串行总线改成并行总线了. 例如, 型号为MT48LC16M16A2的DRAM颗粒内部结构如下图所示. 该颗粒的引脚有39位, 分别包括
+
+- `CLK`, `CKE` : 时钟信号和时钟使能信号
+- `CS#`, `WE#`, `CAS#`, `#RAS` : 命令信号
+- `BA[1:0]` : 存储体地址
+- `A[12:0]` : 地址
+- `DQ[15:0]` : 数据
+- `DQM[1:0]` : 数据掩码, 下图中的命名采用`DQML`和`DQMH`
+
+<img src="../../figs/sdram.jpg" width="500" />
