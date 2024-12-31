@@ -438,3 +438,5 @@ ysyxSoC集成了PSRAM控制器的实现, 并将PSRAM存储空间映射到CPU的�
 - `DQM[1:0]` : 数据掩码, 下图中的命名采用`DQML`和`DQMH`
 
 <img src="../../figs/sdram.jpg" width="600" />
+
+与SPI协议中采用分频输出的SCK不同, 这里的时钟信号CLK通常由DRAM控制器的时钟直接驱动, 这类DRAM称为同步DRAM, 即`SDRAM(Synchronous Dynamic Random Access Memory)`. SDRAM颗粒已经成为当前主流的内存颗粒, 最早商用的SDRAM颗粒于1992年发售, 属于`SDR SDRAM(Single Date Rate SDRAM)`, 表示一个时钟传输一次数据, 上图展示的型号为`MT48LC16M16A2`的颗粒, 就属于`SDR SDRAM`颗粒; 1997年开始出现了`DDR SDRAM(Double Data Rate SDRAM)`, 它可以分别在时钟的上升沿和下降沿传输数据, 因此提升了数据传输带宽; 此后依次出现了DDR2, DDR3, DDR4, DDR5, 它们均通过不同技术进一步提升数据传输带宽. 与同步DRAM相对, 还有异步`DRAM(Asynchronous DRAM)`, 它的总线信号中没有时钟. 目前异步DRAM基本上被SDRAM替代, 因此今天讨论DRAM时, 几乎都指代SDRAM
