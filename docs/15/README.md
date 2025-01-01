@@ -440,3 +440,40 @@ ysyxSoC集成了PSRAM控制器的实现, 并将PSRAM存储空间映射到CPU的�
 <img src="../../figs/sdram.jpg" width="600" />
 
 与SPI协议中采用分频输出的SCK不同, 这里的时钟信号CLK通常由DRAM控制器的时钟直接驱动, 这类DRAM称为同步DRAM, 即`SDRAM(Synchronous Dynamic Random Access Memory)`. SDRAM颗粒已经成为当前主流的内存颗粒, 最早商用的SDRAM颗粒于1992年发售, 属于`SDR SDRAM(Single Date Rate SDRAM)`, 表示一个时钟传输一次数据, 上图展示的型号为`MT48LC16M16A2`的颗粒, 就属于`SDR SDRAM`颗粒; 1997年开始出现了`DDR SDRAM(Double Data Rate SDRAM)`, 它可以分别在时钟的上升沿和下降沿传输数据, 因此提升了数据传输带宽; 此后依次出现了DDR2, DDR3, DDR4, DDR5, 它们均通过不同技术进一步提升数据传输带宽. 与同步DRAM相对, 还有异步`DRAM(Asynchronous DRAM)`, 它的总线信号中没有时钟. 目前异步DRAM基本上被SDRAM替代, 因此今天讨论DRAM时, 几乎都指代SDRAM
+
+和PSRAM颗粒的SPI总线接口不同, 传统DRAM颗粒的引脚中包含了存储体地址等信息, 这要求DRAM控制器了解DRAM颗粒中存储阵列的内部组织结构, 才能知道应该给地址相关的引脚传递什么信息. DRAM颗粒的存储阵列是一个多维结构, 从逻辑上看由若干个矩阵组成, 一个矩阵又称一个存储体(memory bank). 存储体中的一个矩阵元素是若干个存储单元, 每个存储单元包含一根晶体管和一个电容, 用于存储1 bit信息. 需要通过行地址(row address)和列地址(column address)共同指定存储体中的一个矩阵元素. 例如, 上述DRAM颗粒中有4个存储体, 每个存储体中有8192行, 每行有512列, 存储体中的一个矩阵元素有16个存储单元, 因此该DRAM颗粒的容量为4 * 8192 * 512 * 16 = 256Mb = 32MB.
+
+读出时, 先根据存储体编号选择一个目标存储体. 然后通过行地址激活(active)目标存储体中的一行: 目标存储体中的读出放大器(sence amplifier)会检测这一行所有存储单元中的电量, 从而得知每个存储单元存放的是1还是0. 一个读出放大器主要由一对交叉配对反相器构成, 因此可以存储信息, 故存储体中的读出放大器也称行缓冲(row buffer), 可以存储一行信息. 之后, 再根据列地址从目标存储体的行缓冲中各选出数据, 作为读出的结果输出到DRAM颗粒芯片的外部. 写入时, 先将需要写入的数据写到行缓冲中的相应位置, 然后对相应存储单元中的电容进行充电或放电操作, 从而将行缓冲中的内容转移到存储单元中. 如果要访问另一行的数据, 在激活另一行之前, 还需要先将已激活的当前行的信息写回存储单元, 这个过程称为预充电(precharge).
+
+理解了DRAM颗粒的内部组织结构后, 我们就可以来梳理DRAM颗粒的命令了. 不同版本的SDRAM命令稍有不同, 下表列出了SDR SDRAM的命令:
+
+<img src="../../figs/sdram_cmd.png" width="500" />
+
+上述命令涉及"突发传输"(burst transfer)的概念, 它指在一次事务(transaction)中包含多次连续的数据传输, 一次数据传输称为一个"节拍"(beat). 以读取为例, 从DRAM颗粒接收到READ命令, 到读出存储阵列中的数据并传送到DQ总线上, 一般需要花费若干周期, 这个延迟称为CAS latency(有的教材翻译成CAS潜伏期). 以上文的MT48LC16M16A2型号为例, 根据工作频率的不同, CAS latency可为1~3周期, 即从收到READ命令, 到读出16 bit数据到DQ总线上, 有1~3周期的延迟. 假设CAS latency为2周期, 如果不采用突发传输, 读出8字节需要发送4次READ命令, 共花费12周期; 如果采用突发传输, 则只需发送1次READ命令, 花费6周期
+
+```
+// normal
+  1   1   1   1   1   1   1   1   1   1   1   1
+|---|---|---|---|---|---|---|---|---|---|---|---|
+  ^       |   ^       |   ^       |   ^       |
+  |       v   |       v   |       v   |       v
+ READ   data READ   data READ   data READ   data
+
+// burst
+  1   1   1   1   1   1
+|---|---|---|---|---|---|
+  ^       |   |   |   |
+  |       v   v   v   v
+ READ    1st 2nd 3rd 4th
+```
+
+WRITE命令也支持突发传输, 也即, 若要写入8字节, 可以在发出WRITE命令后紧接着的3个周期内连续传输需要写入的数据. 至于一次突发传输的事务包含多少个节拍, 可以通过Mode寄存器来设置. Mode寄存器还可以设置CAS latency等参数.
+
+ysyxSoC集成了SDR SDRAM控制器(下文简称SDRAM控制器)的实现, 并将SDRAM存储空间映射到CPU的地址空间`0xa000_0000~0xbfff_ffff`. SDRAM控制器的代码位于 `perip/sdram/core_sdram_axi4/` 目录下, 它采用AXI4总线协议. 为了方便初期的测试, 我们将其核心部分 `perip/sdram/core_sdram_axi4/sdram_axi4_core.v` 封装成APB总线协议(见 `perip/sdram/sdram_top_apb.v` ), 并将其接入到ysyxSoC的APB Xbar中. SDRAM控制器会将接收到的总线事务翻译成发往SDRAM颗粒的命令, 我们选择模拟型号为MT48LC16M16A2的SDRAM颗粒. ysyxSoC已经将SDRAM颗粒与SDRAM控制器相连, 但未提供SDRAM颗粒相关的代码, 为了在ysyxSoC中使用SDRAM, 还需要实现SDRAM颗粒的仿真行为模型
+
+#### 实现SDRAM颗粒的仿真行为模型
+实现MT48LC16M16A2颗粒的仿真行为模型:
+
+- 在 `perip/sdram/sdram.v` 中实现相应代码
+- 实现SDRAM控制器会发送的命令, 其中`PRECHARGE`和`AUTO REFRESH`命令与存储单元的电气特性相关, 在仿真环境中不必考虑, 因此可以将其实现成`NOP`
+- Mode寄存器只需要实现`CAS Latency`和`Burst Length`, 其他字段可忽略
