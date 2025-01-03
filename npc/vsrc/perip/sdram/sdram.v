@@ -26,7 +26,7 @@ module sdram(
     // mode register
     reg [12:0] mode_reg;
     wire [2:0] cas_latency;
-    wire [2:0] burst_length;
+    reg [3:0] burst_length;
     // write mode register
     always @ (posedge clk) begin
         if (~cs & (cmd == MODE_REG)) begin
@@ -34,8 +34,16 @@ module sdram(
         end
     end
     // read mode register
+    always @ (*) begin
+        case (mode_reg[2:0])
+            3'b000: burst_length = 'd1;
+            3'b001: burst_length = 'd2;
+            3'b010: burst_length = 'd4;
+            3'b011: burst_length = 'd8;
+            default: burst_length = 'd1;
+        endcase
+    end
     assign cas_latency = mode_reg[6:4];
-    assign burst_length = mode_reg[2:0];
 
 
 endmodule
