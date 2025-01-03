@@ -10,9 +10,6 @@ module sdram(
     input [ 1:0] dqm,
     inout [15:0] dq
 );
-
-    reg [12:0] mode_reg;
-
     // cmd
     localparam  NOP       =     3'b111;
     localparam  ACTIVE    =     3'b011;
@@ -22,6 +19,23 @@ module sdram(
     localparam  PRECHARGE =     3'b010;
     localparam  REFRESH   =     3'b001;
     localparam  MODE_REG  =     3'b000;
+
+    wire [2:0] cmd;
+    assign cmd = {ras, cas, we};
+
+    // mode register
+    reg [12:0] mode_reg;
+    wire [2:0] cas_latency;
+    wire [2:0] burst_length;
+    // write mode register
+    always @ (posedge clk) begin
+        if (~cs & (cmd == MODE_REG)) begin
+            mode_reg <= a;
+        end
+    end
+    // read mode register
+    assign cas_latency = mode_reg[6:4];
+    assign burst_length = mode_reg[2:0];
 
 
 endmodule
