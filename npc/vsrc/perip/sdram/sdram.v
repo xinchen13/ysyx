@@ -1,14 +1,16 @@
+// from @Seeker0472: https://github.com/Seeker0472/ysyxSoc
+
 module sdram(
-  input        clk,
-  input        cke,
-  input        cs,
-  input        ras,
-  input        cas,
-  input        we,
-  input [12:0] a,
-  input [ 1:0] ba,
-  input [ 1:0] dqm,
-  inout [15:0] dq
+    input        clk,
+    input        cke,
+    input        cs,
+    input        ras,
+    input        cas,
+    input        we,
+    input [12:0] a,
+    input [ 1:0] ba,
+    input [ 1:0] dqm,
+    inout [15:0] dq
 );
 
 	//inst
@@ -44,7 +46,7 @@ module sdram(
 	assign cas_latency = mode_reg[6:4];
 	assign inst = {ras, cas, we};
 	assign dq_in = dq;
-  assign dq = dq_outen ? dq_out : 16'bz;
+    assign dq = dq_outen ? dq_out : 16'bz;
 
 	always @(*) begin
 		case (mode_reg[2:0])

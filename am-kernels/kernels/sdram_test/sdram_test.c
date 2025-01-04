@@ -11,9 +11,9 @@ static inline void outl(uintptr_t addr, uint32_t data) { *(volatile uint32_t *)a
 int main(const char *args) {
     uint32_t read_data;
     putstr("writing psram\n");
-    outl(0xa0000134, 0x74757677);
+    outl(0xa0000134, 0x73737373);
     // outb(0x80000136, 0x72);
-    outw(0xa0000135, 0x7071);
+    // outw(0xa0000135, 0x7071);
     putstr("reading psram\n");
     read_data = inl(0xa0000134);
     putstr("End\n");
