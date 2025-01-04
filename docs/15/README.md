@@ -477,3 +477,6 @@ ysyxSoC集成了SDR SDRAM控制器(下文简称SDRAM控制器)的实现, 并将S
 - 在 `perip/sdram/sdram.v` 中实现相应代码
 - 实现SDRAM控制器会发送的命令, 其中`PRECHARGE`和`AUTO REFRESH`命令与存储单元的电气特性相关, 在仿真环境中不必考虑, 因此可以将其实现成`NOP`
 - Mode寄存器只需要实现`CAS Latency`和`Burst Length`, 其他字段可忽略
+
+#### 将程序加载到SDRAM中执行
+让bootloader将程序加载到SDRAM中并执行. 在这之后, 尝试在SDRAM上执行microbench和RT-Thread.
