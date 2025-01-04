@@ -9,7 +9,8 @@
 - 替 AXIM 为自研的 AXIM（不是）
 - 为 ysyxSOC 重新添加 DiffTest
 - 让 NPC 抛出 Access Fault 异常
-- 实现支持QPI协议的PSRAM颗粒行为模型(即4-4-4), 并进行mem-test
+- 优化: 实现支持QPI协议的PSRAM颗粒行为模型(即4-4-4), 并进行mem-test
+- 优化：实现自研的 sdram (), 并进行位扩展和字扩展
 
 ## emacs verilog-mode
 - 生成: `emacs --batch ${FILES} -f verilog-batch-auto`

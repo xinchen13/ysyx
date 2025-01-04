@@ -479,4 +479,4 @@ ysyxSoC集成了SDR SDRAM控制器(下文简称SDRAM控制器)的实现, 并将S
 - Mode寄存器只需要实现`CAS Latency`和`Burst Length`, 其他字段可忽略
 
 #### 将程序加载到SDRAM中执行
-让bootloader将程序加载到SDRAM中并执行. 在这之后, 尝试在SDRAM上执行microbench和RT-Thread.
+让bootloader将程序加载到SDRAM中并执行. 在这之后, 尝试在SDRAM上执行microbench: 现在 test 的规模的 microbench 仅需 12586780 个 cycle, 又减少了 75%
