@@ -40,7 +40,7 @@ LLVM_CXXFLAGS  = -I/usr/lib/llvm-14/include -std=c++14
 LLVM_CXXFLAGS += -fno-exceptions -D_GNU_SOURCE 
 LLVM_CXXFLAGS += -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS
 CXXFLAGS += -DTOP_NAME="\"V$(TOPNAME)\"" $(LLVM_CXXFLAGS) -fPIE
-LDFLAGS += -lreadline $(shell llvm-config --libs)
+LDFLAGS += -I$(NVBOARD_USR_INC) -lreadline $(shell llvm-config --libs)
 
 $(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 	@rm -rf $(OBJ_DIR)
