@@ -190,7 +190,7 @@ class AutoBindWriter():
 
   def writeHead(self, top):
     self.iw.write( (
-    "#include <nvboard.h>\n"
+    "#include \"../csrc/nvboard.h\"\n"
     f'#include "V{top}.h"\n'
     "\n"
     f"void nvboard_bind_all_pins(V{top}* top) {{\n"

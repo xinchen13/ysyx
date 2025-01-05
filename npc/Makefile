@@ -15,9 +15,17 @@ ELF ?= --elf\=./default/dummy-riscv32e-ysyxsoc.elf
 DIF ?= --diff\=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 WAV ?= --wave\=$(WAVE_FILE)
 
+# nvboard
+NXDC_FILES = constr/ysyxSoCFull.nxdc
+include $(NVBOARD_HOME)/scripts/nvboard.mk
+SRC_AUTO_BIND = $(abspath $(NPC_BUILD_DIR)/auto_bind.cpp)
+$(SRC_AUTO_BIND): $(NXDC_FILES)
+	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
+
 # project source: csrc, vsrc, include
 VSRCS = $(shell find $(abspath ./vsrc) -name "*.v" -or -name "*.sv")
 CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cc" -or -name "*.cpp")
+CSRCS += $(SRC_AUTO_BIND)
 NPC_INC_PATH ?= ./vsrc/inc
 INCFLAGS = $(addprefix +incdir+, $(NPC_INC_PATH))
 
@@ -30,11 +38,11 @@ VERILATOR_CFLAGS += -MMD --build -cc --trace --autoflush\
 # rules for gcc
 LLVM_CXXFLAGS  = -I/usr/lib/llvm-14/include -std=c++14
 LLVM_CXXFLAGS += -fno-exceptions -D_GNU_SOURCE 
-LLVM_CXXFLAGS += -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS 
+LLVM_CXXFLAGS += -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS
 CXXFLAGS += -DTOP_NAME="\"V$(TOPNAME)\"" $(LLVM_CXXFLAGS) -fPIE
-LDFLAGS ?= -lreadline $(shell llvm-config --libs)
+LDFLAGS += -lreadline $(shell llvm-config --libs)
 
-$(BIN): $(VSRCS) $(CSRCS)
+$(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 	@rm -rf $(OBJ_DIR)
 	$(VERILATOR) $(VERILATOR_CFLAGS) \
 		--top-module $(TOPNAME) $^ \

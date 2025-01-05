@@ -32,6 +32,8 @@
 #include <time.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include "nvboard.h"
+#include "pins.h"
 #include "VysyxSoCFull.h"
 #include "verilated.h"
 #include "verilated_vcd_c.h" // for wave gen
