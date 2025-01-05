@@ -23,7 +23,6 @@ int main(const char *args) {
     putch((uint8_t)read_data);
     
     putch('\n');
-    while(1);
 
     return 0;
 }
