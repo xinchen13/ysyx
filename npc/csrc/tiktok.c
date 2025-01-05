@@ -174,6 +174,7 @@ static void exec_once() {
 static void execute(uint64_t n) {
     for (;n > 0; n --) {
         exec_once();
+        nvboard_update();
         cycle_count++;
         trace_and_difftest();
         if (this_inst == 0x00100073 || contextp->time() > 999999999) {

@@ -9,20 +9,10 @@ static inline void outw(uintptr_t addr, uint16_t data) { *(volatile uint16_t *)a
 static inline void outl(uintptr_t addr, uint32_t data) { *(volatile uint32_t *)addr = data; }
 
 int main(const char *args) {
-    uint32_t read_data;
-    putstr("writing sdram\n");
-    outl(0xa0000134, 0x73737373);
-    outb(0xa0000137, 0x72);
-    outw(0xa0000135, 0x7071);
-    putstr("reading sdram\n");
-    read_data = inl(0xa0000134);
-    putstr("End\n");
-    putch((uint8_t)(read_data>>24));
-    putch((uint8_t)(read_data>>16));
-    putch(inb(0xa0000135));
-    putch((uint8_t)read_data);
-    
+
     putch('\n');
+
+    while (1);
 
     return 0;
 }
