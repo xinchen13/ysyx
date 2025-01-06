@@ -13,6 +13,8 @@ int main(const char *args) {
     putch('\n');
     while (inw(0x10002004) != 0xf0f0);
 
+    outl(0x10002008, 0xdeadbeef);
+
     int cnt = 9998;
     while(1) {
         if (cnt != 0) {

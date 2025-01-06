@@ -128,6 +128,16 @@ module gpio_top_apb(
 
     // gpio out
     assign gpio_out = gpio_led[15:0];
+    
+    // segment
+    segment_hex seg00(.en(1'b1), .bcd(gpio_segment[3:0]), .seg_display(gpio_seg_0));
+    segment_hex seg01(.en(1'b1), .bcd(gpio_segment[7:4]), .seg_display(gpio_seg_1));
+    segment_hex seg02(.en(1'b1), .bcd(gpio_segment[11:8]), .seg_display(gpio_seg_2));
+    segment_hex seg03(.en(1'b1), .bcd(gpio_segment[15:12]), .seg_display(gpio_seg_3));
+    segment_hex seg04(.en(1'b1), .bcd(gpio_segment[19:16]), .seg_display(gpio_seg_4));
+    segment_hex seg05(.en(1'b1), .bcd(gpio_segment[23:20]), .seg_display(gpio_seg_5));
+    segment_hex seg06(.en(1'b1), .bcd(gpio_segment[27:24]), .seg_display(gpio_seg_6));
+    segment_hex seg07(.en(1'b1), .bcd(gpio_segment[31:28]), .seg_display(gpio_seg_7));
 
 
 endmodule
