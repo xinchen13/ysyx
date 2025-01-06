@@ -1,11 +1,13 @@
 #include <am.h>
 #include <klib-macros.h>
+#include "ysyxsoc.h"
 
 void __am_timer_init();
 
 void __am_timer_rtc(AM_TIMER_RTC_T *);
 void __am_timer_uptime(AM_TIMER_UPTIME_T *);
 void __am_input_keybrd(AM_INPUT_KEYBRD_T *);
+void __am_uart_rx(AM_UART_RX_T *);
 
 static void __am_timer_config(AM_TIMER_CONFIG_T *cfg) { cfg->present = true; cfg->has_rtc = true; }
 static void __am_input_config(AM_INPUT_CONFIG_T *cfg) { cfg->present = true;  }
@@ -19,6 +21,7 @@ static void *lut[128] = {
   [AM_INPUT_CONFIG] = __am_input_config,
   [AM_INPUT_KEYBRD] = __am_input_keybrd,
   [AM_UART_CONFIG]  = __am_uart_config,
+  [AM_UART_RX]      = __am_uart_rx,
 };
 
 static void fail(void *buf) { panic("access nonexist register"); }
@@ -32,3 +35,12 @@ bool ioe_init() {
 
 void ioe_read (int reg, void *buf) { ((handler_t)lut[reg])(buf); }
 void ioe_write(int reg, void *buf) { ((handler_t)lut[reg])(buf); }
+
+
+void __am_uart_rx(AM_UART_RX_T *cfg) {
+    if ((inb(LSR) & 0x1) == 0x1) {
+        cfg->data = inb(RX_REG);
+    } else {
+        cfg->data = 0xff;
+    }
+}
