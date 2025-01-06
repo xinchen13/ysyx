@@ -10,7 +10,7 @@ AM_SRCS := riscv/ysyxsoc/start.S \
 
 CFLAGS    += -fdata-sections -ffunction-sections
 
-ifeq ($(IMAGE), rtthread-riscv32e-ysyxsoc)
+ifeq ($(NAME), rtthread)
 LDFLAGS   += -T $(AM_HOME)/scripts/ysyxsoc_linker_rtt.ld \
                         --defsym=_entry_offset=0x0
 else
