@@ -70,7 +70,6 @@ void __attribute__((section(".ssbl"))) _ss_bootloader() {
     while (bss_src <= bss_end) {
         *(bss_src++) = 0;
     }
-    putch('s');putch('s');putch('b');putch('\n');
     _trm_init();
 }
 
@@ -85,7 +84,6 @@ void __attribute__((section(".fsbl"))) _fs_bootloader() {
         dest++;
         src++;
     }
-    putch('f');putch('s');putch('b');putch('\n');
     _ss_bootloader();
 }
 // *******************************************
