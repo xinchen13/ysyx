@@ -481,6 +481,11 @@ ysyxSoC集成了SDR SDRAM控制器(下文简称SDRAM控制器)的实现, 并将S
 #### 将程序加载到SDRAM中执行
 让bootloader将程序加载到SDRAM中并执行. 在这之后, 尝试在SDRAM上执行microbench: 现在 test 的规模的 microbench 仅需 12586780 个 cycle, 又减少了 75%
 
+#### 运行 RT-Thread
+根据 RT-Thread 项目的 `Makefile` 与 `extra.ld` 修改 `ysyxsoc.mk`, 从而自动适配新的链接脚本 `ysyxsoc_linker_rtt.ld`, 实现在 ysyxsoc 平台上运行 RT-Thread. 运行后可以感知到 bootloader 需要花费较长时间
+
+P.S.: 新的 RT-Thread 位于 `rt-thread-am` 项目的 `ysyxsoc` 分支
+
 ### 接入更多外设
 使 ysyxsoc 支持 IOE
 
