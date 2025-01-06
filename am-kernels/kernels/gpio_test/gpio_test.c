@@ -10,12 +10,12 @@ static inline void outl(uintptr_t addr, uint32_t data) { *(volatile uint32_t *)a
 
 int main(const char *args) {
 
-    putch('\n');
+    putstr("GPIO test: Enter the passwd\n");
     while (inw(0x10002004) != 0xf0f0);
-    putstr("GPIO test: passwd correct!\n");
+    putstr("GPIO test: Passwd correct!\n");
 
     outl(0x10002008, 0xdeadbeef);
-    putstr("GPIO test: segment out done!\n");
+    putstr("GPIO test: Segment out done!\n");
 
     int cnt = 9999;
     while(1) {
