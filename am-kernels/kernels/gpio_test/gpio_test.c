@@ -11,8 +11,24 @@ static inline void outl(uintptr_t addr, uint32_t data) { *(volatile uint32_t *)a
 int main(const char *args) {
 
     putch('\n');
+    while (inw(0x10002004) != 0xf0f0);
 
-    while (1);
+    outl(0x10002008, 0xdeadbeef);
+
+    int cnt = 9998;
+    while(1) {
+        if (cnt != 0) {
+            cnt--;
+        }
+        else {
+            cnt = 9998;
+        }
+
+        if (cnt == 7500) outw(0x10002000, 0x000f);
+        if (cnt == 5000) outw(0x10002000, 0x00f0);
+        if (cnt == 2500) outw(0x10002000, 0x0f00);
+        if (cnt == 0000) outw(0x10002000, 0xf000);
+    }
 
     return 0;
 }
