@@ -12,16 +12,19 @@ int main(const char *args) {
 
     putch('\n');
     while (inw(0x10002004) != 0xf0f0);
+    putstr("GPIO test: passwd correct!\n");
 
     outl(0x10002008, 0xdeadbeef);
+    putstr("GPIO test: segment out done!\n");
 
-    int cnt = 9998;
+    int cnt = 9999;
     while(1) {
         if (cnt != 0) {
             cnt--;
         }
         else {
-            cnt = 9998;
+            cnt = 9999;
+            putstr("GPIO test: LED cycle once!\n");
         }
 
         if (cnt == 7500) outw(0x10002000, 0x000f);
