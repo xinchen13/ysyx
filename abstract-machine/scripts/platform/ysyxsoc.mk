@@ -9,9 +9,14 @@ AM_SRCS := riscv/ysyxsoc/start.S \
            platform/dummy/mpe.c
 
 CFLAGS    += -fdata-sections -ffunction-sections
+
+ifeq ($(NAME), rtthread)
+LDFLAGS   += -T $(AM_HOME)/scripts/ysyxsoc_linker_rtt.ld \
+                        --defsym=_entry_offset=0x0
+else
 LDFLAGS   += -T $(AM_HOME)/scripts/ysyxsoc_linker.ld \
-                        --defsym=_entry_offset=0x0 \
-                        # --defsym=_pmem_start=0x80000000 \
+                        --defsym=_entry_offset=0x0
+endif
 						
                          
 LDFLAGS   += --gc-sections -e _start

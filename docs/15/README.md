@@ -481,6 +481,9 @@ ysyxSoC集成了SDR SDRAM控制器(下文简称SDRAM控制器)的实现, 并将S
 #### 将程序加载到SDRAM中执行
 让bootloader将程序加载到SDRAM中并执行. 在这之后, 尝试在SDRAM上执行microbench: 现在 test 的规模的 microbench 仅需 12586780 个 cycle, 又减少了 75%
 
+#### 运行 RT-Thread
+根据 RT-Thread 项目的 `Makefile` 与 `extra.ld` 修改 `ysyxsoc.mk`, 从而自动适配新的链接脚本 `ysyxsoc_linker_rtt.ld`, 实现在 ysyxsoc 平台上运行 RT-Thread. 运行后可以感知到 bootloader 需要花费较长时间
+
 ### 接入更多外设
 使 ysyxsoc 支持 IOE
 
@@ -502,3 +505,11 @@ ysyxSoC集成了一个APB总线接口的GPIO控制器, 并将其映射到CPU的�
 - 编写测试程序 [gpio_test.c](../../am-kernels/kernels/gpio_test/gpio_test.c), 让程序读出读出拨码开关的状态. 在程序中设置一个16位二进制的密码, 程序一开始启动时将不断查询拨码开关的状态, 只有当拨码开关的状态与上述密码一致, 程序才继续执行
 - 程序通过密码验证后, 隔一段时间往led寄存器写入数据, 从而实现流水灯的效果
 - 程序通过密码验证后, 在数码管上输出 "deadbeef"
+
+#### UART
+之前已经通过UART16550控制器的帮助下测试了串口的输出功能, 但之前串口的发送端仅仅是通过UART16550控制器代码中的`$write`系统任务来输出, 并没有涉及将字符进行编码并通过线缆串行传输到接收端的过程.
+
+NVBoard中的串口终端很简单, 它只支持8N1的串口传输配置. 至于波特率, 因为NVBoard中没有时钟频率的概念, 因此采用除数的方式来描述, 也即, 传输数据时一个比特需要维持多少个周期. NVBoard中的这个除数不支持运行时配置, 但可以通过修改代码来调整. 你可以在nvboard/src/uart.cpp的UART构造函数中进行修改, 具体有两种方式:
+
+修改divisor成员的初值
+调用set_divisor()函数来设置
