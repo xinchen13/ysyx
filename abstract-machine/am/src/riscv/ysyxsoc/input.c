@@ -1,6 +1,6 @@
 #include <am.h>
 #include "ysyxsoc.h"
-#include <klib.h>
+// #include <klib.h>
 
 static bool is_break = false;
 static bool is_extend = false;
@@ -96,7 +96,7 @@ static const int LOOKUPTABLE_SCANCODE_EXTEND[256] = {
 void __am_input_keybrd(AM_INPUT_KEYBRD_T *kbd) {
 
     uint8_t scancode = inb(KEYBOARD_SCAN_CODE);
-    printf("scancode = %d\n", scancode);
+    // printf("scancode = %d\n", scancode);
 
     kbd->keydown = false;
     kbd->keycode = AM_KEY_NONE;
