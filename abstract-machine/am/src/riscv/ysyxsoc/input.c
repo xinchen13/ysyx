@@ -96,7 +96,7 @@ static const int LOOKUPTABLE_SCANCODE_EXTEND[256] = {
 void __am_input_keybrd(AM_INPUT_KEYBRD_T *kbd) {
 
     uint8_t scancode = inb(KEYBOARD_SCAN_CODE);
-    printf("scancode = %d", scancode);
+    printf("scancode = %d\n", scancode);
 
     kbd->keydown = false;
     kbd->keycode = AM_KEY_NONE;
