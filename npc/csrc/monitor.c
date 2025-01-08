@@ -18,7 +18,7 @@ extern VysyxSoCFull* dut;
 static void init_wave_dump () {
     if (wave_file != NULL) {
         Verilated::traceEverOn(true);
-        dut->trace(tfp, 99);
+        dut->trace(tfp, 1);
         tfp->open(wave_file);
     }
     else {
