@@ -546,3 +546,14 @@ ysyxSoC集成了一个APB总线接口的PS2键盘控制器, 并将其映射到CP
 - 实现后, 运行 `am-tests` 中的按键测试 (`make ARCH=riscv32e-ysyxsoc run mainargs=k`), 检查实现正确
 
 #### VGA
+让程序借助ysyxSoC将像素信息输出到NVBoard中. ysyxSoC集成了一个APB总线接口的VGA控制器, 并将其映射到CPU的地址空间`0x2100_0000~0x211f_ffff`. 这段地址空间其实是帧缓冲, 程序往其中写入像素信息, 即可在输出到NVBoard的VGA区域. NVBoard提供的VGA屏幕分辨率是640x480. 不过ysyxSoC没有提供VGA控制器内部的具体实现, 需要实现它
+
+让 `riscv32e-ysyxsoc` 将像素信息输出到NVBoard:
+
+- 接入NVBoard, 绑定 rgb 通道, vsync, hsync, valid 信号
+- 实现VGA控制器, 它将不断地将帧缓冲的内容通过VGA的物理接口输出到屏幕上. 在 `ysyxSoC/perip/vga/vga_top_apb.v` 中实现相应代码. 关于帧缓冲, 目前使用寄存器来实现. 但在真实情况中, 这种实现方案的成本较高: 以640x480分辨率为例, 如果每个像素占4字节, 将需要1.17MB的SRAM, 这将占用不少的流片面积
+- 在AM IOE中添加代码, 将像素信息写入VGA控制器的帧缓冲中
+- 由于NVBoard提供的VGA机制是自动刷新的, 因此无需实现AM中的画面同步功能
+- 实现后, 运行 `am-tests` 中的画面测试, 检查你的实现是否正确
+
+通过 NVBoard 展示游戏: 运行打字游戏和超级玛丽等游戏. 当然, 这应该会非常卡, 后续的工作就是在微结构层次优化系统的性能
