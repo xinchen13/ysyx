@@ -96,8 +96,6 @@ module vga_top_apb(
     assign v_valid = (y_cnt > v_active) & (y_cnt <= v_backporch);
     assign vga_valid = h_valid & v_valid;
 
-
-    
     always @(posedge clock) begin
         if (reset == 1'b1) begin
             counter <= 0;

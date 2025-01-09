@@ -1,17 +1,10 @@
 #include <am.h>
-
-// ------- simulate rtc -------
-#define DEVICE_BASE     0xa0000000
-#define RTC_ADDR        (DEVICE_BASE + 0x0000048)
-static inline uint32_t inl(uintptr_t addr) { return *(volatile uint32_t *)addr; }
-// ----------------------------
+#include "ysyxsoc.h"
 
 void __am_timer_init() {
 }
 
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
-    // uptime->us = inl(RTC_ADDR);
-
     uint32_t low_time = inl(RTC_ADDR);
     uint32_t high_time = inl(RTC_ADDR + 4);
     uptime->us = ((uint64_t)low_time + (((uint64_t)high_time) << 32));
