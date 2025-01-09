@@ -98,6 +98,6 @@ module vga_top_apb(
     assign h_addr = h_valid ? (x_cnt - 10'd145) : 10'd0;
     assign v_addr = v_valid ? (y_cnt - 10'd36) : 10'd0;
 
-    assign {vga_r, vga_g, vga_b} = vmem[{1'b0, h_addr, v_addr}][23:0];
+    assign {vga_r, vga_g, vga_b} = vmem[{1'b0, v_addr, h_addr}][23:0];
 
 endmodule
