@@ -38,7 +38,6 @@ bool ioe_init() {
   for (int i = 0; i < LENGTH(lut); i++)
     if (!lut[i]) {
         lut[i] = fail;
-        printf("i = %d\n", i);
     }
   __am_timer_init();
   __am_gpu_init();
