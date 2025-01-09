@@ -45,7 +45,7 @@ void *malloc(size_t size) {
         char *old = addr;
         addr += size;
         // check if address is valid
-        assert((uintptr_t)heap.start <= (uintptr_t)addr && (uintptr_t)addr < (uintptr_t)heap.end);
+        assert(((uintptr_t)heap.start <= (uintptr_t)addr) && ((uintptr_t)addr < (uintptr_t)heap.end));
         // initialize
         for (uint64_t *p = (uint64_t *)old; p != (uint64_t *)addr; p ++) {
             *p = 0;
