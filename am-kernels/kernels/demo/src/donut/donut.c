@@ -77,6 +77,6 @@ void donut(void) {
     }
     
     screen_refresh();
-    usleep(100000);
+    // usleep(100000);
   }
 }
