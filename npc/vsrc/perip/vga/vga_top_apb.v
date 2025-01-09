@@ -98,6 +98,22 @@ module vga_top_apb(
     assign h_addr = h_valid ? (x_cnt - 10'd145) : 10'd0;
     assign v_addr = v_valid ? (y_cnt - 10'd36) : 10'd0;
 
-    assign {vga_r, vga_g, vga_b} = vmem[{1'b0, v_addr, h_addr}][23:0];
+    reg [20:0] counter;
+    always @(posedge clock) begin
+        if (reset == 1'b1) begin
+            counter <= 0;
+        end else begin
+        if (y_cnt == v_total) begin
+            counter <= 0;
+        end else if (vga_valid) begin
+            counter <= counter + 1;
+        end else begin
+            counter <= counter;
+        end
+        end
+    end
+
+
+    assign {vga_r, vga_g, vga_b} = vmem[counter][23:0];
 
 endmodule
