@@ -8,9 +8,9 @@ module vga_top_apb(
     input         in_pwrite,
     input  [31:0] in_pwdata,
     input  [3:0]  in_pstrb,
-    output        in_pready,
-    output [31:0] in_prdata,
-    output        in_pslverr,
+    output reg        in_pready,
+    output reg [31:0] in_prdata,
+    output reg        in_pslverr,
 
     output [7:0]  vga_r,
     output [7:0]  vga_g,
@@ -20,7 +20,7 @@ module vga_top_apb(
     output        vga_valid
 );
     // frame buffer: registers
-    reg [31:0] frame_buffer [0:2*21-1];
+    reg [31:0] vmem [0:2**21-1];
 
     // write reg
     reg state;
@@ -46,7 +46,7 @@ module vga_top_apb(
                 WRITE: begin
                     if (in_psel & in_penable) begin
                         state       <= IDLE;
-                        frame_buffer[in_paddr[22:2]]  <= in_pwdata; // 22-2+1=21
+                        vmem[in_paddr[22:2]]  <= in_pwdata; // 22-2+1=21
                         in_pready   <= 'b1;
                         in_pslverr  <= 'b0;
                     end
@@ -54,5 +54,63 @@ module vga_top_apb(
             endcase
         end
     end
+
+    // vga ctrl
+    parameter h_frontporch = 96;
+    parameter h_active = 144;
+    parameter h_backporch = 784;
+    parameter h_total = 800;
+
+    parameter v_frontporch = 2;
+    parameter v_active = 35;
+    parameter v_backporch = 515;
+    parameter v_total = 525;
+
+    reg [9:0] x_cnt;
+    reg [9:0] y_cnt;
+    reg [20:0] counter;
+    wire h_valid;
+    wire v_valid;
+    wire [9:0] h_addr;
+    wire [9:0] v_addr;
+
+    always @(posedge clock) begin
+        if(reset == 1'b1) begin
+            x_cnt <= 1;
+            y_cnt <= 1;
+        end
+        else begin
+            if(x_cnt == h_total)begin
+                x_cnt <= 1;
+                if(y_cnt == v_total) y_cnt <= 1;
+                else y_cnt <= y_cnt + 1;
+            end
+            else x_cnt <= x_cnt + 1;
+        end
+    end
+
+    assign vga_hsync = (x_cnt > h_frontporch);
+    assign vga_vsync = (y_cnt > v_frontporch);
+
+    assign h_valid = (x_cnt > h_active) & (x_cnt <= h_backporch);
+    assign v_valid = (y_cnt > v_active) & (y_cnt <= v_backporch);
+    assign vga_valid = h_valid & v_valid;
+
+    always @(posedge clock) begin
+        if (reset == 1'b1) begin
+            counter <= 0;
+        end 
+        else begin
+            if (y_cnt == v_total) begin
+                counter <= 0;
+            end else if (vga_valid) begin
+                counter <= counter + 1;
+            end else begin
+                counter <= counter;
+            end
+        end
+    end
+
+    assign {vga_r, vga_g, vga_b} = vmem[counter][23:0];
 
 endmodule
