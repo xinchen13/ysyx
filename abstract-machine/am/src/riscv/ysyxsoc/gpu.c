@@ -1,8 +1,5 @@
 #include <am.h>
-
-#define VGA_WIDTH       640
-#define VGA_HEIGHT      480
-#define VGA_FB_ADDR     0x21000000
+#include "ysyxsoc.h"
 
 void __am_gpu_init() {
     ;

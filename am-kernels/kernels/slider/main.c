@@ -13,6 +13,8 @@ void display_image(int i) {
 int main() {
   ioe_init();
 
+  printf("init done!\n");
+
   int i = 0;
 //   unsigned long last = 0;
 //   unsigned long current;
