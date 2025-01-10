@@ -54,15 +54,16 @@ SpeedThrottle()
 		InFrame = 0;
 
   //delay
-//   uint64 now;
+  uint64 now;
 //   while ((now = FCEUD_GetTime()) - cur_time < time_left)
 //     ;
+now = FCEUD_GetTime();
 
-// 	if(!InFrame)
-// 	{
-// 		Lasttime = now;
-// 		return 0; /* Done waiting */
-// 	}
-// 	return 1; /* Must still wait some more */
-    return 0;
+	if(!InFrame)
+	{
+		Lasttime = now;
+		return 0; /* Done waiting */
+	}
+	return 1; /* Must still wait some more */
+    // return 0;
 }

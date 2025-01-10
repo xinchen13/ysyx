@@ -54,7 +54,6 @@ int atoi(const char* nptr) {
 //     #endif
 //     return NULL;
 // }
-
 static void* addr = NULL;
 void* malloc(size_t size) {
     // On native, malloc() will be called during initializaion of C runtime.
