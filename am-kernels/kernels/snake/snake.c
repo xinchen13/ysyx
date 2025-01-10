@@ -177,7 +177,7 @@ int main() {
     }
     refresh();
 
-    uint64_t sleep = 100000 - snake.length * 5000 < 5000 ? 5000 : 100000 - snake.length * 5000;
+    uint64_t sleep = (100000 - snake.length * 5000 < 5000 ? 5000 : 100000 - snake.length * 5000)/1000;
     uint64_t next_us = io_read(AM_TIMER_UPTIME).us + sleep;
     while (io_read(AM_TIMER_UPTIME).us < next_us) ;
   } while (!snake.dead);
