@@ -6,7 +6,7 @@ static uint64_t time_init = 0;
 static uint64_t get_time() {
     uint32_t low_time = inl(RTC_ADDR);
     uint32_t high_time = inl(RTC_ADDR + 4);
-    return ((uint64_t)low_time + (((uint64_t)high_time) << 32));
+    return ((uint64_t)low_time + (((uint64_t)high_time) << 32)) >> 9;
 }
 
 void __am_timer_init() {
