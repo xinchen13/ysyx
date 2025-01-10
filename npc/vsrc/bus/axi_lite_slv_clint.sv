@@ -128,7 +128,7 @@ module axi_lite_slv_clint (
                     sram_ack <= 1'b0;
                 end
                 READ: begin
-                    case (araddr[3:0])
+                    case (addr[3:0])
                         4'h0: begin
                             // rdata <= mtime[31:0] >> 9; // us: mtime / 500
                             rdata <= mtime[31:0]; // us: mtime / 500
