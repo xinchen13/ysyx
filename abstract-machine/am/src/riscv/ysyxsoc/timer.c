@@ -14,7 +14,7 @@ void __am_timer_init() {
 }
 
 void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
-    uptime->us = get_time() - time_init;
+    uptime->us = (get_time() - time_init) >> 6;
 }
 
 void __am_timer_rtc(AM_TIMER_RTC_T *rtc) {
