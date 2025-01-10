@@ -55,21 +55,6 @@ void *malloc(size_t size) {
     return NULL;
 }
 
-// static void* addr = NULL;
-// void* malloc(size_t size) {
-//     // On native, malloc() will be called during initializaion of C runtime.
-//     // Therefore do not call panic() here, else it will yield a dead recursion:
-//     //   panic() -> putchar() -> (glibc) -> malloc() -> panic()
-//     #if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__))
-//         if (addr == NULL) addr = heap.start;
-//         void* ret = addr;
-//         addr += size;
-//         return ret;
-//         // panic("Not implemented");
-//     #endif
-//     return NULL;
-// }
-
 void free(void *ptr) {
 
 }
