@@ -167,7 +167,7 @@ module	addrdecode #(
 				r_request[0] = 1'b0;
 		end
 
-		assign	request[NS-1:0] = (&r_request) ? 'b1 : r_request;
+		assign	request[NS-1:0] = (&r_request) ? 'b1 : r_request;   // make slave one hot
 		// }}}
 	end else if (NS == 1)
 	begin : SINGLE_SLAVE
