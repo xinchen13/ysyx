@@ -137,7 +137,8 @@ module	addrdecode #(
 					|| (SLAVE_MASK[AW-1:0] != 0);
 	//
 	wire	[NS:0]		request;
-	reg	[NS-1:0]	prerequest;
+    reg	[NS-1:0]	prerequest_tmp;
+	wire	[NS-1:0]	prerequest;
 	integer			iM;
 	// }}}
 
@@ -145,9 +146,11 @@ module	addrdecode #(
 	// {{{
 	always @(*)
 	for(iM=0; iM<NS; iM=iM+1)
-		prerequest[iM] = (((i_addr ^ SLAVE_ADDR[iM*AW +: AW])
+		prerequest_tmp[iM] = (((i_addr ^ SLAVE_ADDR[iM*AW +: AW])
 				&SLAVE_MASK[iM*AW +: AW])==0)
 			&&(ACCESS_ALLOWED[iM]);
+
+    assign prerequest = (&prerequest_tmp) ? 'b1 : prerequest_tmp;
 	// }}}
 
 	// request

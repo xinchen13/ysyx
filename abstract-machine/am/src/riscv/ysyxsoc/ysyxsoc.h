@@ -13,8 +13,7 @@
 #define KEYBOARD_SCAN_CODE      KEYBOARD_BASE + 0x0
 
 // timer
-#define DEVICE_BASE     0xa0000000
-#define RTC_ADDR        (DEVICE_BASE + 0x0000048)
+#define CLINT_MTIME             0x02000000
 
 // vga
 #define VGA_WIDTH       640
