@@ -150,7 +150,7 @@ module	addrdecode #(
 				&SLAVE_MASK[iM*AW +: AW])==0)
 			&&(ACCESS_ALLOWED[iM]);
 
-    assign prerequest = (&prerequest_tmp) ? 'b1 : prerequest_tmp;
+    assign prerequest[NS-1:0] = (&prerequest_tmp[NS-1:0]) ? 'b1 : prerequest_tmp[NS-1:0];
 	// }}}
 
 	// request
