@@ -1501,8 +1501,6 @@ module	axixbar #(
 	// }}}
 	end endgenerate
 
-    	reg	[NS-1:0]	srgrant_tmp;
-
 	// swgrant and srgrant (combinatorial)
 	generate for(M=0; M<NS; M=M+1)
 	begin : SGRANT
@@ -1521,29 +1519,17 @@ module	axixbar #(
 				swgrant[M] = 1;
 		end
 
-		initial	srgrant_tmp = 0;
+		initial	srgrant = 0;
 		// srgrant: read arbitration
 		always @(*)
 		begin
-			srgrant_tmp[M] = 0;
+			srgrant[M] = 0;
 			for(iN=0; iN<NM; iN=iN+1)
 			if (rgrant[iN][M])
-				srgrant_tmp[M] = 1;
-		end
-
-		always @(*)
-		begin
-			srgrant_tmp[M] = 0;
-			for(iN=0; iN<NM; iN=iN+1)
-			if (rgrant[iN][M])
-				srgrant_tmp[M] = 1;
+				srgrant[M] = 1;
 		end
 	// }}}
 	end endgenerate
-
-    always @ (*) begin
-        srgrant = (&srgrant_tmp) ? 'b10 : srgrant_tmp;
-    end
 
 	// }}}
 
