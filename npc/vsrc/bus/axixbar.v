@@ -339,7 +339,7 @@ module	axixbar #(
 	// their outputs or not.  If set, all skid buffers will cost one more
 	// clock of latency.  It's not clear that there's a performance gain
 	// to be had by setting this.
-	localparam [0:0]	OPT_SKID_INPUT = 0;
+	localparam [0:0]	OPT_SKID_INPUT = 1;
 	//
 	// OPT_BUFFER_DECODER determines whether or not the outputs of the
 	// address decoder will be buffered or not.  If buffered, there will
