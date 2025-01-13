@@ -345,7 +345,7 @@ module	axixbar #(
 	// address decoder will be buffered or not.  If buffered, there will
 	// be an extra (registered) clock delay on each of the A* channels from
 	// VALID to issue.
-	localparam [0:0]	OPT_BUFFER_DECODER = 1;
+	localparam [0:0]	OPT_BUFFER_DECODER = 0;
 	//
 	// OPT_AWW controls whether or not a W* beat may be issued to a slave
 	// at the same time as the first AW* beat gets sent to the slave.  Set
