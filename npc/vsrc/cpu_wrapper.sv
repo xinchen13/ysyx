@@ -293,7 +293,7 @@ axixbar #(
     }),
     .OPT_LOWPOWER(1'b0),
     .OPT_LINGER(4),
-    .LGMAXBURST(4)
+    .LGMAXBURST(2)
 ) axixbar_u0 (/*AUTOINST*/
 	      // Outputs
 	      .S_AXI_AWREADY		({                      lsu_awready}), // Templated
