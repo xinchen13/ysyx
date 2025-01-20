@@ -144,11 +144,13 @@ module	addrdecode #(
 
 	// prerequest
 	// {{{
-	always @(*)
-	for(iM=0; iM<NS; iM=iM+1)
+	always @(*) begin
+	for(iM=0; iM<NS; iM=iM+1) begin
 		prerequest_tmp[iM] = (((i_addr ^ SLAVE_ADDR[iM*AW +: AW])
 				&SLAVE_MASK[iM*AW +: AW])==0)
 			&&(ACCESS_ALLOWED[iM]);
+    end
+    end
 
     assign prerequest[NS-1:0] = (&prerequest_tmp[NS-1:0]) ? 'b1 : prerequest_tmp[NS-1:0];
 	// }}}
