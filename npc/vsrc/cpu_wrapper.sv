@@ -291,7 +291,7 @@ axixbar #(
     .SLAVE_MASK({
         {(1){ 32'h0 }},
         // {(1){ 16'hffff, {(16){1'b0}} }} 
-        32'h1
+        32'hffffffff
     }),
     .OPT_LOWPOWER(1'b0),
     .OPT_LINGER(4),
