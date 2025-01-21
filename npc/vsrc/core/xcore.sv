@@ -194,6 +194,33 @@ module xcore (
         .csr_rdata(csr_rdata)
     );
 
+wire [`AXI_ADDR_BUS]	private_araddr;		// From axixbar_u0 of axixbar.v
+wire [1:0]		        private_arburst;		// From axixbar_u0 of axixbar.v
+wire [3:0]		        private_arid;		// From axixbar_u0 of axixbar.v
+wire [7:0]		        private_arlen;		// From axixbar_u0 of axixbar.v
+logic			        private_arready;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
+wire [2:0]		        private_arsize;		// From axixbar_u0 of axixbar.v
+wire			        private_arvalid;		// From axixbar_u0 of axixbar.v
+wire [`AXI_ADDR_BUS]	private_awaddr;		// From axixbar_u0 of axixbar.v
+wire [1:0]		        private_awburst;		// From axixbar_u0 of axixbar.v
+wire [3:0]		        private_awid;		// From axixbar_u0 of axixbar.v
+wire [7:0]		        private_awlen;		// From axixbar_u0 of axixbar.v
+logic			        private_awready;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
+wire [2:0]		        private_awsize;		// From axixbar_u0 of axixbar.v
+wire			        private_awvalid;		// From axixbar_u0 of axixbar.v
+wire			        private_bready;		// From axixbar_u0 of axixbar.v
+logic [`AXI_RESP_BUS]	private_bresp;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
+logic			        private_bvalid;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
+logic [`AXI_DATA_BUS]	private_rdata;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
+wire			        private_rready;		// From axixbar_u0 of axixbar.v
+logic [`AXI_RESP_BUS]	private_rresp;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
+logic			        private_rvalid;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
+wire [`AXI_DATA_BUS]	private_wdata;		// From axixbar_u0 of axixbar.v
+wire			        private_wlast;		// From axixbar_u0 of axixbar.v
+logic			        private_wready;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
+wire [`AXI_WSTRB_BUS]	private_wstrb;		// From axixbar_u0 of axixbar.v
+wire			        private_wvalid;		// From axixbar_u0 of axixbar.v
+
     lsu lsu_u0 (
         .clk(clk),
         .rst_n(rst_n),
@@ -208,24 +235,131 @@ module xcore (
         .this_ready(lsu_ex_ready),
         .next_ready(wb_lsu_ready),
         .this_valid(lsu_valid),
-        .araddr(lsu_araddr),
-        .arvalid(lsu_arvalid),
-        .arready(lsu_arready),
-        .rdata(lsu_rdata),
-        .rresp(lsu_rresp),
-        .rvalid(lsu_rvalid),
-        .rready(lsu_rready),
-        .awaddr(lsu_awaddr),
-        .awvalid(lsu_awvalid),
-        .awready(lsu_awready),
-        .wdata(lsu_wdata),
-        .wstrb(lsu_wstrb),
-        .wvalid(lsu_wvalid),
-        .wready(lsu_wready),
-        .bresp(lsu_bresp),
-        .bvalid(lsu_bvalid),
-        .bready(lsu_bready)
+        .araddr(private_araddr),
+        .arvalid(private_arvalid),
+        .arready(private_arready),
+        .rdata(private_rdata),
+        .rresp(private_rresp),
+        .rvalid(private_rvalid),
+        .rready(private_rready),
+        .awaddr(private_awaddr),
+        .awvalid(private_awvalid),
+        .awready(private_awready),
+        .wdata(private_wdata),
+        .wstrb(private_wstrb),
+        .wvalid(private_wvalid),
+        .wready(private_wready),
+        .bresp(private_bresp),
+        .bvalid(private_bvalid),
+        .bready(private_bready)
     );
+
+wire [`AXI_ADDR_BUS]	clint_araddr;		// From axixbar_u0 of axixbar.v
+wire [1:0]		clint_arburst;		// From axixbar_u0 of axixbar.v
+wire [3:0]		clint_arid;		// From axixbar_u0 of axixbar.v
+wire [7:0]		clint_arlen;		// From axixbar_u0 of axixbar.v
+logic			clint_arready;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
+wire [2:0]		clint_arsize;		// From axixbar_u0 of axixbar.v
+wire			clint_arvalid;		// From axixbar_u0 of axixbar.v
+wire [`AXI_ADDR_BUS]	clint_awaddr;		// From axixbar_u0 of axixbar.v
+wire [1:0]		clint_awburst;		// From axixbar_u0 of axixbar.v
+wire [3:0]		clint_awid;		// From axixbar_u0 of axixbar.v
+wire [7:0]		clint_awlen;		// From axixbar_u0 of axixbar.v
+logic			clint_awready;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
+wire [2:0]		clint_awsize;		// From axixbar_u0 of axixbar.v
+wire			clint_awvalid;		// From axixbar_u0 of axixbar.v
+wire			clint_bready;		// From axixbar_u0 of axixbar.v
+logic [`AXI_RESP_BUS]	clint_bresp;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
+logic			clint_bvalid;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
+logic [`AXI_DATA_BUS]	clint_rdata;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
+wire			clint_rready;		// From axixbar_u0 of axixbar.v
+logic [`AXI_RESP_BUS]	clint_rresp;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
+logic			clint_rvalid;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
+wire [`AXI_DATA_BUS]	clint_wdata;		// From axixbar_u0 of axixbar.v
+wire			clint_wlast;		// From axixbar_u0 of axixbar.v
+logic			clint_wready;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
+wire [`AXI_WSTRB_BUS]	clint_wstrb;		// From axixbar_u0 of axixbar.v
+wire			clint_wvalid;		// From axixbar_u0 of axixbar.v
+axi_lite_slv_clint axi_lite_slv_clint_u0 (/*AUTOINST*/
+					  // Outputs
+					  .arready		(clint_arready), // Templated
+					  .rdata		(clint_rdata[`AXI_DATA_BUS]), // Templated
+					  .rresp		(clint_rresp[`AXI_RESP_BUS]), // Templated
+					  .rvalid		(clint_rvalid),	 // Templated
+					  .awready		(clint_awready), // Templated
+					  .wready		(clint_wready),	 // Templated
+					  .bresp		(clint_bresp[`AXI_RESP_BUS]), // Templated
+					  .bvalid		(clint_bvalid),	 // Templated
+					  // Inputs
+					  .clk			(clk),	 // Templated
+					  .rst_n		(rst_n),	 // Templated
+					  .araddr		(clint_araddr[`AXI_ADDR_BUS]), // Templated
+					  .arvalid		(clint_arvalid), // Templated
+					  .rready		(clint_rready),	 // Templated
+					  .awaddr		(clint_awaddr[`AXI_ADDR_BUS]), // Templated
+					  .awvalid		(clint_awvalid), // Templated
+					  .wdata		(clint_wdata[`AXI_DATA_BUS]), // Templated
+					  .wstrb		(clint_wstrb[`AXI_WSTRB_BUS]), // Templated
+					  .wvalid		(clint_wvalid),	 // Templated
+					  .bready		(clint_bready));	 // Templated
+
+simple_xbar xbar_u0 (/*AUTOINST*/
+	      // Outputs
+	      .arbiter_xbar_arready	(private_arready),
+	      .arbiter_xbar_rdata	(private_rdata[`AXI_DATA_BUS]),
+	      .arbiter_xbar_rresp	(private_rresp[`AXI_RESP_BUS]),
+	      .arbiter_xbar_rvalid	(private_rvalid),
+	      .arbiter_xbar_awready	(private_awready),
+	      .arbiter_xbar_wready	(private_wready),
+	      .arbiter_xbar_bresp	(private_bresp[`AXI_RESP_BUS]),
+	      .arbiter_xbar_bvalid	(private_bvalid),
+	      .s0_araddr		(lsu_araddr[`AXI_ADDR_BUS]), // Templated
+	      .s0_arvalid		(lsu_arvalid),		 // Templated
+	      .s0_rready		(lsu_rready),		 // Templated
+	      .s0_awaddr		(lsu_awaddr[`AXI_ADDR_BUS]), // Templated
+	      .s0_awvalid		(lsu_awvalid),		 // Templated
+	      .s0_wdata			(lsu_wdata[`AXI_DATA_BUS]), // Templated
+	      .s0_wstrb			(lsu_wstrb[`AXI_WSTRB_BUS]), // Templated
+	      .s0_wvalid		(lsu_wvalid),		 // Templated
+	      .s0_bready		(lsu_bready),		 // Templated
+	      .s1_araddr		(clint_araddr[`AXI_ADDR_BUS]),
+	      .s1_arvalid		(clint_arvalid),
+	      .s1_rready		(clint_rready),
+	      .s1_awaddr		(clint_awaddr[`AXI_ADDR_BUS]),
+	      .s1_awvalid		(clint_awvalid),
+	      .s1_wdata			(clint_wdata[`AXI_DATA_BUS]),
+	      .s1_wstrb			(clint_wstrb[`AXI_WSTRB_BUS]),
+	      .s1_wvalid		(clint_wvalid),
+	      .s1_bready		(clint_bready),
+	      // Inputs
+	      .clk			(clk),
+	      .rst_n			(rst_n),
+	      .arbiter_xbar_araddr	(private_araddr[`AXI_ADDR_BUS]),
+	      .arbiter_xbar_arvalid	(private_arvalid),
+	      .arbiter_xbar_rready	(private_rready),
+	      .arbiter_xbar_awaddr	(private_awaddr[`AXI_ADDR_BUS]),
+	      .arbiter_xbar_awvalid	(private_awvalid),
+	      .arbiter_xbar_wdata	(private_wdata[`AXI_DATA_BUS]),
+	      .arbiter_xbar_wstrb	(private_wstrb[`AXI_WSTRB_BUS]),
+	      .arbiter_xbar_wvalid	(private_wvalid),
+	      .arbiter_xbar_bready	(private_bready),
+	      .s0_arready		(lsu_arready),		 // Templated
+	      .s0_rdata			(lsu_rdata[`AXI_DATA_BUS]), // Templated
+	      .s0_rresp			(lsu_rresp[`AXI_RESP_BUS]), // Templated
+	      .s0_rvalid		(lsu_rvalid),		 // Templated
+	      .s0_awready		(lsu_awready),		 // Templated
+	      .s0_wready		(lsu_wready),		 // Templated
+	      .s0_bresp			(lsu_bresp[`AXI_RESP_BUS]), // Templated
+	      .s0_bvalid		(lsu_bvalid),		 // Templated
+	      .s1_arready		(clint_arready),
+	      .s1_rdata			(clint_rdata[`AXI_DATA_BUS]),
+	      .s1_rresp			(clint_rresp[`AXI_RESP_BUS]),
+	      .s1_rvalid		(clint_rvalid),
+	      .s1_awready		(clint_awready),
+	      .s1_wready		(clint_wready),
+	      .s1_bresp			(clint_bresp[`AXI_RESP_BUS]),
+	      .s1_bvalid		(clint_bvalid));
+
 
     lsu_wb_pipe lsu_wb_pipe_u0(
         .clk(clk),
