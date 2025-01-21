@@ -597,3 +597,6 @@ ysyxSoC集成了上述ChipLink的开源实现, 并模拟了通过ChipLink连接�
 ysyxSoC默认未打开ChipLink, 因此需要在`ysyxSoC/src/Top.scala的Config`对象中 将`hasChipLink`变量修改为`true`, 重新生成`ysySoCFull.v`并仿真即可
 
 由于ChipLink的实现较复杂, 添加ChipLink后将生成较多Verilog代码, 从而使仿真效率明显降低. 因此后续关闭ChipLink
+
+#### Others
+- 将clint的实现移到核内, 并修改设备地址, 使得程序能够正确访问
