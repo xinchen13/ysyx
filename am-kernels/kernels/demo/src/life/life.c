@@ -51,6 +51,6 @@ void game_of_life(void) {
   while (1) {
     show(univ);
     evolve(univ);
-    // usleep(200000);
+    usleep(200000);
   }
 }
