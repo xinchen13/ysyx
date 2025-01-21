@@ -75,32 +75,6 @@ module cpu_wrapper (
 
 /*AUTOWIRE*/
 // Beginning of automatic wires (for undeclared instantiated-module outputs)
-wire [`AXI_ADDR_BUS]	clint_araddr;		// From axixbar_u0 of axixbar.v
-wire [1:0]		clint_arburst;		// From axixbar_u0 of axixbar.v
-wire [3:0]		clint_arid;		// From axixbar_u0 of axixbar.v
-wire [7:0]		clint_arlen;		// From axixbar_u0 of axixbar.v
-logic			clint_arready;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
-wire [2:0]		clint_arsize;		// From axixbar_u0 of axixbar.v
-wire			clint_arvalid;		// From axixbar_u0 of axixbar.v
-wire [`AXI_ADDR_BUS]	clint_awaddr;		// From axixbar_u0 of axixbar.v
-wire [1:0]		clint_awburst;		// From axixbar_u0 of axixbar.v
-wire [3:0]		clint_awid;		// From axixbar_u0 of axixbar.v
-wire [7:0]		clint_awlen;		// From axixbar_u0 of axixbar.v
-logic			clint_awready;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
-wire [2:0]		clint_awsize;		// From axixbar_u0 of axixbar.v
-wire			clint_awvalid;		// From axixbar_u0 of axixbar.v
-wire			clint_bready;		// From axixbar_u0 of axixbar.v
-logic [`AXI_RESP_BUS]	clint_bresp;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
-logic			clint_bvalid;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
-logic [`AXI_DATA_BUS]	clint_rdata;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
-wire			clint_rready;		// From axixbar_u0 of axixbar.v
-logic [`AXI_RESP_BUS]	clint_rresp;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
-logic			clint_rvalid;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
-wire [`AXI_DATA_BUS]	clint_wdata;		// From axixbar_u0 of axixbar.v
-wire			clint_wlast;		// From axixbar_u0 of axixbar.v
-logic			clint_wready;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
-wire [`AXI_WSTRB_BUS]	clint_wstrb;		// From axixbar_u0 of axixbar.v
-wire			clint_wvalid;		// From axixbar_u0 of axixbar.v
 logic [`AXI_ADDR_BUS]	fetch_araddr;		// From xcore_u0 of xcore.v
 wire			fetch_arready;		// From axixbar_u0 of axixbar.v
 logic			fetch_arvalid;		// From xcore_u0 of xcore.v
@@ -131,7 +105,7 @@ localparam integer C_AXI_DATA_WIDTH = `AXI_DATA_WIDTH;
 localparam integer C_AXI_ADDR_WIDTH = `AXI_ADDR_WIDTH;
 localparam integer C_AXI_ID_WIDTH   = `AXI_ID_WIDTH;
 localparam  NM  = 2;
-localparam  NS  = 2;
+localparam  NS  = 1;
 localparam  IDW = C_AXI_ID_WIDTH;
 localparam	AW  = C_AXI_ADDR_WIDTH;
 localparam	DW  = C_AXI_DATA_WIDTH;
@@ -234,47 +208,47 @@ xcore xcore_u0 (/*AUTOINST*/
     .S_AXI_RLAST    (),
 
     // Devices
-    .M_AXI_AWADDR   ({io_master_awaddr,     clint_awaddr[`AXI_ADDR_BUS]}),
-    .M_AXI_AWID     ({io_master_awid, 	    clint_awid[3:0]}),
-    .M_AXI_AWVALID  ({io_master_awvalid,    clint_awvalid}),
-    .M_AXI_AWREADY  ({io_master_awready,    clint_awready}),
-    .M_AXI_AWLEN    ({io_master_awlen, 	    clint_awlen[7:0]}),
-    .M_AXI_AWSIZE   ({io_master_awsize,     clint_awsize[2:0]}),
-    .M_AXI_AWBURST  ({io_master_awburst,    clint_awburst[1:0]}),
+    .M_AXI_AWADDR   ({io_master_awaddr}),
+    .M_AXI_AWID     ({io_master_awid}),
+    .M_AXI_AWVALID  ({io_master_awvalid}),
+    .M_AXI_AWREADY  ({io_master_awready}),
+    .M_AXI_AWLEN    ({io_master_awlen}),
+    .M_AXI_AWSIZE   ({io_master_awsize}),
+    .M_AXI_AWBURST  ({io_master_awburst}),
     .M_AXI_AWLOCK   (),
     .M_AXI_AWCACHE  (),
     .M_AXI_AWPROT   (),
     .M_AXI_AWQOS    (),
 
-    .M_AXI_WDATA    ({io_master_wdata,      clint_wdata[`AXI_DATA_BUS]}),
-    .M_AXI_WSTRB    ({io_master_wstrb,      clint_wstrb[`AXI_WSTRB_BUS]}),
-    .M_AXI_WVALID   ({io_master_wvalid,     clint_wvalid}),
-    .M_AXI_WREADY   ({io_master_wready,     clint_wready}),
-    .M_AXI_WLAST    ({io_master_wlast,      clint_wlast}),
+    .M_AXI_WDATA    ({io_master_wdata}),
+    .M_AXI_WSTRB    ({io_master_wstrb}),
+    .M_AXI_WVALID   ({io_master_wvalid}),
+    .M_AXI_WREADY   ({io_master_wready}),
+    .M_AXI_WLAST    ({io_master_wlast}),
 
-    .M_AXI_BRESP    ({io_master_bresp,      clint_bresp[`AXI_RESP_BUS]}),
-    .M_AXI_BVALID   ({io_master_bvalid,     clint_bvalid}),
-    .M_AXI_BREADY   ({io_master_bready,     clint_bready}),
-    .M_AXI_BID      ({io_master_bid,        4'b0}),
+    .M_AXI_BRESP    ({io_master_bresp}),
+    .M_AXI_BVALID   ({io_master_bvalid}),
+    .M_AXI_BREADY   ({io_master_bready}),
+    .M_AXI_BID      ({io_master_bid}),
 
-    .M_AXI_ARADDR   ({io_master_araddr,     clint_araddr[`AXI_ADDR_BUS]}),
-    .M_AXI_ARID     ({io_master_arid,       clint_arid[3:0]}),
-    .M_AXI_ARVALID  ({io_master_arvalid,    clint_arvalid}),
-    .M_AXI_ARREADY  ({io_master_arready,    clint_arready}),
-    .M_AXI_ARLEN    ({io_master_arlen,      clint_arlen[7:0]}),
-    .M_AXI_ARSIZE   ({io_master_arsize,     clint_arsize[2:0]}),
-    .M_AXI_ARBURST  ({io_master_arburst,    clint_arburst[1:0]}),
+    .M_AXI_ARADDR   ({io_master_araddr}),
+    .M_AXI_ARID     ({io_master_arid  }),
+    .M_AXI_ARVALID  ({io_master_arvalid}),
+    .M_AXI_ARREADY  ({io_master_arready}),
+    .M_AXI_ARLEN    ({io_master_arlen }),
+    .M_AXI_ARSIZE   ({io_master_arsize}),
+    .M_AXI_ARBURST  ({io_master_arburst}),
     .M_AXI_ARLOCK   (),
     .M_AXI_ARCACHE  (),
     .M_AXI_ARPROT   (),
     .M_AXI_ARQOS    (),
 
-    .M_AXI_RDATA    ({io_master_rdata,      clint_rdata[`AXI_DATA_BUS]}),
-    .M_AXI_RRESP    ({io_master_rresp,      clint_rresp[`AXI_RESP_BUS]}),
-    .M_AXI_RVALID   ({io_master_rvalid,     clint_rvalid}),
-    .M_AXI_RREADY   ({io_master_rready,     clint_rready}),
-    .M_AXI_RID      ({io_master_rid,        4'b0}),
-    .M_AXI_RLAST    ({io_master_rlast,      1'b0}),
+    .M_AXI_RDATA    ({io_master_rdata}),
+    .M_AXI_RRESP    ({io_master_rresp}),
+    .M_AXI_RVALID   ({io_master_rvalid}),
+    .M_AXI_RREADY   ({io_master_rready}),
+    .M_AXI_RID      ({io_master_rid}),
+    .M_AXI_RLAST    ({io_master_rlast}),
 );
 */
 axixbar #(
@@ -284,14 +258,14 @@ axixbar #(
     .NM(NM),
     .NS(NS),
     .SLAVE_ADDR({
-		32'h0,
+		32'h0
         // 16'b0000001000000000, {(32-16){1'b0}} 
-        32'h0
+        // 32'h0
     }),
     .SLAVE_MASK({
-        {(1){ 32'h0 }},
+        {(1){ 32'h0 }}
         // {(1){ 16'hffff, {(16){1'b0}} }} 
-        32'hffffffff
+        // 32'hffffffff
     }),
     .OPT_LOWPOWER(1'b0),
     .OPT_LINGER(4),
@@ -309,32 +283,32 @@ axixbar #(
 	      .S_AXI_RDATA		({fetch_rdata[`AXI_DATA_BUS], 			lsu_rdata[`AXI_DATA_BUS] }), // Templated
 	      .S_AXI_RRESP		({fetch_rresp[`AXI_RESP_BUS], 			lsu_rresp[`AXI_RESP_BUS] }), // Templated
 	      .S_AXI_RLAST		(),			 // Templated
-	      .M_AXI_AWVALID		({io_master_awvalid,    clint_awvalid}), // Templated
-	      .M_AXI_AWID		({io_master_awid, 	    clint_awid[3:0]}), // Templated
-	      .M_AXI_AWADDR		({io_master_awaddr,     clint_awaddr[`AXI_ADDR_BUS]}), // Templated
-	      .M_AXI_AWLEN		({io_master_awlen, 	    clint_awlen[7:0]}), // Templated
-	      .M_AXI_AWSIZE		({io_master_awsize,     clint_awsize[2:0]}), // Templated
-	      .M_AXI_AWBURST		({io_master_awburst,    clint_awburst[1:0]}), // Templated
+	      .M_AXI_AWVALID		({io_master_awvalid}),	 // Templated
+	      .M_AXI_AWID		({io_master_awid}),	 // Templated
+	      .M_AXI_AWADDR		({io_master_awaddr}),	 // Templated
+	      .M_AXI_AWLEN		({io_master_awlen}),	 // Templated
+	      .M_AXI_AWSIZE		({io_master_awsize}),	 // Templated
+	      .M_AXI_AWBURST		({io_master_awburst}),	 // Templated
 	      .M_AXI_AWLOCK		(),			 // Templated
 	      .M_AXI_AWCACHE		(),			 // Templated
 	      .M_AXI_AWPROT		(),			 // Templated
 	      .M_AXI_AWQOS		(),			 // Templated
-	      .M_AXI_WVALID		({io_master_wvalid,     clint_wvalid}), // Templated
-	      .M_AXI_WDATA		({io_master_wdata,      clint_wdata[`AXI_DATA_BUS]}), // Templated
-	      .M_AXI_WSTRB		({io_master_wstrb,      clint_wstrb[`AXI_WSTRB_BUS]}), // Templated
-	      .M_AXI_WLAST		({io_master_wlast,      clint_wlast}), // Templated
-	      .M_AXI_BREADY		({io_master_bready,     clint_bready}), // Templated
-	      .M_AXI_ARVALID		({io_master_arvalid,    clint_arvalid}), // Templated
-	      .M_AXI_ARID		({io_master_arid,       clint_arid[3:0]}), // Templated
-	      .M_AXI_ARADDR		({io_master_araddr,     clint_araddr[`AXI_ADDR_BUS]}), // Templated
-	      .M_AXI_ARLEN		({io_master_arlen,      clint_arlen[7:0]}), // Templated
-	      .M_AXI_ARSIZE		({io_master_arsize,     clint_arsize[2:0]}), // Templated
-	      .M_AXI_ARBURST		({io_master_arburst,    clint_arburst[1:0]}), // Templated
+	      .M_AXI_WVALID		({io_master_wvalid}),	 // Templated
+	      .M_AXI_WDATA		({io_master_wdata}),	 // Templated
+	      .M_AXI_WSTRB		({io_master_wstrb}),	 // Templated
+	      .M_AXI_WLAST		({io_master_wlast}),	 // Templated
+	      .M_AXI_BREADY		({io_master_bready}),	 // Templated
+	      .M_AXI_ARVALID		({io_master_arvalid}),	 // Templated
+	      .M_AXI_ARID		({io_master_arid  }),	 // Templated
+	      .M_AXI_ARADDR		({io_master_araddr}),	 // Templated
+	      .M_AXI_ARLEN		({io_master_arlen }),	 // Templated
+	      .M_AXI_ARSIZE		({io_master_arsize}),	 // Templated
+	      .M_AXI_ARBURST		({io_master_arburst}),	 // Templated
 	      .M_AXI_ARLOCK		(),			 // Templated
 	      .M_AXI_ARCACHE		(),			 // Templated
 	      .M_AXI_ARQOS		(),			 // Templated
 	      .M_AXI_ARPROT		(),			 // Templated
-	      .M_AXI_RREADY		({io_master_rready,     clint_rready}), // Templated
+	      .M_AXI_RREADY		({io_master_rready}),	 // Templated
 	      // Inputs
 	      .S_AXI_ACLK		(clock),		 // Templated
 	      .S_AXI_ARESETN		(reset),		 // Templated
@@ -364,62 +338,18 @@ axixbar #(
 	      .S_AXI_ARPROT		({3'b0, 	                            3'b0}), // Templated
 	      .S_AXI_ARQOS		({4'b0, 	                            4'b0}), // Templated
 	      .S_AXI_RREADY		({fetch_rready, 			            lsu_rready }), // Templated
-	      .M_AXI_AWREADY		({io_master_awready,    clint_awready}), // Templated
-	      .M_AXI_WREADY		({io_master_wready,     clint_wready}), // Templated
-	      .M_AXI_BVALID		({io_master_bvalid,     clint_bvalid}), // Templated
-	      .M_AXI_BID		({io_master_bid,        4'b0}), // Templated
-	      .M_AXI_BRESP		({io_master_bresp,      clint_bresp[`AXI_RESP_BUS]}), // Templated
-	      .M_AXI_ARREADY		({io_master_arready,    clint_arready}), // Templated
-	      .M_AXI_RVALID		({io_master_rvalid,     clint_rvalid}), // Templated
-	      .M_AXI_RID		({io_master_rid,        4'b0}), // Templated
-	      .M_AXI_RDATA		({io_master_rdata,      clint_rdata[`AXI_DATA_BUS]}), // Templated
-	      .M_AXI_RRESP		({io_master_rresp,      clint_rresp[`AXI_RESP_BUS]}), // Templated
-	      .M_AXI_RLAST		({io_master_rlast,      1'b0})); // Templated
+	      .M_AXI_AWREADY		({io_master_awready}),	 // Templated
+	      .M_AXI_WREADY		({io_master_wready}),	 // Templated
+	      .M_AXI_BVALID		({io_master_bvalid}),	 // Templated
+	      .M_AXI_BID		({io_master_bid}),	 // Templated
+	      .M_AXI_BRESP		({io_master_bresp}),	 // Templated
+	      .M_AXI_ARREADY		({io_master_arready}),	 // Templated
+	      .M_AXI_RVALID		({io_master_rvalid}),	 // Templated
+	      .M_AXI_RID		({io_master_rid}),	 // Templated
+	      .M_AXI_RDATA		({io_master_rdata}),	 // Templated
+	      .M_AXI_RRESP		({io_master_rresp}),	 // Templated
+	      .M_AXI_RLAST		({io_master_rlast}));	 // Templated
 
-/*axi_lite_slv_clint AUTO_TEMPLATE (
-    .clk(clock),
-    .rst_n(reset),
-    .araddr(clint_araddr[`AXI_ADDR_BUS]),
-    .arvalid(clint_arvalid),
-    .arready(clint_arready),
-    .rdata(clint_rdata[`AXI_DATA_BUS]),
-    .rresp(clint_rresp[`AXI_RESP_BUS]),
-    .rvalid(clint_rvalid),
-    .rready(clint_rready),
-    .awaddr(clint_awaddr[`AXI_ADDR_BUS]),
-    .awvalid(clint_awvalid),
-    .awready(clint_awready),
-    .wdata(clint_wdata[`AXI_DATA_BUS]),
-    .wstrb(clint_wstrb[`AXI_WSTRB_BUS]),
-    .wvalid(clint_wvalid),
-    .wready(clint_wready),
-    .bresp(clint_bresp[`AXI_RESP_BUS]),
-    .bvalid(clint_bvalid),
-    .bready(clint_bready),
-);
-*/
-axi_lite_slv_clint axi_lite_slv_clint_u0 (/*AUTOINST*/
-					  // Outputs
-					  .arready		(clint_arready), // Templated
-					  .rdata		(clint_rdata[`AXI_DATA_BUS]), // Templated
-					  .rresp		(clint_rresp[`AXI_RESP_BUS]), // Templated
-					  .rvalid		(clint_rvalid),	 // Templated
-					  .awready		(clint_awready), // Templated
-					  .wready		(clint_wready),	 // Templated
-					  .bresp		(clint_bresp[`AXI_RESP_BUS]), // Templated
-					  .bvalid		(clint_bvalid),	 // Templated
-					  // Inputs
-					  .clk			(clock),	 // Templated
-					  .rst_n		(reset),	 // Templated
-					  .araddr		(clint_araddr[`AXI_ADDR_BUS]), // Templated
-					  .arvalid		(clint_arvalid), // Templated
-					  .rready		(clint_rready),	 // Templated
-					  .awaddr		(clint_awaddr[`AXI_ADDR_BUS]), // Templated
-					  .awvalid		(clint_awvalid), // Templated
-					  .wdata		(clint_wdata[`AXI_DATA_BUS]), // Templated
-					  .wstrb		(clint_wstrb[`AXI_WSTRB_BUS]), // Templated
-					  .wvalid		(clint_wvalid),	 // Templated
-					  .bready		(clint_bready));	 // Templated
 
 endmodule
 // Local Variables:
