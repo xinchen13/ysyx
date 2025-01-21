@@ -284,16 +284,16 @@ axixbar #(
     .NM(NM),
     .NS(NS),
     .SLAVE_ADDR({
-        16'b0000001000000000, {(32-16){1'b0}},
-        {32'h0}
+		32'h0,
+        16'b0000001000000000, {(32-16){1'b0}} 
     }),
     .SLAVE_MASK({
-        {(1){ 16'hffff, {(16){1'b0}} }},
-        {32'h0}
+        {(1){ 32'h0 }},
+        {(1){ 16'hffff, {(16){1'b0}} }} 
     }),
     .OPT_LOWPOWER(1'b0),
     .OPT_LINGER(4),
-    .LGMAXBURST(2)
+    .LGMAXBURST(4)
 ) axixbar_u0 (/*AUTOINST*/
 	      // Outputs
 	      .S_AXI_AWREADY		({                      lsu_awready}), // Templated
