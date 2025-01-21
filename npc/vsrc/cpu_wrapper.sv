@@ -259,13 +259,9 @@ axixbar #(
     .NS(NS),
     .SLAVE_ADDR({
 		32'h0
-        // 16'b0000001000000000, {(32-16){1'b0}} 
-        // 32'h0
     }),
     .SLAVE_MASK({
         {(1){ 32'h0 }}
-        // {(1){ 16'hffff, {(16){1'b0}} }} 
-        // 32'hffffffff
     }),
     .OPT_LOWPOWER(1'b0),
     .OPT_LINGER(4),
