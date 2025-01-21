@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Filename:	rtl/addrdecode.v
+// Filename: 	addrdecode.v
 // {{{
 // Project:	WB2AXIPSP: bus bridges and other odds and ends
 //
@@ -42,7 +42,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 // }}}
-// Copyright (C) 2019-2025, Gisselquist Technology, LLC
+// Copyright (C) 2019-2024, Gisselquist Technology, LLC
 // {{{
 // This file is part of the WB2AXIP project.
 //
@@ -50,9 +50,9 @@
 // Apache License, Version 2.0 (the "License").  You may not use this project,
 // or this file, except in compliance with the License.  You may obtain a copy
 // of the License at
-// }}}
+//
 //	http://www.apache.org/licenses/LICENSE-2.0
-// {{{
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -60,6 +60,7 @@
 // under the License.
 //
 ////////////////////////////////////////////////////////////////////////////////
+//
 //
 `default_nettype	none
 // }}}
@@ -136,7 +137,8 @@ module	addrdecode #(
 					|| (SLAVE_MASK[AW-1:0] != 0);
 	//
 	wire	[NS:0]		request;
-	reg	[NS-1:0]	prerequest;
+    reg	[NS-1:0]	prerequest_tmp;
+	wire	[NS-1:0]	prerequest;
 	integer			iM;
 	// }}}
 
@@ -144,9 +146,11 @@ module	addrdecode #(
 	// {{{
 	always @(*)
 	for(iM=0; iM<NS; iM=iM+1)
-		prerequest[iM] = (((i_addr ^ SLAVE_ADDR[iM*AW +: AW])
+		prerequest_tmp[iM] = (((i_addr ^ SLAVE_ADDR[iM*AW +: AW])
 				&SLAVE_MASK[iM*AW +: AW])==0)
 			&&(ACCESS_ALLOWED[iM]);
+
+    assign prerequest[NS-1:0] = (&prerequest_tmp[NS-1:0]) ? 'b1 : prerequest_tmp[NS-1:0];
 	// }}}
 
 	// request
@@ -172,11 +176,6 @@ module	addrdecode #(
 	begin : SINGLE_SLAVE
 		// {{{
 		assign request[0] = i_valid;
-
-		// Verilator lint_off UNUSED
-		wire	unused;
-		assign	unused = &{ 1'b0, prerequest };
-		// Verilator lint_on  UNUSED
 		// }}}
 	end else begin : GENERAL_CASE
 		// {{{
