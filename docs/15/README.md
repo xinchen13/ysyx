@@ -600,4 +600,6 @@ ysyxSoC默认未打开ChipLink, 因此需要在`ysyxSoC/src/Top.scala的Config`�
 
 #### 最后
 - 将clint的实现移到核内, 并修改设备地址, 使得程序能够正确访问
-- 运行 fceux
+- 运行 fceux-am 的 mario, 很久很久以后成功启动:
+
+<img src="../../figs/Screenshot from 2025-01-21 23-11-57.png" width="666" />
