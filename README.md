@@ -31,6 +31,7 @@
 - [异常处理和RT-Thread(exception)](./docs/13/)
 - [总线(bus)](./docs/14/)
 - [SoC计算机系统(soc)](./docs/15/)
+- [性能优化和简易缓存(cache)](./docs/16/)
 
 ## Tips
 #### set environment variables
