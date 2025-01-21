@@ -16,19 +16,19 @@ int main() {
     printf("init done!\n");
 
     int i = 0;
-//   unsigned long last = 0;
-//   unsigned long current;
+  unsigned long last = 0;
+  unsigned long current;
 
-//   display_image(i);
+  display_image(i);
 
     while (1) {
-        // current = io_read(AM_TIMER_UPTIME).us / 1000;
-        // if (current - last > 5000) {
+        current = io_read(AM_TIMER_UPTIME).us / 1000;
+        if (current - last > 5000) {
         // change image every 5s
         i = (i + 1) % NR_IMG;
         display_image(i);
-        //   last = current;
-        // }
+        last = current;
+        }
     }
     return 0;
 }
