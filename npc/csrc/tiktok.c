@@ -206,6 +206,7 @@ void core_exec(uint64_t n) {
     Log("Total cycle = %" PRIu64 "", cycle_count);
     Log("Total inst  = %" PRIu64 "", inst_count);
     Log("CPI         = %" PRIu64 "", cycle_count/inst_count);
+    Log("IPC         = %lf", (double)inst_count/(double(cycle_count)));
 
     switch (npc_state.state) {
         case NPC_RUNNING: 
