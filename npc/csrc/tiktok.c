@@ -8,7 +8,8 @@
 static word_t this_inst;
 static word_t this_pc;
 static word_t dnpc;
-static int cycle_count = 0;
+extern uint64_t cycle_count;
+extern uint64_t inst_count;
 
 #ifdef CONFIG_DIFFTEST
     static word_t difftest_pc;
@@ -175,7 +176,11 @@ static void execute(uint64_t n) {
     for (;n > 0; n --) {
         exec_once();
         nvboard_update();
+
+        // ipc 
         cycle_count++;
+        if (dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__fetch_id_valid) {inst_count++;}
+
         trace_and_difftest();
         if (this_inst == 0x00100073 || contextp->time() > 9999999999) {
             set_npc_state(NPC_END, this_pc, core.gpr[10]);
@@ -198,7 +203,10 @@ void core_exec(uint64_t n) {
 
     execute(n);
 
-    Log("total cycle = %d", cycle_count);
+    Log("Total cycle = %" PRIu64 "", cycle_count);
+    Log("Total inst  = %" PRIu64 "", inst_count);
+    Log("CPI         = %" PRIu64 "", cycle_count/inst_count);
+    Log("IPC         = %lf", (double)inst_count/(double(cycle_count)));
 
     switch (npc_state.state) {
         case NPC_RUNNING: 
