@@ -172,15 +172,19 @@ static void exec_once() {
     #endif
 }
 
+static void pmu_exec() {
+    // ipc
+    cycle_count++;
+    if (dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__fetch_id_valid) {
+        inst_count++;
+    }
+}
+
 static void execute(uint64_t n) {
     for (;n > 0; n --) {
         exec_once();
         nvboard_update();
-
-        // ipc 
-        cycle_count++;
-        if (dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__fetch_id_valid) {inst_count++;}
-
+        pmu_exec();
         trace_and_difftest();
         if (this_inst == 0x00100073 || contextp->time() > 9999999999) {
             set_npc_state(NPC_END, this_pc, core.gpr[10]);
