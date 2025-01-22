@@ -26,3 +26,5 @@ CoreMark和Dhrystone属于合成程序(synthetic program), 意思是用若干个
 事实上, `am-kernels`中集成的`microbench`就是一个不错的选择. 一方面, `microbench`提供了多种规模的测试集, 模拟器可以采用`ref`规模, RTL仿真环境可以采用`train`规模; 另一方面, `microbench`作为一个AM程序, 无需启动Linux即可运行; 此外, `microbench`包含10个子项, 覆盖排序, 位操作, 语言解释器, 矩阵计算, 素数生成, A*算法, 最大网络流, 数据压缩, MD5校验和等场景. 因此, 下面默认使用`microbench`的`train`规模作为benchmark
 
 如果处理器的应用场景比较明确, 例如运行超级玛丽, 那么还可以直接把超级玛丽作为benchmark, 相当于把“超级玛丽的游戏体验”作为“运行得好”的标准. 和microbench不同, 超级玛丽是一个不会运行结束的程序, 因此可以采用FPS作为量化指标来评估, 而不是采用运行时间
+
+## 寻找性能瓶颈

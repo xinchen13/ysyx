@@ -8,7 +8,7 @@
 static word_t this_inst;
 static word_t this_pc;
 static word_t dnpc;
-static int cycle_count = 0;
+static uint64_t cycle_count = 0;
 
 #ifdef CONFIG_DIFFTEST
     static word_t difftest_pc;
@@ -198,7 +198,7 @@ void core_exec(uint64_t n) {
 
     execute(n);
 
-    Log("total cycle = %d", cycle_count);
+    Log("total cycle = %" PRIu64 "", cycle_count);
 
     switch (npc_state.state) {
         case NPC_RUNNING: 
