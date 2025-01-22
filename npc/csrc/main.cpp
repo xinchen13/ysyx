@@ -9,6 +9,7 @@ VerilatedContext* contextp;
 VysyxSoCFull* dut;
 VerilatedVcdC* tfp;
 uint64_t cycle_count = 0;
+uint64_t inst_count = 0;
 
 void nvboard_bind_all_pins(VysyxSoCFull* ysyxSoCFull);
 
