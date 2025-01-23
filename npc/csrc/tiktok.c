@@ -8,8 +8,45 @@
 static word_t this_inst;
 static word_t this_pc;
 static word_t dnpc;
+
+#ifdef CONFIG_PMU
 static uint64_t cycle_count = 0;
 static uint64_t inst_count = 0;
+static uint64_t lsu_read_count = 0;
+static uint64_t a_type = 0;   
+static uint64_t b_type = 0;   
+static uint64_t c_type = 0;   
+static uint64_t load_type = 0;
+static uint64_t store_type = 0;
+static void pmu_exec() {
+    ;
+}
+static void pmu_display() {
+    // read pmu
+    cycle_count = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__cycle_count;
+    inst_count = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__inst_count;
+    lsu_read_count = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__lsu_read_count;
+    a_type = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__a_type;   
+    b_type = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__b_type;   
+    c_type = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__c_type;   
+    load_type = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__load_type;
+    store_type = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__store_type;
+
+    // log out
+    Log("********** Performance Monitor **********");
+    Log("Total cycle count = %" PRIu64 "", cycle_count);
+    Log("Total insts count = %" PRIu64 "", inst_count);
+    Log("   - A(alu) type count = %" PRIu64 "", a_type);
+    Log("   - B(branch) type count     = %" PRIu64 "", b_type);
+    Log("   - C(csr) type count      = %" PRIu64 "", c_type);
+    Log("   - Memory load type count     = %" PRIu64 "", load_type);
+    Log("   - Memory store type count    = %" PRIu64 "", store_type);
+    Log("CPI = %" PRIu64 "", cycle_count/inst_count);
+    Log("IPC = %lf", (double)inst_count/(double(cycle_count)));
+    Log("Total lsu read = %" PRIu64 "", lsu_read_count);
+    Log("*****************************************");
+}
+#endif
 
 #ifdef CONFIG_DIFFTEST
     static word_t difftest_pc;
@@ -172,27 +209,13 @@ static void exec_once() {
     #endif
 }
 
-static void pmu_exec() {
-    // ipc
-    cycle_count++;
-    if (dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__fetch_id_pipe_u0__DOT__remove) {
-        inst_count++;
-    }
-}
-
-static void pmu_display() {
-    Log("Total cycle = %" PRIu64 "", cycle_count);
-    Log("Total inst  = %" PRIu64 "", inst_count);
-    Log("CPI         = %" PRIu64 "", cycle_count/inst_count);
-    Log("IPC         = %lf", (double)inst_count/(double(cycle_count)));
-}
-
-
 static void execute(uint64_t n) {
     for (;n > 0; n --) {
         exec_once();
         nvboard_update();
+        #ifdef CONFIG_PMU
         pmu_exec();
+        #endif
         trace_and_difftest();
         if (this_inst == 0x00100073 || contextp->time() > 9999999999) {
             set_npc_state(NPC_END, this_pc, core.gpr[10]);
@@ -215,7 +238,9 @@ void core_exec(uint64_t n) {
 
     execute(n);
 
+    #ifdef CONFIG_PMU
     pmu_display();
+    #endif
 
     switch (npc_state.state) {
         case NPC_RUNNING: 

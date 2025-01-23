@@ -399,4 +399,16 @@ module xcore (
         .rdata(csr_rdata)
     );
 
+    `ifdef PMU_ON
+    pmu pmu_u0 (
+        .clk(clk),
+        .rst_n(rst_n),
+        .fetch_rvalid(fetch_rvalid),
+        .fetch_rready(fetch_rready),
+        .lsu_rvalid(lsu_rvalid),
+        .lsu_rready(lsu_rready),
+        .fetch_rdata(fetch_rdata)
+    );
+    `endif
+
 endmodule
