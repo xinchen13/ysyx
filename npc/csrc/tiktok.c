@@ -12,16 +12,21 @@ static word_t dnpc;
 #ifdef CONFIG_PMU
 static uint64_t cycle_count = 0;
 static uint64_t inst_count = 0;
+static uint64_t lsu_read_count = 0;
 static void pmu_exec() {
     cycle_count = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__cycle_count;
     inst_count = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__inst_count;
+    lsu_read_count = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__lsu_read_count;
 }
 
 static void pmu_display() {
-    Log("Total cycle = %" PRIu64 "", cycle_count);
-    Log("Total inst  = %" PRIu64 "", inst_count);
-    Log("CPI         = %" PRIu64 "", cycle_count/inst_count);
-    Log("IPC         = %lf", (double)inst_count/(double(cycle_count)));
+    Log("********** Performance Monitor **********");
+    Log("Total cycle    = %" PRIu64 "", cycle_count);
+    Log("Total inst     = %" PRIu64 "", inst_count);
+    Log("CPI            = %" PRIu64 "", cycle_count/inst_count);
+    Log("IPC            = %lf", (double)inst_count/(double(cycle_count)));
+    Log("Total lsu read = %" PRIu64 "", lsu_read_count);
+    Log("*****************************************");
 }
 
 #endif
