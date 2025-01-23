@@ -16,7 +16,6 @@ static uint64_t lsu_read_count = 0;
 static void pmu_exec() {
     ;
 }
-
 static void pmu_display() {
     // read pmu
     cycle_count = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__cycle_count;
@@ -32,7 +31,6 @@ static void pmu_display() {
     Log("Total lsu read = %" PRIu64 "", lsu_read_count);
     Log("*****************************************");
 }
-
 #endif
 
 #ifdef CONFIG_DIFFTEST
