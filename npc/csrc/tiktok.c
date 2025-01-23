@@ -14,12 +14,16 @@ static uint64_t cycle_count = 0;
 static uint64_t inst_count = 0;
 static uint64_t lsu_read_count = 0;
 static void pmu_exec() {
-    cycle_count = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__cycle_count;
-    inst_count = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__inst_count;
-    lsu_read_count = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__lsu_read_count;
+    ;
 }
 
 static void pmu_display() {
+    // read pmu
+    cycle_count = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__cycle_count;
+    inst_count = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__inst_count;
+    lsu_read_count = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__lsu_read_count;
+
+    // log out
     Log("********** Performance Monitor **********");
     Log("Total cycle    = %" PRIu64 "", cycle_count);
     Log("Total inst     = %" PRIu64 "", inst_count);
