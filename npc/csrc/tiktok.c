@@ -174,10 +174,8 @@ static void exec_once() {
 
 static void pmu_exec() {
     // ipc
-    cycle_count++;
-    if (dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__fetch_id_pipe_u0__DOT__remove) {
-        inst_count++;
-    }
+    cycle_count = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__cycle_count;
+    inst_count = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__inst_count;
 }
 
 static void pmu_display() {
