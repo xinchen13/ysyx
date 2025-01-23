@@ -8,8 +8,8 @@
 static word_t this_inst;
 static word_t this_pc;
 static word_t dnpc;
-extern uint64_t cycle_count;
-extern uint64_t inst_count;
+static uint64_t cycle_count = 0;
+static uint64_t inst_count = 0;
 
 #ifdef CONFIG_DIFFTEST
     static word_t difftest_pc;
