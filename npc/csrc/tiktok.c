@@ -36,7 +36,7 @@ static void pmu_display() {
     Log("********** Performance Monitor **********");
     Log("Total cycle count = %" PRIu64 "", cycle_count);
     Log("Total insts count = %" PRIu64 "", inst_count);
-    Log("   - A(alu) type count = %" PRIu64 "", a_type);
+    Log("   - A(alu) type count = %" PRIu64 "( \%)", a_type);
     Log("   - B(branch) type count     = %" PRIu64 "", b_type);
     Log("   - C(csr) type count      = %" PRIu64 "", c_type);
     Log("   - Memory load type count     = %" PRIu64 "", load_type);
