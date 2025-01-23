@@ -64,3 +64,6 @@
 `define INST_ECALL  32'h73
 `define INST_MRET   32'h30200073
 `define INST_NOP    32'h00000001
+
+// turn on performance monitor unit
+`define PMU_ON      1'b1
