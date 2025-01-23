@@ -9,7 +9,7 @@ module id (
     // to if_id
     output logic this_ready,  // 本级的ready输出
 
-    // from pc_reg(if) (其实应该是ex, 对于双周期处理器来说没有区别)
+    // from ex
     input logic next_ready,   // 下级的 ready 输入
 
     // to pc_reg
