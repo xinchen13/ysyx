@@ -34,16 +34,16 @@ static void pmu_display() {
 
     // log out
     Log("********** Performance Monitor **********");
-    Log("Total cycle count = %" PRIu64 "", cycle_count);
-    Log("Total insts count = %" PRIu64 "", inst_count);
-    Log("   - A(alu) type count = %" PRIu64, a_type);
+    Log("Total cycle count = %" PRIu64, cycle_count);
+    Log("Total insts count = %" PRIu64, inst_count);
+    Log("   - A(alu) type count = %" PRIu64 "()", a_type);
     Log("   - B(branch) type count     = %" PRIu64 "", b_type);
     Log("   - C(csr) type count      = %" PRIu64 "", c_type);
     Log("   - Memory load type count     = %" PRIu64 "", load_type);
     Log("   - Memory store type count    = %" PRIu64 "", store_type);
-    Log("CPI = %" PRIu64 "", cycle_count/inst_count);
+    Log("CPI = %" PRIu64, cycle_count/inst_count);
     Log("IPC = %lf", (double)inst_count/(double(cycle_count)));
-    Log("Total lsu read = %" PRIu64 "", lsu_read_count);
+    Log("Total lsu read = %" PRIu64, lsu_read_count);
     Log("*****************************************");
 }
 #endif
