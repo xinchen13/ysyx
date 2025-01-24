@@ -63,12 +63,12 @@ static void pmu_display() {
     Log("   - C(csr) type count         = %" PRIu64 "(%.3lf)", c_type, ((double)c_type)/(double(inst_count)));
     Log("   - Memory load type count    = %" PRIu64 "(%.3lf)", load_type, ((double)load_type)/(double(inst_count)));
     Log("   - Memory store type count   = %" PRIu64 "(%.3lf)", store_type, ((double)store_type)/(double(inst_count)));
-    Log("CPI = %lf (IPC = %lf)", ((double)cycle_count/(double)inst_count), ((double)inst_count)/(double(cycle_count)));
-    Log("   - A(alu) type         = %" PRIu64 "(%.3lf)", a_type, ((double)a_type)/(double(inst_count)));
-    Log("   - B(branch) type      = %" PRIu64 "(%.3lf)", b_type, ((double)b_type)/(double(inst_count)));
-    Log("   - C(csr) type         = %" PRIu64 "(%.3lf)", c_type, ((double)c_type)/(double(inst_count)));
-    Log("   - Memory load type    = %" PRIu64 "(%.3lf)", load_type, ((double)load_type)/(double(inst_count)));
-    Log("   - Memory store type   = %" PRIu64 "(%.3lf)", store_type, ((double)store_type)/(double(inst_count)));
+    Log("CPI = %.3lf (IPC = %lf)", ((double)cycle_count/(double)inst_count), ((double)inst_count)/(double(cycle_count)));
+    Log("   - A(alu) type         = %.3lf", ((double)a_type_cycle)/(double(a_type)));
+    Log("   - B(branch) type      = %.3lf", ((double)b_type_cycle)/(double(b_type)));
+    Log("   - C(csr) type         = %.3lf", ((double)c_type_cycle)/(double(c_type)));
+    Log("   - Memory load type    = %.3lf", ((double)load_type_cycle)/(double(load_type)));
+    Log("   - Memory store type   = %.3lf", ((double)store_type_cycle)/(double(store_type)));
     // Log("Total lsu read = %" PRIu64, lsu_read_count);
     Log("*********************************************");
 }
