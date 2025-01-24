@@ -106,9 +106,76 @@ perf = ------- = ------ * ------- * -------
 相比于事件发生, 有时候我们更关心事件什么时候不发生, 以及为什么不发生. 例如, 其实我们更关心IFU什么时候取不到指令, 以及IFU为什么取不到指令, 梳理其中的缘由有助于我们理解指令供给的瓶颈在哪里, 从而为提升处理器的指令供给提供指导. 我们可以把"事件不发生"定义成一个新的事件, 并为新事件添加性能计数器:
 
 - 每种类别的指令占多少比例? 它们各自平均需要执行多少个周期?
-- IFU取不到指令的原因有哪些? 这些原因导致IFU取不到指令的几率分别是多少?
-- LSU的平均访存延迟是多少?
+- IFU取不到指令的原因有哪些? 这些原因导致IFU取不到指令的几率分别是多少: (当前原因只有后续译码执行访存卡住)
+- LSU的平均访存延迟是多少: (读60个cycle, 写30个cycle)
 
 性能计数器的trace: 前面介绍的性能计数器的使用方式都是在仿真结束后输出并分析. 如果我们每周期都输出性能计数器的值, 我们就能得到性能计数器的trace, 借助一些绘图工具(如python的matplotlib绘图库), 我们可以绘制出性能计数器的值随时间变化的曲线, 将仿真过程中性能计数器的变化过程可视化, 从而帮助我们更好地判断性能计数器的变化过程是否符合预期
 
+### 阿姆达尔定律 (Amdahl's law)
+性能计数器可以为处理器微结构的优化提供量化指导. 那么, 性能瓶颈究竟在哪里? 哪些优化工作是值得做的呢? 优化工作的预期性能收益是多少? 我们需要在开展具体的优化之前就回答这些问题, 以帮助我们规避那些预期性能收益很低的优化工作, 从而将更多时间投入到收益高的优化工作中. 这听上去像一个预测未来的工作, 但Amdahl's law可以告诉我们答案
 
+```
+The overall performance improvement gained by optimizing a single part
+of a system is limited by the fraction of time that the improved part
+is actually used.
+
+优化系统中某部分所获得的总体性能收益, 受限于那部分实际使用的时间占比
+```
+
+假设系统某部分实际使用的时间占比是`p`, 该部分在优化后的加速比是`s`, 则整个系统的加速比为`f(s) = 1 / (1 - p + p / s)`, 这就是Amdahl's law的公式表示
+
+#### 根据性能计数器寻找合适的性能瓶颈
+根据性能计数器的统计结果, 尝试挖掘一些潜在的优化对象(以 test 规模的 microbench 为例, **优化方案的选择一定要基于负载的运行情况**):
+
+```
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:52 pmu_display] ************ Performance Monitor ************
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:53 pmu_display] Total cycle count = 13998424
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:54 pmu_display]    - A(alu) type count         = 603912(0.043)
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:55 pmu_display]    - B(branch) type count      = 267790(0.019)
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:56 pmu_display]    - C(csr) type count         = 1(0.000)
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:57 pmu_display]    - Memory load type count    = 4384117(0.313)
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:58 pmu_display]    - Memory store type count   = 1735473(0.124)
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:59 pmu_display]    - Front end: fetch count    = 6439823(0.460)
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:60 pmu_display] Total insts count = 567308
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:61 pmu_display]    - A(alu) type count         = 301956(0.532)
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:62 pmu_display]    - B(branch) type count      = 133895(0.236)
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:63 pmu_display]    - C(csr) type count         = 1(0.000)
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:64 pmu_display]    - Memory load type count    = 72022(0.127)
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:65 pmu_display]    - Memory store type count   = 59434(0.105)
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:66 pmu_display] CPI = 24.675 (IPC = 0.040527)
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:67 pmu_display]    - A(alu) type         = 2.000
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:68 pmu_display]    - B(branch) type      = 2.000
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:69 pmu_display]    - C(csr) type         = 1.000
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:70 pmu_display]    - Memory load type    = 60.872
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:71 pmu_display]    - Memory store type   = 29.200
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:73 pmu_display] *********************************************
+```
+- 从时间占比上来看, 优化取指和指令load是收益最大的
+- 利用Amdahl's law估算它们能获取的理论收益:
+    1. 优化取指的理论收益: `1/(1-0.460)=1.85`
+    2. 优化laod的理论收益: `1/(1-0.313)=1.46`
+
+### 校准访存延迟
+如果仿真环境的行为和真实芯片越接近, 评估结果的误差就越小, 在性能计数器的指导下开展的优化所取得的性能提升就越真实: 之前的ysyxSoC环境是假设处理器和各种外设运行在同一频率下: verilator仿真的一个周期, 既是处理器中的一个周期, 也是外设中的一个周期. 但实际上并非如此: 受电气特性的影响, 外设通常只能运行在低频率, 例如SDRAM颗粒通常只能运行在100MHz左右, 过高的频率会导致时序违例, 使得SDRAM颗粒无法正确工作; 但另一方面, 使用先进工艺的处理器通常能够运行在更高的频率.
+
+为了获得更准确的仿真结果, 以指导我们进行更有效的优化, 我们需要对访存延迟进行校准(calibration). 校准的方式有两种, 一种是使用支持多个时钟域的仿真器, 例如VCS或ICARUS verilog. 和采用周期精确模型方式实现的verilator不同, 这种仿真器采用事件队列模型的方式实现, 把Verilog中的每次计算都看作事件, 并且可以维护事件的延迟, 从而可以正确地维护多时钟域中不同模块在不同频率下工作时每次计算的顺序. 不过为了维护事件队列模型, 这种仿真器的运行速度通常要低于verilator
+
+校准的第二种方式是修改RTL代码, 在ysyxSoC中插入一个延迟模块, 负责将请求延迟若干周期, 来模拟设备在低频率运行的效果, 使得NPC等待的周期数与其将来在高频率运行时所等待的周期数接近. 这种方式的实现不算复杂, 而且可以使用较快的verilator来仿真, 我们选择这种方式. 此外, 这种方式也适用于FPGA. 延迟模块需要等待的周期数与设备服务请求所花费的时间有关, 并不是一个固定的常数, 因此需要在延迟模块中动态计算. 假设请求在设备中花费了k个周期, 处理器和设备的频率比是r(应有r >= 1), 那么延迟模块中需要计算出处理器所需等待的周期数`c = k * r`. 为了进行这一动态计算, 我们又需要考虑两个问题:
+
+1. 如何低开销地实现乘法
+2. 如果r是小数, 如何实现小数的乘法
+
+例如yosys-sta项目报告的频率是550MH, 那么`r = 550 / 100 = 5.5`, 但如果把5.5按5来计算, 一个在设备端花费6周期请求将会在处理器端引入3个周期的误差, 对高速运行的CPU来说误差太大, 误差的积累会明显地影响性能计数器的值, 从而进一步影响优化的决策. 考虑到ysyxSoC的代码不参与综合和流片, 其实我们可以用一些简单的方法解决问题, 例如用`*`来计算乘法的结果, 用定点数来表示小数
+
+首先我们先考虑r是整数时, 如何实现乘法. 既然延迟模块本身也需要等待设备的回复, 等待的时间正好是请求在设备中花费的周期数k, 那干脆让延迟模块在等待的每个周期中对一个计数器进行累加, 每周期加r即可. 对于给定的处理器频率和设备频率, r是个定值, 因此可以直接硬编码到RTL代码中. 在延迟模块收到设备的回复后, 就进入等待状态, 每周期让计数器减1, 减到0时再将请求回复给上游.
+
+然后我们来考虑r是小数的情况. 既然小数部分不方便处理, 直接截断又会引入较大误差, 我们可以想办法将小数部分并入整数部分进行累加. 事实上, 我们可以引入一个放大系数s, 累加时每周期往计数器加`r * s`, 即累加结束时, 计数器的值为`y = r * s * k`, 然后在进入等待状态前, 将计数器更新为`y / s`即可. 因为s是一个常数, 因此`r * s`的结果也可以直接硬编码到RTL中, 当然这里的`r * s`很有可能还不是整数, 这里我们将其截断为整数, 虽然这理论上这仍然会引入一定的误差, 但我们可以证明误差比之前小很多. 不过y的值是动态计算的, 不能硬编码到RTL中, 因此对于一般的s, `y / s`需要计算除法. 你应该很快想到, 我们可以取一些特殊的s, 来简化这一计算的过程! 通过这种方式, 我们可以把误差减少到原来的`1/s`, 即原来在累加阶段累积的误差达到s时, 在这种新方法下的误差才增加1
+
+#### 实现校准访存延迟
+回顾当前的ysyxSoC, 其中SDRAM采用APB接口, 因此我们需要实现一个APB的延迟模块. ysyxSoC中已经包含一个APB延迟模块的框架, 并集成到APB Xbar的上游, 可捕捉所有APB访问请求, 包括SDRAM的访问请求:
+
+- 在`ysyxSoC/perip/amba/apb_delayer.v`中实现相应代码
+- 为了实现APB延迟模块, 根据APB协议的定义, 梳理出一个APB事务何时开始, 何时结束. 假设一个APB事务从t0时刻开始, 设备端在t1时刻返回APB的回复, APB延迟模块在t1'时刻向上游返回APB的回复, 则应有等式(t1 - t0) * r = t1' - t0
+- 关于r的取值, 我们假设设备运行在100MHz的环境下, 你可以根据yosys-sta的综合报告计算出r. 至于s, 理论上当然是越大越好, 不过你只要选择一个实际中够用的s即可. 至于多少够用, 就交给你来观察了, 这其实也是一种profiling.
+
+实现后, 尝试取不同的r, 在波形中观察上述等式是否成立
