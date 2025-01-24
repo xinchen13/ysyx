@@ -65,7 +65,7 @@ static void pmu_display() {
     Log("   - Memory store type count   = %" PRIu64 "(%.3lf)", store_type, ((double)store_type)/(double(inst_count)));
     Log("CPI = %" PRIu64, cycle_count/inst_count);
     Log("IPC = %lf", ((double)inst_count)/(double(cycle_count)));
-    Log("Total lsu read = %" PRIu64, lsu_read_count);
+    // Log("Total lsu read = %" PRIu64, lsu_read_count);
     Log("*********************************************");
 }
 #endif
