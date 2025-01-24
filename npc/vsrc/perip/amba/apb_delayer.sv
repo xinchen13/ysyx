@@ -39,7 +39,7 @@ module apb_delayer(
     localparam IDLE         = 3'b000;
     localparam APB_ACTIVE   = 3'b001;
     localparam APB_DELAY    = 3'b010;
-    localparam r_mul_s      = 64'd2 << 10; // r = 10, s = 1024
+    localparam r_mul_s      = 64'd10 << 10; // r = 10, s = 1024
     reg [2:0] state;
     reg [63:0] delay_counter;
     reg [63:0] time_counter;
