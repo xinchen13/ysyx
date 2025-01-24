@@ -407,7 +407,8 @@ module xcore (
         .fetch_rready(fetch_rready),
         .lsu_rvalid(lsu_rvalid),
         .lsu_rready(lsu_rready),
-        .fetch_rdata(fetch_rdata)
+        .fetch_rdata(fetch_rdata),
+        .ins_retire(lsu_wb_valid)
     );
     `endif
 

@@ -10,7 +10,9 @@ module pmu (
     input logic lsu_rvalid,
     input logic lsu_rready,
 
-    input logic [`AXI_DATA_BUS] fetch_rdata
+    input logic [`AXI_DATA_BUS] fetch_rdata,
+    
+    input logic ins_retire
 
 );
     // total cycle
@@ -84,6 +86,84 @@ module pmu (
                         none_type <= none_type + 64'b1;
                 endcase
             end
+        end
+    end
+
+    // inst cycle
+    localparam IDLE         = 3'b110;
+    localparam A_TYPE       = 3'b000;
+    localparam B_TYPE       = 3'b001;
+    localparam C_TYPE       = 3'b010;
+    localparam LOAD_TYPE    = 3'b011;
+    localparam STORE_TYPE   = 3'b100;
+    localparam NONE_TYPE    = 3'b101;
+    reg [2:0] cycle_count_state;
+
+    logic [63:0] a_type_cycle;    // arithmetic and logic
+    logic [63:0] b_type_cycle;    // branch and jump
+    logic [63:0] c_type_cycle;    // csr
+    logic [63:0] load_type_cycle;
+    logic [63:0] store_type_cycle;
+    logic [63:0] none_type_cycle;
+    always @ (posedge clk) begin
+        if (!rst_n) begin
+            cycle_count_state <= IDLE;
+        end
+        else begin
+            if (fetch_rvalid & fetch_rready) begin
+                case (opcode)
+                    `S_TYPE_OPCODE: 
+                        cycle_count_state <= STORE_TYPE;
+                    `B_TYPE_OPCODE, `JAL_OPCODE, `JALR_OPCODE: 
+                        cycle_count_state <= B_TYPE;
+                    `I_AL_TYPE_OPCODE, `R_TYPE_OPCODE, `LUI_OPCODE,`AUIPC_OPCODE: 
+                        cycle_count_state <= A_TYPE;
+                    `I_LOAD_TYPE_OPCODE:
+                        cycle_count_state <= LOAD_TYPE;
+                    `CSR_OPCODE: 
+                        cycle_count_state <= C_TYPE;
+                    default: 
+                        cycle_count_state <= NONE_TYPE;
+                endcase
+            end
+            else if (ins_retire) begin
+                cycle_count_state <= IDLE;
+            end
+        end
+    end
+
+    always @ (posedge clk) begin
+        if (!rst_n) begin
+            a_type_cycle      <= 'b0;
+            b_type_cycle      <= 'b0;
+            c_type_cycle      <= 'b0;
+            load_type_cycle   <= 'b0;
+            store_type_cycle  <= 'b0;
+            none_type_cycle   <= 'b0;
+        end
+        else begin
+            case (cycle_count_state)
+                IDLE: begin
+                end
+                A_TYPE: begin
+                    a_type_cycle <= a_type_cycle + 64'b1;
+                end
+                B_TYPE: begin
+                    b_type_cycle <= b_type_cycle + 64'b1;
+                end
+                C_TYPE: begin
+                    c_type_cycle <= c_type_cycle + 64'b1;
+                end
+                LOAD_TYPE: begin
+                    load_type_cycle <= load_type_cycle + 64'b1;
+                end
+                STORE_TYPE: begin
+                    store_type_cycle <= store_type_cycle + 64'b1;
+                end
+                default: begin
+                    none_type_cycle <= none_type_cycle + 64'b1;
+                end
+            endcase
         end
     end
 
