@@ -106,9 +106,51 @@ perf = ------- = ------ * ------- * -------
 相比于事件发生, 有时候我们更关心事件什么时候不发生, 以及为什么不发生. 例如, 其实我们更关心IFU什么时候取不到指令, 以及IFU为什么取不到指令, 梳理其中的缘由有助于我们理解指令供给的瓶颈在哪里, 从而为提升处理器的指令供给提供指导. 我们可以把"事件不发生"定义成一个新的事件, 并为新事件添加性能计数器:
 
 - 每种类别的指令占多少比例? 它们各自平均需要执行多少个周期?
-- IFU取不到指令的原因有哪些? 这些原因导致IFU取不到指令的几率分别是多少?
-- LSU的平均访存延迟是多少?
+- IFU取不到指令的原因有哪些? 这些原因导致IFU取不到指令的几率分别是多少: (当前原因只有后续译码执行访存卡住)
+- LSU的平均访存延迟是多少: (读60个cycle, 写30个cycle)
 
 性能计数器的trace: 前面介绍的性能计数器的使用方式都是在仿真结束后输出并分析. 如果我们每周期都输出性能计数器的值, 我们就能得到性能计数器的trace, 借助一些绘图工具(如python的matplotlib绘图库), 我们可以绘制出性能计数器的值随时间变化的曲线, 将仿真过程中性能计数器的变化过程可视化, 从而帮助我们更好地判断性能计数器的变化过程是否符合预期
 
+### 阿姆达尔定律 (Amdahl's law)
+性能计数器可以为处理器微结构的优化提供量化指导. 那么, 性能瓶颈究竟在哪里? 哪些优化工作是值得做的呢? 优化工作的预期性能收益是多少? 我们需要在开展具体的优化之前就回答这些问题, 以帮助我们规避那些预期性能收益很低的优化工作, 从而将更多时间投入到收益高的优化工作中. 这听上去像一个预测未来的工作, 但Amdahl's law可以告诉我们答案
 
+```
+The overall performance improvement gained by optimizing a single part
+of a system is limited by the fraction of time that the improved part
+is actually used.
+
+优化系统中某部分所获得的总体性能收益, 受限于那部分实际使用的时间占比
+```
+
+假设系统某部分实际使用的时间占比是`p`, 该部分在优化后的加速比是`s`, 则整个系统的加速比为`f(s) = 1 / (1 - p + p / s)`, 这就是Amdahl's law的公式表示
+
+#### 根据性能计数器寻找合适的性能瓶颈
+根据性能计数器的统计结果, 尝试挖掘一些潜在的优化对象(以 test 规模的 microbench 为例, **优化方案的选择一定要基于负载的运行情况**):
+
+```
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:52 pmu_display] ************ Performance Monitor ************
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:53 pmu_display] Total cycle count = 13998424
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:54 pmu_display]    - A(alu) type count         = 603912(0.043)
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:55 pmu_display]    - B(branch) type count      = 267790(0.019)
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:56 pmu_display]    - C(csr) type count         = 1(0.000)
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:57 pmu_display]    - Memory load type count    = 4384117(0.313)
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:58 pmu_display]    - Memory store type count   = 1735473(0.124)
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:59 pmu_display]    - Front end: fetch count    = 6439823(0.460)
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:60 pmu_display] Total insts count = 567308
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:61 pmu_display]    - A(alu) type count         = 301956(0.532)
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:62 pmu_display]    - B(branch) type count      = 133895(0.236)
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:63 pmu_display]    - C(csr) type count         = 1(0.000)
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:64 pmu_display]    - Memory load type count    = 72022(0.127)
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:65 pmu_display]    - Memory store type count   = 59434(0.105)
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:66 pmu_display] CPI = 24.675 (IPC = 0.040527)
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:67 pmu_display]    - A(alu) type         = 2.000
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:68 pmu_display]    - B(branch) type      = 2.000
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:69 pmu_display]    - C(csr) type         = 1.000
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:70 pmu_display]    - Memory load type    = 60.872
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:71 pmu_display]    - Memory store type   = 29.200
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:73 pmu_display] *********************************************
+```
+- 从时间占比上来看, 优化取指和指令load是收益最大的
+- 利用Amdahl's law估算它们能获取的理论收益:
+    1. 优化取指的理论收益: `1/(1-0.460)=1.85`
+    2. 优化laod的理论收益: `1/(1-0.313)=1.46`
