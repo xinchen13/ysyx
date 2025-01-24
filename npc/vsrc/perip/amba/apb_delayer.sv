@@ -47,7 +47,7 @@ module apb_delayer(
     reg         temp_pslverr;
 
     always @ (posedge clock) begin
-        if (!reset) begin
+        if (reset) begin
             state <= IDLE;
         end
         else begin
@@ -64,7 +64,7 @@ module apb_delayer(
     end
 
     always @ (posedge clock) begin
-        if (!reset) begin
+        if (reset) begin
             delay_counter <= 'b0;
             time_counter <= 'b0;
         end
@@ -88,7 +88,7 @@ module apb_delayer(
 
 
     always @ (posedge clock) begin
-        if (!reset) begin
+        if (reset) begin
             in_pready   <= 'b0;
             in_prdata   <= 'b0;
             in_pslverr  <= 'b0;
