@@ -405,6 +405,8 @@ module xcore (
         .rst_n(rst_n),
         .fetch_rvalid(fetch_rvalid),
         .fetch_rready(fetch_rready),
+        .fetch_arvalid(fetch_arvalid),
+        .fetch_arready(fetch_arready),
         .lsu_rvalid(lsu_rvalid),
         .lsu_rready(lsu_rready),
         .fetch_rdata(fetch_rdata),

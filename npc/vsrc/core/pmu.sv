@@ -6,6 +6,8 @@ module pmu (
 
     input logic fetch_rvalid,
     input logic fetch_rready,
+    input logic fetch_arvalid,
+    input logic fetch_arready,
 
     input logic lsu_rvalid,
     input logic lsu_rready,
@@ -168,6 +170,32 @@ module pmu (
     end
 
 
+    // front end: fetch counter
+    reg fetch_state;
+    logic [63:0] front_end_fetch_cycle;
+    always @ (posedge clk) begin
+        if (!rst_n) begin
+            fetch_state <= 'b0;
+        end
+        else begin
+            if (fetch_arvalid & fetch_arready) begin
+                fetch_state <= 'b1;
+            end
+            else if (fetch_rvalid & fetch_rready) begin
+                fetch_state <= 'b0;
+            end
+        end
+    end
 
+    always @ (posedge clk) begin
+        if (!rst_n) begin
+            front_end_fetch_cycle <= 'b0;
+        end
+        else begin
+            if (fetch_state) begin
+                front_end_fetch_cycle <= front_end_fetch_cycle + 64'b1;
+            end
+        end
+    end
 
 endmodule

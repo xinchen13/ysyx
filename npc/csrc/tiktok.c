@@ -23,6 +23,7 @@ static uint64_t b_type_cycle = 0;
 static uint64_t c_type_cycle = 0;    
 static uint64_t load_type_cycle = 0;
 static uint64_t store_type_cycle = 0;
+static uint64_t front_end_fetch_cycle = 0;
 static void pmu_exec() {
     ;
 }
@@ -45,6 +46,7 @@ static void pmu_display() {
     c_type_cycle = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__c_type_cycle;
     load_type_cycle = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__load_type_cycle;
     store_type_cycle = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__store_type_cycle;
+    front_end_fetch_cycle = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__front_end_fetch_cycle;
 
     // log out
     Log("************ Performance Monitor ************");
@@ -54,6 +56,7 @@ static void pmu_display() {
     Log("   - C(csr) type count         = %" PRIu64 "(%.3lf)", c_type_cycle, ((double)c_type_cycle)/(double(cycle_count)));
     Log("   - Memory load type count    = %" PRIu64 "(%.3lf)", load_type_cycle, ((double)load_type_cycle)/(double(cycle_count)));
     Log("   - Memory store type count   = %" PRIu64 "(%.3lf)", store_type_cycle, ((double)store_type_cycle)/(double(cycle_count)));
+    Log("   - Front end: fetch count    = %" PRIu64 "(%.3lf)", front_end_fetch_cycle, ((double)front_end_fetch_cycle)/(double(cycle_count)));
     Log("Total insts count = %" PRIu64, inst_count);
     Log("   - A(alu) type count         = %" PRIu64 "(%.3lf)", a_type, ((double)a_type)/(double(inst_count)));
     Log("   - B(branch) type count      = %" PRIu64 "(%.3lf)", b_type, ((double)b_type)/(double(inst_count)));
