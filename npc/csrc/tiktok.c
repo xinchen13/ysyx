@@ -18,23 +18,42 @@ static uint64_t b_type = 0;
 static uint64_t c_type = 0;   
 static uint64_t load_type = 0;
 static uint64_t store_type = 0;
+static uint64_t a_type_cycle = 0;    
+static uint64_t b_type_cycle = 0;    
+static uint64_t c_type_cycle = 0;    
+static uint64_t load_type_cycle = 0;
+static uint64_t store_type_cycle = 0;
 static void pmu_exec() {
     ;
 }
 static void pmu_display() {
-    // read pmu
+    // read pmu:
     cycle_count = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__cycle_count;
     inst_count = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__inst_count;
     lsu_read_count = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__lsu_read_count;
+
+    // read pmu: inst count
     a_type = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__a_type;   
     b_type = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__b_type;   
     c_type = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__c_type;   
     load_type = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__load_type;
     store_type = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__store_type;
 
+    // read pmu: 
+    a_type_cycle = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__a_type_cycle;
+    b_type_cycle = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__b_type_cycle;  
+    c_type_cycle = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__c_type_cycle;
+    load_type_cycle = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__load_type_cycle;
+    store_type_cycle = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__store_type_cycle;
+
     // log out
     Log("********** Performance Monitor **********");
     Log("Total cycle count = %" PRIu64, cycle_count);
+    Log("   - A(alu) type count         = %" PRIu64 "(%.3lf)", a_type_cycle, ((double)a_type_cycle)/(double(cycle_count)));
+    Log("   - B(branch) type count      = %" PRIu64 "(%.3lf)", b_type_cycle, ((double)b_type_cycle)/(double(cycle_count)));
+    Log("   - C(csr) type count         = %" PRIu64 "(%.3lf)", c_type_cycle, ((double)c_type_cycle)/(double(cycle_count)));
+    Log("   - Memory load type count    = %" PRIu64 "(%.3lf)", load_type_cycle, ((double)load_type_cycle)/(double(cycle_count)));
+    Log("   - Memory store type count   = %" PRIu64 "(%.3lf)", store_type_cycle, ((double)store_type_cycle)/(double(cycle_count)));
     Log("Total insts count = %" PRIu64, inst_count);
     Log("   - A(alu) type count         = %" PRIu64 "(%.3lf)", a_type, ((double)a_type)/(double(inst_count)));
     Log("   - B(branch) type count      = %" PRIu64 "(%.3lf)", b_type, ((double)b_type)/(double(inst_count)));
