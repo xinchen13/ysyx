@@ -54,7 +54,7 @@ module apb_delayer(
             if(in_psel & !in_penable) begin
                 state <= APB_ACTIVE;
             end
-            else if(out_pready) begin
+            else if((state == APB_ACTIVE) & out_pready) begin
                 state <= APB_DELAY;
             end
             else if((state == APB_DELAY) & (delay_counter == 64'b0)) begin
