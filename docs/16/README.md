@@ -150,7 +150,7 @@ is actually used.
 [/home/xinchen/ysyx/npc/csrc/tiktok.c:71 pmu_display]    - Memory store type   = 29.200
 [/home/xinchen/ysyx/npc/csrc/tiktok.c:73 pmu_display] *********************************************
 ```
-- 从时间占比上来看, 优化取指和指令load是收益最大的
+- 从时间占比上来看, 优化取指和 lsu load 是收益最大的
 - 利用Amdahl's law估算它们能获取的理论收益:
     1. 优化取指的理论收益: `1/(1-0.460)=1.85`
     2. 优化laod的理论收益: `1/(1-0.313)=1.46`
@@ -177,3 +177,12 @@ is actually used.
 - 在`ysyxSoC/perip/amba/apb_delayer.v`中实现相应代码
 - 为了实现APB延迟模块, 根据APB协议的定义, 梳理出一个APB事务何时开始, 何时结束. 假设一个APB事务从`t0`时刻开始, 设备端在`t1`时刻返回APB的回复, APB延迟模块在`t1'`时刻向上游返回APB的回复, 则应有等式`(t1 - t0) * r = t1' - t0`
 - 关于r的取值, 假设设备运行在100MHz的环境下, 可以根据yosys-sta的综合报告计算出r. 至于s, 理论上当然是越大越好, 不过你只要选择一个实际中够用的s即可(实际选择了10). 实现后, 尝试取不同的r, 在波形中观察上述等式是否成立
+
+#### 重新寻找优化瓶颈
+添加延迟模块后, 重新运行测试并收集性能计数器的统计结果, 然后根据Amdahl's law寻找性能瓶颈:
+
+- 依然采用 test 规模的 microbench, core 频率假设为 1GHz, device 频率假设为 100MHz
+- 从时间占比上来看, 优化取指和 lsu load 是收益最大的
+- 利用Amdahl's law估算它们能获取的理论收益:
+    1. 优化取指的理论收益: `1/(1-0.418)=1.71`
+    2. 优化laod的理论收益: `1/(1-0.420)=1.72`
