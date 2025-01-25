@@ -39,10 +39,10 @@ module apb_delayer(
     localparam IDLE         = 3'b000;
     localparam APB_ACTIVE   = 3'b001;
     localparam APB_DELAY    = 3'b010;
-    localparam r_mul_s      = 64'd10 << 10; // r = 10, s = 1024
+    localparam COFF_S       = 10;
+    localparam R_MUL_S      = 64'd9 << COFF_S; // r = 10, s = 1024
     reg [2:0] state;
     reg [63:0] delay_counter;
-    reg [63:0] time_counter;
     reg  [31:0] temp_prdata;
     reg         temp_pslverr;
 
@@ -66,16 +66,13 @@ module apb_delayer(
     always @ (posedge clock) begin
         if (reset) begin
             delay_counter <= 'b0;
-            time_counter <= 'b0;
         end
         else begin
             if ((state == APB_ACTIVE) & (!out_pready)) begin
-                delay_counter <= delay_counter + r_mul_s;
-                time_counter <= time_counter + 64'b1;
+                delay_counter <= delay_counter + R_MUL_S;
             end
             else if (out_pready) begin
-                delay_counter <= (delay_counter >> 10) - time_counter;
-                time_counter <= 'b0;
+                delay_counter <= (delay_counter >> COFF_S);
                 temp_prdata <= out_prdata;
                 temp_pslverr <= out_pslverr;
             end
