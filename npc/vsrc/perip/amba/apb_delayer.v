@@ -10,9 +10,9 @@ module apb_delayer(
     input         in_pwrite,
     input  [31:0] in_pwdata,
     input  [3:0]  in_pstrb,
-    output logic        in_pready,
-    output logic [31:0] in_prdata,
-    output logic       in_pslverr,
+    output        in_pready,
+    output [31:0] in_prdata,
+    output       in_pslverr,
 
     output [31:0] out_paddr,
     output        out_psel,
