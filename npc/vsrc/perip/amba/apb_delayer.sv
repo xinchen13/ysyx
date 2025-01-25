@@ -117,8 +117,8 @@ module apb_delayer(
         end
     end
 
-    assign out_psel    = (state == APB_DELAY) ? 'b0 : in_psel;
-    assign out_penable = (state == APB_DELAY) ? 'b0 : in_penable;
+    assign out_psel    = ((state == APB_DELAY) | in_pready) ? 'b0 : in_psel;
+    assign out_penable = ((state == APB_DELAY) | in_pready) ? 'b0 : in_penable;
 
     `else
     assign out_paddr   = in_paddr;
