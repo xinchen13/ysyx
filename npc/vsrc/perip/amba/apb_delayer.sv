@@ -40,7 +40,7 @@ module apb_delayer(
     localparam APB_ACTIVE   = 3'b001;
     localparam APB_DELAY    = 3'b010;
     localparam COFF_S       = 10;
-    localparam COFF_R       = 64'd3;    // 0； no dalay    n: n delay
+    localparam COFF_R       = 64'd0;    // 0； no dalay    n: n delay
     // if device_clk=100MHz, COFF_R=9 means core_clk=1GHz
     localparam R_MUL_S      = COFF_R << COFF_S;
     reg [2:0] state;
