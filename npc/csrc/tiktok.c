@@ -243,7 +243,7 @@ static void execute(uint64_t n) {
         pmu_exec();
         #endif
         trace_and_difftest();
-        if (this_inst == 0x00100073 || contextp->time() > 9999999999) {
+        if (this_inst == 0x00100073 /* || contextp->time() > 9999999999*/) {
             set_npc_state(NPC_END, this_pc, core.gpr[10]);
             break;
         }
