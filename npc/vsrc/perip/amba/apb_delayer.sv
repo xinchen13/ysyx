@@ -40,7 +40,7 @@ module apb_delayer(
     localparam APB_ACTIVE   = 3'b001;
     localparam APB_DELAY    = 3'b010;
     localparam COFF_S       = 10;
-    localparam COFF_R       = 64'd1;    // 0； no dalay    n: n delay
+    localparam COFF_R       = 64'd2;    // 0； no dalay    n: n delay
     localparam R_MUL_S      = COFF_R << COFF_S;
     reg [2:0] state;
     reg [63:0] delay_counter;
