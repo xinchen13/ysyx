@@ -39,8 +39,8 @@ module apb_delayer(
     // assign in_pslverr  = out_pslverr;
 
     assign out_paddr   = in_paddr;
-    assign out_psel    = in_psel;
-    assign out_penable = in_penable;
+    // assign out_psel    = in_psel;
+    // assign out_penable = in_penable;
     assign out_pprot   = in_pprot;
     assign out_pwrite  = in_pwrite;
     assign out_pwdata  = in_pwdata;
@@ -116,6 +116,9 @@ module apb_delayer(
             end
         end
     end
+
+    assign out_psel    = (state == APB_DELAY) ? 'b0 : in_psel;
+    assign out_penable = (state == APB_DELAY) ? 'b0 : in_penable;
 
     `else
     assign out_paddr   = in_paddr;
