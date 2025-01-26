@@ -39,6 +39,16 @@ module xcore (
     input logic lsu_bvalid,
     output logic lsu_bready
 );
+
+    // axi-lite interface (fetch)
+    logic [`AXI_ADDR_BUS] raw_fetch_araddr;
+    logic raw_fetch_arvalid;
+    logic raw_fetch_arready;
+    logic [`AXI_DATA_BUS] raw_fetch_rdata;
+    logic [`AXI_RESP_BUS] raw_fetch_rresp;
+    logic raw_fetch_rvalid;
+    logic raw_fetch_rready;
+
     logic [`DATA_BUS] reg_rdata1;
     logic [`DATA_BUS] reg_rdata2;
     logic [`DATA_BUS] alu_src1;
@@ -150,13 +160,13 @@ module xcore (
         .next_ready(id_fetch_ready),
         .inst(fetch_inst),
         .this_valid(fetch_valid),
-        .araddr(fetch_araddr),
-        .arvalid(fetch_arvalid),
-        .arready(fetch_arready),
-        .rdata(fetch_rdata),
-        .rresp(fetch_rresp),
-        .rvalid(fetch_rvalid),
-        .rready(fetch_rready),
+        .araddr(raw_fetch_araddr),
+        .arvalid(raw_fetch_arvalid),
+        .arready(raw_fetch_arready),
+        .rdata(raw_fetch_rdata),
+        .rresp(raw_fetch_rresp),
+        .rvalid(raw_fetch_rvalid),
+        .rready(raw_fetch_rready),
         .awaddr(),
         .awvalid(),
         .awready(),
@@ -399,17 +409,36 @@ module xcore (
         .rdata(csr_rdata)
     );
 
+    icache icache_u0 (
+        .clk(clk),
+        .rst_n(rst_n),
+        .raw_fetch_araddr(raw_fetch_araddr),
+        .raw_fetch_arvalid(raw_fetch_arvalid),
+        .raw_fetch_arready(raw_fetch_arready),
+        .raw_fetch_rdata(raw_fetch_rdata),
+        .raw_fetch_rresp(raw_fetch_rresp),
+        .raw_fetch_rvalid(raw_fetch_rvalid),
+        .raw_fetch_rready(raw_fetch_rready),
+        .fetch_araddr(fetch_araddr),
+        .fetch_arvalid(fetch_arvalid),
+        .fetch_arready(fetch_arready),
+        .fetch_rdata(fetch_rdata),
+        .fetch_rresp(fetch_rresp),
+        .fetch_rvalid(fetch_rvalid),
+        .fetch_rready(fetch_rready)
+    );
+
     `ifdef PMU_ON
     pmu pmu_u0 (
         .clk(clk),
         .rst_n(rst_n),
-        .fetch_rvalid(fetch_rvalid),
-        .fetch_rready(fetch_rready),
-        .fetch_arvalid(fetch_arvalid),
-        .fetch_arready(fetch_arready),
+        .fetch_rvalid(raw_fetch_rvalid),
+        .fetch_rready(raw_fetch_rready),
+        .fetch_arvalid(raw_fetch_arvalid),
+        .fetch_arready(raw_fetch_arready),
         .lsu_rvalid(lsu_rvalid),
         .lsu_rready(lsu_rready),
-        .fetch_rdata(fetch_rdata),
+        .fetch_rdata(raw_fetch_rdata),
         .ins_retire(lsu_wb_valid)
     );
     `endif
