@@ -56,7 +56,6 @@ module icache (
         assign fetch_araddr      = buffered_addr;
         assign raw_fetch_rresp   = buffered_rresp;
         assign raw_fetch_rvalid  = state == RETURN_DATA;
-        assign fetch_araddr      = buffered_addr;
 
         always @ (posedge clk) begin
             if (!rst_n) begin
@@ -108,14 +107,14 @@ module icache (
         localparam MEM_REQ_DONE = 3'b011;
         reg [2:0] mem_req_state;
 
+        integer i;
         always @ (posedge clk) begin
             if (!rst_n) begin
                 mem_req_state <= MEM_REQ_IDLE;
                 fetch_rready <= 1'b0;
-                integer i;
                 for (i = 0; i < CACHE_LINE_COUNT; i = i + 1) begin
                     data_array[i]   <= {`AXI_DATA_WIDTH{1'b0}};
-                    tag_array[i]    <= {`AXI_DATA_WIDTH-M-N-1{1'b0}};
+                    tag_array[i]    <= {`AXI_DATA_WIDTH-M-N{1'b0}};
                     valid_array[i]  <= 1'b0;
                 end
             end
