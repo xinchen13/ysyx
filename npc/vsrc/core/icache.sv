@@ -122,7 +122,7 @@ module icache (
             else begin
                 case (mem_req_state)
                     MEM_REQ_IDLE: begin
-                        if (state == MEM_REQ) begin
+                        if (state == MEM_REQ & !cache_hit) begin
                             mem_req_state <= MEM_REQ_ADDR;
                             fetch_arvalid <= 1'b1;
                         end
