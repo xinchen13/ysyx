@@ -112,6 +112,7 @@ module icache (
             if (!rst_n) begin
                 mem_req_state <= MEM_REQ_IDLE;
                 fetch_rready <= 1'b0;
+                fetch_arvalid <= 1'b0;
                 for (i = 0; i < CACHE_LINE_COUNT; i = i + 1) begin
                     data_array[i]   <= {`AXI_DATA_WIDTH{1'b0}};
                     tag_array[i]    <= {`AXI_DATA_WIDTH-M-N{1'b0}};
