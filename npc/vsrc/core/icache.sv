@@ -55,7 +55,7 @@ module icache (
         assign raw_fetch_rdata   = buffered_data;
         assign fetch_araddr      = buffered_addr;
         assign raw_fetch_rresp   = buffered_rresp;
-        assign raw_fetch_rvalid  = state == RETURN_DATA;
+        assign raw_fetch_rvalid  = (state == RETURN_DATA) ? 1'b1 : 1'b0;
 
         always @ (posedge clk) begin
             if (!rst_n) begin
@@ -67,7 +67,7 @@ module icache (
             else begin
                 case (state)
                     IDLE: begin
-                        if (raw_fetch_arvalid & raw_fetch_arready) begin
+                        if (raw_fetch_arvalid) begin
                             buffered_addr <= raw_fetch_araddr;
                             state <= FETCH_REQ;
                         end
@@ -90,7 +90,7 @@ module icache (
                         end
                     end
                     RETURN_DATA: begin
-                        if (raw_fetch_rvalid & raw_fetch_rready) begin
+                        if (raw_fetch_rready) begin
                             state <= IDLE;
                         end
                     end
