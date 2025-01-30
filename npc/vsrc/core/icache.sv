@@ -27,16 +27,22 @@ module icache (
     output logic fetch_rready
 );
     `ifdef ICACHE_ON
+        // pmu
+        `ifdef PMU_ON
+            reg [63:0] real_cache_hit;
+            reg [63:0] real_cache_miss;
+        `endif
+
         localparam M = 2;              // one cache line has 2 ** M bytes
         localparam N = 4;              // icache has 2 ** N cache lines
         localparam CACHE_LINE_COUNT = 2**N;
 
         // state machine
-        localparam IDLE         = 4'b0000;
-        localparam FETCH_REQ    = 4'b0001;
-        localparam MEM_REQ      = 4'b0010;
-        localparam RETURN_DATA  = 4'b0011;
-        reg [3:0] state;
+        localparam IDLE         = 3'b000;
+        localparam FETCH_REQ    = 3'b001;
+        localparam MEM_REQ      = 3'b010;
+        localparam RETURN_DATA  = 3'b011;
+        reg [2:0] state;
         reg [`AXI_ADDR_BUS] buffered_addr;
         reg [`AXI_DATA_BUS] buffered_data;
         reg [`AXI_RESP_BUS] buffered_rresp;
@@ -63,6 +69,10 @@ module icache (
                 buffered_data <= 'b0;
                 buffered_rresp  <= 'b0;
                 state <= IDLE;
+                `ifdef PMU_ON
+                    real_cache_hit <= 'b0;
+                    real_cache_miss <= 'b0;
+                `endif
             end
             else begin
                 case (state)
@@ -74,11 +84,17 @@ module icache (
                     end
                     FETCH_REQ: begin
                         if (cache_hit) begin
+                        `ifdef PMU_ON
+                            real_cache_hit <= real_cache_hit + 64'b1;
+                        `endif
                             state <= RETURN_DATA;
                             buffered_data <= data_array[index];
                             buffered_rresp <= 'b0;
                         end
                         else begin
+                            `ifdef PMU_ON
+                                real_cache_miss <= real_cache_miss + 64'b1;
+                            `endif
                             state <= MEM_REQ;
                         end
                     end
@@ -101,6 +117,7 @@ module icache (
             end
         end
 
+        // mem erq state machine
         localparam MEM_REQ_IDLE = 3'b000;
         localparam MEM_REQ_ADDR = 3'b001;
         localparam MEM_REQ_WAIT = 3'b010;
