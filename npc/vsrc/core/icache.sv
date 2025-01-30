@@ -31,6 +31,26 @@ module icache (
         `ifdef PMU_ON
             reg [63:0] real_cache_hit;
             reg [63:0] real_cache_miss;
+            reg [63:0] access_time_total;
+            reg [63:0] miss_penalty_total;
+            reg [2:0] pmu_state;
+            localparam PMU_IDLE = 3'b000;
+            localparam PMU_HIT  = 3'b001;
+            localparam PMU_MISS = 3'b010;
+            always @ (posedge clk) begin
+                if (!rst_n) begin
+                    access_time_total <= 'b0;
+                    miss_penalty_total <= 'b0;
+                end
+                else begin
+                    if (pmu_state == PMU_HIT) begin
+                        access_time_total <= access_time_total + 64'b1;
+                    end
+                    else if (pmu_state == PMU_MISS) begin
+                        miss_penalty_total <= miss_penalty_total + 64'b1;
+                    end
+                end
+            end
         `endif
 
         localparam M = 2;              // one cache line has 2 ** M bytes
@@ -70,6 +90,7 @@ module icache (
                 buffered_rresp  <= 'b0;
                 state <= IDLE;
                 `ifdef PMU_ON
+                    pmu_state <= PMU_IDLE;
                     real_cache_hit <= 'b0;
                     real_cache_miss <= 'b0;
                 `endif
@@ -84,9 +105,10 @@ module icache (
                     end
                     FETCH_REQ: begin
                         if (cache_hit) begin
-                        `ifdef PMU_ON
-                            real_cache_hit <= real_cache_hit + 64'b1;
-                        `endif
+                            `ifdef PMU_ON
+                                real_cache_hit <= real_cache_hit + 64'b1;
+                                pmu_state <= PMU_HIT;
+                            `endif
                             state <= RETURN_DATA;
                             buffered_data <= data_array[index];
                             buffered_rresp <= 'b0;
@@ -94,6 +116,7 @@ module icache (
                         else begin
                             `ifdef PMU_ON
                                 real_cache_miss <= real_cache_miss + 64'b1;
+                                pmu_state <= PMU_MISS;
                             `endif
                             state <= MEM_REQ;
                         end
@@ -107,6 +130,9 @@ module icache (
                     end
                     RETURN_DATA: begin
                         if (raw_fetch_rready) begin
+                            `ifdef PMU_ON
+                                pmu_state <= PMU_IDLE;
+                            `endif
                             state <= IDLE;
                         end
                     end
