@@ -78,8 +78,8 @@ static void pmu_display() {
     Log("   - Memory load type    = %.3lf", ((double)load_type_cycle)/(double(load_type)));
     Log("   - Memory store type   = %.3lf", ((double)store_type_cycle)/(double(store_type)));
     Log("iCache report");
-    Log("iCache hit     = %" PRIu64 "(%.3lf)", icache_hit,  icache_hit_rate);
-    Log("icache miss    = %" PRIu64 "(%.3lf)", icache_miss, icache_miss_rate);
+    Log("   - iCache hit     = %" PRIu64 "(%.3lf)", icache_hit,  icache_hit_rate);
+    Log("   - icache miss    = %" PRIu64 "(%.3lf)", icache_miss, icache_miss_rate);
     // Log("Total lsu read = %" PRIu64, lsu_read_count);
     Log("*********************************************");
 }
