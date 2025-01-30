@@ -37,6 +37,7 @@ module icache (
             localparam PMU_IDLE = 3'b000;
             localparam PMU_HIT  = 3'b001;
             localparam PMU_MISS = 3'b010;
+            localparam PMU_FETCH = 3'b011;
             always @ (posedge clk) begin
                 if (!rst_n) begin
                     access_time_total <= 'b0;
@@ -99,6 +100,9 @@ module icache (
                 case (state)
                     IDLE: begin
                         if (raw_fetch_arvalid) begin
+                            `ifdef PMU_ON
+                                pmu_state <= PMU_FETCH;
+                            `endif
                             buffered_addr <= raw_fetch_araddr;
                             state <= FETCH_REQ;
                         end
