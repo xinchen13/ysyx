@@ -24,6 +24,8 @@ static uint64_t c_type_cycle = 0;
 static uint64_t load_type_cycle = 0;
 static uint64_t store_type_cycle = 0;
 static uint64_t front_end_fetch_cycle = 0;
+static uint64_t icache_hit = 0;
+static uint64_t icache_miss = 0;
 static void pmu_exec() {
     ;
 }
@@ -48,6 +50,10 @@ static void pmu_display() {
     store_type_cycle = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__store_type_cycle;
     front_end_fetch_cycle = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__pmu_u0__DOT__front_end_fetch_cycle;
 
+    // icache
+    icache_hit = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__icache_u0__DOT__real_cache_hit;
+    icache_miss = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__icache_u0__DOT__real_cache_miss;
+
     // log out
     Log("************ Performance Monitor ************");
     Log("Total cycle count = %" PRIu64, cycle_count);
@@ -69,6 +75,9 @@ static void pmu_display() {
     Log("   - C(csr) type         = %.3lf", ((double)c_type_cycle)/(double(c_type)));
     Log("   - Memory load type    = %.3lf", ((double)load_type_cycle)/(double(load_type)));
     Log("   - Memory store type   = %.3lf", ((double)store_type_cycle)/(double(store_type)));
+    Log("iCache report");
+    Log("iCache hit     = %" PRIu64 "(%.3lf)", icache_hit,  ((double)icache_hit)/(double(icache_hit + icache_miss)));
+    Log("icache miss    = %" PRIu64 "(%.3lf)", icache_miss, ((double)icache_miss)/(double(icache_hit + icache_miss)));
     // Log("Total lsu read = %" PRIu64, lsu_read_count);
     Log("*********************************************");
 }
