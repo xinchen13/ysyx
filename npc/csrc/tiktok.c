@@ -24,6 +24,10 @@ static uint64_t c_type_cycle = 0;
 static uint64_t load_type_cycle = 0;
 static uint64_t store_type_cycle = 0;
 static uint64_t front_end_fetch_cycle = 0;
+static uint64_t icache_hit = 0;
+static uint64_t icache_miss = 0;
+static uint64_t access_time_total = 0;
+static uint64_t miss_penalty_total = 0;
 static void pmu_exec() {
     ;
 }
@@ -69,6 +73,24 @@ static void pmu_display() {
     Log("   - C(csr) type         = %.3lf", ((double)c_type_cycle)/(double(c_type)));
     Log("   - Memory load type    = %.3lf", ((double)load_type_cycle)/(double(load_type)));
     Log("   - Memory store type   = %.3lf", ((double)store_type_cycle)/(double(store_type)));
+    #ifdef CONFIG_ICACHE
+    // icache
+        icache_hit = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__icache_u0__DOT__real_cache_hit;
+        icache_miss = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__icache_u0__DOT__real_cache_miss;
+        double icache_hit_rate = ((double)icache_hit)/(double(icache_hit + icache_miss));
+        double icache_miss_rate = ((double)icache_miss)/(double(icache_hit + icache_miss));
+        access_time_total = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__icache_u0__DOT__access_time_total;
+        miss_penalty_total = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__icache_u0__DOT__miss_penalty_total;
+        double access_time_avg = (double(access_time_total))/(double(icache_hit));
+        double miss_penalty_avg = (double(miss_penalty_total))/(double(icache_miss));
+        double amat = icache_hit_rate * access_time_avg + icache_miss_rate * miss_penalty_avg;
+        Log("iCache report");
+        Log("   - iCache hit            = %" PRIu64 "(%.3lf)", icache_hit,  icache_hit_rate);
+        Log("   - icache miss           = %" PRIu64 "(%.3lf)", icache_miss, icache_miss_rate);
+        Log("   - Access time (avg)     = %.3lf cycles", access_time_avg);
+        Log("   - Miss penalty (avg)    = %.3lf cycles", miss_penalty_avg);
+        Log("   - AMAT                  = %.3lf cycles", amat);
+    #endif
     // Log("Total lsu read = %" PRIu64, lsu_read_count);
     Log("*********************************************");
 }
