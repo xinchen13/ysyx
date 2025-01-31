@@ -105,8 +105,8 @@ Total  time: 10005308.053 ms
 [/home/xinchen/ysyx/npc/csrc/tiktok.c:73 pmu_display]    - C(csr) type         = 1.000
 [/home/xinchen/ysyx/npc/csrc/tiktok.c:74 pmu_display]    - Memory load type    = 261.715p
 [/home/xinchen/ysyx/npc/csrc/tiktok.c:75 pmu_display]    - Memory store type   = 194.058
-[/home/xinchen/ysyx/npc/csrc/tiktok.c:87 pmu_display] iCache report
-[/home/xinchen/ysyx/npc/csrc/tiktok.c:88 pmu_display]    - iCache hit            = 143415901(0.735)
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:87 pmu_display] icache report
+[/home/xinchen/ysyx/npc/csrc/tiktok.c:88 pmu_display]    - icache hit            = 143415901(0.735)
 [/home/xinchen/ysyx/npc/csrc/tiktok.c:89 pmu_display]    - icache miss           = 51799506(0.265)
 [/home/xinchen/ysyx/npc/csrc/tiktok.c:90 pmu_display]    - Access time (avg)     = 1.000 cycles
 [/home/xinchen/ysyx/npc/csrc/tiktok.c:91 pmu_display]    - Miss penalty (avg)    = 71.038 cycles

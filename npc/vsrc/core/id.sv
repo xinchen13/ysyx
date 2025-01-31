@@ -39,7 +39,8 @@ module id (
     output logic [`DATA_BUS] csr_wdata1,
     output logic [`CSR_ADDR_BUS] csr_waddr1,
     output logic csr_wen1,
-    output logic csr_wen2
+    output logic csr_wen2,
+    output logic fence_i_req
 );
     logic [`DATA_BUS] imm;
     logic [6:0] opcode = inst[6:0];
@@ -61,6 +62,7 @@ module id (
 
     // csr wen2
     assign csr_wen2 = inst_ecall;
+    assign fence_i_req = (opcode == `FENCE_OPCODE) & (funct3 == `FENCE_I_FUNCT3);
 
     always @ (*) begin
         case (opcode)

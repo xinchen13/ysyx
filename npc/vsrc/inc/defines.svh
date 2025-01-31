@@ -58,6 +58,9 @@
 `define LUI_OPCODE 7'b0110111
 `define AUIPC_OPCODE 7'b0010111
 `define CSR_OPCODE    7'b1110011  // CSR inst
+`define FENCE_OPCODE 7'b0001111
+
+`define FENCE_I_FUNCT3 3'b001
 
 // ebreak, ecall, mret
 `define INST_EBREAK 32'h00100073
