@@ -235,6 +235,8 @@ module xcore (
     );
 
     ex ex_u0 (
+        .clk(clk),
+        .rst_n(rst_n),
         .inst(id_inst),
         .alu_src1(alu_src1),
         .alu_src2(alu_src2),

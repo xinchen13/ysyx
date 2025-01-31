@@ -1,6 +1,8 @@
 `include "../inc/defines.svh"
 
 module ex (
+    input logic clk,
+    input logic rst_n,
     input logic [`INST_DATA_BUS] inst,
     input logic [`DATA_BUS] alu_src1,
     input logic [`DATA_BUS] alu_src2,
@@ -23,7 +25,17 @@ module ex (
     logic inst_ecall = (inst == `INST_ECALL) ? 1'b1 : 1'b0;
     logic inst_mret = (inst == `INST_MRET) ? 1'b1 : 1'b0;
 
-    assign icache_flush = fence_i_req;
+    logic fence_i_req_dly;
+    always @ (posedge clk) begin
+        if (!rst_n) begin
+            fence_i_req_dly <= 'b0;
+        end
+        else begin
+            fence_i_req_dly <= fence_i_req;
+        end
+    end
+    assign icache_flush = fence_i_req & (!fence_i_req_dly);
+    
 
     // pc_adder_src1
     always @ (*) begin
