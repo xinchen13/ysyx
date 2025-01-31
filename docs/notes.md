@@ -10,7 +10,8 @@
 - 为 ysyxSOC 重新添加 DiffTest
 - 让 NPC 抛出 Access Fault 异常
 - 优化: 实现支持QPI协议的PSRAM颗粒行为模型(即4-4-4), 并进行mem-test
-- 优化：实现自研的 sdram (), 并进行位扩展和字扩展
+- 优化: 实现自研的 sdram (), 并进行位扩展和字扩展
+- 优化: 实现cachesim, 并进行微架构设计空间探索, 找到较优的 icache 参数
 
 ## emacs verilog-mode
 - 生成: `emacs --batch ${FILES} -f verilog-batch-auto`
