@@ -90,6 +90,8 @@ module xcore (
     logic lsu_wb_valid;
     logic lsu_ex_ready;
     logic lsu_valid;
+    logic fence_i_req;
+    logic icache_flush;
 
     // wb
     logic [`DATA_BUS] wb_alu_result;
@@ -228,7 +230,8 @@ module xcore (
         .prev_valid(fetch_id_valid),
         .this_ready(id_ready),
         .next_ready(lsu_ex_ready),
-        .this_valid(ex_valid)
+        .this_valid(ex_valid),
+        .fence_i_req(fence_i_req)
     );
 
     ex ex_u0 (
@@ -240,7 +243,9 @@ module xcore (
         .pc_adder_src2(pc_adder_src2),
         .alu_result(alu_result),
         .dnpc(ex_dnpc),
-        .csr_rdata(csr_rdata)
+        .csr_rdata(csr_rdata),
+        .fence_i_req(fence_i_req),
+        .icache_flush(icache_flush)
     );
 
     lsu lsu_u0 (
@@ -412,6 +417,7 @@ module xcore (
     icache icache_u0 (
         .clk(clk),
         .rst_n(rst_n),
+        .icache_flush(icache_flush),
         .raw_fetch_araddr(raw_fetch_araddr),
         .raw_fetch_arvalid(raw_fetch_arvalid),
         .raw_fetch_arready(raw_fetch_arready),

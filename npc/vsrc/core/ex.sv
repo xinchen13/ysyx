@@ -8,6 +8,8 @@ module ex (
     input logic [`DATA_BUS] imm_i,
     input logic [`DATA_BUS] pc_adder_src2,
     input logic [`DATA_BUS] csr_rdata,
+    input logic fence_i_req,
+    output logic icache_flush,
     output logic [`DATA_BUS] alu_result,
     output logic [`INST_ADDR_BUS] dnpc
 );
@@ -20,6 +22,8 @@ module ex (
 
     logic inst_ecall = (inst == `INST_ECALL) ? 1'b1 : 1'b0;
     logic inst_mret = (inst == `INST_MRET) ? 1'b1 : 1'b0;
+
+    assign icache_flush = fence_i_req;
 
     // pc_adder_src1
     always @ (*) begin

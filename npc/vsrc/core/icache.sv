@@ -4,6 +4,8 @@ module icache (
     input logic clk,
     input logic rst_n,
 
+    input logic icache_flush,
+
     // axi-lite interface: core
     // AR
     input logic [`AXI_ADDR_BUS] raw_fetch_araddr,
@@ -163,36 +165,44 @@ module icache (
                 end
             end
             else begin
-                case (mem_req_state)
-                    MEM_REQ_IDLE: begin
-                        if (state == MEM_REQ & !cache_hit) begin
-                            mem_req_state <= MEM_REQ_ADDR;
-                            fetch_arvalid <= 1'b1;
+                if (!icache_flush) begin
+                    case (mem_req_state)
+                        MEM_REQ_IDLE: begin
+                            if (state == MEM_REQ & !cache_hit) begin
+                                mem_req_state <= MEM_REQ_ADDR;
+                                fetch_arvalid <= 1'b1;
+                            end
                         end
-                    end
-                    MEM_REQ_ADDR: begin
-                        if (fetch_arvalid & fetch_arready) begin
-                            mem_req_state <= MEM_REQ_WAIT;
-                            fetch_arvalid <= 1'b0;
-                            fetch_rready <= 1'b1;
+                        MEM_REQ_ADDR: begin
+                            if (fetch_arvalid & fetch_arready) begin
+                                mem_req_state <= MEM_REQ_WAIT;
+                                fetch_arvalid <= 1'b0;
+                                fetch_rready <= 1'b1;
+                            end
                         end
-                    end
-                    MEM_REQ_WAIT: begin
-                        if (fetch_rvalid) begin
-                            mem_req_state <= MEM_REQ_DONE;
-                            fetch_rready <= 1'b0;
-                            data_array[index] <= fetch_rdata;
+                        MEM_REQ_WAIT: begin
+                            if (fetch_rvalid) begin
+                                mem_req_state <= MEM_REQ_DONE;
+                                fetch_rready <= 1'b0;
+                                data_array[index] <= fetch_rdata;
+                            end
                         end
-                    end
-                    MEM_REQ_DONE: begin
-                        mem_req_state <= MEM_REQ_IDLE;
-                        tag_array[index] <= tag;
-                        valid_array[index] <= 1'b1;
-                    end
-                    default: begin
-                        mem_req_state <= MEM_REQ_IDLE;
-                    end
-                endcase
+                        MEM_REQ_DONE: begin
+                            mem_req_state <= MEM_REQ_IDLE;
+                            tag_array[index] <= tag;
+                            valid_array[index] <= 1'b1;
+                        end
+                        default: begin
+                            mem_req_state <= MEM_REQ_IDLE;
+                        end
+                    endcase
+                end
+                else begin
+                    // flush
+                    for (i = 0; i < CACHE_LINE_COUNT; i = i + 1) begin
+                        valid_array[i]  <= 1'b0;
+                    end 
+                end
             end
         end
 
