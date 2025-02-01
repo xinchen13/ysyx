@@ -40,7 +40,7 @@ module xcore (
     output logic lsu_bready
 );
 
-    // axi-lite interface (fetch)
+    // axi-lite interface (master: fetch  -  salve: icache)
     logic [`AXI_ADDR_BUS] raw_fetch_araddr;
     logic raw_fetch_arvalid;
     logic raw_fetch_arready;
@@ -103,43 +103,43 @@ module xcore (
     logic wb_valid;
 
 
-    // clint
-    wire [`AXI_ADDR_BUS]	clint_araddr;		// From axixbar_u0 of axixbar.v
-    logic			clint_arready;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
-    wire			clint_arvalid;		// From axixbar_u0 of axixbar.v
-    wire [`AXI_ADDR_BUS]	clint_awaddr;		// From axixbar_u0 of axixbar.v
-    logic			clint_awready;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
-    wire			clint_awvalid;		// From axixbar_u0 of axixbar.v
-    wire			clint_bready;		// From axixbar_u0 of axixbar.v
-    logic [`AXI_RESP_BUS]	clint_bresp;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
-    logic			clint_bvalid;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
-    logic [`AXI_DATA_BUS]	clint_rdata;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
-    wire			clint_rready;		// From axixbar_u0 of axixbar.v
-    logic [`AXI_RESP_BUS]	clint_rresp;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
-    logic			clint_rvalid;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
-    wire [`AXI_DATA_BUS]	clint_wdata;		// From axixbar_u0 of axixbar.v
-    logic			clint_wready;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
-    wire [`AXI_WSTRB_BUS]	clint_wstrb;		// From axixbar_u0 of axixbar.v
-    wire			clint_wvalid;		// From axixbar_u0 of axixbar.v
+    // to clint (mtime, slave)
+    logic [`AXI_ADDR_BUS]	clint_araddr;
+    logic			        clint_arready;
+    logic			        clint_arvalid;
+    logic [`AXI_ADDR_BUS]	clint_awaddr;
+    logic			        clint_awready;
+    logic			        clint_awvalid;
+    logic			        clint_bready;
+    logic [`AXI_RESP_BUS]	clint_bresp;
+    logic			        clint_bvalid;
+    logic [`AXI_DATA_BUS]	clint_rdata;
+    logic			        clint_rready;
+    logic [`AXI_RESP_BUS]	clint_rresp;
+    logic			        clint_rvalid;
+    logic [`AXI_DATA_BUS]	clint_wdata;
+    logic			        clint_wready;
+    logic [`AXI_WSTRB_BUS]	clint_wstrb;
+    logic			        clint_wvalid;
 
-    // lsu out
-    wire [`AXI_ADDR_BUS]	private_araddr;		// From axixbar_u0 of axixbar.v
-    logic			        private_arready;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
-    wire			        private_arvalid;		// From axixbar_u0 of axixbar.v
-    wire [`AXI_ADDR_BUS]	private_awaddr;		// From axixbar_u0 of axixbar.v
-    logic			        private_awready;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
-    wire			        private_awvalid;		// From axixbar_u0 of axixbar.v
-    wire			        private_bready;		// From axixbar_u0 of axixbar.v
-    logic [`AXI_RESP_BUS]	private_bresp;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
-    logic			        private_bvalid;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
-    logic [`AXI_DATA_BUS]	private_rdata;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
-    wire			        private_rready;		// From axixbar_u0 of axixbar.v
-    logic [`AXI_RESP_BUS]	private_rresp;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
-    logic			        private_rvalid;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
-    wire [`AXI_DATA_BUS]	private_wdata;		// From axixbar_u0 of axixbar.v
-    logic			        private_wready;		// From axi_lite_slv_clint_u0 of axi_lite_slv_clint.v
-    wire [`AXI_WSTRB_BUS]	private_wstrb;		// From axixbar_u0 of axixbar.v
-    wire			        private_wvalid;		// From axixbar_u0 of axixbar.v
+    // from lsu (master)
+    logic [`AXI_ADDR_BUS]	private_araddr;
+    logic			        private_arready;
+    logic			        private_arvalid;
+    logic [`AXI_ADDR_BUS]	private_awaddr;
+    logic			        private_awready;
+    logic			        private_awvalid;
+    logic			        private_bready;
+    logic [`AXI_RESP_BUS]	private_bresp;
+    logic			        private_bvalid;
+    logic [`AXI_DATA_BUS]	private_rdata;
+    logic			        private_rready;
+    logic [`AXI_RESP_BUS]	private_rresp;
+    logic			        private_rvalid;
+    logic [`AXI_DATA_BUS]	private_wdata;
+    logic			        private_wready;
+    logic [`AXI_WSTRB_BUS]	private_wstrb;
+    logic			        private_wvalid;
 
 
     pc_reg pc_reg_u0 (
@@ -437,18 +437,18 @@ module xcore (
     );
 
     `ifdef PMU_ON
-    pmu pmu_u0 (
-        .clk(clk),
-        .rst_n(rst_n),
-        .fetch_rvalid(raw_fetch_rvalid),
-        .fetch_rready(raw_fetch_rready),
-        .fetch_arvalid(raw_fetch_arvalid),
-        .fetch_arready(raw_fetch_arready),
-        .lsu_rvalid(lsu_rvalid),
-        .lsu_rready(lsu_rready),
-        .fetch_rdata(raw_fetch_rdata),
-        .ins_retire(lsu_wb_valid)
-    );
+        pmu pmu_u0 (
+            .clk(clk),
+            .rst_n(rst_n),
+            .fetch_rvalid(raw_fetch_rvalid),
+            .fetch_rready(raw_fetch_rready),
+            .fetch_arvalid(raw_fetch_arvalid),
+            .fetch_arready(raw_fetch_arready),
+            .lsu_rvalid(lsu_rvalid),
+            .lsu_rready(lsu_rready),
+            .fetch_rdata(raw_fetch_rdata),
+            .ins_retire(lsu_wb_valid)
+        );
     `endif
 
 endmodule

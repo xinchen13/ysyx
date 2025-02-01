@@ -84,8 +84,8 @@ static void pmu_display() {
         double access_time_avg = (double(access_time_total))/(double(icache_hit));
         double miss_penalty_avg = (double(miss_penalty_total))/(double(icache_miss));
         double amat = icache_hit_rate * access_time_avg + icache_miss_rate * miss_penalty_avg;
-        Log("iCache report");
-        Log("   - iCache hit            = %" PRIu64 "(%.3lf)", icache_hit,  icache_hit_rate);
+        Log("icache report");
+        Log("   - icache hit            = %" PRIu64 "(%.3lf)", icache_hit,  icache_hit_rate);
         Log("   - icache miss           = %" PRIu64 "(%.3lf)", icache_miss, icache_miss_rate);
         Log("   - Access time (avg)     = %.3lf cycles", access_time_avg);
         Log("   - Miss penalty (avg)    = %.3lf cycles", miss_penalty_avg);
