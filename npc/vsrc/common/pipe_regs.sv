@@ -76,7 +76,7 @@ module pipe_regs # (
         end
     end
 
-    logic insert = (i_valid  == 1'b1) && (i_ready  == 1'b1);
+    logic insert = (i_valid == 1'b1) && (i_ready == 1'b1);
     logic remove = (o_valid == 1'b1) && (o_ready == 1'b1);
 
     // reg load    = 1'b0; // Empty datapath inserts data into output register.
