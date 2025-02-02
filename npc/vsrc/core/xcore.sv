@@ -175,17 +175,53 @@ module xcore (
         .rready(raw_fetch_rready)
     );
 
-    fetch_id_pipe fetch_id_pipe_u0 (
+    icache icache_u0 (
+        .clk(clk),
+        .rst_n(rst_n),
+        .icache_flush(icache_flush),
+        .raw_fetch_araddr(raw_fetch_araddr),
+        .raw_fetch_arvalid(raw_fetch_arvalid),
+        .raw_fetch_arready(raw_fetch_arready),
+        .raw_fetch_rdata(raw_fetch_rdata),
+        .raw_fetch_rresp(raw_fetch_rresp),
+        .raw_fetch_rvalid(raw_fetch_rvalid),
+        .raw_fetch_rready(raw_fetch_rready),
+        .fetch_araddr(fetch_araddr),
+        .fetch_arvalid(fetch_arvalid),
+        .fetch_arready(fetch_arready),
+        .fetch_rdata(fetch_rdata),
+        .fetch_rresp(fetch_rresp),
+        .fetch_rvalid(fetch_rvalid),
+        .fetch_rready(fetch_rready)
+    );
+
+    // fetch_id_pipe fetch_id_pipe_u0 (
+    //     .clk(clk),
+    //     .rst_n(rst_n),
+    //     .i_valid(fetch_valid),
+    //     .i_ready(id_fetch_ready),
+    //     .o_valid(fetch_id_valid),
+    //     .o_ready(id_ready),
+    //     .fetch_pc(fetch_pc),
+    //     .fetch_inst(fetch_inst),
+    //     .id_pc(id_pc),
+    //     .id_inst(id_inst)
+    // );
+
+    pipe_regs # (
+        .DATA_RESET(64'b0),
+        .DATA_WIDTH(64),
+        .VALID_RESET(1'b0)
+    ) u3_pipe_fetch_id (
         .clk(clk),
         .rst_n(rst_n),
         .i_valid(fetch_valid),
         .i_ready(id_fetch_ready),
         .o_valid(fetch_id_valid),
         .o_ready(id_ready),
-        .fetch_pc(fetch_pc),
-        .fetch_inst(fetch_inst),
-        .id_pc(id_pc),
-        .id_inst(id_inst)
+        .i_data({fetch_pc,  fetch_inst}),
+        .o_data({id_pc,     id_inst}),
+        .pipe_flush(1'b0)
     );
 
 
@@ -408,26 +444,6 @@ module xcore (
         .wdata2(id_pc),
         .wen2(csr_wen2),
         .rdata(csr_rdata)
-    );
-
-    icache icache_u0 (
-        .clk(clk),
-        .rst_n(rst_n),
-        .icache_flush(icache_flush),
-        .raw_fetch_araddr(raw_fetch_araddr),
-        .raw_fetch_arvalid(raw_fetch_arvalid),
-        .raw_fetch_arready(raw_fetch_arready),
-        .raw_fetch_rdata(raw_fetch_rdata),
-        .raw_fetch_rresp(raw_fetch_rresp),
-        .raw_fetch_rvalid(raw_fetch_rvalid),
-        .raw_fetch_rready(raw_fetch_rready),
-        .fetch_araddr(fetch_araddr),
-        .fetch_arvalid(fetch_arvalid),
-        .fetch_arready(fetch_arready),
-        .fetch_rdata(fetch_rdata),
-        .fetch_rresp(fetch_rresp),
-        .fetch_rvalid(fetch_rvalid),
-        .fetch_rready(fetch_rready)
     );
 
     `ifdef PMU_ON
