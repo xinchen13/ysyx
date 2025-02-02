@@ -145,7 +145,7 @@ module xcore (
         .DATA_RESET(`CPU_RESET_ADDR),
         .DATA_WIDTH(`INST_ADDR_WIDTH),
         .VALID_RESET(1'b1)
-    ) u0_pc_reg (
+    ) u0_pipe_pc_reg (
         .clk(clk),
         .rst_n(rst_n),
         .i_valid(wb_valid),
