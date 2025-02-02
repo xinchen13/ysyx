@@ -175,7 +175,7 @@ module xcore (
         .rready(raw_fetch_rready)
     );
 
-    icache icache_u0 (
+    icache u2_icache (
         .clk(clk),
         .rst_n(rst_n),
         .icache_flush(icache_flush),
@@ -194,19 +194,6 @@ module xcore (
         .fetch_rvalid(fetch_rvalid),
         .fetch_rready(fetch_rready)
     );
-
-    // fetch_id_pipe fetch_id_pipe_u0 (
-    //     .clk(clk),
-    //     .rst_n(rst_n),
-    //     .i_valid(fetch_valid),
-    //     .i_ready(id_fetch_ready),
-    //     .o_valid(fetch_id_valid),
-    //     .o_ready(id_ready),
-    //     .fetch_pc(fetch_pc),
-    //     .fetch_inst(fetch_inst),
-    //     .id_pc(id_pc),
-    //     .id_inst(id_inst)
-    // );
 
     pipe_regs # (
         .DATA_RESET(64'b0),
