@@ -92,6 +92,7 @@ module xcore (
     logic lsu_valid;
     logic fence_i_req;
     logic icache_flush;
+    logic id_valid;
 
     // wb
     logic [`DATA_BUS] wb_alu_result;
@@ -175,7 +176,7 @@ module xcore (
         .rready(raw_fetch_rready)
     );
 
-    icache icache_u0 (
+    icache u2_icache (
         .clk(clk),
         .rst_n(rst_n),
         .icache_flush(icache_flush),
@@ -211,8 +212,7 @@ module xcore (
         .pipe_flush(1'b0)
     );
 
-
-    regfile regfile_u0 (
+    regfile u4_regfile (
         .clk(clk),
         .wdata(reg_wdata),
         .waddr(wb_reg_waddr),
@@ -223,7 +223,7 @@ module xcore (
         .wen(reg_wen)
     );
 
-    id id_u0 (
+    id u5_id (
         .inst(id_inst),
         .pc(id_pc),
         .reg_rdata1(reg_rdata1),
@@ -250,6 +250,22 @@ module xcore (
         .this_valid(ex_valid),
         .fence_i_req(fence_i_req)
     );
+
+    // pipe_regs # (
+    //     .DATA_RESET(),
+    //     .DATA_WIDTH(),
+    //     .VALID_RESET(1'b0)
+    // ) u6_pipe_id_ex (
+    //     .clk(clk),
+    //     .rst_n(rst_n),
+    //     .i_valid(fetch_valid),
+    //     .i_ready(id_fetch_ready),
+    //     .o_valid(fetch_id_valid),
+    //     .o_ready(id_ready),
+    //     .i_data({fetch_pc,  fetch_inst}),
+    //     .o_data({id_pc,     id_inst}),
+    //     .pipe_flush(1'b0)
+    // );
 
     ex ex_u0 (
         .clk(clk),
