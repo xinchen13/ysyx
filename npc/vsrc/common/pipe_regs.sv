@@ -54,7 +54,7 @@ module pipe_regs # (
     localparam [STATE_BITS-1:0] FULL  = 'd2; // Both output and buffer registers hold data
     // There is no case where only the buffer register would hold data.
     logic [STATE_BITS-1:0] state;
-    logic [STATE_BITS-1:0] state_next;
+    logic [STATE_BITS-1:0] state_next = EMPTY;
 
     // ready reg
     always @ (posedge clk) begin
