@@ -39,7 +39,7 @@ void isa_reg_update() {
     core.pc = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT____Vcellout__u3_pipe_fetch_id__o_data >> 32;
     int gpr_count = MUXDEF(CONFIG_RVE, 16, 32);
     for (int i = 0; i < gpr_count; i++) {
-        core.gpr[i] = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__regfile_u0__DOT__regs[i];
+        core.gpr[i] = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__u4_regfile__DOT__regs[i];
     }
 }
 

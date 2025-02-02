@@ -211,8 +211,7 @@ module xcore (
         .pipe_flush(1'b0)
     );
 
-
-    regfile regfile_u0 (
+    regfile u4_regfile (
         .clk(clk),
         .wdata(reg_wdata),
         .waddr(wb_reg_waddr),
