@@ -62,7 +62,6 @@ module pipe_regs # (
     logic unload  = (state == BUSY)  && (insert == 1'b0) && (remove == 1'b1);
 
     always @ (*) begin
-        state_next = EMPTY;
         state_next = (load   == 1'b1) ? BUSY  : state;
         state_next = (flow   == 1'b1) ? BUSY  : state_next;
         state_next = (fill   == 1'b1) ? FULL  : state_next;
