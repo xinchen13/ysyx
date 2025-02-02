@@ -76,8 +76,8 @@ module pipe_regs # (
         end
     end
 
-    logic insert = (i_valid == 1'b1) && (i_ready == 1'b1);
-    logic remove = (o_valid == 1'b1) && (o_ready == 1'b1);
+    wire insert = (i_valid == 1'b1) && (i_ready == 1'b1);
+    wire remove = (o_valid == 1'b1) && (o_ready == 1'b1);
 
     // reg load    = 1'b0; // Empty datapath inserts data into output register.
     // reg flow    = 1'b0; // New inserted data into output register as the old data is removed.
@@ -85,11 +85,11 @@ module pipe_regs # (
     // reg flush   = 1'b0; // Move data from buffer register into output register. Remove old data. No new data inserted.
     // reg unload  = 1'b0; // Remove data from output register, leaving the datapath empty.
 
-    logic load    = (state == EMPTY) && (insert == 1'b1) && (remove == 1'b0);
-    logic flow    = (state == BUSY)  && (insert == 1'b1) && (remove == 1'b1);
-    logic fill    = (state == BUSY)  && (insert == 1'b1) && (remove == 1'b0);
-    logic flush   = (state == FULL)  && (insert == 1'b0) && (remove == 1'b1);
-    logic unload  = (state == BUSY)  && (insert == 1'b0) && (remove == 1'b1);
+    wire load    = (state == EMPTY) && (insert == 1'b1) && (remove == 1'b0);
+    wire flow    = (state == BUSY)  && (insert == 1'b1) && (remove == 1'b1);
+    wire fill    = (state == BUSY)  && (insert == 1'b1) && (remove == 1'b0);
+    wire flush   = (state == FULL)  && (insert == 1'b0) && (remove == 1'b1);
+    wire unload  = (state == BUSY)  && (insert == 1'b0) && (remove == 1'b1);
 
     always @ (*) begin
         state_next = (load   == 1'b1) ? BUSY  : state;
