@@ -17,6 +17,36 @@ module pipe_regs # (
     output  logic [DATA_WIDTH-1:0] o_data
 );
 
+    // ----------------------------- data path -----------------------------
+    logic data_buffer_wren; // EMPTY at start, so don't load.
+    logic [DATA_WIDTH-1:0] buffer_data;
+    logic data_out_wren; // EMPTY at start, so accept data.
+    logic use_buffered_data;
+    logic [DATA_WIDTH-1:0] selected_data;
+
+    // buffer reg
+    always @ (posedge clk) begin
+        if (!rst_n) begin
+            buffer_data <= DATA_RESET;
+        end
+        else if (data_buffer_wren) begin
+            buffer_data <= i_data;
+        end
+    end 
+    // pipeline reg
+    always @ (posedge clk) begin
+        if (!rst_n) begin
+            o_data <= DATA_RESET;
+        end
+        else if (data_out_wren) begin
+            o_data <= selected_data;
+        end
+    end
+    // select data out
+    assign selected_data = use_buffered_data ? buffer_data : i_data;
+    // ----------------------------- data path -----------------------------
+
+
     // -------------------- control path: state machine --------------------
     localparam STATE_BITS = 2;
     localparam [STATE_BITS-1:0] EMPTY = 'd0; // Output and buffer registers empty
@@ -85,36 +115,5 @@ module pipe_regs # (
         use_buffered_data = (flush == 1'b1);
     end
     // -------------------- control path: state machine --------------------
-
-
-
-    // ----------------------------- data path -----------------------------
-    logic data_buffer_wren; // EMPTY at start, so don't load.
-    logic [DATA_WIDTH-1:0] buffer_data;
-    logic data_out_wren; // EMPTY at start, so accept data.
-    logic use_buffered_data;
-    logic [DATA_WIDTH-1:0] selected_data;
-
-    // buffer reg
-    always @ (posedge clk) begin
-        if (!rst_n) begin
-            buffer_data <= DATA_RESET;
-        end
-        else if (data_buffer_wren) begin
-            buffer_data <= i_data;
-        end
-    end 
-    // pipeline reg
-    always @ (posedge clk) begin
-        if (!rst_n) begin
-            o_data <= DATA_RESET;
-        end
-        else if (data_out_wren) begin
-            o_data <= selected_data;
-        end
-    end
-    // select data out
-    assign selected_data = use_buffered_data ? buffer_data : i_data;
-    // ----------------------------- data path -----------------------------
 
 endmodule
