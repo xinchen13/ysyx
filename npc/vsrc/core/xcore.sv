@@ -222,7 +222,7 @@ module xcore (
         .wen(reg_wen)
     );
 
-    id id_u0 (
+    id u5_id (
         .inst(id_inst),
         .pc(id_pc),
         .reg_rdata1(reg_rdata1),
