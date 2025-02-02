@@ -153,7 +153,8 @@ module xcore (
         .o_valid(pc_valid),
         .o_ready(fetch_ready),
         .i_data(wb_dnpc),
-        .o_data(fetch_pc)
+        .o_data(fetch_pc),
+        .pipe_flush(1'b0)
     );
 
     fetch u1_fetch (

@@ -14,7 +14,9 @@ module pipe_regs # (
 
     // data path
     input   logic [DATA_WIDTH-1:0] i_data,
-    output  logic [DATA_WIDTH-1:0] o_data
+    output  logic [DATA_WIDTH-1:0] o_data,
+
+    input   logic pipe_flush
 );
 
     // ----------------------------- data path -----------------------------
@@ -66,7 +68,7 @@ module pipe_regs # (
 
     // ready reg
     always @ (posedge clk) begin
-        if (!rst_n) begin
+        if (!rst_n | pipe_flush) begin
             i_ready <= 1'b1;
         end
         else begin
@@ -78,6 +80,9 @@ module pipe_regs # (
     always @ (posedge clk) begin
         if (!rst_n) begin
             o_valid <= VALID_RESET;
+        end
+        else if (pipe_flush) begin
+            o_valid <= 1'b0;
         end
         else begin
             o_valid <= (state_next != EMPTY);
@@ -109,7 +114,7 @@ module pipe_regs # (
 
     // state reg
     always @ (posedge clk) begin
-        if (!rst_n) begin
+        if (!rst_n | pipe_flush) begin
             state <= EMPTY;
         end
         else begin
