@@ -307,7 +307,7 @@ module xcore (
         .pipe_flush(1'b0)
     );
 
-    ex ex_u0 (
+    ex u7_ex (
         .clk(clk),
         .rst_n(rst_n),
         .inst(ex_inst),
