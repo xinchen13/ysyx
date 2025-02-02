@@ -13,7 +13,11 @@ module ex (
     input logic fence_i_req,
     output logic icache_flush,
     output logic [`DATA_BUS] alu_result,
-    output logic [`INST_ADDR_BUS] dnpc
+    output logic [`INST_ADDR_BUS] dnpc,
+    input logic prev_valid,
+    output logic this_ready,
+    input logic next_ready,
+    output logic this_valid
 );
     logic [`DATA_BUS] pc_adder_src1;
     logic zero_flag;
@@ -35,6 +39,11 @@ module ex (
         end
     end
     assign icache_flush = fence_i_req & (!fence_i_req_dly);
+
+    // done
+    wire done = 1'b1;
+    assign this_ready = !prev_valid || (done && next_ready);
+    assign this_valid = prev_valid & done;
     
 
     // pc_adder_src1
