@@ -156,7 +156,7 @@ module xcore (
         .o_data(fetch_pc)
     );
 
-    fetch fetch_u0 (
+    fetch u1_fetch (
         .clk(clk),
         .rst_n(rst_n),
         .pc(fetch_pc),
@@ -171,17 +171,7 @@ module xcore (
         .rdata(raw_fetch_rdata),
         .rresp(raw_fetch_rresp),
         .rvalid(raw_fetch_rvalid),
-        .rready(raw_fetch_rready),
-        .awaddr(),
-        .awvalid(),
-        .awready(),
-        .wdata(),
-        .wstrb(),
-        .wvalid(),
-        .wready(),
-        .bresp(),
-        .bvalid(),
-        .bready()
+        .rready(raw_fetch_rready)
     );
 
     fetch_id_pipe fetch_id_pipe_u0 (
