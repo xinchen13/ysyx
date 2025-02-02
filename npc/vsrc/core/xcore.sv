@@ -142,15 +142,30 @@ module xcore (
     logic			        private_wvalid;
 
 
-    pc_reg pc_reg_u0 (
+    // pc_reg pc_reg_u0 (
+    //     .clk(clk),
+    //     .rst_n(rst_n),
+    //     .i_valid(wb_valid),
+    //     .i_ready(fetch_wb_ready),
+    //     .o_valid(pc_valid),
+    //     .o_ready(fetch_ready),
+    //     .dnpc(wb_dnpc),
+    //     .fetch_pc(fetch_pc)
+    // );
+    
+    pipe_regs # (
+        .DATA_RESET(`CPU_RESET_ADDR),
+        .DATA_WIDTH(32),
+        .VALID_RESET(1'b1)
+    ) pc_reg_u0 (
         .clk(clk),
         .rst_n(rst_n),
         .i_valid(wb_valid),
         .i_ready(fetch_wb_ready),
         .o_valid(pc_valid),
         .o_ready(fetch_ready),
-        .dnpc(wb_dnpc),
-        .fetch_pc(fetch_pc)
+        .i_data(wb_dnpc),
+        .o_data(fetch_pc)
     );
 
     fetch fetch_u0 (
