@@ -69,5 +69,5 @@
 `define INST_NOP    32'h00000001
 
 // turn on performance monitor unit
-// `define PMU_ON          1'b1
+`define PMU_ON          1'b1
 `define ICACHE_ON       1'b1
