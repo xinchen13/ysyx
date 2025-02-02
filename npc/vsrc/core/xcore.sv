@@ -140,24 +140,12 @@ module xcore (
     logic			        private_wready;
     logic [`AXI_WSTRB_BUS]	private_wstrb;
     logic			        private_wvalid;
-
-
-    // pc_reg pc_reg_u0 (
-    //     .clk(clk),
-    //     .rst_n(rst_n),
-    //     .i_valid(wb_valid),
-    //     .i_ready(fetch_wb_ready),
-    //     .o_valid(pc_valid),
-    //     .o_ready(fetch_ready),
-    //     .dnpc(wb_dnpc),
-    //     .fetch_pc(fetch_pc)
-    // );
     
     pipe_regs # (
         .DATA_RESET(`CPU_RESET_ADDR),
-        .DATA_WIDTH(32),
+        .DATA_WIDTH(`INST_ADDR_WIDTH),
         .VALID_RESET(1'b1)
-    ) pc_reg_u0 (
+    ) u0_pipe_pc_reg (
         .clk(clk),
         .rst_n(rst_n),
         .i_valid(wb_valid),
@@ -165,10 +153,11 @@ module xcore (
         .o_valid(pc_valid),
         .o_ready(fetch_ready),
         .i_data(wb_dnpc),
-        .o_data(fetch_pc)
+        .o_data(fetch_pc),
+        .pipe_flush(1'b0)
     );
 
-    fetch fetch_u0 (
+    fetch u1_fetch (
         .clk(clk),
         .rst_n(rst_n),
         .pc(fetch_pc),
@@ -183,30 +172,43 @@ module xcore (
         .rdata(raw_fetch_rdata),
         .rresp(raw_fetch_rresp),
         .rvalid(raw_fetch_rvalid),
-        .rready(raw_fetch_rready),
-        .awaddr(),
-        .awvalid(),
-        .awready(),
-        .wdata(),
-        .wstrb(),
-        .wvalid(),
-        .wready(),
-        .bresp(),
-        .bvalid(),
-        .bready()
+        .rready(raw_fetch_rready)
     );
 
-    fetch_id_pipe fetch_id_pipe_u0 (
+    icache icache_u0 (
+        .clk(clk),
+        .rst_n(rst_n),
+        .icache_flush(icache_flush),
+        .raw_fetch_araddr(raw_fetch_araddr),
+        .raw_fetch_arvalid(raw_fetch_arvalid),
+        .raw_fetch_arready(raw_fetch_arready),
+        .raw_fetch_rdata(raw_fetch_rdata),
+        .raw_fetch_rresp(raw_fetch_rresp),
+        .raw_fetch_rvalid(raw_fetch_rvalid),
+        .raw_fetch_rready(raw_fetch_rready),
+        .fetch_araddr(fetch_araddr),
+        .fetch_arvalid(fetch_arvalid),
+        .fetch_arready(fetch_arready),
+        .fetch_rdata(fetch_rdata),
+        .fetch_rresp(fetch_rresp),
+        .fetch_rvalid(fetch_rvalid),
+        .fetch_rready(fetch_rready)
+    );
+
+    pipe_regs # (
+        .DATA_RESET(64'b0),
+        .DATA_WIDTH(64),
+        .VALID_RESET(1'b0)
+    ) u3_pipe_fetch_id (
         .clk(clk),
         .rst_n(rst_n),
         .i_valid(fetch_valid),
         .i_ready(id_fetch_ready),
         .o_valid(fetch_id_valid),
         .o_ready(id_ready),
-        .fetch_pc(fetch_pc),
-        .fetch_inst(fetch_inst),
-        .id_pc(id_pc),
-        .id_inst(id_inst)
+        .i_data({fetch_pc,  fetch_inst}),
+        .o_data({id_pc,     id_inst}),
+        .pipe_flush(1'b0)
     );
 
 
@@ -429,26 +431,6 @@ module xcore (
         .wdata2(id_pc),
         .wen2(csr_wen2),
         .rdata(csr_rdata)
-    );
-
-    icache icache_u0 (
-        .clk(clk),
-        .rst_n(rst_n),
-        .icache_flush(icache_flush),
-        .raw_fetch_araddr(raw_fetch_araddr),
-        .raw_fetch_arvalid(raw_fetch_arvalid),
-        .raw_fetch_arready(raw_fetch_arready),
-        .raw_fetch_rdata(raw_fetch_rdata),
-        .raw_fetch_rresp(raw_fetch_rresp),
-        .raw_fetch_rvalid(raw_fetch_rvalid),
-        .raw_fetch_rready(raw_fetch_rready),
-        .fetch_araddr(fetch_araddr),
-        .fetch_arvalid(fetch_arvalid),
-        .fetch_arready(fetch_arready),
-        .fetch_rdata(fetch_rdata),
-        .fetch_rresp(fetch_rresp),
-        .fetch_rvalid(fetch_rvalid),
-        .fetch_rready(fetch_rready)
     );
 
     `ifdef PMU_ON
