@@ -39,8 +39,15 @@ module xcore (
     input logic lsu_bvalid,
     output logic lsu_bready
 );
+    // fetch
+    logic [`INST_ADDR_BUS] fetch_pc;
+    logic [`INST_DATA_BUS] fetch_inst;
+    logic fetch_ready;
+    logic pc_valid;
+    logic id_fetch_ready;
+    logic fetch_valid;
 
-    // axi-lite interface (master: fetch  -  salve: icache)
+    // fetch: axi-lite interface (master: fetch  -  salve: icache)
     logic [`AXI_ADDR_BUS] raw_fetch_araddr;
     logic raw_fetch_arvalid;
     logic raw_fetch_arready;
@@ -49,41 +56,34 @@ module xcore (
     logic raw_fetch_rvalid;
     logic raw_fetch_rready;
 
+
+
     logic [`DATA_BUS] reg_rdata1;
     logic [`DATA_BUS] reg_rdata2;
-    logic [`DATA_BUS] id_alu_src1;
-    logic [`DATA_BUS] id_alu_src2;
-    logic id_reg_wen;
+    
     logic reg_wen;
-    logic [1:0] id_reg_wdata_sel;
+    
     logic [`DATA_BUS] reg_wdata;
     logic [`INST_ADDR_BUS] ex_dnpc;
     logic [`INST_ADDR_BUS] wb_dnpc;
-    logic [`INST_ADDR_BUS] fetch_pc;
     logic [`INST_ADDR_BUS] id_pc;
-    logic [`INST_DATA_BUS] fetch_inst;
-    logic [`INST_DATA_BUS] id_inst;
-    logic [3:0] id_alu_ctrl;
+    
     logic [`DATA_BUS] alu_result;
-    logic [`DATA_BUS] id_imm;
-    logic [`DATA_BUS] id_pc_adder_src2;
-    logic id_dmem_wen;
-    logic id_dmem_req;
+
     logic [`DATA_BUS] dmem_rdata;
     logic [`CSR_ADDR_BUS] csr_raddr;
     logic csr_wen2;
     logic [`DATA_BUS] csr_wdata1;
     logic [`CSR_ADDR_BUS] csr_waddr1;
     logic csr_wen1;
-    logic [`DATA_BUS] id_csr_rdata;
+    
     logic [4:0] reg_rs1;
-    logic fetch_valid;
+
     logic ex_valid;
-    logic fetch_ready;
-    logic pc_valid;
+
     logic id_ready;
     logic fetch_id_valid;
-    logic id_fetch_ready;
+
     logic fetch_wb_ready;
     logic wb_ready;
     logic wb_lsu_ready;
@@ -96,6 +96,19 @@ module xcore (
     logic ex_id_ready;
     logic id_ex_valid;
     logic ex_ready;
+
+    // id
+    logic [`DATA_BUS]       id_csr_rdata;
+    logic [`DATA_BUS]       id_alu_src1;
+    logic [`DATA_BUS]       id_alu_src2;
+    logic [3:0]             id_alu_ctrl;
+    logic [`DATA_BUS]       id_imm;
+    logic [`DATA_BUS]       id_pc_adder_src2;
+    logic                   id_dmem_wen;
+    logic                   id_dmem_req;
+    logic                   id_reg_wen;
+    logic [1:0]             id_reg_wdata_sel;
+    logic [`INST_DATA_BUS]  id_inst;
 
     // ex 
     logic [`DATA_BUS]       ex_csr_rdata;
