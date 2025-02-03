@@ -364,6 +364,26 @@ module xcore (
         .this_valid(ex_valid)
     );
 
+    // pipe_regs # (
+    //     .DATA_RESET(),
+    //     .DATA_WIDTH(),
+    //     .VALID_RESET(1'b0)
+    // ) u9_pipe_ex_lsu (
+    //     .clk(clk),
+    //     .rst_n(rst_n),
+    //     .i_valid(),
+    //     .i_ready(),
+    //     .o_valid(),
+    //     .o_ready(),
+    //     .i_data({
+
+    //     }),
+    //     .o_data({
+
+    //     }),
+    //     .pipe_flush(1'b0)
+    // );
+
     lsu lsu_u0 (
         .clk(clk),
         .rst_n(rst_n),
@@ -525,9 +545,9 @@ module xcore (
             .fetch_rready(raw_fetch_rready),
             .fetch_arvalid(raw_fetch_arvalid),
             .fetch_arready(raw_fetch_arready),
+            .fetch_rdata(raw_fetch_rdata),
             .lsu_rvalid(lsu_rvalid),
             .lsu_rready(lsu_rready),
-            .fetch_rdata(raw_fetch_rdata),
             .ins_retire(lsu_wb_valid)
         );
     `endif
