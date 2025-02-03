@@ -553,31 +553,6 @@ module xcore (
         .pipe_flush(1'b0)
     );
 
-    // lsu_wb_pipe lsu_wb_pipe_u0(
-    //     .clk(clk),
-    //     .rst_n(rst_n),
-    //     .i_valid(lsu_valid),
-    //     .i_ready(wb_lsu_ready),
-    //     .o_valid(lsu_wb_valid),
-    //     .o_ready(wb_ready),
-
-    //     .lsu_alu_result(lsu_alu_result),
-    //     .lsu_reg_wdata_sel(lsu_reg_wdata_sel),
-    //     .lsu_csr_rdata(lsu_csr_rdata),
-    //     .lsu_dmem_rdata(lsu_dmem_rdata),
-    //     .lsu_reg_wen(lsu_reg_wen),
-    //     .lsu_reg_waddr(lsu_inst[11:7]),
-
-    //     .wb_alu_result(wb_alu_result),
-    //     .wb_reg_wdata_sel(wb_reg_wdata_sel),
-    //     .wb_csr_rdata(wb_csr_rdata),
-    //     .wb_dmem_rdata(wb_dmem_rdata),
-    //     .wb_reg_wen(wb_reg_wen),
-    //     .wb_reg_waddr(wb_reg_waddr),
-    //     .ex_dnpc(ex_dnpc),
-    //     .wb_dnpc(wb_dnpc)
-    // );
-
     wb u14_wb (
         .prev_valid(lsu_wb_valid),
         .this_ready(wb_ready),
