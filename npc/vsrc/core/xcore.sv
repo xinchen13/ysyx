@@ -246,7 +246,7 @@ module xcore (
         .raddr2(id_inst[24:20]),
         .rdata1(id_reg_rdata1),
         .rdata2(id_reg_rdata2),
-        .wen(reg_wen)
+        .wen(wb_reg_wen)
     );
 
     id u5_id (
