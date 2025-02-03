@@ -43,12 +43,10 @@ module xcore (
     logic reg_wen;
     logic [`DATA_BUS] reg_wdata;
     logic [`INST_ADDR_BUS] wb_dnpc;
-    logic [`DATA_BUS] dmem_rdata;
     logic fetch_wb_ready;
     logic wb_ready;
-    logic wb_lsu_ready;
     logic lsu_wb_valid;
-    logic lsu_valid;
+
 
     // fetch
     logic [`INST_ADDR_BUS] fetch_pc;
@@ -120,6 +118,18 @@ module xcore (
     logic                   ex_csr_wen2;
     logic [`DATA_BUS]       ex_csr_wdata1;
     logic [`CSR_ADDR_BUS]   ex_csr_waddr1;
+
+    // lsu
+    logic                   ex_lsu_valid;
+    logic                   lsu_ready;
+    logic                   lsu_valid;
+    logic                   wb_lsu_ready;
+    logic [`DATA_BUS]       lsu_dmem_rdata;
+    logic [`INST_DATA_BUS]  lsu_inst;
+    logic [`DATA_BUS]       lsu_alu_result;
+    logic [`DATA_BUS]       lsu_reg_rdata2;
+    logic                   lsu_dmem_wen;
+    logic                   lsu_dmem_req;
 
     // wb
     logic [`DATA_BUS] wb_alu_result;
@@ -364,38 +374,46 @@ module xcore (
         .this_valid(ex_valid)
     );
 
-    // pipe_regs # (
-    //     .DATA_RESET(),
-    //     .DATA_WIDTH(),
-    //     .VALID_RESET(1'b0)
-    // ) u9_pipe_ex_lsu (
-    //     .clk(clk),
-    //     .rst_n(rst_n),
-    //     .i_valid(),
-    //     .i_ready(),
-    //     .o_valid(),
-    //     .o_ready(),
-    //     .i_data({
-
-    //     }),
-    //     .o_data({
-
-    //     }),
-    //     .pipe_flush(1'b0)
-    // );
+    pipe_regs # (
+        .DATA_RESET(98'b0),
+        .DATA_WIDTH(98),
+        .VALID_RESET(1'b0)
+    ) u9_pipe_ex_lsu (
+        .clk(clk),
+        .rst_n(rst_n),
+        .i_valid(ex_valid),
+        .i_ready(lsu_ex_ready),
+        .o_valid(ex_lsu_valid),
+        .o_ready(lsu_ready),
+        .i_data({
+            ex_inst,
+            ex_alu_result,
+            ex_reg_rdata2,
+            ex_dmem_wen,
+            ex_dmem_req
+        }),
+        .o_data({
+            lsu_inst,
+            lsu_alu_result,
+            lsu_reg_rdata2,
+            lsu_dmem_wen,
+            lsu_dmem_req
+        }),
+        .pipe_flush(1'b0)
+    );
 
     lsu lsu_u0 (
         .clk(clk),
         .rst_n(rst_n),
-        .inst(ex_inst),
-        .raddr(ex_alu_result),
-        .waddr(ex_alu_result),
-        .ex_wdata(ex_reg_rdata2),
-        .wen(ex_dmem_wen),
-        .req(ex_dmem_req),
-        .lsu_rdata(dmem_rdata),
-        .prev_valid(ex_valid),
-        .this_ready(lsu_ex_ready),
+        .inst(lsu_inst),
+        .raddr(lsu_alu_result),
+        .waddr(lsu_alu_result),
+        .ex_wdata(lsu_reg_rdata2),
+        .wen(lsu_dmem_wen),
+        .req(lsu_dmem_req),
+        .lsu_rdata(lsu_dmem_rdata),
+        .prev_valid(ex_lsu_valid),
+        .this_ready(lsu_ready),
         .next_ready(wb_lsu_ready),
         .this_valid(lsu_valid),
         .araddr(private_araddr),
@@ -510,7 +528,7 @@ module xcore (
         .lsu_alu_result(ex_alu_result),
         .lsu_reg_wdata_sel(ex_reg_wdata_sel),
         .lsu_csr_rdata(ex_csr_rdata),
-        .lsu_dmem_rdata(dmem_rdata),
+        .lsu_dmem_rdata(lsu_dmem_rdata),
         .lsu_reg_wen(ex_reg_wen),
         .lsu_reg_waddr(ex_inst[11:7]),
         .wb_alu_result(wb_alu_result),
