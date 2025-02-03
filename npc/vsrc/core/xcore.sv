@@ -44,10 +44,6 @@ module xcore (
     logic [`DATA_BUS] reg_wdata;
     logic [`INST_ADDR_BUS] wb_dnpc;
     logic [`DATA_BUS] dmem_rdata;
-    logic csr_wen2;
-    logic [`DATA_BUS] csr_wdata1;
-    logic [`CSR_ADDR_BUS] csr_waddr1;
-    logic csr_wen1;
     logic fetch_wb_ready;
     logic wb_ready;
     logic wb_lsu_ready;
@@ -93,6 +89,10 @@ module xcore (
     logic [`DATA_BUS]       id_reg_rdata2;
     logic [4:0]             id_reg_rs1;
     logic [`CSR_ADDR_BUS]   id_csr_raddr;
+    logic                   id_csr_wen1;
+    logic                   id_csr_wen2;
+    logic [`DATA_BUS]       id_csr_wdata1;
+    logic [`CSR_ADDR_BUS]   id_csr_waddr1;
     
     // ex
     logic [`INST_DATA_BUS]  ex_inst;
@@ -106,6 +106,7 @@ module xcore (
     logic                   ex_dmem_req;
     logic                   ex_reg_wen;
     logic [1:0]             ex_reg_wdata_sel;
+    logic [`INST_ADDR_BUS]  ex_pc;
     logic [`DATA_BUS]       ex_alu_result;
     logic [`INST_ADDR_BUS]  ex_dnpc;
     logic                   ex_fence_i_req;
@@ -115,6 +116,10 @@ module xcore (
     logic                   ex_valid;
     logic                   lsu_ex_ready;
     logic [`DATA_BUS]       ex_reg_rdata2;
+    logic                   ex_csr_wen1;
+    logic                   ex_csr_wen2;
+    logic [`DATA_BUS]       ex_csr_wdata1;
+    logic [`CSR_ADDR_BUS]   ex_csr_waddr1;
 
     // wb
     logic [`DATA_BUS] wb_alu_result;
@@ -244,20 +249,7 @@ module xcore (
         .wen(reg_wen)
     );
 
-    csr_regs u5_csr_regs (
-        .clk(clk),
-        .rst_n(rst_n),
-        .raddr(id_csr_raddr),
-        .waddr1(csr_waddr1),
-        .wdata1(csr_wdata1),
-        .wen1(csr_wen1),
-        .waddr2(`CSR_MEPC),
-        .wdata2(id_pc),
-        .wen2(csr_wen2),
-        .rdata(id_csr_rdata)
-    );
-
-    id u6_id (
+    id u5_id (
         .inst(id_inst),
         .pc(id_pc),
         .reg_rdata1(id_reg_rdata1),
@@ -274,10 +266,10 @@ module xcore (
         .reg_wen(id_reg_wen),
         .reg_wdata_sel(id_reg_wdata_sel),
         .csr_raddr(id_csr_raddr),
-        .csr_wdata1(csr_wdata1),
-        .csr_waddr1(csr_waddr1),
-        .csr_wen1(csr_wen1),
-        .csr_wen2(csr_wen2),
+        .csr_wdata1(id_csr_wdata1),
+        .csr_waddr1(id_csr_waddr1),
+        .csr_wen1(id_csr_wen1),
+        .csr_wen2(id_csr_wen2),
         .prev_valid(fetch_id_valid),
         .this_ready(id_ready),
         .next_ready(ex_id_ready),
@@ -286,10 +278,10 @@ module xcore (
     );
 
     pipe_regs # (
-        .DATA_RESET(234'b0),
-        .DATA_WIDTH(234),
+        .DATA_RESET(312'b0),
+        .DATA_WIDTH(312),
         .VALID_RESET(1'b0)
-    ) u7_pipe_id_ex (
+    ) u6_pipe_id_ex (
         .clk(clk),
         .rst_n(rst_n),
         .i_valid(id_valid),
@@ -309,7 +301,12 @@ module xcore (
             id_reg_wdata_sel,
             id_inst,
             id_fence_i_req,
-            id_reg_rdata2
+            id_reg_rdata2,
+            id_csr_wen1,
+            id_csr_wen2,
+            id_csr_wdata1,
+            id_csr_waddr1,
+            id_pc
         }),
         .o_data({
             ex_csr_rdata,
@@ -324,9 +321,27 @@ module xcore (
             ex_reg_wdata_sel,
             ex_inst,
             ex_fence_i_req,
-            ex_reg_rdata2
+            ex_reg_rdata2,
+            ex_csr_wen1,
+            ex_csr_wen2,
+            ex_csr_wdata1,
+            ex_csr_waddr1,
+            ex_pc
         }),
         .pipe_flush(1'b0)
+    );
+
+    csr_regs u7_csr_regs (
+        .clk(clk),
+        .rst_n(rst_n),
+        .raddr(id_csr_raddr),
+        .waddr1(ex_csr_waddr1),
+        .wdata1(ex_csr_wdata1),
+        .wen1(ex_csr_wen1),
+        .waddr2(`CSR_MEPC),
+        .wdata2(ex_pc),
+        .wen2(ex_csr_wen2),
+        .rdata(id_csr_rdata)
     );
 
     ex u8_ex (
