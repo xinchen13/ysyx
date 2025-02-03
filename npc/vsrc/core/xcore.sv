@@ -411,7 +411,7 @@ module xcore (
         .pipe_flush(1'b0)
     );
 
-    lsu lsu_u0 (
+    lsu u10_lsu (
         .clk(clk),
         .rst_n(rst_n),
         .inst(lsu_inst),
