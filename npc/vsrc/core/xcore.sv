@@ -60,27 +60,20 @@ module xcore (
 
     logic [`DATA_BUS] reg_rdata1;
     logic [`DATA_BUS] reg_rdata2;
-    
     logic reg_wen;
-    
     logic [`DATA_BUS] reg_wdata;
     logic [`INST_ADDR_BUS] ex_dnpc;
     logic [`INST_ADDR_BUS] wb_dnpc;
     logic [`INST_ADDR_BUS] id_pc;
-    
     logic [`DATA_BUS] alu_result;
-
     logic [`DATA_BUS] dmem_rdata;
     logic [`CSR_ADDR_BUS] csr_raddr;
     logic csr_wen2;
     logic [`DATA_BUS] csr_wdata1;
     logic [`CSR_ADDR_BUS] csr_waddr1;
     logic csr_wen1;
-    
     logic [4:0] reg_rs1;
-
     logic ex_valid;
-
     logic id_ready;
     logic fetch_id_valid;
 
@@ -98,6 +91,7 @@ module xcore (
     logic ex_ready;
 
     // id
+    logic [`INST_DATA_BUS]  id_inst;
     logic [`DATA_BUS]       id_csr_rdata;
     logic [`DATA_BUS]       id_alu_src1;
     logic [`DATA_BUS]       id_alu_src2;
@@ -108,9 +102,10 @@ module xcore (
     logic                   id_dmem_req;
     logic                   id_reg_wen;
     logic [1:0]             id_reg_wdata_sel;
-    logic [`INST_DATA_BUS]  id_inst;
+    
 
-    // ex 
+    // ex
+    logic [`INST_DATA_BUS]  ex_inst;
     logic [`DATA_BUS]       ex_csr_rdata;
     logic [`DATA_BUS]       ex_alu_src1;
     logic [`DATA_BUS]       ex_alu_src2;
@@ -121,7 +116,7 @@ module xcore (
     logic                   ex_dmem_req;
     logic                   ex_reg_wen;
     logic [1:0]             ex_reg_wdata_sel;
-    logic [`INST_DATA_BUS]  ex_inst;
+    
 
     // wb
     logic [`DATA_BUS] wb_alu_result;
