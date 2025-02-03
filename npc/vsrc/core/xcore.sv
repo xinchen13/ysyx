@@ -40,7 +40,25 @@ module xcore (
     output logic lsu_bready
 );
 
-    // axi-lite interface (master: fetch  -  salve: icache)
+    logic reg_wen;
+    logic [`DATA_BUS] reg_wdata;
+    logic [`INST_ADDR_BUS] wb_dnpc;
+    logic [`DATA_BUS] dmem_rdata;
+    logic fetch_wb_ready;
+    logic wb_ready;
+    logic wb_lsu_ready;
+    logic lsu_wb_valid;
+    logic lsu_valid;
+
+    // fetch
+    logic [`INST_ADDR_BUS] fetch_pc;
+    logic [`INST_DATA_BUS] fetch_inst;
+    logic fetch_ready;
+    logic pc_valid;
+    logic id_fetch_ready;
+    logic fetch_valid;
+
+    // fetch: axi-lite interface (master: fetch  -  salve: icache)
     logic [`AXI_ADDR_BUS] raw_fetch_araddr;
     logic raw_fetch_arvalid;
     logic raw_fetch_arready;
@@ -49,55 +67,35 @@ module xcore (
     logic raw_fetch_rvalid;
     logic raw_fetch_rready;
 
-    logic [`DATA_BUS] reg_rdata1;
-    logic [`DATA_BUS] reg_rdata2;
-    logic [`DATA_BUS] id_alu_src1;
-    logic [`DATA_BUS] id_alu_src2;
-    logic id_reg_wen;
-    logic reg_wen;
-    logic [1:0] id_reg_wdata_sel;
-    logic [`DATA_BUS] reg_wdata;
-    logic [`INST_ADDR_BUS] ex_dnpc;
-    logic [`INST_ADDR_BUS] wb_dnpc;
-    logic [`INST_ADDR_BUS] fetch_pc;
-    logic [`INST_ADDR_BUS] id_pc;
-    logic [`INST_DATA_BUS] fetch_inst;
-    logic [`INST_DATA_BUS] id_inst;
-    logic [3:0] id_alu_ctrl;
-    logic [`DATA_BUS] alu_result;
-    logic [`DATA_BUS] id_imm;
-    logic [`DATA_BUS] id_pc_adder_src2;
-    logic id_dmem_wen;
-    logic id_dmem_req;
-    logic [`DATA_BUS] dmem_rdata;
-    logic [`CSR_ADDR_BUS] csr_raddr;
-    logic csr_wen2;
-    logic [`DATA_BUS] csr_wdata1;
-    logic [`CSR_ADDR_BUS] csr_waddr1;
-    logic csr_wen1;
-    logic [`DATA_BUS] id_csr_rdata;
-    logic [4:0] reg_rs1;
-    logic fetch_valid;
-    logic ex_valid;
-    logic fetch_ready;
-    logic pc_valid;
-    logic id_ready;
-    logic fetch_id_valid;
-    logic id_fetch_ready;
-    logic fetch_wb_ready;
-    logic wb_ready;
-    logic wb_lsu_ready;
-    logic lsu_wb_valid;
-    logic lsu_ex_ready;
-    logic lsu_valid;
-    logic fence_i_req;
-    logic icache_flush;
-    logic id_valid;
-    logic ex_id_ready;
-    logic id_ex_valid;
-    logic ex_ready;
-
-    // ex 
+    // id
+    logic [`INST_DATA_BUS]  id_inst;
+    logic [`DATA_BUS]       id_csr_rdata;
+    logic [`DATA_BUS]       id_alu_src1;
+    logic [`DATA_BUS]       id_alu_src2;
+    logic [3:0]             id_alu_ctrl;
+    logic [`DATA_BUS]       id_imm;
+    logic [`DATA_BUS]       id_pc_adder_src2;
+    logic                   id_dmem_wen;
+    logic                   id_dmem_req;
+    logic                   id_reg_wen;
+    logic [1:0]             id_reg_wdata_sel;
+    logic [`INST_ADDR_BUS]  id_pc;
+    logic                   id_fence_i_req;
+    logic                   id_valid;
+    logic                   ex_id_ready;
+    logic                   id_ready;
+    logic                   fetch_id_valid;
+    logic [`DATA_BUS]       id_reg_rdata1;
+    logic [`DATA_BUS]       id_reg_rdata2;
+    logic [4:0]             id_reg_rs1;
+    logic [`CSR_ADDR_BUS]   id_csr_raddr;
+    logic                   id_csr_wen1;
+    logic                   id_csr_wen2;
+    logic [`DATA_BUS]       id_csr_wdata1;
+    logic [`CSR_ADDR_BUS]   id_csr_waddr1;
+    
+    // ex
+    logic [`INST_DATA_BUS]  ex_inst;
     logic [`DATA_BUS]       ex_csr_rdata;
     logic [`DATA_BUS]       ex_alu_src1;
     logic [`DATA_BUS]       ex_alu_src2;
@@ -108,7 +106,20 @@ module xcore (
     logic                   ex_dmem_req;
     logic                   ex_reg_wen;
     logic [1:0]             ex_reg_wdata_sel;
-    logic [`INST_DATA_BUS]  ex_inst;
+    logic [`INST_ADDR_BUS]  ex_pc;
+    logic [`DATA_BUS]       ex_alu_result;
+    logic [`INST_ADDR_BUS]  ex_dnpc;
+    logic                   ex_fence_i_req;
+    logic                   ex_icache_flush;
+    logic                   id_ex_valid;
+    logic                   ex_ready;
+    logic                   ex_valid;
+    logic                   lsu_ex_ready;
+    logic [`DATA_BUS]       ex_reg_rdata2;
+    logic                   ex_csr_wen1;
+    logic                   ex_csr_wen2;
+    logic [`DATA_BUS]       ex_csr_wdata1;
+    logic [`CSR_ADDR_BUS]   ex_csr_waddr1;
 
     // wb
     logic [`DATA_BUS] wb_alu_result;
@@ -118,7 +129,6 @@ module xcore (
     logic wb_reg_wen;
     logic [`REG_ADDR_BUS] wb_reg_waddr;
     logic wb_valid;
-
 
     // to clint (mtime, slave)
     logic [`AXI_ADDR_BUS]	clint_araddr;
@@ -195,7 +205,7 @@ module xcore (
     icache u2_icache (
         .clk(clk),
         .rst_n(rst_n),
-        .icache_flush(icache_flush),
+        .icache_flush(ex_icache_flush),
         .raw_fetch_araddr(raw_fetch_araddr),
         .raw_fetch_arvalid(raw_fetch_arvalid),
         .raw_fetch_arready(raw_fetch_arready),
@@ -232,19 +242,19 @@ module xcore (
         .clk(clk),
         .wdata(reg_wdata),
         .waddr(wb_reg_waddr),
-        .raddr1(reg_rs1),
+        .raddr1(id_reg_rs1),
         .raddr2(id_inst[24:20]),
-        .rdata1(reg_rdata1),
-        .rdata2(reg_rdata2),
+        .rdata1(id_reg_rdata1),
+        .rdata2(id_reg_rdata2),
         .wen(reg_wen)
     );
 
     id u5_id (
         .inst(id_inst),
         .pc(id_pc),
-        .reg_rdata1(reg_rdata1),
-        .reg_rdata2(reg_rdata2),
-        .reg_rs1(reg_rs1),
+        .reg_rdata1(id_reg_rdata1),
+        .reg_rdata2(id_reg_rdata2),
+        .reg_rs1(id_reg_rs1),
         .csr_rdata(id_csr_rdata),
         .alu_src1(id_alu_src1),
         .alu_src2(id_alu_src2),
@@ -255,21 +265,21 @@ module xcore (
         .dmem_req(id_dmem_req),
         .reg_wen(id_reg_wen),
         .reg_wdata_sel(id_reg_wdata_sel),
-        .csr_raddr(csr_raddr),
-        .csr_wdata1(csr_wdata1),
-        .csr_waddr1(csr_waddr1),
-        .csr_wen1(csr_wen1),
-        .csr_wen2(csr_wen2),
+        .csr_raddr(id_csr_raddr),
+        .csr_wdata1(id_csr_wdata1),
+        .csr_waddr1(id_csr_waddr1),
+        .csr_wen1(id_csr_wen1),
+        .csr_wen2(id_csr_wen2),
         .prev_valid(fetch_id_valid),
         .this_ready(id_ready),
         .next_ready(ex_id_ready),
         .this_valid(id_valid),
-        .fence_i_req(fence_i_req)
+        .fence_i_req(id_fence_i_req)
     );
 
     pipe_regs # (
-        .DATA_RESET(201'b0),
-        .DATA_WIDTH(201),
+        .DATA_RESET(312'b0),
+        .DATA_WIDTH(312),
         .VALID_RESET(1'b0)
     ) u6_pipe_id_ex (
         .clk(clk),
@@ -289,7 +299,14 @@ module xcore (
             id_dmem_req,
             id_reg_wen,
             id_reg_wdata_sel,
-            id_inst
+            id_inst,
+            id_fence_i_req,
+            id_reg_rdata2,
+            id_csr_wen1,
+            id_csr_wen2,
+            id_csr_wdata1,
+            id_csr_waddr1,
+            id_pc
         }),
         .o_data({
             ex_csr_rdata,
@@ -302,12 +319,32 @@ module xcore (
             ex_dmem_req,
             ex_reg_wen,
             ex_reg_wdata_sel,
-            ex_inst
+            ex_inst,
+            ex_fence_i_req,
+            ex_reg_rdata2,
+            ex_csr_wen1,
+            ex_csr_wen2,
+            ex_csr_wdata1,
+            ex_csr_waddr1,
+            ex_pc
         }),
         .pipe_flush(1'b0)
     );
 
-    ex u7_ex (
+    csr_regs u7_csr_regs (
+        .clk(clk),
+        .rst_n(rst_n),
+        .raddr(id_csr_raddr),
+        .waddr1(ex_csr_waddr1),
+        .wdata1(ex_csr_wdata1),
+        .wen1(ex_csr_wen1),
+        .waddr2(`CSR_MEPC),
+        .wdata2(ex_pc),
+        .wen2(ex_csr_wen2),
+        .rdata(id_csr_rdata)
+    );
+
+    ex u8_ex (
         .clk(clk),
         .rst_n(rst_n),
         .inst(ex_inst),
@@ -316,24 +353,44 @@ module xcore (
         .alu_ctrl(ex_alu_ctrl),
         .imm_i(ex_imm),
         .pc_adder_src2(ex_pc_adder_src2),
-        .alu_result(alu_result),
+        .alu_result(ex_alu_result),
         .dnpc(ex_dnpc),
         .csr_rdata(ex_csr_rdata),
-        .fence_i_req(fence_i_req),
-        .icache_flush(icache_flush),
+        .fence_i_req(ex_fence_i_req),
+        .icache_flush(ex_icache_flush),
         .prev_valid(id_ex_valid),
         .this_ready(ex_ready),
         .next_ready(lsu_ex_ready),
         .this_valid(ex_valid)
     );
 
+    // pipe_regs # (
+    //     .DATA_RESET(),
+    //     .DATA_WIDTH(),
+    //     .VALID_RESET(1'b0)
+    // ) u9_pipe_ex_lsu (
+    //     .clk(clk),
+    //     .rst_n(rst_n),
+    //     .i_valid(),
+    //     .i_ready(),
+    //     .o_valid(),
+    //     .o_ready(),
+    //     .i_data({
+
+    //     }),
+    //     .o_data({
+
+    //     }),
+    //     .pipe_flush(1'b0)
+    // );
+
     lsu lsu_u0 (
         .clk(clk),
         .rst_n(rst_n),
         .inst(ex_inst),
-        .raddr(alu_result),
-        .waddr(alu_result),
-        .ex_wdata(reg_rdata2),
+        .raddr(ex_alu_result),
+        .waddr(ex_alu_result),
+        .ex_wdata(ex_reg_rdata2),
         .wen(ex_dmem_wen),
         .req(ex_dmem_req),
         .lsu_rdata(dmem_rdata),
@@ -450,7 +507,7 @@ module xcore (
         .i_ready(wb_lsu_ready),
         .o_valid(lsu_wb_valid),
         .o_ready(wb_ready),
-        .lsu_alu_result(alu_result),
+        .lsu_alu_result(ex_alu_result),
         .lsu_reg_wdata_sel(ex_reg_wdata_sel),
         .lsu_csr_rdata(ex_csr_rdata),
         .lsu_dmem_rdata(dmem_rdata),
@@ -480,19 +537,6 @@ module xcore (
         .reg_wen(reg_wen)
     );
 
-    csr_regs csr_regs_u0 (
-        .clk(clk),
-        .rst_n(rst_n),
-        .raddr(csr_raddr),
-        .waddr1(csr_waddr1),
-        .wdata1(csr_wdata1),
-        .wen1(csr_wen1),
-        .waddr2(`CSR_MEPC),
-        .wdata2(id_pc),
-        .wen2(csr_wen2),
-        .rdata(id_csr_rdata)
-    );
-
     `ifdef PMU_ON
         pmu pmu_u0 (
             .clk(clk),
@@ -501,9 +545,9 @@ module xcore (
             .fetch_rready(raw_fetch_rready),
             .fetch_arvalid(raw_fetch_arvalid),
             .fetch_arready(raw_fetch_arready),
+            .fetch_rdata(raw_fetch_rdata),
             .lsu_rvalid(lsu_rvalid),
             .lsu_rready(lsu_rready),
-            .fetch_rdata(raw_fetch_rdata),
             .ins_retire(lsu_wb_valid)
         );
     `endif
