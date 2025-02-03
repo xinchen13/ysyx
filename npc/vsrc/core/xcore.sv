@@ -70,19 +70,18 @@ module xcore (
     logic [`CSR_ADDR_BUS] csr_waddr1;
     logic csr_wen1;
     logic [4:0] reg_rs1;
-    logic ex_valid;
-    logic id_ready;
-    logic fetch_id_valid;
+    
+    
+    
     logic fetch_wb_ready;
     logic wb_ready;
     logic wb_lsu_ready;
     logic lsu_wb_valid;
-    logic lsu_ex_ready;
+    
     logic lsu_valid;
-    logic id_valid;
-    logic ex_id_ready;
-    logic id_ex_valid;
-    logic ex_ready;
+
+
+
 
     // id
     logic [`INST_DATA_BUS]  id_inst;
@@ -98,6 +97,10 @@ module xcore (
     logic [1:0]             id_reg_wdata_sel;
     logic [`INST_ADDR_BUS]  id_pc;
     logic                   id_fence_i_req;
+    logic                   id_valid;
+    logic                   ex_id_ready;
+    logic                   id_ready;
+    logic                   fetch_id_valid;
     
 
     // ex
@@ -116,6 +119,10 @@ module xcore (
     logic [`INST_ADDR_BUS]  ex_dnpc;
     logic                   ex_fence_i_req;
     logic                   ex_icache_flush;
+    logic                   id_ex_valid;
+    logic                   ex_ready;
+    logic                   ex_valid;
+    logic                   lsu_ex_ready;
 
     // wb
     logic [`DATA_BUS] wb_alu_result;
