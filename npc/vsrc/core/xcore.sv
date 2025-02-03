@@ -39,6 +39,24 @@ module xcore (
     input logic lsu_bvalid,
     output logic lsu_bready
 );
+
+
+    logic reg_wen;
+    logic [`DATA_BUS] reg_wdata;
+    logic [`INST_ADDR_BUS] wb_dnpc;
+    logic [`DATA_BUS] dmem_rdata;
+    logic [`CSR_ADDR_BUS] csr_raddr;
+    logic csr_wen2;
+    logic [`DATA_BUS] csr_wdata1;
+    logic [`CSR_ADDR_BUS] csr_waddr1;
+    logic csr_wen1;
+    logic [4:0] reg_rs1;
+    logic fetch_wb_ready;
+    logic wb_ready;
+    logic wb_lsu_ready;
+    logic lsu_wb_valid;
+    logic lsu_valid;
+
     // fetch
     logic [`INST_ADDR_BUS] fetch_pc;
     logic [`INST_DATA_BUS] fetch_inst;
@@ -55,33 +73,6 @@ module xcore (
     logic [`AXI_RESP_BUS] raw_fetch_rresp;
     logic raw_fetch_rvalid;
     logic raw_fetch_rready;
-
-
-
-    logic [`DATA_BUS] reg_rdata1;
-    logic [`DATA_BUS] reg_rdata2;
-    logic reg_wen;
-    logic [`DATA_BUS] reg_wdata;
-    logic [`INST_ADDR_BUS] wb_dnpc;
-    logic [`DATA_BUS] dmem_rdata;
-    logic [`CSR_ADDR_BUS] csr_raddr;
-    logic csr_wen2;
-    logic [`DATA_BUS] csr_wdata1;
-    logic [`CSR_ADDR_BUS] csr_waddr1;
-    logic csr_wen1;
-    logic [4:0] reg_rs1;
-    
-    
-    
-    logic fetch_wb_ready;
-    logic wb_ready;
-    logic wb_lsu_ready;
-    logic lsu_wb_valid;
-    
-    logic lsu_valid;
-
-
-
 
     // id
     logic [`INST_DATA_BUS]  id_inst;
@@ -101,8 +92,9 @@ module xcore (
     logic                   ex_id_ready;
     logic                   id_ready;
     logic                   fetch_id_valid;
+    logic [`DATA_BUS]       id_reg_rdata1;
+    logic [`DATA_BUS]       id_reg_rdata2;
     
-
     // ex
     logic [`INST_DATA_BUS]  ex_inst;
     logic [`DATA_BUS]       ex_csr_rdata;
@@ -123,6 +115,7 @@ module xcore (
     logic                   ex_ready;
     logic                   ex_valid;
     logic                   lsu_ex_ready;
+    logic [`DATA_BUS]       ex_reg_rdata2;
 
     // wb
     logic [`DATA_BUS] wb_alu_result;
@@ -132,7 +125,6 @@ module xcore (
     logic wb_reg_wen;
     logic [`REG_ADDR_BUS] wb_reg_waddr;
     logic wb_valid;
-
 
     // to clint (mtime, slave)
     logic [`AXI_ADDR_BUS]	clint_araddr;
@@ -248,16 +240,16 @@ module xcore (
         .waddr(wb_reg_waddr),
         .raddr1(reg_rs1),
         .raddr2(id_inst[24:20]),
-        .rdata1(reg_rdata1),
-        .rdata2(reg_rdata2),
+        .rdata1(id_reg_rdata1),
+        .rdata2(id_reg_rdata2),
         .wen(reg_wen)
     );
 
     id u5_id (
         .inst(id_inst),
         .pc(id_pc),
-        .reg_rdata1(reg_rdata1),
-        .reg_rdata2(reg_rdata2),
+        .reg_rdata1(id_reg_rdata1),
+        .reg_rdata2(id_reg_rdata2),
         .reg_rs1(reg_rs1),
         .csr_rdata(id_csr_rdata),
         .alu_src1(id_alu_src1),
@@ -282,8 +274,8 @@ module xcore (
     );
 
     pipe_regs # (
-        .DATA_RESET(202'b0),
-        .DATA_WIDTH(202),
+        .DATA_RESET(234'b0),
+        .DATA_WIDTH(234),
         .VALID_RESET(1'b0)
     ) u6_pipe_id_ex (
         .clk(clk),
@@ -304,7 +296,8 @@ module xcore (
             id_reg_wen,
             id_reg_wdata_sel,
             id_inst,
-            id_fence_i_req
+            id_fence_i_req,
+            id_reg_rdata2
         }),
         .o_data({
             ex_csr_rdata,
@@ -318,7 +311,8 @@ module xcore (
             ex_reg_wen,
             ex_reg_wdata_sel,
             ex_inst,
-            ex_fence_i_req
+            ex_fence_i_req,
+            ex_reg_rdata2
         }),
         .pipe_flush(1'b0)
     );
@@ -349,7 +343,7 @@ module xcore (
         .inst(ex_inst),
         .raddr(ex_alu_result),
         .waddr(ex_alu_result),
-        .ex_wdata(reg_rdata2),
+        .ex_wdata(ex_reg_rdata2),
         .wen(ex_dmem_wen),
         .req(ex_dmem_req),
         .lsu_rdata(dmem_rdata),
