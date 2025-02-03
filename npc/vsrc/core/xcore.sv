@@ -62,10 +62,7 @@ module xcore (
     logic [`DATA_BUS] reg_rdata2;
     logic reg_wen;
     logic [`DATA_BUS] reg_wdata;
-    
     logic [`INST_ADDR_BUS] wb_dnpc;
-    
-    
     logic [`DATA_BUS] dmem_rdata;
     logic [`CSR_ADDR_BUS] csr_raddr;
     logic csr_wen2;
@@ -82,7 +79,6 @@ module xcore (
     logic lsu_wb_valid;
     logic lsu_ex_ready;
     logic lsu_valid;
-    logic icache_flush;
     logic id_valid;
     logic ex_id_ready;
     logic id_ex_valid;
@@ -119,6 +115,7 @@ module xcore (
     logic [`DATA_BUS]       ex_alu_result;
     logic [`INST_ADDR_BUS]  ex_dnpc;
     logic                   ex_fence_i_req;
+    logic                   ex_icache_flush;
 
     // wb
     logic [`DATA_BUS] wb_alu_result;
@@ -205,7 +202,7 @@ module xcore (
     icache u2_icache (
         .clk(clk),
         .rst_n(rst_n),
-        .icache_flush(icache_flush),
+        .icache_flush(ex_icache_flush),
         .raw_fetch_araddr(raw_fetch_araddr),
         .raw_fetch_arvalid(raw_fetch_arvalid),
         .raw_fetch_arready(raw_fetch_arready),
@@ -332,7 +329,7 @@ module xcore (
         .dnpc(ex_dnpc),
         .csr_rdata(ex_csr_rdata),
         .fence_i_req(ex_fence_i_req),
-        .icache_flush(icache_flush),
+        .icache_flush(ex_icache_flush),
         .prev_valid(id_ex_valid),
         .this_ready(ex_ready),
         .next_ready(lsu_ex_ready),
