@@ -72,7 +72,11 @@ module pipe_regs # (
             i_ready <= 1'b1;
         end
         else begin
-            i_ready <= (state_next != FULL);
+            `ifdef PIPE_REG_FIFO
+                i_ready <= (state_next != FULL);
+            `else
+                i_ready <= ~((state_next == BUSY) & (remove == 1'b0));
+            `endif
         end
     end
 
