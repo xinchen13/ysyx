@@ -72,7 +72,8 @@ module pipe_regs # (
             i_ready <= 1'b1;
         end
         else begin
-            i_ready <= (state_next != FULL);
+            // i_ready <= (state_next != FULL);
+            i_ready <= ~((state_next == BUSY) & (remove == 1'b0));
         end
     end
 
