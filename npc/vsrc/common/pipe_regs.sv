@@ -60,7 +60,7 @@ module pipe_regs # (
 
     logic insert;
     logic remove;
-    logic load; 
+    logic load;
     logic flow;
     logic fill;
     logic flush;
