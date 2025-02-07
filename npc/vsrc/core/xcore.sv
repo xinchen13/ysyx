@@ -131,6 +131,7 @@ module xcore (
     logic                   lsu_reg_wen;
     logic [1:0]             lsu_reg_wdata_sel;
     logic [`DATA_BUS]       lsu_csr_rdata;
+    logic                   lsu_pipe_ctrl_valid;
 
     // wb
     logic                   wb_ready;
@@ -430,6 +431,7 @@ module xcore (
         .this_ready(lsu_ready),
         .next_ready(wb_lsu_ready),
         .this_valid(lsu_valid),
+        .lsu_pipe_ctrl_valid(lsu_pipe_ctrl_valid),
         .araddr(private_araddr),
         .arvalid(private_arvalid),
         .arready(private_arready),
@@ -579,10 +581,13 @@ module xcore (
         .id_rs2_valid(id_rs2_valid),
         .ex_rd(ex_inst[11:7]),
         .ex_reg_wen(ex_reg_wen),
+        .ex_valid(ex_valid),
         .lsu_rd(lsu_inst[11:7]),
         .lsu_reg_wen(lsu_reg_wen),
+        .lsu_valid(lsu_pipe_ctrl_valid),
         .wb_rd(wb_reg_waddr),
         .wb_reg_wen(wb_reg_wen),
+        .wb_valid(wb_valid),
         .id_raw_stall(id_raw_stall)
     );
 
