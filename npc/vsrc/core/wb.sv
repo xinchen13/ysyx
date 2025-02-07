@@ -7,7 +7,6 @@ module wb (
     input logic next_ready,
     output logic this_valid,
     input logic wb_reg_wen,
-    output logic reg_wen,
     input logic [`DATA_BUS] dmem_rdata,
     input logic [`DATA_BUS] alu_result,
     input logic [1:0] reg_wdata_sel,
@@ -23,6 +22,5 @@ module wb (
     assign reg_wdata = reg_wdata_sel[1] ? csr_rdata : (
         reg_wdata_sel[0] ? dmem_rdata : alu_result
     );
-    assign reg_wen = wb_reg_wen & prev_valid;
 
 endmodule

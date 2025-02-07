@@ -40,7 +40,6 @@ module xcore (
     output logic lsu_bready
 );
 
-    logic reg_wen;
     logic [`DATA_BUS] reg_wdata;
     logic [`INST_ADDR_BUS] wb_dnpc;
     logic fetch_wb_ready;
@@ -571,8 +570,7 @@ module xcore (
         .reg_wdata_sel(wb_reg_wdata_sel),
         .csr_rdata(wb_csr_rdata),
         .reg_wdata(reg_wdata),
-        .wb_reg_wen(wb_reg_wen),
-        .reg_wen(reg_wen)
+        .wb_reg_wen(wb_reg_wen)
     );
 
     pipe_ctrl u15_pipe_ctrl (
