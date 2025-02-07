@@ -88,6 +88,7 @@ module xcore (
     logic                   id_csr_wen2;
     logic [`DATA_BUS]       id_csr_wdata1;
     logic [`CSR_ADDR_BUS]   id_csr_waddr1;
+    logic                   id_rs2_valid;
     
     // ex
     logic [`INST_DATA_BUS]  ex_inst;
@@ -134,13 +135,16 @@ module xcore (
     // wb
     logic                   wb_ready;
     logic                   lsu_wb_valid;
-    logic [`DATA_BUS] wb_alu_result;
-    logic [1:0] wb_reg_wdata_sel;
-    logic [`DATA_BUS] wb_csr_rdata;
-    logic [`DATA_BUS] wb_dmem_rdata;
-    logic wb_reg_wen;
-    logic [`REG_ADDR_BUS] wb_reg_waddr;
-    logic wb_valid;
+    logic [`DATA_BUS]       wb_alu_result;
+    logic [1:0]             wb_reg_wdata_sel;
+    logic [`DATA_BUS]       wb_csr_rdata;
+    logic [`DATA_BUS]       wb_dmem_rdata;
+    logic                   wb_reg_wen;
+    logic [`REG_ADDR_BUS]   wb_reg_waddr;
+    logic                   wb_valid;
+
+    // pipe_ctrl
+    logic                   id_raw_stall;
 
     // to clint (mtime, slave)
     logic [`AXI_ADDR_BUS]	clint_araddr;
@@ -286,7 +290,9 @@ module xcore (
         .this_ready(id_ready),
         .next_ready(ex_id_ready),
         .this_valid(id_valid),
-        .fence_i_req(id_fence_i_req)
+        .fence_i_req(id_fence_i_req),
+        .rs2_valid(id_rs2_valid),
+        .id_raw_stall(id_raw_stall)
     );
 
     pipe_regs # (
@@ -565,6 +571,19 @@ module xcore (
         .reg_wdata(reg_wdata),
         .wb_reg_wen(wb_reg_wen),
         .reg_wen(reg_wen)
+    );
+
+    pipe_ctrl u15_pipe_ctrl (
+        .id_rs1(id_reg_rs1),
+        .id_rs2(id_inst[24:20]),
+        .id_rs2_valid(id_rs2_valid),
+        .ex_rd(ex_inst[11:7]),
+        .ex_reg_wen(ex_reg_wen),
+        .lsu_rd(lsu_inst[11:7]),
+        .lsu_reg_wen(lsu_reg_wen),
+        .wb_rd(wb_reg_waddr),
+        .wb_reg_wen(wb_reg_wen),
+        .id_raw_stall(id_raw_stall)
     );
 
     `ifdef PMU_ON
