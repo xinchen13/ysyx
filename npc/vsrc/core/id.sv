@@ -51,7 +51,6 @@ module id (
     assign this_ready = !prev_valid || (done & next_ready & ~id_raw_stall);
     assign this_valid = prev_valid & done & (~id_raw_stall);
 
-
     // reg rs1
     assign reg_rs1 = inst_ecall ? 5'd15 : inst[19:15];
 
