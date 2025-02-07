@@ -24,6 +24,6 @@ module pipe_ctrl (
     assign id_lsu_raw   = (((id_rs1 == lsu_rd)  & (id_rs1 != 5'b0) ) | ((id_rs2 == lsu_rd) & id_rs2_valid & (id_rs2 != 5'b0))) & lsu_reg_wen;
     assign id_wb_raw    = (((id_rs1 == wb_rd)   & (id_rs1 != 5'b0) ) | ((id_rs2 == wb_rd) & id_rs2_valid & (id_rs2 != 5'b0))) & wb_reg_wen;
 
-    assign id_raw_stall = (id_ex_raw | ex_valid) | (id_lsu_raw | lsu_valid) | (id_wb_raw | wb_valid);
+    assign id_raw_stall = (id_ex_raw & ex_valid) | (id_lsu_raw & lsu_valid) | (id_wb_raw & wb_valid);
 
 endmodule
