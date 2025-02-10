@@ -115,6 +115,7 @@ module xcore (
     logic                   ex_csr_wen2;
     logic [`DATA_BUS]       ex_csr_wdata1;
     logic [`CSR_ADDR_BUS]   ex_csr_waddr1;
+    logic                   ex_jump;
 
     // lsu
     logic                   ex_lsu_valid;
@@ -145,6 +146,8 @@ module xcore (
 
     // pipe_ctrl
     logic                   id_raw_stall;
+    logic                   pipe_flush;
+    logic                   icache_idle;
 
     // to clint (mtime, slave)
     logic [`AXI_ADDR_BUS]	clint_araddr;
@@ -184,20 +187,31 @@ module xcore (
     logic [`AXI_WSTRB_BUS]	private_wstrb;
     logic			        private_wvalid;
     
-    pipe_regs # (
-        .DATA_RESET(`CPU_RESET_ADDR),
-        .DATA_WIDTH(`INST_ADDR_WIDTH),
-        .VALID_RESET(1'b1)
-    ) u0_pipe_pc_reg (
+    // pipe_regs # (
+    //     .DATA_RESET(`CPU_RESET_ADDR),
+    //     .DATA_WIDTH(`INST_ADDR_WIDTH),
+    //     .VALID_RESET(1'b1)
+    // ) u0_pipe_pc_reg (
+    //     .clk(clk),
+    //     .rst_n(rst_n),
+    //     .i_valid(wb_valid),
+    //     .i_ready(fetch_wb_ready),
+    //     .o_valid(pc_valid),
+    //     .o_ready(fetch_ready),
+    //     .i_data(wb_dnpc),
+    //     .o_data(fetch_pc),
+    //     .pipe_flush(1'b0)
+    // );
+
+    pc_reg u0_pipe_pc_reg (
         .clk(clk),
         .rst_n(rst_n),
-        .i_valid(wb_valid),
-        .i_ready(fetch_wb_ready),
-        .o_valid(pc_valid),
-        .o_ready(fetch_ready),
-        .i_data(wb_dnpc),
-        .o_data(fetch_pc),
-        .pipe_flush(1'b0)
+        .pipe_flush(pipe_flush),
+        .ex_jump(ex_jump),
+        .ex_dnpc(ex_dnpc),
+        .pc_new(fetch_pc),
+        .this_valid(pc_valid),
+        .next_ready(fetch_ready)
     );
 
     fetch u1_fetch (
@@ -222,6 +236,8 @@ module xcore (
         .clk(clk),
         .rst_n(rst_n),
         .icache_flush(ex_icache_flush),
+        .pipe_flush(pipe_flush),
+        .icache_idle(icache_idle),
         .raw_fetch_araddr(raw_fetch_araddr),
         .raw_fetch_arvalid(raw_fetch_arvalid),
         .raw_fetch_arready(raw_fetch_arready),
@@ -249,9 +265,9 @@ module xcore (
         .i_ready(id_fetch_ready),
         .o_valid(fetch_id_valid),
         .o_ready(id_ready),
-        .i_data({fetch_pc,  fetch_inst}),
+        .i_data({fetch_araddr,  fetch_inst}),
         .o_data({id_pc,     id_inst}),
-        .pipe_flush(1'b0)
+        .pipe_flush(pipe_flush)
     );
 
     regfile u4_regfile (
@@ -346,7 +362,7 @@ module xcore (
             ex_csr_waddr1,
             ex_pc
         }),
-        .pipe_flush(1'b0)
+        .pipe_flush(pipe_flush)
     );
 
     csr_regs u7_csr_regs (
@@ -379,7 +395,8 @@ module xcore (
         .prev_valid(id_ex_valid),
         .this_ready(ex_ready),
         .next_ready(lsu_ex_ready),
-        .this_valid(ex_valid)
+        .this_valid(ex_valid),
+        .ex_jump(ex_jump)
     );
 
     pipe_regs # (
@@ -563,7 +580,7 @@ module xcore (
     wb u14_wb (
         .prev_valid(lsu_wb_valid),
         .this_ready(wb_ready),
-        .next_ready(fetch_wb_ready),
+        .next_ready(1'b1),
         .this_valid(wb_valid),
         .dmem_rdata(wb_dmem_rdata),
         .alu_result(wb_alu_result),
@@ -574,6 +591,8 @@ module xcore (
     );
 
     pipe_ctrl u15_pipe_ctrl (
+        .clk(clk),
+        .rst_n(rst_n),
         .id_rs1(id_reg_rs1),
         .id_rs2(id_inst[24:20]),
         .id_rs2_valid(id_rs2_valid),
@@ -586,7 +605,10 @@ module xcore (
         .wb_rd(wb_reg_waddr),
         .wb_reg_wen(wb_reg_wen),
         .wb_valid(wb_valid),
-        .id_raw_stall(id_raw_stall)
+        .id_raw_stall(id_raw_stall),
+        .ex_jump(ex_jump),
+        .icache_idle(icache_idle),
+        .pipe_flush(pipe_flush)
     );
 
     `ifdef PMU_ON
