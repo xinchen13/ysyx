@@ -1,6 +1,8 @@
 `include "../inc/defines.svh"
 
 module pipe_ctrl (
+    input logic         clk,
+    input logic         rst_n,
     input logic [4:0]   id_rs1,
     input logic [4:0]   id_rs2,
     input logic         id_rs2_valid,
@@ -13,7 +15,11 @@ module pipe_ctrl (
     input logic [4:0]   wb_rd,
     input logic         wb_reg_wen,
     input logic         wb_valid,
-    output logic        id_raw_stall
+    output logic        id_raw_stall,
+
+    input logic         ex_jump,
+    input logic         icache_idle,
+    output logic        pipe_flush
 );
 
     logic id_ex_raw;
@@ -25,5 +31,17 @@ module pipe_ctrl (
     assign id_wb_raw    = (((id_rs1 == wb_rd)   & (id_rs1 != 5'b0) ) | ((id_rs2 == wb_rd) & id_rs2_valid & (id_rs2 != 5'b0))) & wb_reg_wen;
 
     assign id_raw_stall = (id_ex_raw & ex_valid) | (id_lsu_raw & lsu_valid) | (id_wb_raw & wb_valid);
+
+    always @ (posedge clk) begin
+        if (!rst_n) begin
+            pipe_flush <= 'b0;
+        end
+        else if (ex_jump) begin
+            pipe_flush <= 'b1;
+        end
+        else if (pipe_flush & icache_idle) begin
+            pipe_flush <= 'b0;
+        end
+    end
 
 endmodule

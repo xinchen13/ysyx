@@ -17,7 +17,8 @@ module ex (
     input logic prev_valid,
     output logic this_ready,
     input logic next_ready,
-    output logic this_valid
+    output logic this_valid,
+    output logic ex_jump
 );
     logic [`DATA_BUS] pc_adder_src1;
     logic zero_flag;
@@ -90,6 +91,42 @@ module ex (
         .zero_flag(zero_flag),
         .less_flag(less_flag)
     );
+
+    logic op1_ge_op2_signed;
+    logic op1_ge_op2_unsigned;
+    logic op1_eq_op2;
+    logic jump_flag;
+
+    assign op1_ge_op2_signed = $signed(alu_src1) >= $signed(alu_src2);
+    assign op1_ge_op2_unsigned = alu_src1 >= alu_src2;
+    assign op1_eq_op2 = (alu_src1 == alu_src2);
+
+    always @ (*) begin
+        case (opcode)
+            `JAL_OPCODE, `JALR_OPCODE: begin
+                jump_flag = 1'b1;
+            end
+            `B_TYPE_OPCODE: begin
+                case (funct3)
+                    3'b000: jump_flag = op1_eq_op2;
+                    3'b001: jump_flag = ~op1_eq_op2;
+                    3'b100: jump_flag = ~op1_ge_op2_signed;
+                    3'b101: jump_flag = op1_ge_op2_signed;
+                    3'b110: jump_flag = ~op1_ge_op2_unsigned;
+                    3'b111: jump_flag = op1_ge_op2_unsigned;
+                    default: begin
+                        jump_flag = 1'b0;
+                    end
+                endcase
+            end
+            default: begin
+                jump_flag = 1'b0;
+            end
+        endcase
+    end
+
+    assign ex_jump = jump_flag & this_valid & next_ready;
+
 
 
 endmodule
