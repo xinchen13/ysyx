@@ -265,7 +265,7 @@ module xcore (
         .i_ready(id_fetch_ready),
         .o_valid(fetch_id_valid),
         .o_ready(id_ready),
-        .i_data({fetch_pc,  fetch_inst}),
+        .i_data({fetch_araddr,  fetch_inst}),
         .o_data({id_pc,     id_inst}),
         .pipe_flush(pipe_flush)
     );
