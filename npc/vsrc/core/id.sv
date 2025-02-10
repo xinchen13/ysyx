@@ -48,7 +48,7 @@ module id (
     // done
     assign done = 1'b1;
 
-    assign this_ready = !prev_valid || (done & next_ready & ~id_raw_stall);
+    assign this_ready = done & next_ready & ~id_raw_stall;
     assign this_valid = prev_valid & done & (~id_raw_stall);
 
     // reg rs1
