@@ -13,11 +13,9 @@ module wb (
     input logic [`DATA_BUS] csr_rdata,
     output logic [`DATA_BUS] reg_wdata
 );
-    logic done;
-    assign done = 1'b1;
 
-    assign this_valid = prev_valid & done;
-    assign this_ready = !prev_valid || (done && next_ready);
+    assign this_valid = prev_valid;
+    assign this_ready = next_ready;
 
     assign reg_wdata = reg_wdata_sel[1] ? csr_rdata : (
         reg_wdata_sel[0] ? dmem_rdata : alu_result

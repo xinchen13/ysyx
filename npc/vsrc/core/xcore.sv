@@ -278,7 +278,7 @@ module xcore (
         .raddr2(id_inst[24:20]),
         .rdata1(id_reg_rdata1),
         .rdata2(id_reg_rdata2),
-        .wen(wb_reg_wen & lsu_wb_valid)
+        .wen(wb_reg_wen & wb_valid)
     );
 
     id u5_id (
@@ -333,13 +333,13 @@ module xcore (
             id_dmem_req,
             id_reg_wen,
             id_reg_wdata_sel,
-            id_inst,
             id_fence_i_req,
             id_reg_rdata2,
             id_csr_wen1,
             id_csr_wen2,
             id_csr_wdata1,
             id_csr_waddr1,
+            id_inst,
             id_pc
         }),
         .o_data({
@@ -353,13 +353,13 @@ module xcore (
             ex_dmem_req,
             ex_reg_wen,
             ex_reg_wdata_sel,
-            ex_inst,
             ex_fence_i_req,
             ex_reg_rdata2,
             ex_csr_wen1,
             ex_csr_wen2,
             ex_csr_wdata1,
             ex_csr_waddr1,
+            ex_inst,
             ex_pc
         }),
         .pipe_flush(pipe_flush)

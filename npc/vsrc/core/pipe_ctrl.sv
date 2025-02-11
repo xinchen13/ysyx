@@ -32,16 +32,19 @@ module pipe_ctrl (
 
     assign id_raw_stall = (id_ex_raw & ex_valid) | (id_lsu_raw & lsu_valid) | (id_wb_raw & wb_valid);
 
+    logic pipe_flush_inner;
     always @ (posedge clk) begin
         if (!rst_n) begin
-            pipe_flush <= 'b0;
+            pipe_flush_inner <= 'b0;
         end
         else if (ex_jump) begin
-            pipe_flush <= 'b1;
+            pipe_flush_inner <= 'b1;
         end
-        else if (pipe_flush & icache_idle) begin
-            pipe_flush <= 'b0;
+        else if (pipe_flush_inner & icache_idle) begin
+            pipe_flush_inner <= 'b0;
         end
     end
+
+    assign pipe_flush = ex_jump | pipe_flush_inner;
 
 endmodule
