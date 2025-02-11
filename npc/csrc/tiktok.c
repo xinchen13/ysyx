@@ -208,7 +208,7 @@ void set_npc_state(int state, uint32_t pc, int halt_ret) {
 }
 
 static void exec_once() {
-    this_inst = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT____Vcellout__u6_pipe_id_ex__o_data[0] >> 32;
+    this_inst = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT____Vcellout__u6_pipe_id_ex__o_data[1];
     this_pc = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT____Vcellout__u6_pipe_id_ex__o_data[0];
     dnpc = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT____Vcellinp__u13_pipe_lsu_wb__i_data[0];
     #ifdef CONFIG_ITRACE
