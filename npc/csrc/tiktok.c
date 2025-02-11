@@ -155,7 +155,7 @@ static void pmu_display() {
 static void trace_and_difftest() {
     // itrace
     #ifdef CONFIG_ITRACE
-    if (dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__fetch_id_valid) {
+    if (dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__u6_pipe_id_ex__DOT__remove) {
         Log("%s", logbuf);
         write_iringbuf(logbuf);  // write log to iringbuf
         if (npc_state.state == NPC_ABORT) {
@@ -208,8 +208,8 @@ void set_npc_state(int state, uint32_t pc, int halt_ret) {
 }
 
 static void exec_once() {
-    this_inst = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT____Vcellout__u3_pipe_fetch_id__o_data;
-    this_pc = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT____Vcellout__u3_pipe_fetch_id__o_data >> 32;
+    this_inst = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT____Vcellout__u6_pipe_id_ex__o_data[0] >> 32;
+    this_pc = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT____Vcellout__u6_pipe_id_ex__o_data[0];
     dnpc = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT____Vcellinp__u13_pipe_lsu_wb__i_data[0];
     #ifdef CONFIG_ITRACE
         itrace_inst = this_inst;
