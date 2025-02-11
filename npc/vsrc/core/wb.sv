@@ -17,7 +17,7 @@ module wb (
     assign done = 1'b1;
 
     assign this_valid = prev_valid & done;
-    assign this_ready = !prev_valid || (done && next_ready);
+    assign this_ready = done && next_ready;
 
     assign reg_wdata = reg_wdata_sel[1] ? csr_rdata : (
         reg_wdata_sel[0] ? dmem_rdata : alu_result
