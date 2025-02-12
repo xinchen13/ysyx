@@ -5,8 +5,6 @@ module icache (
     input logic rst_n,
 
     input logic icache_flush,
-    input logic pipe_flush,
-    output logic icache_idle,
 
     // axi-lite interface: core
     // AR
@@ -85,9 +83,7 @@ module icache (
         assign raw_fetch_rdata   = buffered_data;
         assign fetch_araddr      = buffered_addr;
         assign raw_fetch_rresp   = buffered_rresp;
-        assign raw_fetch_rvalid  = ((state == RETURN_DATA) & ~pipe_flush) ? 1'b1 : 1'b0;
-
-        assign icache_idle = (state == IDLE) ? 1'b1 : 1'b0;
+        assign raw_fetch_rvalid  = (state == RETURN_DATA) ? 1'b1 : 1'b0;
 
         always @ (posedge clk) begin
             if (!rst_n) begin
@@ -135,7 +131,7 @@ module icache (
                         end
                     end
                     RETURN_DATA: begin
-                        if (raw_fetch_rready | pipe_flush) begin
+                        if (raw_fetch_rready) begin
                             `ifdef PMU_ON
                                 pmu_state <= PMU_IDLE;
                             `endif

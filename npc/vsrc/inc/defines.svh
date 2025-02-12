@@ -70,9 +70,4 @@
 
 // turn on performance monitor unit
 `define PMU_ON          1'b1
-
-// turn on cache
 `define ICACHE_ON       1'b1
-
-// pipeline regs type: ifdef (2-entry fifo) else(regs)
-// `define PIPE_REG_FIFO   1'b1

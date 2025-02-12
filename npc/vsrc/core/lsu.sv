@@ -16,8 +16,6 @@ module lsu (
     input logic next_ready,
     output logic this_valid,
 
-    output logic lsu_pipe_ctrl_valid,
-
     // axi-lite interface (master)
     // AR
     output logic [`AXI_ADDR_BUS] araddr,
@@ -45,21 +43,6 @@ module lsu (
 
     logic [6:0] opcode = inst[6:0];
     logic [2:0] funct3 = inst[14:12];
-    logic lsu_busy;
-
-    always @ (posedge clk) begin
-        if (!rst_n) begin
-            lsu_busy <= 'b0;
-        end
-        else if ((arvalid & arready) | (awvalid & awready)) begin
-            lsu_busy <= 1'b1;
-        end
-        else if ((rvalid & rready) | (bvalid & bready)) begin
-            lsu_busy <= 1'b0;
-        end
-    end
-
-    assign lsu_pipe_ctrl_valid = prev_valid | lsu_busy | this_valid;
 
     // rmask
     logic [4:0] roffset;
@@ -139,7 +122,7 @@ module lsu (
     assign wdata = wdata_offset;
     assign wstrb = wmask[3:0];
     assign wvalid = wen & prev_valid;
-    assign this_ready = ~lsu_busy & ((arready & awready & wready & rready) | ((~req) & (~wen) & next_ready));
+    assign this_ready = (arready & awready & wready & rready) | ((~req) & (~wen) & next_ready);
     assign this_valid = bvalid | rvalid | ((~req) & (~wen) & prev_valid); // read done / write done / write back valid
     assign bready = next_ready;
 
