@@ -41,10 +41,8 @@ module ex (
     end
     assign icache_flush = fence_i_req & (!fence_i_req_dly);
 
-    // done
-    wire done = 1'b1;
-    assign this_ready = !prev_valid || (done && next_ready && !ex_jump);
-    assign this_valid = prev_valid & done;
+    assign this_ready = !prev_valid || next_ready;
+    assign this_valid = prev_valid;
     
 
     // pc_adder_src1
