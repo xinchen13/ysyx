@@ -75,12 +75,12 @@ static void pmu_display() {
     Log("   - Memory store type   = %.3lf", ((double)store_type_cycle)/(double(store_type)));
     #ifdef CONFIG_ICACHE
     // icache
-        icache_hit = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__icache_u0__DOT__real_cache_hit;
-        icache_miss = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__icache_u0__DOT__real_cache_miss;
+        icache_hit = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__u2_icache__DOT__real_cache_hit;
+        icache_miss = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__u2_icache__DOT__real_cache_miss;
         double icache_hit_rate = ((double)icache_hit)/(double(icache_hit + icache_miss));
         double icache_miss_rate = ((double)icache_miss)/(double(icache_hit + icache_miss));
-        access_time_total = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__icache_u0__DOT__access_time_total;
-        miss_penalty_total = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__icache_u0__DOT__miss_penalty_total;
+        access_time_total = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__u2_icache__DOT__access_time_total;
+        miss_penalty_total = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__u2_icache__DOT__miss_penalty_total;
         double access_time_avg = (double(access_time_total))/(double(icache_hit));
         double miss_penalty_avg = (double(miss_penalty_total))/(double(icache_miss));
         double amat = icache_hit_rate * access_time_avg + icache_miss_rate * miss_penalty_avg;
@@ -155,7 +155,7 @@ static void pmu_display() {
 static void trace_and_difftest() {
     // itrace
     #ifdef CONFIG_ITRACE
-    if (dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__fetch_id_valid) {
+    if (dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__u6_pipe_id_ex__DOT__remove) {
         Log("%s", logbuf);
         write_iringbuf(logbuf);  // write log to iringbuf
         if (npc_state.state == NPC_ABORT) {
@@ -208,9 +208,9 @@ void set_npc_state(int state, uint32_t pc, int halt_ret) {
 }
 
 static void exec_once() {
-    this_inst = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__id_inst;
-    this_pc = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__id_pc;
-    dnpc = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT__ex_dnpc;
+    this_inst = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT____Vcellout__u6_pipe_id_ex__o_data[1];
+    this_pc = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT____Vcellout__u6_pipe_id_ex__o_data[0];
+    dnpc = dut->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu_wrapper_u0__DOT__xcore_u0__DOT____Vcellinp__u13_pipe_lsu_wb__i_data[0];
     #ifdef CONFIG_ITRACE
         itrace_inst = this_inst;
         itrace_pc = this_pc;

@@ -1,19 +1,12 @@
 `include "../inc/defines.svh"
 
 module id (
-    // from if_id
     input logic [`INST_DATA_BUS] inst,
     input logic [`INST_ADDR_BUS] pc,
-    input logic prev_valid,   // 上级的valid输入
-
-    // to if_id
-    output logic this_ready,  // 本级的ready输出
-
-    // from ex
-    input logic next_ready,   // 下级的 ready 输入
-
-    // to pc_reg
-    output logic this_valid,    // 本级的 valid 输出
+    input logic prev_valid,
+    output logic this_ready,
+    input logic next_ready,
+    output logic this_valid,
 
     // from regfile
     input logic [`DATA_BUS] reg_rdata1,
@@ -40,7 +33,9 @@ module id (
     output logic [`CSR_ADDR_BUS] csr_waddr1,
     output logic csr_wen1,
     output logic csr_wen2,
-    output logic fence_i_req
+    output logic fence_i_req,
+    output logic rs2_valid,
+    input logic id_raw_stall
 );
     logic [`DATA_BUS] imm;
     logic [6:0] opcode = inst[6:0];
@@ -53,9 +48,8 @@ module id (
     // done
     assign done = 1'b1;
 
-    assign this_ready = !prev_valid || (done && next_ready);
-    assign this_valid = prev_valid & done;
-
+    assign this_ready = done & next_ready & ~id_raw_stall;
+    assign this_valid = prev_valid & done & (~id_raw_stall);
 
     // reg rs1
     assign reg_rs1 = inst_ecall ? 5'd15 : inst[19:15];
@@ -63,6 +57,8 @@ module id (
     // csr wen2
     assign csr_wen2 = inst_ecall;
     assign fence_i_req = (opcode == `FENCE_OPCODE) & (funct3 == `FENCE_I_FUNCT3);
+
+    assign rs2_valid = (opcode == `R_TYPE_OPCODE) | (opcode == `B_TYPE_OPCODE) | (opcode == `S_TYPE_OPCODE);
 
     always @ (*) begin
         case (opcode)

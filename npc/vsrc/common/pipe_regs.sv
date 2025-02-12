@@ -1,89 +1,91 @@
-`include "../inc/defines.svh"
+module pipe_regs # (
+    parameter DATA_WIDTH    = 32,
+    parameter DATA_RESET    = 32'b0,
+    parameter VALID_RESET   = 1'b0
+) (
+    input   logic clk,
+    input   logic rst_n,
 
-module fetch_id_pipe (
-    input logic clk,
-    input logic rst_n,
-
-    // control signals
-    input logic i_valid,
-    output logic i_ready,
-    output logic o_valid,
-    input logic o_ready,
-
-    // from fetch
-    input logic [`INST_ADDR_BUS] fetch_pc,
-    input logic [`INST_DATA_BUS] fetch_inst,
-
-    // to id
-    output logic [`INST_ADDR_BUS] id_pc,
-    output logic [`INST_DATA_BUS] id_inst
-
-);
+    // control path
+    input   logic i_valid,
+    output  logic i_ready,
+    output  logic o_valid,
+    input   logic o_ready,
 
     // data path
+    input   logic [DATA_WIDTH-1:0] i_data,
+    output  logic [DATA_WIDTH-1:0] o_data,
+
+    input   logic pipe_flush
+);
+
+    // ----------------------------- data path -----------------------------
     logic data_buffer_wren; // EMPTY at start, so don't load.
-    logic [`INST_ADDR_BUS] buffer_pc;
-    logic [`INST_DATA_BUS] buffer_inst;
+    logic [DATA_WIDTH-1:0] buffer_data;
+    logic data_out_wren; // EMPTY at start, so accept data.
+    logic use_buffered_data;
+    logic [DATA_WIDTH-1:0] selected_data;
+
     // buffer reg
     always @ (posedge clk) begin
         if (!rst_n) begin
-            buffer_pc <= `CPU_RESET_ADDR;
-            buffer_inst <= `INST_NOP;
+            buffer_data <= DATA_RESET;
         end
         else if (data_buffer_wren) begin
-            buffer_pc <= fetch_pc;
-            buffer_inst <= fetch_inst;
+            buffer_data <= i_data;
         end
     end 
-    logic data_out_wren; // EMPTY at start, so accept data.
-    logic use_buffered_data;
-    logic [`INST_ADDR_BUS] selected_pc;
-    logic [`INST_DATA_BUS] selected_inst;
-    // select data out
-    assign selected_pc = use_buffered_data ? buffer_pc : fetch_pc;
-    assign selected_inst = use_buffered_data ? buffer_inst : fetch_inst;
     // pipeline reg
     always @ (posedge clk) begin
         if (!rst_n) begin
-            id_pc <= `CPU_RESET_ADDR;
-            id_inst <= `INST_NOP;
+            o_data <= DATA_RESET;
         end
         else if (data_out_wren) begin
-            id_pc <= selected_pc;
-            id_inst <= selected_inst;
+            o_data <= selected_data;
         end
-        // else begin
-        //     id_inst <= `INST_NOP;
-        // end
     end
+    // select data out
+    assign selected_data = use_buffered_data ? buffer_data : i_data;
+    // ----------------------------- data path -----------------------------
 
 
-    // control path: state machine
+    // -------------------- control path: state machine --------------------
     localparam STATE_BITS = 2;
     localparam [STATE_BITS-1:0] EMPTY = 'd0; // Output and buffer registers empty
     localparam [STATE_BITS-1:0] BUSY  = 'd1; // Output register holds data
     localparam [STATE_BITS-1:0] FULL  = 'd2; // Both output and buffer registers hold data
     // There is no case where only the buffer register would hold data.
-
-    // No handling of erroneous and unreachable state 3.
-    // We could check and raise an error flag.
-
     logic [STATE_BITS-1:0] state;
-    logic [STATE_BITS-1:0] state_next = EMPTY;
+    logic [STATE_BITS-1:0] state_next;
+
+    logic insert;
+    logic remove;
+    logic load;
+    logic flow;
+    logic fill;
+    logic flush;
+    logic unload;
 
     // ready reg
     always @ (posedge clk) begin
-        if (!rst_n) begin
+        if (!rst_n | pipe_flush) begin
             i_ready <= 1'b1;
         end
         else begin
-            i_ready <= (state_next != FULL);
+            `ifdef PIPE_REG_FIFO
+                i_ready <= (state_next != FULL);
+            `else
+                i_ready <= ~((state_next == BUSY) & (remove == 1'b0));
+            `endif
         end
     end
 
     // valid reg
     always @ (posedge clk) begin
         if (!rst_n) begin
+            o_valid <= VALID_RESET;
+        end
+        else if (pipe_flush) begin
             o_valid <= 1'b0;
         end
         else begin
@@ -91,8 +93,8 @@ module fetch_id_pipe (
         end
     end
 
-    wire insert = (i_valid  == 1'b1) && (i_ready  == 1'b1);
-    wire remove = (o_valid == 1'b1) && (o_ready == 1'b1);
+    assign insert = (i_valid == 1'b1) && (i_ready == 1'b1);
+    assign remove = (o_valid == 1'b1) && (o_ready == 1'b1);
 
     // reg load    = 1'b0; // Empty datapath inserts data into output register.
     // reg flow    = 1'b0; // New inserted data into output register as the old data is removed.
@@ -100,11 +102,11 @@ module fetch_id_pipe (
     // reg flush   = 1'b0; // Move data from buffer register into output register. Remove old data. No new data inserted.
     // reg unload  = 1'b0; // Remove data from output register, leaving the datapath empty.
 
-    wire load    = (state == EMPTY) && (insert == 1'b1) && (remove == 1'b0);
-    wire flow    = (state == BUSY)  && (insert == 1'b1) && (remove == 1'b1);
-    wire fill    = (state == BUSY)  && (insert == 1'b1) && (remove == 1'b0);
-    wire flush   = (state == FULL)  && (insert == 1'b0) && (remove == 1'b1);
-    wire unload  = (state == BUSY)  && (insert == 1'b0) && (remove == 1'b1);
+    assign load    = (state == EMPTY) && (insert == 1'b1) && (remove == 1'b0);
+    assign flow    = (state == BUSY)  && (insert == 1'b1) && (remove == 1'b1);
+    assign fill    = (state == BUSY)  && (insert == 1'b1) && (remove == 1'b0);
+    assign flush   = (state == FULL)  && (insert == 1'b0) && (remove == 1'b1);
+    assign unload  = (state == BUSY)  && (insert == 1'b0) && (remove == 1'b1);
 
     always @ (*) begin
         state_next = (load   == 1'b1) ? BUSY  : state;
@@ -116,7 +118,7 @@ module fetch_id_pipe (
 
     // state reg
     always @ (posedge clk) begin
-        if (!rst_n) begin
+        if (!rst_n | pipe_flush) begin
             state <= EMPTY;
         end
         else begin
@@ -129,5 +131,6 @@ module fetch_id_pipe (
         data_buffer_wren  = (fill  == 1'b1);
         use_buffered_data = (flush == 1'b1);
     end
+    // -------------------- control path: state machine --------------------
 
 endmodule
