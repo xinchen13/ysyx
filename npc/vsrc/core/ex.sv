@@ -43,7 +43,7 @@ module ex (
 
     // done
     wire done = 1'b1;
-    assign this_ready = !prev_valid || (done && next_ready);
+    assign this_ready = !prev_valid || (done && next_ready && !ex_jump);
     assign this_valid = prev_valid & done;
     
 
