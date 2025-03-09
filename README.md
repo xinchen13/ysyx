@@ -1,4 +1,5 @@
 # ysyx
+『一生一芯』项目, 仅学习, 欢迎issue
 
 ## useful links
 - [lecture notes](https://ysyx.oscc.cc/docs/)
